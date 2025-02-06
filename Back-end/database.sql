@@ -34,7 +34,7 @@ CREATE TABLE Staff (
     dob DATE,
     mail VARCHAR(255),
     gender BIT,
-    password NVARCHAR(255),
+    password VARCHAR(255),
     roleId INT,
     FOREIGN KEY (roleId) REFERENCES Role(RoleId)
 );
@@ -106,6 +106,13 @@ CREATE TABLE Feedback (
     FOREIGN KEY (bookingId) REFERENCES Booking(bookingId)
 );
 
+-- Tạo bảng VaccineCombo
+CREATE TABLE VaccineCombo (
+    vaccineComboId VARCHAR(255) PRIMARY KEY,
+    name NVARCHAR(255),
+    description NVARCHAR(255)
+);
+
 -- Tạo bảng BookingDetail
 CREATE TABLE BookingDetail (
     bookingDetailId VARCHAR(255) PRIMARY KEY,
@@ -119,14 +126,8 @@ CREATE TABLE BookingDetail (
     status INT,
     FOREIGN KEY (bookingId) REFERENCES Booking(bookingId),
     FOREIGN KEY (childId) REFERENCES Child(childId),
-    FOREIGN KEY (vaccineId) REFERENCES Vaccine(vaccineId)
-);
-
--- Tạo bảng VaccineCombo
-CREATE TABLE VaccineCombo (
-    vaccineComboId VARCHAR(255) PRIMARY KEY,
-    name NVARCHAR(255),
-    description NVARCHAR(255)
+    FOREIGN KEY (vaccineId) REFERENCES Vaccine(vaccineId),
+    FOREIGN KEY (vaccineComboId) REFERENCES VaccineCombo(vaccineComboId)
 );
 
 -- Tạo bảng ComboDetail
@@ -151,6 +152,17 @@ CREATE TABLE VaccineDetail (
     FOREIGN KEY (vaccineId) REFERENCES Vaccine(vaccineId)
 );
 
+-- Tạo bảng MarketingCampaign
+CREATE TABLE MarketingCampaign (
+    MarketingCampaignId INT PRIMARY KEY IDENTITY(1,1),
+    name NVARCHAR(255),
+    startTime DATE,
+    endTime DATE,
+    coupon VARCHAR(255),
+    discount INT,
+    description NVARCHAR(255)
+);
+
 -- Tạo bảng Payment
 CREATE TABLE Payment (
     paymentId VARCHAR(255) PRIMARY KEY,
@@ -160,17 +172,9 @@ CREATE TABLE Payment (
     method BIT,
     status BIT,
     transactionId VARCHAR(255),
-    coupon VARCHAR(255),
-    FOREIGN KEY (bookingId) REFERENCES Booking(bookingId)
+    MarketingCampaignId INT,
+    FOREIGN KEY (bookingId) REFERENCES Booking(bookingId),
+    FOREIGN KEY (MarketingCampaignId) REFERENCES MarketingCampaign(MarketingCampaignId)
 );
 
--- Tạo bảng MarketingCampaign
-CREATE TABLE MarketingCampaign (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    name NVARCHAR(255),
-    startTime DATE,
-    endTime DATE,
-    coupon VARCHAR(255),
-    discount INT,
-    description NVARCHAR(255)
-);
+
