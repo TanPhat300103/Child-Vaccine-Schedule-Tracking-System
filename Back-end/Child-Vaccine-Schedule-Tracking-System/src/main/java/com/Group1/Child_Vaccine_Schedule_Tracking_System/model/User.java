@@ -4,4 +4,5 @@ public class User {
 
     int id;
     int age;
+    String name;
 }
