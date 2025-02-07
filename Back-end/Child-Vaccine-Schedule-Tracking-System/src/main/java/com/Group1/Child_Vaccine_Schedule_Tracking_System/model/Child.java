@@ -1,8 +1,5 @@
 package com.Group1.Child_Vaccine_Schedule_Tracking_System.model;
 
-public class User {
-
+public class Child {
     private String id;
-    private int age;
-    private String name;
 }
