@@ -1,6 +1,8 @@
 package org.gr1fpt.childvaccinescheduletrackingsystem;
 
+import org.gr1fpt.childvaccinescheduletrackingsystem.model.Child;
 import org.gr1fpt.childvaccinescheduletrackingsystem.model.Customer;
+import org.gr1fpt.childvaccinescheduletrackingsystem.service.ChildService;
 import org.gr1fpt.childvaccinescheduletrackingsystem.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -9,7 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
 import java.sql.Date;
-import java.time.LocalDate;
+
 
 @SpringBootApplication
 public class ChildVaccineScheduleTrackingSystemApplication {
@@ -40,10 +42,24 @@ public class ChildVaccineScheduleTrackingSystemApplication {
                 1,
                 true
         );
-        //action.create(c1);
+        System.out.println("Child:");
+        ChildService action2 = context.getBean(ChildService.class);
+        System.out.println(action2.getAll());
 
-        System.out.println(" Test delete by ID: ");
-       // action.deleteById("3");
+        Child ch1 = new Child(
+                "2",                  // childId
+                action.findById("1").orElseThrow(),                // customer
+                "Thuyền",                  // firstName
+                "Điêu",                   // lastName
+                false,                    // gender
+                Date.valueOf("2020-03-02"), // dob
+                "None",                // contraindications
+                true
+        );
+        System.out.println( action2.findByCustomer(action.findById("1").orElseThrow()));;
+
+
+
     }
 
 }

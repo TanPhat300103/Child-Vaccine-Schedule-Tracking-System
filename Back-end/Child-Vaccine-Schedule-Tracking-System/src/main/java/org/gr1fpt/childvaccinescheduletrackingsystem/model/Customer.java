@@ -13,7 +13,7 @@ import java.sql.Date;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "Customer") // Chỉ định tên bảng là 'Human'
+@Table(name = "Customer")
 public class Customer {
     @Id
     private String customerId;
