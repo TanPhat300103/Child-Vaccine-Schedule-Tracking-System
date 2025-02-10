@@ -61,6 +61,6 @@ public class ChildService {
         } else {
             child.setActive(true);
         }
-        return child;
+        return childRepository.save(child);
     }
 }

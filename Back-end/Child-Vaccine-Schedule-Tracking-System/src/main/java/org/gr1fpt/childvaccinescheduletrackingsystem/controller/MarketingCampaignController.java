@@ -19,7 +19,6 @@ public class MarketingCampaignController {
     @Autowired
     private MarketingCampaignService marketingCampaignService;
 
-
     @GetMapping()
     public List<MarketingCampaign> getAllCampaigns() {
         return marketingCampaignService.getAll();

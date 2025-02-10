@@ -26,7 +26,7 @@ public class MarketingCampaign {
     private String coupon;
     private int discount;
     private String description;
-    private Boolean active;
+    private boolean active;
 
 
 }
