@@ -45,7 +45,7 @@ public class CustomerService {
         if (customerRepository.existsById(id)) {
             customerRepository.deleteById(id);
         } else {
-            throw new CustomException("Customer ID:" + id + " khong ton tai", HttpStatus.BAD_REQUEST);
+            throw new CustomException("Customer ID:" + id + " does not exist", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -53,18 +53,17 @@ public class CustomerService {
         if (customerRepository.existsById(customer.getCustomerId())) {
             return customerRepository.save(customer);
         } else {
-            throw new CustomException("Customer ID:" + customer.getCustomerId() + " khong ton tai", HttpStatus.BAD_REQUEST);
+            throw new CustomException("Customer ID:" + customer.getCustomerId() + " does not exist", HttpStatus.BAD_REQUEST);
         }
     }
 
     public Customer active(String id) {
-        Customer c1 = customerRepository.findById(id).orElseThrow(() -> new CustomException("Customer ID: " + id + " không tồn tại", HttpStatus.BAD_REQUEST));
+        Customer c1 = customerRepository.findById(id).orElseThrow(() -> new CustomException("Customer ID: " + id + " does not exist", HttpStatus.BAD_REQUEST));
         if (c1.isActive()) {
             c1.setActive(false);
         } else
             c1.setActive(true);
         return customerRepository.save(c1);
-
 
     }
 
