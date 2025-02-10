@@ -21,7 +21,7 @@ public class ChildController {
         return childService.getAll();
     }
 
-    @GetMapping("find")
+    @GetMapping("findid")
     public Optional<Child> findById(@RequestParam String id)
     {
         return childService.findById(id);
@@ -48,5 +48,11 @@ public class ChildController {
     public Child update (@RequestBody Child child)
     {
         return childService.update(child);
+    }
+
+    @PostMapping("active")
+    public Child active (@RequestParam String id)
+    {
+        return childService.active(id);
     }
 }

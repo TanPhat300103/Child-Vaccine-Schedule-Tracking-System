@@ -18,8 +18,6 @@ import java.util.Optional;
 public class MarketingCampaignController {
     @Autowired
     private MarketingCampaignService marketingCampaignService;
-    @Autowired
-    private MarketingCampaignRepository marketingCampaignRepository;
 
     @GetMapping()
     public List<MarketingCampaign> getAllCampaigns() {

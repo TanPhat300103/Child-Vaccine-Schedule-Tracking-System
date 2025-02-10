@@ -36,7 +36,7 @@ public class MarketingCampaignService {
     public void setActive(String id) {
         if(marketingCampaignRepository.existsById(id)){
             MarketingCampaign marketingCampaign = marketingCampaignRepository.findById(id).orElseThrow();
-            if(marketingCampaign.getActive()){
+            if(marketingCampaign.isActive()){
                 marketingCampaign.setActive(false);
             }
             else{
