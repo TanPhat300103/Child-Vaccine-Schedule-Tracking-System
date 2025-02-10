@@ -32,7 +32,7 @@ public class CustomerService {
             customer.setCustomerId(generateCustomerId());
             return customerRepository.save(customer);
         } else {
-            throw new CustomException("Customer Phone: " + customer.getPhoneNumber() + " da duoc su dung", HttpStatus.BAD_REQUEST);
+            throw new CustomException("Customer Phone: " + customer.getPhoneNumber() + "has been used", HttpStatus.BAD_REQUEST);
         }
     }
 
