@@ -43,20 +43,7 @@ public class ChildVaccineScheduleTrackingSystemApplication {
                 true
         );
         System.out.println("Child:");
-        ChildService action2 = context.getBean(ChildService.class);
-        System.out.println(action2.getAll());
 
-        Child ch1 = new Child(
-                "2",                  // childId
-                action.findById("1").orElseThrow(),                // customer
-                "Thuyền",                  // firstName
-                "Điêu",                   // lastName
-                false,                    // gender
-                Date.valueOf("2020-03-02"), // dob
-                "None",                // contraindications
-                true
-        );
-        System.out.println( action2.findByCustomer(action.findById("1").orElseThrow()));;
 
 
 
