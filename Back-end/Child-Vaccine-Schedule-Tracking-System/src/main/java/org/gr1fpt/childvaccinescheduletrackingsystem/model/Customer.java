@@ -17,10 +17,11 @@ import java.sql.Date;
 public class Customer {
     @Id
     private String customerId;
-    @Pattern(regexp = "^[0-9]{10}$", message = "Phone should be valid")
+    @Pattern(regexp = "^(\\+84|0)[3|5|7|8|9][0-9]{8}$", message = "Invalid phone number format")
     private String phoneNumber;
     private String firstName;
     private String lastName;
+    @Past(message = "Date of birth must be in the past")
     private Date dob;
     private Boolean gender;
     private String password;
