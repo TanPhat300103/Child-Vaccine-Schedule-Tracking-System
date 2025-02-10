@@ -7,7 +7,6 @@ import org.gr1fpt.childvaccinescheduletrackingsystem.repository.StaffRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -24,18 +23,18 @@ public class StaffService {
         return staffRepository.findById(id);
     }
 
+
+
     private String generateStaffId() {
         long count = staffRepository.count();
         return "S" + String.format("%02d", count + 1);
     }
 
     public Staff create(Staff staff) {
-        if (staffRepository.findById(staff.getStaffId()).isEmpty()) {
+            if(staffRepository.findByPhone(staff.getPhone()).isEmpty()) {
             staff.setStaffId(generateStaffId());
-            return staffRepository.save(staff);
-        } else {
-            throw new CustomException("Staff ID: " + staff.getStaffId() + "has been used", HttpStatus.BAD_REQUEST);
-        }
+            return staffRepository.save(staff);}
+            else throw new CustomException("Phone number is exist !!", HttpStatus.BAD_REQUEST);
     }
 
     public void deleteById(String id) {
@@ -45,9 +44,9 @@ public class StaffService {
         else throw new CustomException("Staff ID: " + id + " does not exist", HttpStatus.BAD_REQUEST);
     }
 
-    public void update(Staff staff) {
+    public Staff update(Staff staff) {
         if(staffRepository.existsById(staff.getStaffId())) {
-            staffRepository.save(staff);
+            return staffRepository.save(staff);
         }
         else{
             throw new CustomException("Staff ID: " + staff.getStaffId() + " does not exist", HttpStatus.BAD_REQUEST);
@@ -59,10 +58,12 @@ public class StaffService {
             Staff staff = staffRepository.findById(id).orElseThrow();
             if(staff.isActive()) {
                 staff.setActive(false);
+
             }
             else{
                 staff.setActive(true);
             }
+            staffRepository.save(staff);
         }
         else{
             throw new CustomException("Staff ID: " + id + " does not exist", HttpStatus.BAD_REQUEST);

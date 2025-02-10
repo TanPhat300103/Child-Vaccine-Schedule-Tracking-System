@@ -1,9 +1,7 @@
 package org.gr1fpt.childvaccinescheduletrackingsystem.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,10 +15,15 @@ import java.sql.Date;
 @Table(name ="Staff")
 public class Staff {
     @Id
+
     private String staffId;
     private String firstName;
     private String lastName;
+    @NotBlank(message = "Phone number cannot be empty")
+    @Pattern(regexp = "^(\\+84|0)[3|5|7|8|9][0-9]{8}$", message = "Invalid phone number format")
     private String phone;
+
+    @Past(message = "Date of birth must be in the past")
     private Date dob;
     private String address;
     @Email(message = "Email should be valid")
