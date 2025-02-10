@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name ="Child")
 public class Child {
-
     @Id
     private String childId;
     @ManyToOne
