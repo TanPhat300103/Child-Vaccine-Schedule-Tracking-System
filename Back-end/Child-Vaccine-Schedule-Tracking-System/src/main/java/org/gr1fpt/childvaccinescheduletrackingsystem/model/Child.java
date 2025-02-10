@@ -21,5 +21,5 @@ public class Child {
     private Boolean gender;
     private java.sql.Date dob;
     private String contraindications;
-    private Boolean active;
+    private boolean active;
 }
