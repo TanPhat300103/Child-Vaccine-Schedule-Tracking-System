@@ -62,4 +62,9 @@ public class VaccineController {
     {
         return vaccineService.findByPrice(min, max);
     }
+
+    @GetMapping("findbyage")
+    public List<Vaccine> findByAge (@RequestParam int ageMin, int ageMax){
+        return vaccineService.findByAge(ageMin, ageMax);
+    }
 }

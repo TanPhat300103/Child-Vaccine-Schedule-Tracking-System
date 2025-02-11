@@ -23,6 +23,9 @@ public class VaccineDetailService {
     }
 
     public VaccineDetail create(VaccineDetail vaccineDetail) {
+        if(!vaccineRepository.existsById(vaccineDetail.getVaccine().getVaccineId())){
+            throw new CustomException("Vaccine Id" + vaccineDetail.getVaccine().getVaccineId()+"does not exist",HttpStatus.BAD_REQUEST);
+        }
         return vaccineDetailRepository.save(vaccineDetail);
     }
 
