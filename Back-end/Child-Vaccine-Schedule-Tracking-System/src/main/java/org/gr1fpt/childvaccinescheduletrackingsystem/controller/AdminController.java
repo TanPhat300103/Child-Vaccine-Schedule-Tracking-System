@@ -1,5 +1,6 @@
 package org.gr1fpt.childvaccinescheduletrackingsystem.controller;
 
+import jakarta.validation.Valid;
 import org.gr1fpt.childvaccinescheduletrackingsystem.model.Admin;
 import org.gr1fpt.childvaccinescheduletrackingsystem.repository.AdminRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.service.AdminService;
@@ -13,7 +14,7 @@ public class AdminController {
     private AdminService adminService;
 
     @PostMapping("/create")
-    public Admin create(@RequestBody Admin admin) {
+    public Admin create(@RequestBody @Valid Admin admin) {
         return adminService.createAdmin(admin);
     }
 
@@ -23,7 +24,7 @@ public class AdminController {
     }
 
     @PostMapping("update")
-    public Admin update(@RequestBody Admin admin) {
+    public Admin update(@RequestBody @Valid Admin admin) {
         return adminService.updateAdmin(admin);
     }
 

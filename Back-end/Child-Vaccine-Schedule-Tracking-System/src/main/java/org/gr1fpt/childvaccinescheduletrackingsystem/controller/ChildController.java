@@ -46,7 +46,7 @@ public class ChildController {
     }
 
     @PostMapping("update")
-    public Child update (@RequestBody Child child)
+    public Child update (@RequestBody @Valid Child child)
     {
         return childService.update(child);
     }

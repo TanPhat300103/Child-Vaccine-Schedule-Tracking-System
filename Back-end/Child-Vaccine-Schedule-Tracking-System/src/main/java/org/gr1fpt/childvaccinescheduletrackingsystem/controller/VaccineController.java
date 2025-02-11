@@ -52,7 +52,7 @@ public class VaccineController {
     }
 
     @PostMapping("update")
-    public Vaccine update (@RequestBody Vaccine vaccine)
+    public Vaccine update (@RequestBody @Valid Vaccine vaccine)
     {
         return vaccineService.update(vaccine);
     }
