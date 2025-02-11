@@ -30,6 +30,7 @@ public class CustomerService {
 
         if (customerRepository.findByPhoneNumber(customer.getPhoneNumber()).isEmpty()) {
             customer.setCustomerId(generateCustomerId());
+            customer.setActive(true);
             return customerRepository.save(customer);
         } else {
             throw new CustomException("Customer Phone: " + customer.getPhoneNumber() + "has been used", HttpStatus.BAD_REQUEST);
