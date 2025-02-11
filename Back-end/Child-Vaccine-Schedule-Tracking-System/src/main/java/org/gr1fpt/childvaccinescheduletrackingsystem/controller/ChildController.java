@@ -1,5 +1,6 @@
 package org.gr1fpt.childvaccinescheduletrackingsystem.controller;
 
+import jakarta.validation.Valid;
 import org.gr1fpt.childvaccinescheduletrackingsystem.model.Child;
 import org.gr1fpt.childvaccinescheduletrackingsystem.service.ChildService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class ChildController {
         return childService.findById(id);
     }
     @PostMapping("create")
-    public Child create (@RequestBody Child child)
+    public Child create (@RequestBody @Valid Child child)
     {
        return childService.create(child);
     }

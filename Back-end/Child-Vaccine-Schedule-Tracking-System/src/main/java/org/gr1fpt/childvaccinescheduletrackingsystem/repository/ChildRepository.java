@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface ChildRepository extends JpaRepository<Child, String> {
     List<Child> findByCustomer(Customer customer);
+    long countByCustomer_CustomerId(String customerId);
 }

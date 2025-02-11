@@ -18,6 +18,7 @@ public class ChildService {
 
     @Autowired
     ChildRepository childRepository;
+
     @Autowired
     CustomerRepository customerRepository;
 
@@ -29,15 +30,23 @@ public class ChildService {
         return childRepository.findById(id);
     }
 
+    private String generateChildId(String customerId) {
+        long count = childRepository.countByCustomer_CustomerId(customerId) + 1;
+        return customerId + "-" + count;
+    }
+
     public Child create(Child child) {
-        if (customerRepository.findById(child.getCustomer().getCustomerId()).isPresent())
-            return childRepository.save(child);
+        if (customerRepository.findById(child.getCustomer().getCustomerId()).isPresent()){
+            child.setChildId(generateChildId(child.getCustomer().getCustomerId()));
+            return childRepository.save(child);}
         else
-            throw new CustomException("Parent ID:" + child.getChildId() + " khong ton tai", HttpStatus.BAD_REQUEST);
+            throw new CustomException("Parent ID: " + child.getCustomer().getCustomerId() + " does not exist", HttpStatus.BAD_REQUEST);
     }
 
     public void deleteById(String id) {
-        childRepository.deleteById(id);
+        if(childRepository.existsById(id)){
+        childRepository.deleteById(id);}
+        else throw new CustomException("Child ID:" + id + " does not exist", HttpStatus.BAD_REQUEST);
     }
 
     public Child update(Child child) {
@@ -63,4 +72,6 @@ public class ChildService {
         }
         return childRepository.save(child);
     }
+
+
 }
