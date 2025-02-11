@@ -28,6 +28,7 @@ public class VaccineDetailController {
     @DeleteMapping("delete")
     public void delete (@RequestParam int id)
     {
+
         vaccineDetailService.delete(id);
     }
 
