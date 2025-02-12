@@ -1,0 +1,103 @@
+.header {
+  width: 100%;
+  background-color: #2d5aa3; /* Màu nền xanh */
+  padding-bottom: 5px;
+  color: white;
+  font-family: Arial, sans-serif;
+  border: 1px solid black; /* Viền ngoài */
+}
+
+/* Phần thanh trên cùng */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+}
+
+/* Logo */
+.logo {
+  font-size: 20px;
+  font-weight: bold;
+  background: white;
+  color: black;
+  padding: 10px 20px;
+}
+
+/* Thanh tìm kiếm */
+.search-bar {
+  flex: 1;
+  margin: 0 20px;
+  padding: 10px;
+  font-size: 16px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Khu vực đăng nhập */
+.auth-section {
+  display: flex;
+  gap: 10px;
+}
+
+.login, .signup {
+  background: none;
+  border: none;
+  color: lightgray;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.login:hover, .signup:hover {
+  text-decoration: underline;
+}
+
+.notice {
+  background-color: red;
+  color: white;
+  padding: 5px 10px;
+}
+/* Thanh menu */
+.nav-bar {
+  display: flex;
+  justify-content: center;
+  background: white;
+  padding: 5px 0;
+  border-top: 1px solid black;
+}
+
+.nav-bar a {
+  color: black;
+  padding: 10px 15px;
+  text-decoration: none;
+  border-right: 1px solid black;
+  font-weight: bold;
+}
+
+.nav-bar a:last-child {
+  border-right: none;
+  background-color: orange;
+  color: black;
+}
+
+/* Dòng chữ dưới menu */
+.sub-footer {
+  text-align: center;
+  padding-top: 5px;
+  font-size: 14px;
+}
+
+.vaccine-center {
+  color: yellow;
+  font-weight: bold;
+}
+
+.register {
+  color: green;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.register:hover {
+  text-decoration: underline;
+}

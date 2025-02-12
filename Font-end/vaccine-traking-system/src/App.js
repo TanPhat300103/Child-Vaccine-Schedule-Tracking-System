@@ -1,11 +1,18 @@
-
+// src/App.js
 import './App.css';
-import AdminDashboard from './components/AdminDashboard/admindashboard';
+import { Routes, Route } from "react-router-dom";
+import Test from './Test';
+
+
+
 function App() {
   return (
-    <div >
-     <AdminDashboard />
-    </div>
+    <>
+      <Test />
+      <Routes>
+        {/* <Route path="/" element={<Test />} /> */}
+      </Routes>
+    </>
   );
 }
 

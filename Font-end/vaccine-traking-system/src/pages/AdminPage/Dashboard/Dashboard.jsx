@@ -1,4 +1,4 @@
-export default function AdminDashboard(){
+export default function Dashboard(){
     return (
         <>
   <meta charSet="UTF-8" />
