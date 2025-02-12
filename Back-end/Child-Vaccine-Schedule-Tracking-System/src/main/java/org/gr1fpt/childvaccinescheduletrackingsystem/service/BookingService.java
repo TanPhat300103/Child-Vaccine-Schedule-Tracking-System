@@ -32,8 +32,38 @@ public class BookingService {
             booking.setBookingId(generateId(booking.getCustomer().getCustomerId()));
           return bookingRepository.save(booking);
         }
-
-
         else throw new CustomException("Customer Id " + booking.getCustomer().getCustomerId()+" does not exist", HttpStatus.BAD_REQUEST);
     }
+
+    public List<Booking> getBookingsByCustomerId(String customerId) {
+        if(customerRepository.existsById(customerId)) {
+            return bookingRepository.findByCustomer_CustomerId(customerId);
+        }
+        else throw new CustomException("Customer Id " + customerId + " does not exist", HttpStatus.BAD_REQUEST);
+    }
+
+    public List<Booking> getBookingByStatus(int status) {
+       return bookingRepository.findByStatus(status);
+    }
+
+    public Booking getBookingById(String bookingId) {
+        return bookingRepository.findById(bookingId).orElseThrow(() -> new CustomException("Booking Id " + bookingId + " does not exist", HttpStatus.BAD_REQUEST));
+    }
+
+    public Booking updateBooking(Booking booking) {
+        if(bookingRepository.existsById(booking.getBookingId())) {
+            return bookingRepository.save(booking);
+        }
+        else throw new CustomException("Booking Id " + booking.getBookingId() + " does not exist", HttpStatus.BAD_REQUEST);
+    }
+
+    public void setStatus(int status, String bookingId) {
+        Booking booking = getBookingById(bookingId);
+        booking.setStatus(status);
+        bookingRepository.save(booking);
+    }
+
+
+
+
 }

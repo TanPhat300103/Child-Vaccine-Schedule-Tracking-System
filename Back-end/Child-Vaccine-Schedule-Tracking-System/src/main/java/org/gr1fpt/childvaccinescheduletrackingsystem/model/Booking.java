@@ -17,7 +17,6 @@ import java.sql.Date;
 public class Booking {
     @Id
     private String bookingId;
-
     private Date bookingDate;
     @ManyToOne
     @JoinColumn(name = "customerId", nullable = false)
@@ -25,6 +24,7 @@ public class Booking {
     private Customer customer;
     @Min(value = 0,message = "Invalid status")
     private int status;
+    //booked inprocess complete cancled
     @Min(value = 0,message = "Amount must be greater than 0")
     private int totalAmount;
 
