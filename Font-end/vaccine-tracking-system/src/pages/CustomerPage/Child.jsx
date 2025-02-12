@@ -1,50 +1,80 @@
-// src/pages/CustomerPage/Child.jsx
-import React from "react";
+// src/pages/Customer/Child.jsx
+import React, { useEffect, useState } from "react";
+import { getChildById } from "../../api/api"; // điều chỉnh đường dẫn cho đúng
+import "./CustomerPage.css"; // hoặc sử dụng file CSS riêng cho Child nếu cần
 
 const Child = () => {
-  // Dummy data, thay thế bằng dữ liệu thật từ backend khi có.
-  const dummyChild = {
-    fullname: "Trần Thị B",
-    gender: "Nữ",
-    dateOfBirth: "05/05/2015",
-    vaccinations: [
-      { dose: "Mũi 1", date: "10/10/2020", vaccine: "Vaccine A" },
-      { dose: "Mũi 2", date: "10/10/2021", vaccine: "Vaccine B" }
-    ]
-  };
+  // Giả sử childId được lấy từ context hoặc params; hardcode "child123" cho ví dụ
+  const childId = "child123";
+  const [child, setChild] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchChild = async () => {
+      try {
+        const data = await getChildById(childId);
+        setChild(data);
+      } catch (err) {
+        console.error("Error fetching child profile:", err);
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchChild();
+  }, [childId]);
+
+  if (loading) return <div>Loading child profile...</div>;
+  if (error) return <div>Error loading child profile.</div>;
+  if (!child) return <div>No child data available.</div>;
 
   return (
     <div className="child-profile">
       <h2>Hồ Sơ Trẻ Em</h2>
-      <table>
+      <table className="child-table">
         <tbody>
           <tr>
             <td>Họ và tên:</td>
-            <td>{dummyChild.fullname}</td>
             <td>
-              <button>Edit</button>
-              {/* TODO: API cập nhật thông tin con */}
+              {child.firstName} {child.lastName}
+            </td>
+            <td>
+              <button
+                onClick={() => alert("Chức năng chỉnh sửa hồ sơ trẻ - TODO")}
+              >
+                Edit
+              </button>
             </td>
           </tr>
           <tr>
             <td>Giới tính:</td>
-            <td>{dummyChild.gender}</td>
+            <td>{child.gender ? "Nam" : "Nữ"}</td>
             <td>
-              <button>Edit</button>
+              <button
+                onClick={() => alert("Chức năng chỉnh sửa giới tính - TODO")}
+              >
+                Edit
+              </button>
             </td>
           </tr>
           <tr>
             <td>Ngày sinh:</td>
-            <td>{dummyChild.dateOfBirth}</td>
+            <td>{new Date(child.dob).toLocaleDateString()}</td>
             <td>
-              <button>Edit</button>
+              <button
+                onClick={() => alert("Chức năng chỉnh sửa ngày sinh - TODO")}
+              >
+                Edit
+              </button>
             </td>
           </tr>
         </tbody>
       </table>
 
       <h3>Vaccine đã tiêm</h3>
-      <table>
+      <table className="vaccination-table">
         <thead>
           <tr>
             <th>Mũi</th>
@@ -53,13 +83,14 @@ const Child = () => {
           </tr>
         </thead>
         <tbody>
-          {dummyChild.vaccinations.map((item, index) => (
-            <tr key={index}>
-              <td>{item.dose}</td>
-              <td>{item.date}</td>
-              <td>{item.vaccine}</td>
-            </tr>
-          ))}
+          {child.vaccinations &&
+            child.vaccinations.map((item, index) => (
+              <tr key={index}>
+                <td>{item.dose}</td>
+                <td>{new Date(item.date).toLocaleDateString()}</td>
+                <td>{item.vaccine}</td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>

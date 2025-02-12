@@ -21,7 +21,7 @@ import Child from "./pages/CustomerPage/Child";
 
 // Đặt tên component bạn muốn test vào đây.
 // Ví dụ: "Dashboard", "Header", "Footer", "Login", v.v.
-const componentToTest = "AboutUs";
+const componentToTest = "CustomerLayout";
 
 // Component Test: chuyển dữ liệu vào component cần test và render nó
 
@@ -44,7 +44,7 @@ function Test() {
     case "Profile":
       return <Profile />;
     case "Child":
-        return <Child />;
+      return <Child />;
     case "Feedback":
       return <Feedback />;
     case "AboutUs":

@@ -1,63 +1,104 @@
-// src/pages/CustomerPage/Profile.jsx
-import React from "react";
+// src/pages/Customer/Profile.jsx
+import React, { useEffect, useState } from "react";
+import { getCustomerById } from "../../api/api"; // điều chỉnh đường dẫn cho đúng
+import "./CustomerPage.css";
 
 const Profile = () => {
-  // Dummy data, thay thế bằng dữ liệu thật từ backend khi có.
-  const dummyProfile = {
-    fullname: "Nguyễn Văn A",
-    gender: "Nam",
-    dateOfBirth: "01/01/1990",
-    email: "nguyenvana@example.com",
-    phone: "0123-456-789",
-    address: "123 Đường ABC, Quận XYZ, TP.HCM"
-  };
+  // Giả sử customerId được lấy từ context hoặc một nguồn nào đó; hiện tại hardcode "123"
+  const customerId = "123";
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const data = await getCustomerById(customerId);
+        setProfile(data);
+      } catch (err) {
+        console.error("Error fetching customer profile:", err);
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [customerId]);
+
+  if (loading) return <div>Loading profile...</div>;
+  if (error) return <div>Error loading profile.</div>;
+  if (!profile) return <div>No profile data available.</div>;
 
   return (
     <div className="profile">
       <h2>Hồ Sơ Cá Nhân</h2>
-      <table>
+      <table className="profile-table">
         <tbody>
           <tr>
             <td>Họ và tên:</td>
-            <td>{dummyProfile.fullname}</td>
             <td>
-              <button>Edit</button>
-              {/* TODO: Kết nối API cập nhật hồ sơ */}
+              {profile.firstName} {profile.lastName}
+            </td>
+            <td>
+              <button onClick={() => alert("Chức năng chỉnh sửa hồ sơ - TODO")}>
+                Edit
+              </button>
             </td>
           </tr>
           <tr>
             <td>Giới tính:</td>
-            <td>{dummyProfile.gender}</td>
+            <td>{profile.gender ? "Nam" : "Nữ"}</td>
             <td>
-              <button>Edit</button>
+              <button
+                onClick={() => alert("Chức năng chỉnh sửa giới tính - TODO")}
+              >
+                Edit
+              </button>
             </td>
           </tr>
           <tr>
             <td>Ngày sinh:</td>
-            <td>{dummyProfile.dateOfBirth}</td>
+            <td>{new Date(profile.dob).toLocaleDateString()}</td>
             <td>
-              <button>Edit</button>
+              <button
+                onClick={() => alert("Chức năng chỉnh sửa ngày sinh - TODO")}
+              >
+                Edit
+              </button>
             </td>
           </tr>
           <tr>
             <td>Email:</td>
-            <td>{dummyProfile.email}</td>
+            <td>{profile.email}</td>
             <td>
-              <button>Edit</button>
+              <button onClick={() => alert("Chức năng chỉnh sửa email - TODO")}>
+                Edit
+              </button>
             </td>
           </tr>
           <tr>
             <td>Số điện thoại:</td>
-            <td>{dummyProfile.phone}</td>
+            <td>{profile.phoneNumber}</td>
             <td>
-              <button>Edit</button>
+              <button
+                onClick={() =>
+                  alert("Chức năng chỉnh sửa số điện thoại - TODO")
+                }
+              >
+                Edit
+              </button>
             </td>
           </tr>
           <tr>
             <td>Địa chỉ:</td>
-            <td>{dummyProfile.address}</td>
+            <td>{profile.address}</td>
             <td>
-              <button>Edit</button>
+              <button
+                onClick={() => alert("Chức năng chỉnh sửa địa chỉ - TODO")}
+              >
+                Edit
+              </button>
             </td>
           </tr>
         </tbody>
