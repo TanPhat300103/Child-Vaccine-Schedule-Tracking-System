@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React from "react";
-import { vaccinePackages } from "./data.js"; // Sử dụng dữ liệu từ file data.js
+import { vaccinePackages } from "../../stores/data.js"; // Sử dụng dữ liệu từ file data.js
 
 const VaccinePackages = () => {
   return (

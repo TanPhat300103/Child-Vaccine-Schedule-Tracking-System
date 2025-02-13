@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React from "react";
-import { locations } from "./data"; // Sử dụng dữ liệu từ file data.js
+import { locations } from "../../stores/data"; // Sử dụng dữ liệu từ file data.js
 import { FaMapMarkerAlt, FaPhone } from "react-icons/fa";
 
 const Location = () => {

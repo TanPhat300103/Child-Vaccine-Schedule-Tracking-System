@@ -1,14 +1,14 @@
 // src/App.jsx
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
-import HeaderHome from "../../components/OtherCompo/HeaderHome";
-import Navigation from "../../components/Navigation";
-import Banner from "../../components/Banner";
-import Introduction from "../../components/OtherCompo/Introduction";
-import VaccinePackages from "../../components/OtherCompo/VaccinePackages";
-import VaccinationProcess from "../../components/OtherCompo/VaccineProcess";
-import Location from "../../components/OtherCompo/Location";
-import Footer from "../../components/Footer";
+import HeaderHome from "../../components/common/HeaderHome";
+import Navigation from "../../components/common/Navigation";
+import Banner from "../../components/common/Banner";
+import Footer from "../../components/common/Footer";
+import Introduction from "../../components/homepage/Introduction";
+import VaccinePackages from "../../components/homepage/VaccinePackages";
+import VaccinationProcess from "../../components/homepage/VaccineProcess";
+import Location from "../../components/homepage/Location";
 
 const Home = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

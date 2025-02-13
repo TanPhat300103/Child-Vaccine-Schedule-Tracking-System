@@ -2,10 +2,11 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom"; // Import Router và Routes
 import App from "./App.jsx";
-import "./components/index.css";
-import LoginPage from "./pages/Login/LoginPage.jsx";
-import Register from "./pages/Register/Register.jsx";
-import Home from "./pages/Home/Home.jsx";
+import "./index.css";
+
+import Register from "../pages/Register/Register.jsx";
+import Home from "../pages/Home/Home.jsx";
+import LoginPage from "../pages/Login/LoginPage.jsx";
 
 // eslint-disable-next-line react-refresh/only-export-components
 const Main = () => {
