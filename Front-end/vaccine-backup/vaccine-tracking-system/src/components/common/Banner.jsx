@@ -1,25 +1,70 @@
-// src/components/Banner.jsx
-// eslint-disable-next-line no-unused-vars
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+
+const slides = [
+  {
+    image: "https://images.unsplash.com/photo-1584515933487-779824d29309",
+    title: "Protect Your Child's Future",
+  },
+  {
+    image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef",
+    title: "Professional Healthcare Service",
+  },
+  {
+    image: "https://images.unsplash.com/photo-1576765608535-5f04d1e3f289",
+    title: "Safe and Reliable Vaccines",
+  },
+];
 
 const Banner = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
-    <section
-      id="banner"
-      className="bg-primary py-24 text-center text-primary-foreground relative overflow-hidden"
-    >
-      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1584515933487-779824d29309')] bg-cover bg-center opacity-20"></div>
-      <div className="container mx-auto px-4 relative z-10">
-        <h1 className="text-5xl md:text-6xl font-bold mb-6 animate-fadeIn">
-          Chăm Sóc Sức Khỏe Của Bạn
-        </h1>
-        <p className="text-xl md:text-2xl mb-8 animate-fadeIn delay-100">
-          Dịch vụ tiêm chủng chất lượng cao
-        </p>
-        <button className="px-8 py-4 bg-primary-foreground text-primary rounded-lg hover:bg-opacity-90 transition-all duration-300 transform hover:scale-105 font-bold shadow-lg">
-          Đăng Ký Tiêm
-        </button>
-      </div>
+    <section className="relative h-screen overflow-hidden">
+      <motion.div
+        animate={{ x: `-${currentSlide * 100}%` }}
+        transition={{ type: "tween", duration: 0.5 }}
+        className="flex h-full"
+      >
+        {slides.map((slide, index) => (
+          <div
+            key={index}
+            className="relative w-full h-full flex-shrink-0"
+            style={{
+              backgroundImage: `url(${slide.image})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          >
+            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center">
+                <motion.h1
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  className="text-4xl md:text-6xl font-bold text-white mb-6"
+                >
+                  {slide.title}
+                </motion.h1>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-blue-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-blue-700 transition-colors duration-300"
+                >
+                  Đăng ký tiêm
+                </motion.button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </motion.div>
     </section>
   );
 };

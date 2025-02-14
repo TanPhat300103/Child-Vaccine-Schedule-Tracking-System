@@ -1,45 +1,105 @@
-// eslint-disable-next-line no-unused-vars
+// Navigation.jsx
 import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaBars, FaTimes } from "react-icons/fa";
 
-// eslint-disable-next-line react/prop-types
-const Navigation = ({ activeTab, setActiveTab }) => {
+const Navigation = ({ isMenuOpen, setIsMenuOpen, scrollPosition }) => {
   return (
-    <nav className="bg-secondary  p-4 sticky top-20 z-50 shadow-lg">
-      <div className="container mx-auto">
-        <ul className="hidden md:flex justify-center space-x-8 p-4">
-          {[
-            "Giới thiệu",
-            "Gói tiêm",
-            "Bảng giá",
-            "Quy trình",
-            "Địa điểm",
-            "Liên hệ",
-          ].map((item) => (
-            <li
+    <motion.header
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className={`fixed w-full z-50 transition-all duration-300 ${
+        scrollPosition > 50
+          ? "bg-white/80 backdrop-blur-md shadow-md"
+          : "bg-transparent"
+      }`}
+    >
+      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <motion.div
+          initial={{ x: -100, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          className="text-2xl font-bold text-blue-600"
+        >
+          VaccineCare
+        </motion.div>
+
+        <nav className="hidden md:flex items-center space-x-8">
+          {["Home", "Services", "Schedule", "About"].map((item) => (
+            <motion.a
               key={item}
-              className={`cursor-pointer hover:text-primary transition-all duration-300 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 hover:after:w-full after:transition-all after:duration-300 ${
-                activeTab === item.toLowerCase()
-                  ? "text-primary font-bold"
-                  : "text-secondary-foreground"
-              }`}
-              onClick={() => setActiveTab(item.toLowerCase())}
+              href="#"
+              whileHover={{ scale: 1.05 }}
+              className="text-gray-700 hover:text-blue-600 transition-colors relative group"
             >
-              {item === "Giới thiệu" ? (
-                <a href="#introduction">{item}</a>
-              ) : item === "Gói tiêm" ? (
-                <a href="#vaccinepackages">{item}</a>
-              ) : item === "Quy trình" ? (
-                <a href="#vaccineprocess">{item}</a>
-              ) : item === "Địa điểm" ? (
-                <a href="#location">{item}</a>
-              ) : (
-                item
-              )}
-            </li>
+              {item}
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform" />
+            </motion.a>
           ))}
-        </ul>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            className="px-4 py-2 text-blue-600 border border-blue-600 rounded-full hover:bg-blue-50 transition-colors"
+          >
+            Login
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
+          >
+            Sign Up
+          </motion.button>
+        </nav>
+
+        <div className="md:hidden flex items-center space-x-4">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            className="px-3 py-1 text-sm text-blue-600 border border-blue-600 rounded-full hover:bg-blue-50 transition-colors"
+          >
+            Login
+          </motion.button>
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="text-gray-700 hover:text-blue-600 transition-colors"
+          >
+            {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+          </button>
+        </div>
       </div>
-    </nav>
+
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-white"
+          >
+            <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
+              {["Home", "Services", "Schedule", "About"].map((item) => (
+                <a
+                  key={item}
+                  href="#"
+                  className="text-gray-700 hover:text-blue-600 transition-colors px-4 py-2"
+                >
+                  {item}
+                </a>
+              ))}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                className="px-4 py-2 text-blue-600 border border-blue-600 rounded-full hover:bg-blue-50 transition-colors w-full"
+              >
+                Login
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors w-full"
+              >
+                Sign Up
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.header>
   );
 };
 
