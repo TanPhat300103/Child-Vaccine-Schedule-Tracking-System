@@ -10,6 +10,7 @@ import ForgotPassword from "../pages/Login/ForgotPassword.jsx";
 import TermsOfService from "../pages/Register/TermOfService.jsx";
 import Policy from "../pages/Register/Policy.jsx";
 import VaccineScheduling from "../pages/BookSchedule/BookSchedule.jsx";
+import PaymentGateway from "../pages/Payment/Payment.jsx";
 
 // eslint-disable-next-line react-refresh/only-export-components
 const Main = () => {
@@ -24,6 +25,7 @@ const Main = () => {
         <Route path="/terms-of-service" element={<TermsOfService />} />
         <Route path="/privacy-policy" element={<Policy />} />
         <Route path="/bookschedule-vaccine" element={<VaccineScheduling />} />
+        <Route path="/payment" element={<PaymentGateway />} />
       </Routes>
     </Router>
   );
