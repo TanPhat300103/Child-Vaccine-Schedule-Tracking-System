@@ -9,12 +9,13 @@ import {
   FaRegCalendarCheck,
   FaUserMd,
 } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const App = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [currentSlide, setCurrentSlide] = useState(0);
-
+  const navigate = useNavigate();
   const slides = [
     {
       image: "https://images.unsplash.com/photo-1584515933487-779824d29309",
@@ -96,12 +97,14 @@ const App = () => {
             <motion.button
               whileHover={{ scale: 1.05 }}
               className="px-4 py-2 text-blue-600 border border-blue-600 rounded-full hover:bg-blue-50 transition-colors"
+              onClick={() => navigate("/login")}
             >
               Login
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.05 }}
               className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
+              onClick={() => navigate("/register")}
             >
               Sign Up
             </motion.button>
@@ -144,12 +147,14 @@ const App = () => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   className="px-4 py-2 text-blue-600 border border-blue-600 rounded-full hover:bg-blue-50 transition-colors w-full"
+                  onClick={() => navigate("/login")}
                 >
                   Login
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors w-full"
+                  onClick={() => navigate("/register")}
                 >
                   Sign Up
                 </motion.button>

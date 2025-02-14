@@ -4,8 +4,13 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { FaSyringe, FaHospital } from "react-icons/fa";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import {
+  auth,
+  logout,
+  signInWithPopup,
+  provider,
+} from "../../config/firebase.js";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -13,7 +18,7 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   const validateForm = () => {
@@ -59,13 +64,13 @@ const LoginPage = () => {
       } catch (error) {
         console.error("Login failed:", error);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     }
   };
 
   const handleGoogleLogin = async () => {
-    setLoading(true);
+    setIsLoading(true);
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
@@ -76,10 +81,13 @@ const LoginPage = () => {
       toast.error("Email hoặc mật khẩu không đúng");
       console.error("Google login failed:", error.message);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
-
+  const handleLogout = async () => {
+    await logout();
+    setUser(null);
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="absolute inset-0 z-0 opacity-10">
@@ -170,12 +178,12 @@ const LoginPage = () => {
 
           <div className="flex items-center justify-between">
             <div className="text-sm">
-              <a
-                href="#"
+              <button
                 className="font-medium text-blue-600 hover:text-blue-500"
+                onClick={() => navigate("/forgot-password")}
               >
                 Quên mật khẩu?
-              </a>
+              </button>
             </div>
           </div>
 
@@ -204,6 +212,7 @@ const LoginPage = () => {
           <a
             href="#"
             className="font-medium text-blue-600 hover:text-blue-500 text-sm"
+            onClick={() => navigate("/register")}
           >
             Chưa có tài khoản? Hãy đăng ký ngay
           </a>

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+
 import {
   FaGoogle,
   FaUser,
@@ -24,6 +26,7 @@ const Register = () => {
 
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const validateForm = () => {
@@ -49,12 +52,14 @@ const Register = () => {
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
-    if (formData.phone && !/^\+?[1-9]\d{9,14}$/.test(formData.phone)) {
+    if (formData.phone && !/^0\d{9,11}$/.test(formData.phone)) {
       newErrors.phone = "Please enter a valid phone number";
     }
-    if (!formData.agreeToTerms) {
-      newErrors.agreeToTerms = "You must agree to the terms and conditions";
+    if (formData.phone && !/^0\d{9,11}$/.test(formData.phone)) {
+      newErrors.phone =
+        "Please enter a valid Vietnamese phone number (10-12 digits, starting with 0)";
     }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -121,22 +126,6 @@ const Register = () => {
           <p className="mt-2 text-gray-600">
             Create your account to track child vaccinations
           </p>
-        </div>
-
-        <button className="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-50 transition duration-200">
-          <FaGoogle className="text-red-500" />
-          Sign up with Google
-        </button>
-
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300"></div>
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">
-              Or continue with
-            </span>
-          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -208,16 +197,30 @@ const Register = () => {
               <FaLock className="text-blue-500" />
               Password
             </label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
-                errors.password ? "border-red-500" : "border-gray-300"
-              }`}
-              placeholder="••••••••"
-            />
+            <div className="relative">
+              {" "}
+              <input
+                type={showPassword ? "text" : "password"} // Thay đổi giữa text & password
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
+                  errors.password ? "border-red-500" : "border-gray-300"
+                }`}
+                placeholder="••••••••"
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-3 pr-3 flex items-center"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <AiOutlineEyeInvisible className="h-5 w-5 text-gray-400" />
+                ) : (
+                  <AiOutlineEye className="h-5 w-5 text-gray-400" />
+                )}
+              </button>
+            </div>
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">{errors.password}</p>
             )}
@@ -229,7 +232,7 @@ const Register = () => {
               Confirm Password
             </label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
@@ -238,6 +241,7 @@ const Register = () => {
               }`}
               placeholder="••••••••"
             />
+
             {errors.confirmPassword && (
               <p className="text-red-500 text-sm mt-1">
                 {errors.confirmPassword}
@@ -258,7 +262,7 @@ const Register = () => {
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
                 errors.phone ? "border-red-500" : "border-gray-300"
               }`}
-              placeholder="+1234567890"
+              placeholder="0901234567"
             />
             {errors.phone && (
               <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
@@ -290,13 +294,21 @@ const Register = () => {
             />
             <label className="ml-2 text-sm text-gray-600">
               I agree to the{" "}
-              <a href="#" className="text-blue-600 hover:underline">
+              <button
+                type="button"
+                className="text-blue-600 hover:underline"
+                onClick={() => navigate("/terms-of-service")}
+              >
                 Terms of Service
-              </a>{" "}
+              </button>{" "}
               and{" "}
-              <a href="#" className="text-blue-600 hover:underline">
+              <button
+                type="button"
+                className="text-blue-600 hover:underline"
+                onClick={() => navigate("/privacy-policy")}
+              >
                 Privacy Policy
-              </a>
+              </button>
             </label>
           </div>
           {errors.agreeToTerms && (
@@ -321,9 +333,12 @@ const Register = () => {
 
         <p className="text-center text-sm text-gray-600">
           Already have an account?{" "}
-          <a href="#" className="text-blue-600 hover:underline font-medium">
+          <button
+            onClick={() => navigate("/login")}
+            className="text-blue-600 hover:underline font-medium"
+          >
             Sign in
-          </a>
+          </button>
         </p>
       </div>
     </div>
