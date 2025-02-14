@@ -83,7 +83,7 @@ const App = () => {
           </motion.div>
 
           <nav className="hidden md:flex items-center space-x-8">
-            {["Home", "Services", "Schedule", "About"].map((item) => (
+            {["Home", "Services", "Contact", "About"].map((item) => (
               <motion.a
                 key={item}
                 href="#"
@@ -135,15 +135,24 @@ const App = () => {
               className="md:hidden bg-white"
             >
               <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
-                {["Home", "Services", "Schedule", "About"].map((item) => (
-                  <a
+                {["Home", "Services", "Contact", "About"].map((item) => (
+                  <button
                     key={item}
-                    href="#"
+                    onClick={() => {
+                      if (item === "Schedule") {
+                        navigate("/bookschedule-vaccine");
+                      } else if (item === "Home") {
+                        navigate("/");
+                      } else {
+                        navigate(`/${item.toLowerCase()}`);
+                      }
+                    }}
                     className="text-gray-700 hover:text-blue-600 transition-colors px-4 py-2"
                   >
                     {item}
-                  </a>
+                  </button>
                 ))}
+
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   className="px-4 py-2 text-blue-600 border border-blue-600 rounded-full hover:bg-blue-50 transition-colors w-full"
@@ -194,6 +203,7 @@ const App = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="bg-blue-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-blue-700 transition-colors duration-300 animate-pulse"
+                    onClick={() => navigate("/bookschedule-vaccine")}
                   >
                     Đăng ký tiêm
                   </motion.button>

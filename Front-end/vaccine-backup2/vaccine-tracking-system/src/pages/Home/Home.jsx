@@ -147,15 +147,21 @@ const Home = () => {
               className="md:hidden bg-white"
             >
               <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
-                {["Home", "Services", "Schedule", "About"].map((item) => (
-                  <a
-                    key={item}
-                    href="#"
-                    className="text-gray-700 hover:text-blue-600 transition-colors px-4 py-2"
-                  >
-                    {item}
-                  </a>
-                ))}
+                <div>
+                  {["Home", "Services", "Contact", "About"].map((item) => (
+                    <button
+                      key={item}
+                      onClick={() =>
+                        navigate(
+                          item === "Schedule" ? "/bookschedule-vaccine" : "#"
+                        )
+                      }
+                      className="text-gray-700 hover:text-blue-600 transition-colors px-4 py-2"
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </div>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   className="px-4 py-2 text-blue-600 border border-blue-600 rounded-full hover:bg-blue-50 transition-colors w-full"
@@ -206,6 +212,7 @@ const Home = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="bg-blue-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-blue-700 transition-colors duration-300 animate-pulse"
+                    onClick={() => navigate("/bookschedule-vaccine")}
                   >
                     Đăng ký tiêm
                   </motion.button>
