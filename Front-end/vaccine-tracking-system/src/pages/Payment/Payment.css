@@ -1,0 +1,91 @@
+/* Global.css - Định dạng toàn cục cho ứng dụng */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f0f2f5;
+}
+
+/* Định dạng container thanh toán */
+.payment-container {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Tiêu đề thanh toán */
+.payment-container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Định dạng form thanh toán */
+.payment-form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Định dạng input group */
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Định dạng phần lựa chọn phương thức thanh toán */
+.payment-options {
+  margin: 20px 0;
+}
+
+.payment-options label {
+  font-weight: normal;
+  display: block;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+/* Định dạng nút thanh toán */
+.payment-button {
+  background-color: #ffc107;
+  color: #000;
+  border: none;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.payment-button:hover {
+  background-color: #e0a800;
+}
+
+/* Thông báo lỗi và thành công */
+.error-message {
+  color: red;
+  margin-top: 10px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.success-message {
+  color: green;
+  margin-top: 10px;
+  text-align: center;
+  font-weight: bold;
+}
