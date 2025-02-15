@@ -2,11 +2,13 @@ package org.gr1fpt.childvaccinescheduletrackingsystem.service;
 
 import org.gr1fpt.childvaccinescheduletrackingsystem.exception.CustomException;
 import org.gr1fpt.childvaccinescheduletrackingsystem.model.Booking;
+import org.gr1fpt.childvaccinescheduletrackingsystem.model.BookingDTO;
 import org.gr1fpt.childvaccinescheduletrackingsystem.repository.BookingRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,20 +20,25 @@ public class BookingService {
     @Autowired
     private CustomerRepository customerRepository;
 
+    @Autowired
+    private BookingDetailService bookingDetailService;
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
     }
 
     public String generateId(String customerId) {
         long count = bookingRepository.countByCustomer_CustomerId(customerId) + 1;
-        return customerId + "-B%2d" + count;
-        //update tu         -B1 thanh -B01
+        return customerId + "-B" + count;
     }
 
-    public Booking saveBooking(Booking booking) {
+    public Booking saveBooking(BookingDTO bookingDTO) {
+        Booking booking = bookingDTO.getBooking();
         if(customerRepository.findById(booking.getCustomer().getCustomerId()).isPresent()) {
             booking.setBookingId(generateId(booking.getCustomer().getCustomerId()));
-          return bookingRepository.save(booking);
+            bookingDTO.getBooking().setBookingId(booking.getBookingId());
+            Booking savedBooking = bookingRepository.save(booking);
+            bookingDetailService.create(bookingDTO);
+          return savedBooking;
         }
         else throw new CustomException("Customer Id " + booking.getCustomer().getCustomerId()+" does not exist", HttpStatus.BAD_REQUEST);
     }
@@ -64,6 +71,12 @@ public class BookingService {
         bookingRepository.save(booking);
     }
 
+    @Transactional
+    public void delete (String id)
+    {
+        bookingDetailService.deleteByBookingId(id);
+        bookingRepository.deleteById(id);
+    }
 
 
 
