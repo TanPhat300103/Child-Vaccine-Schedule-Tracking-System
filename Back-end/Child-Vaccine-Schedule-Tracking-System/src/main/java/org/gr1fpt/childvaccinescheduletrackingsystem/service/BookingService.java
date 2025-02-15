@@ -24,7 +24,8 @@ public class BookingService {
 
     public String generateId(String customerId) {
         long count = bookingRepository.countByCustomer_CustomerId(customerId) + 1;
-        return customerId + "-B" + count;
+        return customerId + "-B%2d" + count;
+        //update tu         -B1 thanh -B01
     }
 
     public Booking saveBooking(Booking booking) {

@@ -25,7 +25,7 @@ public class MarketingCampaignController {
     }
 
     @PostMapping("create")
-    public MarketingCampaign createMarketingCampaign(@RequestBody MarketingCampaign marketingCampaign) {
+    public MarketingCampaign createMarketingCampaign(@RequestBody @Valid MarketingCampaign marketingCampaign) {
         return marketingCampaignService.add(marketingCampaign);
     }
 
