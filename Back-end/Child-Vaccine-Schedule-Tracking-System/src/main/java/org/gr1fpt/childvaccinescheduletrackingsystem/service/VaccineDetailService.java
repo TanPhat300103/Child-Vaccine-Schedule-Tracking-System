@@ -66,4 +66,6 @@ public class VaccineDetailService {
         else
             throw new CustomException("Vaccine ID:" + vaccineId + " does not exist", HttpStatus.BAD_REQUEST);
     }
+
+
 }

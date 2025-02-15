@@ -2,6 +2,7 @@ package org.gr1fpt.childvaccinescheduletrackingsystem.controller;
 
 import jakarta.validation.Valid;
 import org.gr1fpt.childvaccinescheduletrackingsystem.model.Booking;
+import org.gr1fpt.childvaccinescheduletrackingsystem.model.BookingDTO;
 import org.gr1fpt.childvaccinescheduletrackingsystem.model.Customer;
 import org.gr1fpt.childvaccinescheduletrackingsystem.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,9 @@ public class BookingController {
     }
 
     @PostMapping("create")
-    public Booking createBooking(@RequestBody @Valid Booking booking) {
-        return bookingService.saveBooking(booking);
+    public Booking createBooking(@RequestBody @Valid BookingDTO bookingDTO) {
+        System.out.println(bookingDTO.getVaccineId());
+       return bookingService.saveBooking(bookingDTO);
     }
 
     @GetMapping("findbycustomer")
@@ -49,5 +51,11 @@ public class BookingController {
     @PostMapping("update")
     public Booking updateBooking(@RequestBody Booking booking) {
         return bookingService.updateBooking(booking);
+    }
+
+    @DeleteMapping("delete")
+    public void deleteBooking(@RequestParam String id)
+    {
+        bookingService.delete(id);
     }
 }
