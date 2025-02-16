@@ -9,7 +9,6 @@ import Introduction from "../../components/OtherCompo/Introduction";
 import Location from "../../components/OtherCompo/Location";
 import VaccinePackages from "../../components/OtherCompo/VaccinePackages";
 import VaccinationProcess from "../../components/OtherCompo/VaccineProcess";
-import Child from "../CustomerPage/Child";
 
 const Home = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,7 +20,6 @@ const Home = () => {
       <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
       <Banner />
       <br></br>
-      <Child />
       <Introduction />
       <VaccinePackages />
       <VaccinationProcess />

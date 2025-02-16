@@ -2,7 +2,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL =
+  "https://5e98cacd-7394-4c32-8519-999883e59df3.mock.pstmn.io";
 
 const StaffDashboard = () => {
   const [staffs, setStaffs] = useState([]);
@@ -22,12 +23,13 @@ const StaffDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // GET /staff: Lấy danh sách staff
+  // Lấy danh sách staff (GET /staff)
   const fetchStaffs = async () => {
     setLoading(true);
     try {
       const response = await axios.get(`${API_BASE_URL}/staff`);
       setStaffs(response.data);
+      setError("");
     } catch (err) {
       console.error("Error fetching staffs:", err);
       setError("Error fetching staffs");
@@ -45,37 +47,44 @@ const StaffDashboard = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // POST /staff/create: Tạo mới Staff
+  // Tạo mới Staff (POST /staff/create)
   const handleCreate = async () => {
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/staff/create`,
-        formData
-      );
+      await axios.post(`${API_BASE_URL}/staff/create`, formData);
       alert("Staff created successfully!");
       fetchStaffs();
+      setFormData({
+        staffId: "",
+        firstName: "",
+        lastName: "",
+        phone: "",
+        dob: "",
+        address: "",
+        mail: "",
+        password: "",
+        roleId: 1,
+        active: true,
+      });
     } catch (err) {
       console.error("Error creating staff:", err);
       alert("Error creating staff");
     }
   };
 
-  // POST /staff/update: Cập nhật Staff
+  // Cập nhật Staff (POST /staff/update)
   const handleUpdate = async () => {
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/staff/update`,
-        formData
-      );
+      await axios.post(`${API_BASE_URL}/staff/update`, formData);
       alert("Staff updated successfully!");
       fetchStaffs();
+      setSelectedStaff(null);
     } catch (err) {
       console.error("Error updating staff:", err);
       alert("Error updating staff");
     }
   };
 
-  // DELETE /staff/delete?id=...: Xoá Staff
+  // Xoá Staff (DELETE /staff/delete?id=...)
   const handleDelete = async (staffId) => {
     if (window.confirm("Are you sure to delete this staff?")) {
       try {
@@ -91,7 +100,7 @@ const StaffDashboard = () => {
     }
   };
 
-  // GET /staff/findid?id=...: Tìm Staff theo id
+  // Tìm Staff theo id (GET /staff/findid?id=...)
   const handleFindById = async (staffId) => {
     try {
       const response = await axios.get(`${API_BASE_URL}/staff/findid`, {
@@ -106,116 +115,176 @@ const StaffDashboard = () => {
   };
 
   return (
-    <div className="staff-dashboard">
-      <h2>Staff Dashboard (Admin Only)</h2>
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <h2 className="text-2xl font-bold mb-4 text-center">
+        Staff Dashboard (Admin Only)
+      </h2>
+
+      {loading && <p className="text-center text-blue-500">Loading...</p>}
+      {error && <p className="text-center text-red-500">{error}</p>}
 
       {/* Form CRUD */}
-      <div className="staff-form">
-        <h3>{selectedStaff ? "Update Staff" : "Create Staff"}</h3>
-        <input
-          type="text"
-          name="staffId"
-          placeholder="Staff ID"
-          value={formData.staffId}
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="firstName"
-          placeholder="First Name"
-          value={formData.firstName}
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="lastName"
-          placeholder="Last Name"
-          value={formData.lastName}
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="phone"
-          placeholder="Phone"
-          value={formData.phone}
-          onChange={handleChange}
-        />
-        <input
-          type="date"
-          name="dob"
-          placeholder="Date of Birth"
-          value={formData.dob}
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="address"
-          placeholder="Address"
-          value={formData.address}
-          onChange={handleChange}
-        />
-        <input
-          type="email"
-          name="mail"
-          placeholder="Email"
-          value={formData.mail}
-          onChange={handleChange}
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-        />
-        <input
-          type="number"
-          name="roleId"
-          placeholder="Role ID"
-          value={formData.roleId}
-          onChange={handleChange}
-        />
-        <div>
+      <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 max-w-xl mx-auto">
+        <h3 className="text-xl font-semibold mb-4">
+          {selectedStaff ? "Update Staff" : "Create Staff"}
+        </h3>
+        <div className="grid grid-cols-1 gap-4">
+          <input
+            className="border rounded p-2"
+            type="text"
+            name="staffId"
+            placeholder="Staff ID"
+            value={formData.staffId}
+            onChange={handleChange}
+          />
+          <input
+            className="border rounded p-2"
+            type="text"
+            name="firstName"
+            placeholder="First Name"
+            value={formData.firstName}
+            onChange={handleChange}
+          />
+          <input
+            className="border rounded p-2"
+            type="text"
+            name="lastName"
+            placeholder="Last Name"
+            value={formData.lastName}
+            onChange={handleChange}
+          />
+          <input
+            className="border rounded p-2"
+            type="text"
+            name="phone"
+            placeholder="Phone"
+            value={formData.phone}
+            onChange={handleChange}
+          />
+          <input
+            className="border rounded p-2"
+            type="date"
+            name="dob"
+            placeholder="Date of Birth"
+            value={formData.dob}
+            onChange={handleChange}
+          />
+          <input
+            className="border rounded p-2"
+            type="text"
+            name="address"
+            placeholder="Address"
+            value={formData.address}
+            onChange={handleChange}
+          />
+          <input
+            className="border rounded p-2"
+            type="email"
+            name="mail"
+            placeholder="Email"
+            value={formData.mail}
+            onChange={handleChange}
+          />
+          <input
+            className="border rounded p-2"
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+          />
+          <input
+            className="border rounded p-2"
+            type="number"
+            name="roleId"
+            placeholder="Role ID"
+            value={formData.roleId}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="flex justify-between mt-4">
           {selectedStaff ? (
-            <button onClick={handleUpdate}>Update Staff</button>
+            <button
+              className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded"
+              onClick={handleUpdate}
+            >
+              Update Staff
+            </button>
           ) : (
-            <button onClick={handleCreate}>Create Staff</button>
+            <button
+              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+              onClick={handleCreate}
+            >
+              Create Staff
+            </button>
           )}
-          <button onClick={() => setSelectedStaff(null)}>Clear</button>
+          <button
+            className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded"
+            onClick={() => {
+              setSelectedStaff(null);
+              setFormData({
+                staffId: "",
+                firstName: "",
+                lastName: "",
+                phone: "",
+                dob: "",
+                address: "",
+                mail: "",
+                password: "",
+                roleId: 1,
+                active: true,
+              });
+            }}
+          >
+            Clear
+          </button>
         </div>
       </div>
 
       {/* Danh sách Staff */}
-      <div className="staff-list">
-        <h3>List of Staff</h3>
-        <table>
+      <div className="overflow-x-auto">
+        <h3 className="text-xl font-semibold mb-2 text-center">
+          List of Staff
+        </h3>
+        <table className="min-w-full bg-white border">
           <thead>
-            <tr>
-              <th>Staff ID</th>
-              <th>Name</th>
-              <th>Phone</th>
-              <th>Email</th>
-              <th>Active</th>
-              <th>Actions</th>
+            <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+              <th className="py-3 px-6 text-left">Staff ID</th>
+              <th className="py-3 px-6 text-left">Name</th>
+              <th className="py-3 px-6 text-left">Phone</th>
+              <th className="py-3 px-6 text-left">Email</th>
+              <th className="py-3 px-6 text-left">Active</th>
+              <th className="py-3 px-6 text-center">Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="text-gray-600 text-sm font-light">
             {staffs.map((staff) => (
-              <tr key={staff.staffId}>
-                <td>{staff.staffId}</td>
-                <td>
+              <tr
+                key={staff.staffId}
+                className="border-b border-gray-200 hover:bg-gray-100"
+              >
+                <td className="py-3 px-6 text-left whitespace-nowrap">
+                  {staff.staffId}
+                </td>
+                <td className="py-3 px-6 text-left">
                   {staff.firstName} {staff.lastName}
                 </td>
-                <td>{staff.phone}</td>
-                <td>{staff.mail}</td>
-                <td>{staff.active ? "Yes" : "No"}</td>
-                <td>
-                  <button onClick={() => handleFindById(staff.staffId)}>
+                <td className="py-3 px-6 text-left">{staff.phone}</td>
+                <td className="py-3 px-6 text-left">{staff.mail}</td>
+                <td className="py-3 px-6 text-left">
+                  {staff.active ? "Yes" : "No"}
+                </td>
+                <td className="py-3 px-6 text-center">
+                  <button
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded mr-2"
+                    onClick={() => handleFindById(staff.staffId)}
+                  >
                     Edit
                   </button>
-                  <button onClick={() => handleDelete(staff.staffId)}>
+                  <button
+                    className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded"
+                    onClick={() => handleDelete(staff.staffId)}
+                  >
                     Delete
                   </button>
                 </td>
