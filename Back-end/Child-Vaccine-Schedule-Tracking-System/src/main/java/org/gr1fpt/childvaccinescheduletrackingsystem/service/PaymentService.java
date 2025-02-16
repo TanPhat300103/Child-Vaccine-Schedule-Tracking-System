@@ -71,38 +71,22 @@ public class PaymentService {
         return marketingCampaignRepository.findByCoupon(coupon);
     }
 
-    public Payment addPayment(Payment payment) {
-        if(paymentRepository.existsById(generateId(payment.getBooking().getBookingId()))){
-            throw new CustomException("Payment already exists",HttpStatus.CONFLICT);
+
+
+    public void createPayment(Booking savedBooking) {
+        if (paymentRepository.existsById(generateId(savedBooking.getBookingId()))) {
+            throw new CustomException("Payment already exists", HttpStatus.CONFLICT);
         }
-        else {
-            Booking booking = getBookingById(payment.getBooking().getBookingId());
-            MarketingCampaign marketing = getCampaignById(payment.getMarketingCampaign().getMarketingCampaignId());
+        Payment payment = new Payment();
+        payment.setPaymentId(generateId(savedBooking.getBookingId()));
+        payment.setDate(Date.valueOf(LocalDate.now()));
+        payment.setTotal(savedBooking.getTotalAmount());
+        payment.setStatus(false);
+        payment.setBooking(savedBooking);
 
-            int discount = 0;
-            if (marketing != null) {
-                discount = marketing.getDiscount();
-            }
-            int total = booking.getTotalAmount();
-            int totalAfterDiscount = calculateTotal(discount, total);
-            payment.setTotal(totalAfterDiscount);
-            payment.setPaymentId(generateId(payment.getBooking().getBookingId()));
-            payment.setDate(Date.valueOf(LocalDate.now()));
+        // Lưu payment vào cơ sở dữ liệu
+         paymentRepository.save(payment);
 
-
-            payment.setStatus(false);
-
-            if (!marketingCampaignRepository.existsById(payment.getMarketingCampaign().getMarketingCampaignId())) {
-                throw new CustomException("Marketing campaign " + payment.getMarketingCampaign().getMarketingCampaignId() + " not found", HttpStatus.NOT_FOUND);
-            } else if (!marketing.isActive()) {
-                throw new CustomException("Marketing is not active", HttpStatus.NOT_FOUND);
-            } else if (payment.getDate().after(marketing.getEndTime())) {
-                throw new CustomException("Marketing campaign is ended", HttpStatus.BAD_REQUEST);
-            } else if (payment.getDate().before(marketing.getStartTime())) {
-                throw new CustomException("Marketing campaign is not started", HttpStatus.BAD_REQUEST);
-            }
-        }
-        return paymentRepository.save(payment);
     }
 
     public Payment updatePayment(String paymentId,String coupon) {
