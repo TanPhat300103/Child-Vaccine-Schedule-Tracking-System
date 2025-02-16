@@ -25,7 +25,7 @@ public class BookingController {
     @PostMapping("create")
     public Booking createBooking(@RequestBody @Valid BookingDTO bookingDTO) {
         System.out.println(bookingDTO.getVaccineId());
-       return bookingService.saveBooking(bookingDTO);
+        return bookingService.saveBooking(bookingDTO);
     }
 
     @GetMapping("findbycustomer")

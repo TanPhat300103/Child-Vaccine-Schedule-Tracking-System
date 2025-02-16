@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MarketingCampaignRepository extends JpaRepository<MarketingCampaign, String> {
+    public MarketingCampaign findByCoupon(String couponCode);
 }
