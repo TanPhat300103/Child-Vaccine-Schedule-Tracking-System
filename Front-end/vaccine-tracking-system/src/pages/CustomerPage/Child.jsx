@@ -1,98 +1,225 @@
-// src/pages/Customer/Child.jsx
+// src/pages/Dashboard/ChildDashboard.jsx
+import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { getChildById } from "../../api/api"; // điều chỉnh đường dẫn cho đúng
-import "./CustomerPage.css"; // hoặc sử dụng file CSS riêng cho Child nếu cần
+
+// Đặt baseURL cho axios
+const API_BASE_URL = "http://localhost:8080";
 
 const Child = () => {
-  // Giả sử childId được lấy từ context hoặc params; hardcode "child123" cho ví dụ
-  const childId = "child123";
-  const [child, setChild] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [children, setChildren] = useState([]);
+  const [selectedChild, setSelectedChild] = useState(null);
+  const [formData, setFormData] = useState({
+    childId: "",
+    firstName: "",
+    lastName: "",
+    gender: true,
+    dob: "",
+    contraindications: "",
+    active: true,
+    // customer có thể là một object; ở đây ta chỉ dùng customerId làm ví dụ
+    customer: { customerId: "" },
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // GET /child: Lấy danh sách Child
+  const fetchChildren = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API_BASE_URL}/child`);
+      setChildren(response.data);
+    } catch (err) {
+      console.error("Error fetching children:", err);
+      setError("Error fetching children");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchChild = async () => {
+    fetchChildren();
+  }, []);
+
+  // Hàm xử lý thay đổi input form
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // POST /child/create: Tạo mới Child
+  const handleCreate = async () => {
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/child/create`,
+        formData
+      );
+      alert("Child created successfully!");
+      fetchChildren();
+    } catch (err) {
+      console.error("Error creating child:", err);
+      alert("Error creating child");
+    }
+  };
+
+  // POST /child/update: Cập nhật Child
+  const handleUpdate = async () => {
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/child/update`,
+        formData
+      );
+      alert("Child updated successfully!");
+      fetchChildren();
+    } catch (err) {
+      console.error("Error updating child:", err);
+      alert("Error updating child");
+    }
+  };
+
+  // DELETE /child/delete?id=...: Xoá Child
+  const handleDelete = async (childId) => {
+    if (window.confirm("Are you sure to delete this child?")) {
       try {
-        const data = await getChildById(childId);
-        setChild(data);
+        await axios.delete(`${API_BASE_URL}/child/delete`, {
+          params: { id: childId },
+        });
+        alert("Child deleted successfully!");
+        fetchChildren();
       } catch (err) {
-        console.error("Error fetching child profile:", err);
-        setError(err);
-      } finally {
-        setLoading(false);
+        console.error("Error deleting child:", err);
+        alert("Error deleting child");
       }
-    };
+    }
+  };
 
-    fetchChild();
-  }, [childId]);
+  // GET /child/findid?id=...: Lấy Child theo id
+  const handleFindById = async (childId) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/child/findid`, {
+        params: { id: childId },
+      });
+      setSelectedChild(response.data);
+      setFormData(response.data);
+    } catch (err) {
+      console.error("Error fetching child by id:", err);
+      alert("Error fetching child by id");
+    }
+  };
 
-  if (loading) return <div>Loading child profile...</div>;
-  if (error) return <div>Error loading child profile.</div>;
-  if (!child) return <div>No child data available.</div>;
+  // GET /child/findbycustomer?id=...: Lấy danh sách Child theo customer id
+  const handleFindByCustomer = async (customerId) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/child/findbycustomer`, {
+        params: { id: customerId },
+      });
+      setChildren(response.data);
+    } catch (err) {
+      console.error("Error fetching children by customer id:", err);
+      alert("Error fetching children by customer id");
+    }
+  };
 
   return (
-    <div className="child-profile">
-      <h2>Hồ Sơ Trẻ Em</h2>
-      <table className="child-table">
-        <tbody>
-          <tr>
-            <td>Họ và tên:</td>
-            <td>
-              {child.firstName} {child.lastName}
-            </td>
-            <td>
-              <button
-                onClick={() => alert("Chức năng chỉnh sửa hồ sơ trẻ - TODO")}
-              >
-                Edit
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>Giới tính:</td>
-            <td>{child.gender ? "Nam" : "Nữ"}</td>
-            <td>
-              <button
-                onClick={() => alert("Chức năng chỉnh sửa giới tính - TODO")}
-              >
-                Edit
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>Ngày sinh:</td>
-            <td>{new Date(child.dob).toLocaleDateString()}</td>
-            <td>
-              <button
-                onClick={() => alert("Chức năng chỉnh sửa ngày sinh - TODO")}
-              >
-                Edit
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div className="child-dashboard">
+      <h2>Child Dashboard</h2>
+      {loading && <p>Loading...</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <h3>Vaccine đã tiêm</h3>
-      <table className="vaccination-table">
-        <thead>
-          <tr>
-            <th>Mũi</th>
-            <th>Ngày tiêm</th>
-            <th>Vaccine</th>
-          </tr>
-        </thead>
-        <tbody>
-          {child.vaccinations &&
-            child.vaccinations.map((item, index) => (
-              <tr key={index}>
-                <td>{item.dose}</td>
-                <td>{new Date(item.date).toLocaleDateString()}</td>
-                <td>{item.vaccine}</td>
+      {/* Form CRUD */}
+      <div className="child-form">
+        <h3>{selectedChild ? "Update Child" : "Create Child"}</h3>
+        <input
+          type="text"
+          name="childId"
+          placeholder="Child ID"
+          value={formData.childId}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="firstName"
+          placeholder="First Name"
+          value={formData.firstName}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="lastName"
+          placeholder="Last Name"
+          value={formData.lastName}
+          onChange={handleChange}
+        />
+        <input
+          type="date"
+          name="dob"
+          placeholder="Date of Birth"
+          value={formData.dob}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="contraindications"
+          placeholder="Contraindications"
+          value={formData.contraindications}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="customer"
+          placeholder="Customer ID"
+          value={formData.customer.customerId}
+          onChange={(e) =>
+            setFormData((prev) => ({
+              ...prev,
+              customer: { customerId: e.target.value },
+            }))
+          }
+        />
+        <div>
+          {selectedChild ? (
+            <button onClick={handleUpdate}>Update Child</button>
+          ) : (
+            <button onClick={handleCreate}>Create Child</button>
+          )}
+          <button onClick={() => setSelectedChild(null)}>Clear</button>
+        </div>
+      </div>
+
+      {/* Danh sách Child */}
+      <div className="child-list">
+        <h3>List of Children</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Child ID</th>
+              <th>Name</th>
+              <th>DOB</th>
+              <th>Active</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {children.map((child) => (
+              <tr key={child.childId}>
+                <td>{child.childId}</td>
+                <td>
+                  {child.firstName} {child.lastName}
+                </td>
+                <td>{new Date(child.dob).toLocaleDateString()}</td>
+                <td>{child.active ? "Yes" : "No"}</td>
+                <td>
+                  <button onClick={() => handleFindById(child.childId)}>
+                    Edit
+                  </button>
+                  <button onClick={() => handleDelete(child.childId)}>
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 // src/components/Header.jsx
 // eslint-disable-next-line no-unused-vars
 import React from "react";
-import { FaSearch, FaBars, FaTimes } from "react-icons/fa";
+import { FaBars, FaSearch, FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
@@ -29,7 +29,7 @@ const HeaderHome = ({ isMenuOpen, setIsMenuOpen }) => {
         </div>
 
         <div className="hidden md:flex items-center space-x-4">
-          <Link to="/login">
+          <Link to="/child">
             <button className="px-6 py-2 text-primary-foreground border-2 border-primary-foreground rounded-lg hover:bg-primary-foreground hover:text-primary transition-all duration-300 font-semibold">
               User
             </button>
