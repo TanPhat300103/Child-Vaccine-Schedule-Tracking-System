@@ -67,6 +67,10 @@ public class PaymentService {
         return marketingCampaignRepository.findById(campaignId).orElse(null);
     }
 
+    public MarketingCampaign getCampaignByCouponCode(String coupon) {
+        return marketingCampaignRepository.findByCoupon(coupon);
+    }
+
     public Payment addPayment(Payment payment) {
         if(paymentRepository.existsById(generateId(payment.getBooking().getBookingId()))){
             throw new CustomException("Payment already exists",HttpStatus.CONFLICT);
@@ -79,13 +83,13 @@ public class PaymentService {
             if (marketing != null) {
                 discount = marketing.getDiscount();
             }
-
-            payment.setPaymentId(generateId(payment.getBooking().getBookingId()));
-            payment.setDate(Date.valueOf(LocalDate.now()));
-
             int total = booking.getTotalAmount();
             int totalAfterDiscount = calculateTotal(discount, total);
             payment.setTotal(totalAfterDiscount);
+            payment.setPaymentId(generateId(payment.getBooking().getBookingId()));
+            payment.setDate(Date.valueOf(LocalDate.now()));
+
+
             payment.setStatus(false);
 
             if (!marketingCampaignRepository.existsById(payment.getMarketingCampaign().getMarketingCampaignId())) {
@@ -101,11 +105,22 @@ public class PaymentService {
         return paymentRepository.save(payment);
     }
 
-    public Payment setStatusPayment(String paymentId) {
+    public Payment updatePayment(String paymentId,String coupon) {
         if(!paymentRepository.existsById(paymentId)){
             throw new CustomException("Payment not found",HttpStatus.NOT_FOUND);
         }
         Payment payment = getPaymentById(paymentId);
+        Booking booking = getBookingById(payment.getBooking().getBookingId());
+        int discount = 0;
+        if(coupon != null){
+            MarketingCampaign marketing = getCampaignByCouponCode(coupon);
+            if (marketing != null) {
+                discount = marketing.getDiscount();
+            }
+        }
+        int total = booking.getTotalAmount();
+        int totalAfterDiscount = calculateTotal(discount, total);
+        payment.setTotal(totalAfterDiscount);
         if(!payment.isStatus()){
         payment.setStatus(true);}
         else

@@ -41,8 +41,8 @@ public class PaymentController {
     }
 
     @PostMapping("update")
-    public Payment updatePayment(@RequestParam String paymentId) {
-        return paymentService.setStatusPayment(paymentId);
+    public Payment updatePayment(@RequestParam String paymentId,@RequestParam String coupon) {
+        return paymentService.updatePayment(paymentId,coupon);
     }
 
     //delete

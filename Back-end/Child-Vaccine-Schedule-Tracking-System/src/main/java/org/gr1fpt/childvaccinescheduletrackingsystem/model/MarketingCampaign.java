@@ -1,6 +1,7 @@
 package org.gr1fpt.childvaccinescheduletrackingsystem.model;
 
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -23,6 +24,7 @@ public class MarketingCampaign {
     private Date startTime;
     private Date endTime;
     @Pattern(regexp = "^[A-Za-z0-9]{6,10}$", message = "Wrong format coupon")
+    @Column(unique = true)
     private String coupon;
     private int discount;
     private String description;
