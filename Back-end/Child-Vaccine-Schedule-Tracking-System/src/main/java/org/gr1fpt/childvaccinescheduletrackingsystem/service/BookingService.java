@@ -30,10 +30,8 @@ public class BookingService {
     private BookingDetailService bookingDetailService;
 
     @Autowired
-    private PaymentRepository paymentRepository;
+    private PaymentService paymentService;
 
-    @Autowired
-    private MarketingCampaignRepository marketingCampaignRepository;
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
     }
@@ -47,34 +45,12 @@ public class BookingService {
         return "P-" + bookingId;
     }
 
-    public MarketingCampaign getCampaignById(String campaignId) {
-        return marketingCampaignRepository.findById(campaignId).orElseThrow(() -> new CustomException("CAMPAIGN NOT FOUND", HttpStatus.NOT_FOUND));
-    }
 
     public int calculateTotal(int discount,int total) {
         double discountAmount = (discount / 100.0) * total;
         return (int) (total - discountAmount); // Trả về kết quả là số nguyên
     }
 
-
-    private void createPayment( Booking savedBooking) {
-        if (paymentRepository.existsById(generatePaymentId(savedBooking.getBookingId()))) {
-            throw new CustomException("Payment already exists", HttpStatus.CONFLICT);
-        }
-
-
-
-            Payment payment = new Payment();
-            payment.setPaymentId(generatePaymentId(savedBooking.getBookingId()));
-            payment.setDate(Date.valueOf(LocalDate.now()));
-
-            payment.setStatus(false);
-            payment.setBooking(savedBooking);
-
-            // Lưu payment vào cơ sở dữ liệu
-            paymentRepository.save(payment);
-
-    }
 
     public Booking saveBooking(BookingDTO bookingDTO) {
         Booking booking = bookingDTO.getBooking();
@@ -84,7 +60,7 @@ public class BookingService {
             Booking savedBooking = bookingRepository.save(booking);
 
             //PAYMENT
-            createPayment( savedBooking);
+            paymentService.createPayment(savedBooking);
 
 
             bookingDetailService.create(bookingDTO);
