@@ -1,0 +1,108 @@
+/* CustomerPage.css - Định dạng chung cho CustomerLayout, Profile và Child */
+
+.customer-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.customer-container {
+  display: flex;
+  flex: 1;
+  background-color: #f8f9fa;
+}
+
+/* Sidebar (trái) */
+.customer-sidebar {
+  width: 250px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-right: 1px solid #ddd;
+}
+
+.customer-sidebar h3 {
+  margin-top: 0;
+  font-size: 1.5em;
+  color: #333;
+}
+
+.customer-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.customer-sidebar ul li {
+  margin: 10px 0;
+}
+
+.customer-sidebar ul li a {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+}
+
+.sidebar-buttons {
+  margin-top: 20px;
+}
+
+.sidebar-buttons button {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: none;
+  background-color: #ffc107;
+  color: #000;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.sidebar-buttons button:hover {
+  background-color: #e0a800;
+}
+
+/* Content chính */
+.customer-content {
+  flex: 1;
+  padding: 20px;
+}
+
+/* Các bảng hiển thị thông tin */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+table, th, td {
+  border: 1px solid #ddd;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+}
+
+/* Các tiêu đề trang */
+.profile h2,
+.child-profile h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+/* Các nút Edit */
+button {
+  cursor: pointer;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}

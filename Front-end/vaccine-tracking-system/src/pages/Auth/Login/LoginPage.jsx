@@ -4,7 +4,7 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import { AiOutlineMail } from "react-icons/ai";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
-import { auth, provider } from "../../config/firebase";
+import { auth, provider } from "../../../config/firebase";
 import { signInWithPopup } from "firebase/auth";
 import { signOut } from "firebase/auth";
 import { toast } from "react-toastify";

@@ -1,7 +1,7 @@
 // src/components/Header.jsx
 // eslint-disable-next-line no-unused-vars
 import React from "react";
-import { FaSearch, FaBars, FaTimes } from "react-icons/fa";
+import { FaBars, FaSearch, FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
