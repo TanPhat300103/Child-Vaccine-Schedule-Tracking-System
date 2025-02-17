@@ -1,16 +1,8 @@
 package org.gr1fpt.childvaccinescheduletrackingsystem;
 
-import org.gr1fpt.childvaccinescheduletrackingsystem.model.Child;
-import org.gr1fpt.childvaccinescheduletrackingsystem.model.Customer;
-import org.gr1fpt.childvaccinescheduletrackingsystem.service.ChildService;
-import org.gr1fpt.childvaccinescheduletrackingsystem.service.CustomerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-
-import java.sql.Date;
 
 
 @SpringBootApplication
