@@ -1,7 +1,13 @@
 // src/firebase-config.js
 
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import {
+  getAuth,
+  sendPasswordResetEmail,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+} from "firebase/auth";
 
 // Firebase config
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -24,4 +30,6 @@ const auth = getAuth(app);
 // Tạo provider cho Google Sign-In
 const provider = new GoogleAuthProvider();
 
-export { auth, provider };
+export { auth, provider, sendPasswordResetEmail, signInWithPopup };
+export const signInWithGoogle = () => signInWithPopup(auth, provider);
+export const logout = () => signOut(auth);

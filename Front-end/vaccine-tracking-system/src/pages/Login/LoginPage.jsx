@@ -1,74 +1,77 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { FiEye, FiEyeOff } from "react-icons/fi";
-import { AiOutlineMail } from "react-icons/ai";
-import { RiLockPasswordLine } from "react-icons/ri";
-import { Link, useNavigate } from "react-router-dom";
-import { auth, provider } from "../../config/firebase";
-import { signInWithPopup } from "firebase/auth";
-import { signOut } from "firebase/auth";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { FaSyringe, FaHospital } from "react-icons/fa";
 import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
+import {
+  auth,
+  logout,
+  signInWithPopup,
+  provider,
+} from "../../config/firebase.js";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  const validateEmail = (email) => {
-    return String(email)
-      .toLowerCase()
-      .match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+  const validateForm = () => {
+    const newErrors = {};
+    if (!email) {
+      newErrors.email = "Email is required / Email là bắt buộc";
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = "Invalid email format / Định dạng email không hợp lệ";
+    }
+    if (!password) {
+      newErrors.password = "Password is required / Mật khẩu là bắt buộc";
+    } else if (password.length < 6) {
+      newErrors.password =
+        "Password must be at least 6 characters / Mật khẩu phải có ít nhất 6 ký tự";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const newErrors = {};
-
-    if (!email) newErrors.email = "Email không được để trống";
-    else if (!validateEmail(email)) newErrors.email = "Email không hợp lệ";
-    if (!password) newErrors.password = "Mật khẩu không được để trống";
-    else if (password.length < 6)
-      newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự";
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      // API call simulation
-      const response = await fetch(
-        "https://67aa281d65ab088ea7e5d7ab.mockapi.io/user"
-      );
-      const data = await response.json();
-      const user = data.find(
-        (user) => user.email === email && user.password === password
-      );
-      if (user) {
-        toast.success("Đăng nhập thành công");
-        console.log("Login successful");
-        navigate("/home");
-      } else {
-        setErrors({ email: "Email hoặc Password không đúng" });
-        toast.error("Email hoặc mật khẩu không đúng");
-        console.error("Login failed: Incorrect email or password");
+    if (validateForm()) {
+      setIsLoading(true);
+      // Simulate API call
+      try {
+        // API call simulation
+        const response = await fetch(
+          "https://67aa281d65ab088ea7e5d7ab.mockapi.io/user"
+        );
+        const data = await response.json();
+        const user = data.find(
+          (user) => user.email === email && user.password === password
+        );
+        if (user) {
+          toast.success("Đăng nhập thành công");
+          console.log("Login successful");
+          navigate("/home");
+        } else {
+          setErrors({ email: "Email hoặc Password không đúng" });
+          toast.error("Email hoặc mật khẩu không đúng");
+          console.error("Login failed: Incorrect email or password");
+        }
+      } catch (error) {
+        console.error("Login failed:", error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error("Login failed:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
-  // eslint-disable-next-line no-unused-vars
   const handleGoogleLogin = async () => {
-    setLoading(true);
+    setIsLoading(true);
     try {
-      await signOut(auth);
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       toast.success("Đăng nhập thành công");
@@ -78,130 +81,142 @@ const LoginPage = () => {
       toast.error("Email hoặc mật khẩu không đúng");
       console.error("Google login failed:", error.message);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
+  const handleLogout = async () => {
+    await logout();
+    setUser(null);
+  };
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-secondary flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-card rounded-lg shadow-lg p-8 space-y-6">
-        <div className="text-center">
-          <h1 className="text-heading font-heading text-foreground">
-            Đăng Nhập
-          </h1>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center px-4 sm:px-6 lg:px-8">
+      <div className="absolute inset-0 z-0 opacity-10">
+        <div className="grid grid-cols-6 gap-4 h-full">
+          {[...Array(24)].map((_, i) => (
+            <div key={i} className="flex items-center justify-center">
+              {i % 2 === 0 ? (
+                <FaSyringe className="text-blue-500 text-4xl" />
+              ) : (
+                <FaHospital className="text-blue-400 text-4xl" />
+              )}
+            </div>
+          ))}
         </div>
+      </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-foreground mb-1"
-            >
-              Email
-            </label>
-            <div className="relative">
-              <AiOutlineMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-accent" />
+      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-2xl relative z-10">
+        <div>
+          <img
+            src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=100&h=100"
+            alt="Logo"
+            className="mx-auto h-16 w-16 rounded-full"
+          />
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Vaccine Schedule Tracker
+          </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            Track your child's vaccination journey
+          </p>
+        </div>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="rounded-md shadow-sm space-y-4">
+            <div>
+              <label htmlFor="email" className="sr-only">
+                Email
+              </label>
               <input
                 id="email"
+                name="email"
                 type="email"
+                autoComplete="email"
+                required
+                className={`appearance-none rounded-lg relative block w-full px-3 py-2 border ${
+                  errors.email ? "border-red-300" : "border-gray-300"
+                } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
+                placeholder="Nhập email "
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`w-full pl-10 pr-4 py-2 border ${
-                  errors.email ? "border-destructive" : "border-input"
-                } rounded-md focus:outline-none focus:ring-2 focus:ring-ring bg-card text-foreground`}
-                placeholder="your@email.com"
-                aria-invalid={errors.email ? "true" : "false"}
               />
+              {errors.email && (
+                <p className="mt-2 text-sm text-red-600">{errors.email}</p>
+              )}
             </div>
-            {errors.email && (
-              <p className="mt-1 text-sm text-destructive">{errors.email}</p>
-            )}
-          </div>
 
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-foreground mb-1"
-            >
-              Mật khẩu
-            </label>
             <div className="relative">
-              <RiLockPasswordLine className="absolute left-3 top-1/2 transform -translate-y-1/2 text-accent" />
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
               <input
                 id="password"
+                name="password"
                 type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
+                required
+                className={`appearance-none rounded-lg relative block w-full px-3 py-2 border ${
+                  errors.password ? "border-red-300" : "border-gray-300"
+                } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
+                placeholder="Mật khẩu"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={`w-full pl-10 pr-12 py-2 border ${
-                  errors.password ? "border-destructive" : "border-input"
-                } rounded-md focus:outline-none focus:ring-2 focus:ring-ring bg-card text-foreground`}
-                placeholder="Nhập mật khẩu"
-                aria-invalid={errors.password ? "true" : "false"}
               />
               <button
                 type="button"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-accent hover:text-foreground"
-                aria-label={showPassword ? "Hide password" : "Show password"}
               >
-                {showPassword ? <FiEyeOff /> : <FiEye />}
+                {showPassword ? (
+                  <AiOutlineEyeInvisible className="h-5 w-5 text-gray-400" />
+                ) : (
+                  <AiOutlineEye className="h-5 w-5 text-gray-400" />
+                )}
+              </button>
+              {errors.password && (
+                <p className="mt-2 text-sm text-red-600">{errors.password}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="text-sm">
+              <button
+                className="font-medium text-blue-600 hover:text-blue-500"
+                onClick={() => navigate("/forgot-password")}
+              >
+                Quên mật khẩu?
               </button>
             </div>
-            {errors.password && (
-              <p className="mt-1 text-sm text-destructive">{errors.password}</p>
-            )}
           </div>
 
-          <div className="text-right">
+          <div className="space-y-4">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${
+                isLoading ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
+              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200`}
+            >
+              {isLoading ? "Đang xử lý..." : "Đăng nhập"}
+            </button>
+
             <button
               type="button"
-              className="text-sm text-primary hover:underline"
+              onClick={handleGoogleLogin}
+              className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
             >
-              Quên Mật Khẩu?
+              <FcGoogle className="h-5 w-5 mr-2" />
+              Đăng nhập bằng Google
             </button>
           </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-[green] text-primary-foreground py-2 rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 transition-colors"
-          >
-            {loading ? (
-              <div className="flex items-center justify-center">
-                <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin"></div>
-                <span className="ml-2">Đang xử lý...</span>
-              </div>
-            ) : (
-              "Đăng Nhập"
-            )}
-          </button>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-input"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-card text-accent">Hoặc</span>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={handleGoogleLogin}
-            className="w-full bg-card border border-input text-foreground py-2 px-4 rounded-md hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-ring flex items-center justify-center gap-2 transition-colors"
-          >
-            <FcGoogle className="text-xl" />
-            Đăng Nhập bằng Google
-          </button>
         </form>
-
-        <p className="text-center text-sm text-accent">
-          Chưa có tài khoản?{" "}
-          <Link to="/register">
-            <button className="text-primary hover:underline font-semibold">
-              Đăng Ký Ngay
-            </button>
-          </Link>
-        </p>
+        <div className="text-center">
+          <a
+            href="#"
+            className="font-medium text-blue-600 hover:text-blue-500 text-sm"
+            onClick={() => navigate("/register")}
+          >
+            Chưa có tài khoản? Hãy đăng ký ngay
+          </a>
+        </div>
       </div>
     </div>
   );
