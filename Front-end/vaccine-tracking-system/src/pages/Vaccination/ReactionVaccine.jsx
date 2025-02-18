@@ -24,23 +24,23 @@ const VaccinePage = () => {
   const maxChars = 500;
 
   const vaccineInfo = {
-    name: "COVID-19 Vaccine",
+    name: "Vaccine COVID-19",
     brand: "PfizerBioNTech",
-    description: "mRNA-based vaccine for SARS-CoV-2 virus protection",
-    dosageInfo: "0.3 mL intramuscular injection",
+    description: "Vaccine mRNA chống virus SARS-CoV-2",
+    dosageInfo: "Tiêm 0.3 mL qua cơ",
   };
 
   const recommendedDoses = [
-    { id: 1, date: "First Dose", status: "completed" },
-    { id: 2, date: "Second Dose (21 days after)", status: "current" },
-    { id: 3, date: "Booster (6 months after)", status: "pending" },
+    { id: 1, date: "Mũi đầu tiên", status: "completed" },
+    { id: 2, date: "Mũi thứ hai (21 ngày sau)", status: "current" },
+    { id: 3, date: "Mũi tăng cường (6 tháng sau)", status: "pending" },
   ];
 
   const commonReactions = [
-    { symptom: "Injection site pain", severity: "Mild" },
-    { symptom: "Fatigue", severity: "Moderate" },
-    { symptom: "Headache", severity: "Mild" },
-    { symptom: "Muscle pain", severity: "Moderate" },
+    { symptom: "Đau tại chỗ tiêm", severity: "Nhẹ" },
+    { symptom: "Mệt mỏi", severity: "Vừa" },
+    { symptom: "Đau đầu", severity: "Nhẹ" },
+    { symptom: "Đau cơ", severity: "Vừa" },
   ];
 
   const handleInputChange = (e) => {
@@ -60,21 +60,30 @@ const VaccinePage = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.ageGroup) newErrors.ageGroup = "Age group is required";
+    if (!formData.ageGroup) newErrors.ageGroup = "Nhóm tuổi là bắt buộc";
     if (!formData.reactionSeverity)
-      newErrors.reactionSeverity = "Reaction severity is required";
-    if (!formData.description)
-      newErrors.description = "Description is required";
+      newErrors.reactionSeverity = "Mức độ phản ứng là bắt buộc";
+    if (!formData.description) newErrors.description = "Mô tả là bắt buộc";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    // Validate form before submission
     if (validateForm()) {
-      console.log("Form submitted:", formData);
-      // API call simulation
-      alert("Thank you for your feedback!");
+      try {
+        // Make API call to send form data to MockAPI
+        const response = await axios.post(
+          "https://your-mockapi-url.com/feedbacks", // URL của MockAPI
+          formData
+        );
+        console.log("Feedback submitted:", response.data);
+        alert("Cảm ơn bạn đã chia sẻ phản hồi!");
+      } catch (error) {
+        console.error("There was an error submitting the feedback:", error);
+        alert("Đã xảy ra lỗi, vui lòng thử lại.");
+      }
     }
   };
 
@@ -94,15 +103,15 @@ const VaccinePage = () => {
 
         {/* Vaccine Information */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Vaccine Information</h2>
+          <h2 className="text-2xl font-semibold mb-4">Thông tin vaccine</h2>
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h3 className="font-medium text-gray-900 mb-2">Description</h3>
+              <h3 className="font-medium text-gray-900 mb-2">Mô tả</h3>
               <p className="text-gray-600">{vaccineInfo.description}</p>
             </div>
             <div>
               <h3 className="font-medium text-gray-900 mb-2">
-                Dosage Information
+                Thông tin liều lượng
               </h3>
               <p className="text-gray-600">{vaccineInfo.dosageInfo}</p>
             </div>
@@ -111,7 +120,9 @@ const VaccinePage = () => {
 
         {/* Recommended Doses */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Recommended Doses</h2>
+          <h2 className="text-2xl font-semibold mb-4">
+            Các mũi tiêm khuyến nghị
+          </h2>
           <div className="space-y-4">
             {recommendedDoses.map((dose) => (
               <div
@@ -137,7 +148,7 @@ const VaccinePage = () => {
 
         {/* Common Reactions */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Common Reactions</h2>
+          <h2 className="text-2xl font-semibold mb-4">Phản ứng phổ biến</h2>
           <div className="grid md:grid-cols-2 gap-4">
             {commonReactions.map((reaction, index) => (
               <div
@@ -148,7 +159,7 @@ const VaccinePage = () => {
                 <div>
                   <p className="font-medium">{reaction.symptom}</p>
                   <p className="text-sm text-gray-600">
-                    Severity: {reaction.severity}
+                    Mức độ: {reaction.severity}
                   </p>
                 </div>
               </div>
@@ -161,12 +172,14 @@ const VaccinePage = () => {
           onSubmit={handleSubmit}
           className="bg-white rounded-lg shadow-sm p-6"
         >
-          <h2 className="text-2xl font-semibold mb-6">Share Your Experience</h2>
+          <h2 className="text-2xl font-semibold mb-6">
+            Chia sẻ trải nghiệm của bạn
+          </h2>
 
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <label className="block text-sm font-medium text-gray-700">
-                Submit Anonymously
+                Gửi ẩn danh
               </label>
               <input
                 type="checkbox"
@@ -180,7 +193,7 @@ const VaccinePage = () => {
             {!formData.isAnonymous && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Name (Optional)
+                  Tên (Không bắt buộc)
                 </label>
                 <input
                   type="text"
@@ -194,7 +207,7 @@ const VaccinePage = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Age Group*
+                Nhóm tuổi*
               </label>
               <select
                 name="ageGroup"
@@ -204,11 +217,11 @@ const VaccinePage = () => {
                   errors.ageGroup ? "border-red-300" : "border-gray-300"
                 }`}
               >
-                <option value="">Select age group</option>
-                <option value="18-30">18-30 years</option>
-                <option value="31-50">31-50 years</option>
-                <option value="51-70">51-70 years</option>
-                <option value="71+">71+ years</option>
+                <option value="">Chọn nhóm tuổi</option>
+                <option value="18-30">18-30 tuổi</option>
+                <option value="31-50">31-50 tuổi</option>
+                <option value="51-70">51-70 tuổi</option>
+                <option value="71+">Trên 71 tuổi</option>
               </select>
               {errors.ageGroup && (
                 <p className="mt-1 text-sm text-red-600">{errors.ageGroup}</p>
@@ -217,7 +230,7 @@ const VaccinePage = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Reaction Severity*
+                Mức độ phản ứng*
               </label>
               <select
                 name="reactionSeverity"
@@ -227,11 +240,10 @@ const VaccinePage = () => {
                   errors.reactionSeverity ? "border-red-300" : "border-gray-300"
                 }`}
               >
-                <option value="">Select severity</option>
-                <option value="none">No reaction</option>
-                <option value="mild">Mild</option>
-                <option value="moderate">Moderate</option>
-                <option value="severe">Severe</option>
+                <option value="">Chọn mức độ phản ứng</option>
+                <option value="Nhẹ">Nhẹ</option>
+                <option value="Vừa">Vừa</option>
+                <option value="Nặng">Nặng</option>
               </select>
               {errors.reactionSeverity && (
                 <p className="mt-1 text-sm text-red-600">
@@ -242,86 +254,62 @@ const VaccinePage = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Description*
+                Mô tả phản ứng*
               </label>
               <textarea
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
-                maxLength={maxChars}
-                rows={4}
                 className={`mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${
                   errors.description ? "border-red-300" : "border-gray-300"
                 }`}
-                placeholder="Please describe your experience..."
+                rows={4}
+                maxLength={maxChars}
               />
-              <div className="mt-1 text-sm text-gray-500 flex justify-between">
-                <span>
-                  {charCount}/{maxChars} characters
-                </span>
-                {errors.description && (
-                  <span className="text-red-600">{errors.description}</span>
-                )}
-              </div>
+              <p className="mt-1 text-sm text-gray-500">
+                {charCount}/{maxChars} ký tự
+              </p>
+              {errors.description && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.description}
+                </p>
+              )}
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Overall Experience
+                Đánh giá (1-5 sao)
               </label>
               <input
-                type="range"
+                type="number"
                 name="rating"
-                min="1"
-                max="10"
                 value={formData.rating}
                 onChange={handleInputChange}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                min="1"
+                max="5"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
               />
-              <div className="flex justify-between text-sm text-gray-600">
-                <span>Poor</span>
-                <span>Excellent</span>
-              </div>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Upload Documentation (Optional)
+                Tải lên ảnh (Tùy chọn)
               </label>
-              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                <div className="space-y-1 text-center">
-                  <FaUpload className="mx-auto h-12 w-12 text-gray-400" />
-                  <div className="flex text-sm text-gray-600">
-                    <label
-                      htmlFor="file-upload"
-                      className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
-                    >
-                      <span>Upload a file</span>
-                      <input
-                        id="file-upload"
-                        name="file"
-                        type="file"
-                        className="sr-only"
-                        onChange={handleInputChange}
-                        accept=".pdf,.doc,.docx,.jpg,.png"
-                      />
-                    </label>
-                  </div>
-                  <p className="text-xs text-gray-500">
-                    PDF, DOC, DOCX, JPG, PNG up to 10MB
-                  </p>
-                </div>
-              </div>
+              <input
+                type="file"
+                name="file"
+                accept="image/*"
+                onChange={handleInputChange}
+                className="mt-1 block w-full text-sm text-gray-500"
+              />
             </div>
 
-            <div className="flex justify-end">
-              <button
-                type="submit"
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                Submit Feedback
-              </button>
-            </div>
+            <button
+              type="submit"
+              className="w-full py-3 px-4 mt-6 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              Gửi phản hồi <FaUpload className="inline ml-2" />
+            </button>
           </div>
         </form>
       </div>

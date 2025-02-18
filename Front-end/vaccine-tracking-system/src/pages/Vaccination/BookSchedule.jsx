@@ -35,17 +35,17 @@ const VaccineScheduling = () => {
   const vaccines = [
     {
       id: 1,
-      name: "HEXAXIM Bạch hầu, ho gà, uốn ván, bại liệt, Hib, viêm gan B, Pháp	",
+      name: "HEXAXIM Bạch hầu, ho gà, uốn ván, bại liệt, Hib, viêm gan B, Pháp",
       info: "",
     },
     {
       id: 2,
-      name: "ROTARIX Rota virus	, Bỉ",
+      name: "ROTARIX Rota virus, Bỉ",
       info: "",
     },
     {
       id: 3,
-      name: "VAXIGRIP TETRA Cúm mùa	, Pháp		",
+      name: "VAXIGRIP TETRA Cúm mùa, Pháp",
       info: "",
     },
   ];
@@ -71,20 +71,18 @@ const VaccineScheduling = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.childName.trim())
-      newErrors.childName = "Child's name is required";
-    if (!formData.dateOfBirth)
-      newErrors.dateOfBirth = "Date of birth is required";
+    if (!formData.childName.trim()) newErrors.childName = "Tên trẻ là bắt buộc";
+    if (!formData.dateOfBirth) newErrors.dateOfBirth = "Ngày sinh là bắt buộc";
     if (!formData.phoneNumber.match(/^\d{10}$/))
-      newErrors.phoneNumber = "Invalid phone number";
+      newErrors.phoneNumber = "Số điện thoại không hợp lệ";
     if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/))
-      newErrors.email = "Invalid email address";
-    if (!formData.center) newErrors.center = "Please select a center";
-    if (!formData.vaccine) newErrors.vaccine = "Please select a vaccine";
+      newErrors.email = "Địa chỉ email không hợp lệ";
+    if (!formData.center) newErrors.center = "Vui lòng chọn trung tâm tiêm";
+    if (!formData.vaccine) newErrors.vaccine = "Vui lòng chọn loại vắc-xin";
     if (!formData.appointmentDate)
-      newErrors.appointmentDate = "Please select appointment date";
-    if (!formData.timeSlot) newErrors.timeSlot = "Please select a time slot";
-    if (!formData.consent) newErrors.consent = "Please provide consent";
+      newErrors.appointmentDate = "Vui lòng chọn ngày tiêm";
+    if (!formData.timeSlot) newErrors.timeSlot = "Vui lòng chọn khung giờ";
+    if (!formData.consent) newErrors.consent = "Vui lòng đồng ý với điều khoản";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -94,7 +92,7 @@ const VaccineScheduling = () => {
     if (validateForm()) {
       setIsSubmitting(true);
       try {
-        // API call simulation
+        // Giả lập API call
         const response = await fetch(
           "https://67aa281d65ab088ea7e5d7ab.mockapi.io/Schedule",
           {
@@ -106,9 +104,9 @@ const VaccineScheduling = () => {
           }
         );
 
-        if (!response.ok) throw new Error("Failed to schedule appointment");
+        if (!response.ok) throw new Error("Đặt lịch tiêm không thành công");
 
-        alert("Appointment scheduled successfully!");
+        alert("Đặt lịch tiêm thành công!");
         setFormData({
           childName: "",
           dateOfBirth: "",
@@ -120,7 +118,13 @@ const VaccineScheduling = () => {
           timeSlot: "",
           consent: false,
         });
-        navigate("/payment");
+        // Trong VaccineScheduling page
+        navigate("/payment", { state: formData });
+
+        // Sau khi điều hướng đến Payment, chuyển đến trang Status Schedule
+        setTimeout(() => {
+          navigate("/status-schedule", { state: formData });
+        }, 100000); // Delay nhỏ để đảm bảo trang Payment đã được load
       } catch (error) {
         alert(error.message);
       } finally {
@@ -138,13 +142,13 @@ const VaccineScheduling = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Personal Information Section */}
+            {/* Thông Tin Cá Nhân */}
             <div className="space-y-6">
               <h2 className="text-xl font-semibold text-gray-700">
                 Thông Tin Cá Nhân
               </h2>
-              <label htmlFor="phoneNumber" className="font-medium">
-                Full name child
+              <label htmlFor="childName" className="font-medium">
+                Tên trẻ
               </label>
               <div className="relative flex items-center gap-x-2">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -166,8 +170,9 @@ const VaccineScheduling = () => {
                   </p>
                 )}
               </div>
+
               <label htmlFor="phoneNumber" className="font-medium">
-                Parent/Guardian Contact Number
+                Số điện thoại phụ huynh
               </label>
               <div className="relative flex items-center gap-x-2">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -189,8 +194,9 @@ const VaccineScheduling = () => {
                   </p>
                 )}
               </div>
-              <label htmlFor="phoneNumber" className="font-medium">
-                Parent/Guardian Email
+
+              <label htmlFor="email" className="font-medium">
+                Email phụ huynh
               </label>
               <div className="relative flex items-center gap-x-2">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -204,14 +210,15 @@ const VaccineScheduling = () => {
                   className={`block w-full pl-10 pr-3 py-2 border ${
                     errors.email ? "border-red-500" : "border-gray-300"
                   } rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
-                  placeholder="emailParent@gmail.com"
+                  placeholder="Parent@gmail.com"
                 />
                 {errors.email && (
                   <p className="mt-1 text-sm text-red-500">{errors.email}</p>
                 )}
               </div>
-              <label htmlFor="phoneNumber" className="font-medium">
-                Date of birth
+
+              <label htmlFor="dateOfBirth" className="font-medium">
+                Ngày sinh
               </label>
               <div className="relative flex items-center gap-x-2">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -235,13 +242,14 @@ const VaccineScheduling = () => {
               </div>
             </div>
 
-            {/* Vaccination Details Section */}
+            {/* Thông Tin Tiêm Chủng */}
             <div className="space-y-6">
               <h2 className="text-xl font-semibold text-gray-700">
-                Vaccination Details
+                Thông Tin Tiêm Chủng
               </h2>
-              <label htmlFor="phoneNumber" className="font-medium">
-                Select Vaccine Center
+
+              <label htmlFor="center" className="font-medium">
+                Chọn Trung Tâm Tiêm
               </label>
               <div className="relative flex items-center gap-x-2">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -255,7 +263,7 @@ const VaccineScheduling = () => {
                     errors.center ? "border-red-500" : "border-gray-300"
                   } rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
                 >
-                  <option value="">Select Vaccination Center</option>
+                  <option value="">Chọn Trung Tâm Tiêm</option>
                   {centers.map((center) => (
                     <option key={center.id} value={center.id}>
                       {center.name}
@@ -266,8 +274,9 @@ const VaccineScheduling = () => {
                   <p className="mt-1 text-sm text-red-500">{errors.center}</p>
                 )}
               </div>
-              <label htmlFor="phoneNumber" className="font-medium">
-                Select Vaccine
+
+              <label htmlFor="vaccine" className="font-medium">
+                Chọn Vắc-xin
               </label>
               <div className="relative flex items-center gap-x-2">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -281,7 +290,7 @@ const VaccineScheduling = () => {
                     errors.vaccine ? "border-red-500" : "border-gray-300"
                   } rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
                 >
-                  <option value="">Select Vaccine</option>
+                  <option value="">Chọn Vắc-xin</option>
                   {vaccines.map((vaccine) => (
                     <option key={vaccine.id} value={vaccine.id}>
                       {vaccine.name}
@@ -300,8 +309,9 @@ const VaccineScheduling = () => {
                   </p>
                 )}
               </div>
-              <label htmlFor="phoneNumber" className="font-medium">
-                Select Date
+
+              <label htmlFor="appointmentDate" className="font-medium">
+                Chọn Ngày Tiêm
               </label>
               <div className="relative flex items-center gap-x-2">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -325,8 +335,9 @@ const VaccineScheduling = () => {
                   </p>
                 )}
               </div>
-              <label htmlFor="phoneNumber" className="font-medium">
-                Select Hour
+
+              <label htmlFor="timeSlot" className="font-medium">
+                Chọn Khung Giờ
               </label>
               <div className="relative flex items-center gap-x-2">
                 <select
@@ -337,7 +348,7 @@ const VaccineScheduling = () => {
                     errors.timeSlot ? "border-red-500" : "border-gray-300"
                   } rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
                 >
-                  <option value="">Select Time Slot</option>
+                  <option value="">Chọn Khung Giờ</option>
                   {timeSlots.map((slot) => (
                     <option key={slot} value={slot}>
                       {slot}
@@ -360,8 +371,8 @@ const VaccineScheduling = () => {
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
             <label className="ml-2 block text-sm text-gray-900">
-              I consent to the vaccination and confirm that the information
-              provided is accurate
+              Tôi đồng ý với việc tiêm vắc-xin và xác nhận thông tin đã cung cấp
+              là chính xác
             </label>
           </div>
           {errors.consent && (
@@ -386,14 +397,14 @@ const VaccineScheduling = () => {
               }
               className="px-4 py-2 border border-blue-500 text-blue-500 rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
-              Reset Form
+              Đặt lại
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? "Scheduling..." : "Schedule Vaccine"}
+              {isSubmitting ? "Đang Đặt Lịch..." : "Đặt Lịch Tiêm"}
             </button>
           </div>
         </form>

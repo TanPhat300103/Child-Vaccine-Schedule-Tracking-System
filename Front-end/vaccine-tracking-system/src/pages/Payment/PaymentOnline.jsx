@@ -1,7 +1,6 @@
-import React, { useState, useCallback } from "react";
-import { FaQrcode, FaDownload, FaCopy, FaClock } from "react-icons/fa";
-import { MdPayment, MdSecurity } from "react-icons/md";
-import { RiBankFill } from "react-icons/ri";
+import React, { useState, useCallback, useEffect } from "react";
+import { FaDownload, FaCopy, FaClock } from "react-icons/fa";
+import { MdSecurity } from "react-icons/md";
 
 const PaymentGatewayOnline = () => {
   const [selectedMethod, setSelectedMethod] = useState(null);
@@ -10,26 +9,34 @@ const PaymentGatewayOnline = () => {
   const paymentMethods = [
     {
       id: 1,
-      name: "Bank Transfer",
-      icon: <RiBankFill className="w-8 h-8" />,
-      qrCode: "https://images.unsplash.com/photo-1582439170934-d2fbb57f6906",
+      name: "Chuyển Khoản Ngân Hàng",
+      logo: "https://static.vecteezy.com/system/resources/previews/013/948/616/non_2x/bank-icon-logo-design-vector.jpg", // Link logo
+      qrCode:
+        "https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg",
       available: true,
     },
     {
       id: 2,
       name: "Zalo Pay",
-      icon: <MdPayment className="w-8 h-8" />,
-      qrCode: "https://images.unsplash.com/photo-1582439170934-d2fbb57f6906",
+      logo: "https://play-lh.googleusercontent.com/woYAzPCG1I8Z8HXCsdH3diL7oly0N8uth_1g6k7R_9Gu7lbxrsYeriEXLecRG2E9rP0", // Link logo Zalo Pay
+      qrCode:
+        "https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg",
       available: true,
     },
     {
       id: 3,
       name: "Momo",
-      icon: <MdPayment className="w-8 h-8" />,
-      qrCode: "https://images.unsplash.com/photo-1582439170934-d2fbb57f6906",
-      available: false,
+      logo: "https://developers.momo.vn/v3/vi/assets/images/square-8c08a00f550e40a2efafea4a005b1232.png", // Link logo Momo
+      qrCode:
+        "https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg",
+      available: true, // Momo giờ sẽ luôn có sẵn giống Zalo Pay
     },
   ];
+
+  // Set mặc định là "Chuyển Khoản Ngân Hàng"
+  useEffect(() => {
+    setSelectedMethod(paymentMethods[0]);
+  }, []);
 
   const handleMethodSelect = (method) => {
     if (method.available) {
@@ -47,10 +54,10 @@ const PaymentGatewayOnline = () => {
       <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl p-8">
         <div className="text-center mb-12">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Vaccine Payment Gateway
+            Cổng Thanh Toán Vắc-Xin
           </h1>
           <p className="text-gray-600">
-            Secure Payment for Child Vaccination Schedule
+            Thanh toán an toàn cho lịch tiêm chủng cho trẻ
           </p>
           <MdSecurity className="w-8 h-8 mx-auto mt-4 text-blue-500" />
         </div>
@@ -59,13 +66,13 @@ const PaymentGatewayOnline = () => {
           <div className="flex justify-between items-center">
             <div>
               <h2 className="text-xl font-semibold text-gray-800">
-                Total Amount
+                Tổng Số Tiền
               </h2>
-              <p className="text-3xl font-bold text-blue-600 mt-2">$150.00</p>
+              <p className="text-3xl font-bold text-blue-600 mt-2">150.000đ</p>
             </div>
             <div className="text-right">
-              <p className="text-gray-600">Package: Complete Vaccination</p>
-              <p className="text-sm text-gray-500 mt-1">Valid until: 24hrs</p>
+              <p className="text-gray-600">Gói: Tiêm Chủng Hoàn Chỉnh</p>
+              <p className="text-sm text-gray-500 mt-1">Hạn sử dụng: 24 giờ</p>
             </div>
           </div>
         </div>
@@ -87,15 +94,11 @@ const PaymentGatewayOnline = () => {
               disabled={!method.available}
             >
               <div className="flex flex-col items-center">
-                {method.icon}
-                <span className="mt-4 font-medium text-gray-900">
-                  {method.name}
-                </span>
-                {!method.available && (
-                  <span className="text-sm text-red-500 mt-2">
-                    Currently Unavailable
-                  </span>
-                )}
+                <img
+                  src={method.logo}
+                  alt={method.name}
+                  className="w-16 h-16 object-contain transition-all duration-300 hover:scale-110"
+                />
               </div>
             </button>
           ))}
@@ -105,7 +108,7 @@ const PaymentGatewayOnline = () => {
           <div className="animate-fade-in">
             <div className="text-center p-8 border-2 border-blue-100 rounded-xl bg-white">
               <h3 className="text-xl font-semibold mb-4">
-                Scan QR Code to Pay
+                Quét QR Code để Thanh Toán
               </h3>
               <div className="relative inline-block">
                 <img
@@ -118,19 +121,20 @@ const PaymentGatewayOnline = () => {
                     onClick={() => window.open(selectedMethod.qrCode, "_blank")}
                     className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                   >
-                    <FaDownload className="mr-2" /> Download
+                    <FaDownload className="mr-2" /> Tải Xuống
                   </button>
                   <button
                     onClick={handleCopyQR}
                     className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                   >
-                    <FaCopy className="mr-2" /> {copied ? "Copied!" : "Copy"}
+                    <FaCopy className="mr-2" />{" "}
+                    {copied ? "Đã Sao Chép!" : "Sao Chép"}
                   </button>
                 </div>
               </div>
               <div className="mt-6 flex items-center justify-center text-gray-500">
                 <FaClock className="mr-2" />
-                <span>QR Code expires in 15 minutes</span>
+                <span>QR Code hết hạn sau 15 phút</span>
               </div>
             </div>
           </div>
@@ -139,7 +143,7 @@ const PaymentGatewayOnline = () => {
         <div className="mt-8 text-center">
           <div className="flex items-center justify-center text-gray-500 text-sm">
             <MdSecurity className="mr-2" />
-            Secured by SSL Encryption
+            Được bảo mật bởi mã hóa SSL
           </div>
         </div>
       </div>

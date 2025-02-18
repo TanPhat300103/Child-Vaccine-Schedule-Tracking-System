@@ -1,79 +1,74 @@
 import React, { useState, useEffect } from "react";
-import {
-  FaUser,
-  FaPhone,
-  FaEnvelope,
-  FaMapMarkerAlt,
-  FaMoneyBillWave,
-  FaCreditCard,
-} from "react-icons/fa";
+import { useLocation, useNavigate } from "react-router-dom";
+import { FaMoneyBillWave, FaCreditCard } from "react-icons/fa";
+import { format } from "date-fns";
 
 const VaccinePaymentPage = () => {
-  const [formData, setFormData] = useState({
-    fullName: "",
-    phoneNumber: "",
-    email: "",
-    address: "",
-  });
-
+  const { state } = useLocation();
   const [paymentMethod, setPaymentMethod] = useState("");
   const [errors, setErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
+  const navigate = useNavigate();
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.fullName.trim()) newErrors.fullName = "Full name is required";
-    if (
-      !formData.phoneNumber.trim() ||
-      !/^\+?[1-9]\d{9,11}$/.test(formData.phoneNumber)
-    ) {
-      newErrors.phoneNumber = "Invalid phone number";
-    }
-    if (
-      !formData.email.trim() ||
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
-    ) {
-      newErrors.email = "Invalid email address";
-    }
-    if (!formData.address.trim()) newErrors.address = "Address is required";
-    if (!paymentMethod)
-      newErrors.paymentMethod = "Please select a payment method";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  if (!state) {
+    return <p>Error: Không có dữ liệu từ trang trước!</p>;
+  }
 
   useEffect(() => {
     const isValid = validateForm();
     setIsFormValid(isValid);
-  }, [formData, paymentMethod]);
+  }, [paymentMethod]);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  const validateForm = () => {
+    const newErrors = {};
+    if (!paymentMethod)
+      newErrors.paymentMethod = "Vui lòng chọn phương thức thanh toán";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handlePaymentMethodChange = (method) => {
     setPaymentMethod(method);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      console.log("Form submitted:", { ...formData, paymentMethod });
+      if (paymentMethod === "offline") {
+        // Nếu thanh toán trực tiếp, thực hiện thanh toán và chuyển hướng về trang /home
+        try {
+          const response = await fetch(
+            "https://67aa281d65ab088ea7e5d7ab.mockapi.io/Schedule",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ ...state, paymentMethod }),
+            }
+          );
+
+          if (!response.ok) throw new Error("Thanh toán thất bại");
+
+          alert("Thanh toán thành công!");
+          navigate("/status-schedule"); // Chuyển hướng về trang /home
+        } catch (error) {
+          alert(error.message);
+        }
+      } else if (paymentMethod === "online") {
+        // Nếu thanh toán online, chuyển hướng đến trang /payment-online
+        navigate("/payment-online");
+      }
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
         <div className="relative px-6 py-8 sm:px-12">
           <div className="absolute inset-0 bg-opacity-10 bg-blue-100 z-0">
             <div
-              className="w-full h-full opacity-5"
+              className="w-full h-full opacity-15"
               style={{
                 backgroundImage:
                   "url('https://images.unsplash.com/photo-1584362917165-526a968579e8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80')",
@@ -83,96 +78,50 @@ const VaccinePaymentPage = () => {
           </div>
 
           <div className="relative z-10">
-            <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
+            <h2 className="text-4xl font-semibold text-gray-900 text-center mb-8">
               Thanh Toán Lịch Tiêm Chủng Cho Trẻ
             </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-4">
-                <div>
-                  <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
-                    <FaUser className="mr-2 text-blue-500" />
-                    Họ và tên
-                  </label>
-                  <input
-                    type="text"
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleInputChange}
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Nguyễn A"
-                  />
-                  {errors.fullName && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.fullName}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
-                    <FaPhone className="mr-2 text-blue-500" />
-                    Số điện thoại
-                  </label>
-                  <input
-                    type="tel"
-                    name="phoneNumber"
-                    value={formData.phoneNumber}
-                    onChange={handleInputChange}
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="0901234567"
-                  />
-                  {errors.phoneNumber && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.phoneNumber}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
-                    <FaEnvelope className="mr-2 text-blue-500" />
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="example@email.com"
-                  />
-                  {errors.email && (
-                    <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
-                    <FaMapMarkerAlt className="mr-2 text-blue-500" />
-                    Địa chỉ
-                  </label>
-                  <textarea
-                    name="address"
-                    value={formData.address}
-                    onChange={handleInputChange}
-                    rows="3"
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Full Residential Address"
-                  />
-                  {errors.address && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.address}
-                    </p>
-                  )}
-                </div>
+            <div className="space-y-8 mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800">
+                Thông Tin Đặt Lịch Tiêm
+              </h3>
+              <div className="space-y-4 text-lg text-gray-700">
+                <p>
+                  <strong>Họ và tên:</strong> {state.childName}
+                </p>
+                <p>
+                  <strong>Ngày sinh:</strong>{" "}
+                  {format(new Date(state.dateOfBirth), "dd/MM/yyyy")}
+                </p>
+                <p>
+                  <strong>Số điện thoại:</strong> {state.phoneNumber}
+                </p>
+                <p>
+                  <strong>Email:</strong> {state.email}
+                </p>
+                <p>
+                  <strong>Trung tâm tiêm:</strong> {state.center}
+                </p>
+                <p>
+                  <strong>Vắc-xin:</strong> {state.vaccine}
+                </p>
+                <p>
+                  <strong>Ngày tiêm:</strong>{" "}
+                  {format(new Date(state.appointmentDate), "dd/MM/yyyy")}
+                </p>
+                <p>
+                  <strong>Khung giờ:</strong> {state.timeSlot}
+                </p>
               </div>
+            </div>
 
-              <div className="bg-yellow-50 p-6 rounded-lg">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">
-                  Phương thức thanh toán
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="bg-white p-8 rounded-xl shadow-md">
+                <h3 className="text-xl font-medium text-gray-900 mb-6">
+                  Chọn Phương Thức Thanh Toán
                 </h3>
-                <div className="space-y-3">
+                <div className="space-y-6">
                   <div className="flex items-center">
                     <input
                       type="radio"
@@ -180,13 +129,13 @@ const VaccinePaymentPage = () => {
                       name="paymentMethod"
                       checked={paymentMethod === "offline"}
                       onChange={() => handlePaymentMethodChange("offline")}
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                      className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300"
                     />
                     <label
                       htmlFor="offline"
-                      className="ml-3 flex items-center text-sm font-medium text-gray-700"
+                      className="ml-3 text-lg font-medium text-gray-800 flex items-center"
                     >
-                      <FaMoneyBillWave className="mr-2 text-blue-500" />
+                      <FaMoneyBillWave className="mr-3 text-blue-500" />
                       Thanh toán trực tiếp
                     </label>
                   </div>
@@ -197,13 +146,13 @@ const VaccinePaymentPage = () => {
                       name="paymentMethod"
                       checked={paymentMethod === "online"}
                       onChange={() => handlePaymentMethodChange("online")}
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                      className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300"
                     />
                     <label
                       htmlFor="online"
-                      className="ml-3 flex items-center text-sm font-medium text-gray-700"
+                      className="ml-3 text-lg font-medium text-gray-800 flex items-center"
                     >
-                      <FaCreditCard className="mr-2 text-blue-500" />
+                      <FaCreditCard className="mr-3 text-blue-500" />
                       Thanh toán online
                     </label>
                   </div>
@@ -218,13 +167,13 @@ const VaccinePaymentPage = () => {
               <button
                 type="submit"
                 disabled={!isFormValid}
-                className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                className={`w-full py-4 rounded-lg shadow-lg text-xl font-medium text-white ${
                   isFormValid
-                    ? "bg-gradient-to-r from-blue-500 to-blue-600 hover:opacity-90"
+                    ? "bg-gradient-to-r from-blue-600 to-blue-700 hover:bg-blue-800"
                     : "bg-gray-300 cursor-not-allowed"
-                }`}
+                } transition duration-300 ease-in-out transform hover:scale-105`}
               >
-                Pay Now
+                Thanh Toán Ngay
               </button>
             </form>
           </div>

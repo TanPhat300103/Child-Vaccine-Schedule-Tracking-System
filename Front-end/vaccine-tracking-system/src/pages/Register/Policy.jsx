@@ -3,88 +3,95 @@ import React from "react";
 const Policy = () => {
   return (
     <div className="p-6 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Privacy Policy</h1>
-      <p className="mb-4">Last updated: [Insert Date]</p>
+      <h1 className="text-2xl font-bold mb-4">Chính Sách Quyền Riêng Tư</h1>
+      <p className="mb-4">Cập nhật lần cuối: [Chèn Ngày]</p>
 
       <p className="mb-4">
-        Welcome to our Vaccine Booking System. Your privacy is important to us.
-        This Privacy Policy explains how we collect, use, and protect your
-        personal information when you use our platform.
+        Chào mừng bạn đến với Hệ thống Đặt Lịch Tiêm Chủng của chúng tôi. Quyền
+        riêng tư của bạn là rất quan trọng đối với chúng tôi. Chính Sách Quyền
+        Riêng Tư này giải thích cách chúng tôi thu thập, sử dụng và bảo vệ thông
+        tin cá nhân của bạn khi bạn sử dụng nền tảng của chúng tôi.
       </p>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">
-        1. Information We Collect
+        1. Thông Tin Chúng Tôi Thu Thập
       </h2>
       <p className="mb-4">
-        When you use our system, we may collect the following types of
-        information:
+        Khi bạn sử dụng hệ thống của chúng tôi, chúng tôi có thể thu thập các
+        loại thông tin sau:
       </p>
       <ul className="list-disc ml-6 mb-4">
         <li>
-          Personal information (e.g., name, date of birth, phone number, email
-          address)
+          Thông tin cá nhân (ví dụ: tên, ngày sinh, số điện thoại, địa chỉ
+          email)
         </li>
-        <li>Medical history related to vaccination</li>
-        <li>Appointment details (e.g., date, time, location of vaccination)</li>
+        <li>Lịch sử y tế liên quan đến tiêm chủng</li>
+        <li>Chi tiết về lịch hẹn (ví dụ: ngày, giờ, địa điểm tiêm chủng)</li>
         <li>
-          Device and usage data (e.g., IP address, browser type, device type)
+          Dữ liệu thiết bị và sử dụng (ví dụ: địa chỉ IP, loại trình duyệt, loại
+          thiết bị)
         </li>
       </ul>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">
-        2. How We Use Your Information
+        2. Cách Chúng Tôi Sử Dụng Thông Tin Của Bạn
       </h2>
-      <p className="mb-4">We use the collected information to:</p>
+      <p className="mb-4">Chúng tôi sử dụng thông tin thu thập được để:</p>
       <ul className="list-disc ml-6 mb-4">
-        <li>Schedule and manage vaccine appointments</li>
-        <li>Send reminders and notifications</li>
-        <li>Ensure compliance with health regulations</li>
-        <li>Improve system security and user experience</li>
-        <li>Conduct analytics and research</li>
+        <li>Đặt lịch và quản lý các cuộc hẹn tiêm chủng</li>
+        <li>Gửi thông báo và nhắc nhở</li>
+        <li>Đảm bảo tuân thủ các quy định về sức khỏe</li>
+        <li>Cải thiện bảo mật hệ thống và trải nghiệm người dùng</li>
+        <li>Thực hiện phân tích và nghiên cứu</li>
       </ul>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">
-        3. Data Sharing and Security
+        3. Chia Sẻ Dữ Liệu và Bảo Mật
       </h2>
       <p className="mb-4">
-        We do not sell or rent your personal data. Your information may be
-        shared with:
+        Chúng tôi không bán hoặc cho thuê dữ liệu cá nhân của bạn. Thông tin của
+        bạn có thể được chia sẻ với:
       </p>
       <ul className="list-disc ml-6 mb-4">
-        <li>Healthcare providers for appointment scheduling</li>
-        <li>Government agencies if required by law</li>
-        <li>Third-party service providers for system maintenance</li>
+        <li>Các nhà cung cấp dịch vụ y tế để đặt lịch hẹn</li>
+        <li>Các cơ quan chính phủ nếu yêu cầu theo pháp luật</li>
+        <li>Các nhà cung cấp dịch vụ bên thứ ba để bảo trì hệ thống</li>
       </ul>
       <p className="mb-4">
-        We implement strong security measures to protect your data, including
-        encryption, access controls, and regular security audits.
+        Chúng tôi thực hiện các biện pháp bảo mật mạnh mẽ để bảo vệ dữ liệu của
+        bạn, bao gồm mã hóa, kiểm soát quyền truy cập và kiểm tra bảo mật định
+        kỳ.
       </p>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">
-        4. Your Rights and Choices
+        4. Quyền Lợi và Lựa Chọn Của Bạn
       </h2>
-      <p className="mb-4">You have the right to:</p>
+      <p className="mb-4">Bạn có quyền:</p>
       <ul className="list-disc ml-6 mb-4">
-        <li>Access and update your personal information</li>
-        <li>Request deletion of your data</li>
-        <li>Opt out of marketing communications</li>
+        <li>Truy cập và cập nhật thông tin cá nhân của bạn</li>
+        <li>Yêu cầu xóa dữ liệu của bạn</li>
+        <li>Chọn không nhận thông tin tiếp thị</li>
       </ul>
       <p className="mb-4">
-        To exercise these rights, please contact us at [Insert Contact Email].
+        Để thực hiện các quyền này, vui lòng liên hệ với chúng tôi qua [Chèn
+        Email Liên Hệ].
       </p>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">
-        5. Changes to This Policy
+        5. Thay Đổi Chính Sách Này
       </h2>
       <p className="mb-4">
-        We may update this Privacy Policy from time to time. Any changes will be
-        posted on this page with a revised "Last updated" date.
+        Chúng tôi có thể cập nhật Chính Sách Quyền Riêng Tư này theo thời gian.
+        Mọi thay đổi sẽ được đăng tải trên trang này với ngày "Cập nhật lần
+        cuối" đã được sửa đổi.
       </p>
 
-      <h2 className="text-xl font-semibold mt-6 mb-2">6. Contact Us</h2>
+      <h2 className="text-xl font-semibold mt-6 mb-2">
+        6. Liên Hệ Với Chúng Tôi
+      </h2>
       <p className="mb-4">
-        If you have any questions about this Privacy Policy, please contact us
-        at [Insert Contact Information].
+        Nếu bạn có bất kỳ câu hỏi nào về Chính Sách Quyền Riêng Tư này, vui lòng
+        liên hệ với chúng tôi qua [Chèn Thông Tin Liên Hệ].
       </p>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FaSearch,
@@ -19,6 +19,8 @@ const App = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [currentSlide, setCurrentSlide] = useState(0);
   const navigate = useNavigate();
+  const vaccinePricingRef = useRef(null);
+  const footerRef = useRef(null);
   const slides = [
     {
       image: "https://images.unsplash.com/photo-1584515933487-779824d29309",
@@ -64,37 +66,59 @@ const App = () => {
     }, 5000);
     return () => clearInterval(timer);
   }, []);
-
+  const scrollToVaccinePricingTable = () => {
+    // Only scroll if ref is not null
+    if (vaccinePricingRef.current) {
+      vaccinePricingRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+  const scrollToFooter = () => {
+    if (footerRef.current) {
+      footerRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       <motion.header
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className={`fixed w-full z-50 transition-all duration-300 ${
-          scrollPosition > 50
-            ? "bg-white/80 backdrop-blur-md shadow-md"
-            : "bg-transparent"
-        }`}
+        className={`fixed w-full z-50 transition-all duration-300 bg-white shadow-md`}
       >
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <motion.div
             initial={{ x: -100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            className="text-2xl font-bold text-blue-600"
+            className="text-2xl font-bold text-blue-600 cursor-pointer"
           >
             VaccineCare
           </motion.div>
 
           <nav className="hidden md:flex items-center space-x-8">
-            {["Trang chủ", "Dịch vụ", "Liên lạc", "Giới thiệu"].map((item) => (
+            {["Trang chủ", "Đặt lịch", "Gói tiêm", "Liên lạc"].map((item) => (
               <motion.a
                 key={item}
-                href="#"
+                onClick={() => {
+                  if (item === "Gói tiêm") {
+                    scrollToVaccinePricingTable(); // Cuộn đến phần VaccinePricingTable
+                  }
+                  if (item === "Liên lạc") {
+                    scrollToFooter(); // Cuộn đến Footer
+                  }
+                  if (item === "Đặt lịch") {
+                    navigate("/login");
+                  }
+                }}
                 whileHover={{ scale: 1.05 }}
-                className="text-gray-700 hover:text-blue-600 transition-colors relative group"
+                className="text-gray-700 hover:text-blue-600 transition-colors relative group cursor-pointer"
               >
                 {item}
-                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform" />
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform " />
               </motion.a>
             ))}
             <motion.button
@@ -102,31 +126,16 @@ const App = () => {
               className="px-4 py-2 text-blue-600 border border-blue-600 rounded-full hover:bg-blue-50 transition-colors"
               onClick={() => navigate("/login")}
             >
-              Login
+              Đăng nhập
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.05 }}
               className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
               onClick={() => navigate("/register")}
             >
-              Sign Up
+              Đăng ký
             </motion.button>
           </nav>
-
-          <div className="md:hidden flex items-center space-x-4">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              className="px-3 py-1 text-sm text-blue-600 border border-blue-600 rounded-full hover:bg-blue-50 transition-colors"
-            >
-              Login
-            </motion.button>
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-700 hover:text-blue-600 transition-colors"
-            >
-              {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-            </button>
-          </div>
         </div>
 
         <AnimatePresence>
@@ -206,7 +215,7 @@ const App = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="bg-blue-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-blue-700 transition-colors duration-300 animate-pulse"
-                    onClick={() => navigate("/bookschedule-vaccine")}
+                    onClick={() => navigate("/login")}
                   >
                     Đăng ký tiêm
                   </motion.button>
@@ -302,8 +311,9 @@ const App = () => {
 
       <VaccinationPackages></VaccinationPackages>
 
-      <VaccinePricingTable></VaccinePricingTable>
-
+      <motion.section className="py-20 bg-white" ref={vaccinePricingRef}>
+        <VaccinePricingTable />
+      </motion.section>
       <section className="py-20 bg-blue-50">
         <div className="container mx-auto px-4">
           <motion.h2
@@ -417,7 +427,9 @@ const App = () => {
         </div>
       </section>
 
-      <Footer></Footer>
+      <section ref={footerRef}>
+        <Footer />
+      </section>
     </div>
   );
 };

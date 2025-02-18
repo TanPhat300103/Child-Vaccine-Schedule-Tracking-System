@@ -185,7 +185,7 @@ const Register = () => {
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
                 errors.email ? "border-red-500" : "border-gray-300"
               }`}
-              placeholder="nguyenA@email.com"
+              placeholder="nguyenA@gmail.com"
             />
             {errors.email && (
               <p className="text-red-500 text-sm mt-1">{errors.email}</p>
@@ -262,7 +262,7 @@ const Register = () => {
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
                 errors.phone ? "border-red-500" : "border-gray-300"
               }`}
-              placeholder="0901234567"
+              placeholder=""
             />
             {errors.phone && (
               <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
@@ -280,7 +280,7 @@ const Register = () => {
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
               rows="3"
-              placeholder="Enter your address"
+              placeholder=""
             />
           </div>
 
@@ -326,7 +326,7 @@ const Register = () => {
                 <span className="ml-2">Registering...</span>
               </div>
             ) : (
-              "Register"
+              "Đăng ký"
             )}
           </button>
         </form>
