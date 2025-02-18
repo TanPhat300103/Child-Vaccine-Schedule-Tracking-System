@@ -12,6 +12,7 @@ import {
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+const apiUrl = import.meta.env.VITE_API_URL;
 const Register = () => {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -70,17 +71,14 @@ const Register = () => {
       setIsLoading(true);
       try {
         // API call simulation
-        const response = await axios.post(
-          "https://67aa281d65ab088ea7e5d7ab.mockapi.io/user",
-          {
-            fullName: formData.fullName,
-            email: formData.email,
-            password: formData.password,
-            phone: formData.phone,
-            address: formData.address,
-            gender: formData.gender,
-          }
-        );
+        const response = await axios.post("${apiUrl}/user", {
+          fullName: formData.fullName,
+          email: formData.email,
+          password: formData.password,
+          phone: formData.phone,
+          address: formData.address,
+          gender: formData.gender,
+        });
         if (response.status === 201) {
           console.log("Registration successful");
           navigate("/login");

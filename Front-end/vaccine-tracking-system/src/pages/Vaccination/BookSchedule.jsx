@@ -10,6 +10,7 @@ import {
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 
+const apiUrl = import.meta.env.VITE_API_URL;
 const VaccineScheduling = () => {
   const [formData, setFormData] = useState({
     childName: "",
@@ -93,16 +94,13 @@ const VaccineScheduling = () => {
       setIsSubmitting(true);
       try {
         // Giả lập API call
-        const response = await fetch(
-          "https://67aa281d65ab088ea7e5d7ab.mockapi.io/Schedule",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
-          }
-        );
+        const response = await fetch("${apiUrl}/Schedule", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
 
         if (!response.ok) throw new Error("Đặt lịch tiêm không thành công");
 

@@ -38,16 +38,13 @@ const VaccinePaymentPage = () => {
       if (paymentMethod === "offline") {
         // Nếu thanh toán trực tiếp, thực hiện thanh toán và chuyển hướng về trang /home
         try {
-          const response = await fetch(
-            "https://67aa281d65ab088ea7e5d7ab.mockapi.io/Schedule",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ ...state, paymentMethod }),
-            }
-          );
+          const response = await fetch("${apiUrl}/Schedule", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ ...state, paymentMethod }),
+          });
 
           if (!response.ok) throw new Error("Thanh toán thất bại");
 
