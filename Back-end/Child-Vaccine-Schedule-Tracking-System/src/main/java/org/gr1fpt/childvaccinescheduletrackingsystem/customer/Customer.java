@@ -17,6 +17,7 @@ import java.sql.Date;
 public class Customer {
     @Id
     private String customerId;
+    @NotBlank
     @Pattern(regexp = "^(\\+84|0)[3|5|7|8|9][0-9]{8}$", message = "Invalid phone number format")
     private String phoneNumber;
     private String firstName;

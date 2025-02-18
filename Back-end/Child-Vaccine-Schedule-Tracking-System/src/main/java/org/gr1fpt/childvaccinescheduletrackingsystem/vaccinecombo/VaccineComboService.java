@@ -17,10 +17,14 @@ public class VaccineComboService {
         return vaccineComboRepository.findAll();
     }
 
-    public VaccineCombo create(VaccineCombo vaccineCombo) {
-        if (vaccineComboRepository.existsById(vaccineCombo.getVaccineComboId()))
-            throw new CustomException("Vaccine Combo ID: " + vaccineCombo.getVaccineComboId() + " Exist", HttpStatus.BAD_REQUEST);
+    private String generateId() {
+        long count = vaccineComboRepository.count()+1;
+        return String.valueOf(count);
+    }
 
+
+    public VaccineCombo create(VaccineCombo vaccineCombo) {
+        vaccineCombo.setVaccineComboId(generateId());
         return vaccineComboRepository.save(vaccineCombo);
     }
 

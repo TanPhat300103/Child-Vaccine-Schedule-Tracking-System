@@ -97,6 +97,10 @@ public class PaymentService {
         if(coupon != null){
             MarketingCampaign marketing = getCampaignByCouponCode(coupon);
             if (marketing != null) {
+                if (!marketing.isActive()){
+                    throw new CustomException("Coupon is not active",HttpStatus.CONFLICT);
+                }
+
                 discount = marketing.getDiscount();
             }
         }

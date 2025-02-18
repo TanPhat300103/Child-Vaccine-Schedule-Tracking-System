@@ -2,6 +2,7 @@ package org.gr1fpt.childvaccinescheduletrackingsystem.bookingdetail;
 
 import org.gr1fpt.childvaccinescheduletrackingsystem.booking.Booking;
 import org.gr1fpt.childvaccinescheduletrackingsystem.booking.BookingDTO;
+import org.gr1fpt.childvaccinescheduletrackingsystem.booking.BookingRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.child.Child;
 import org.gr1fpt.childvaccinescheduletrackingsystem.combodetail.ComboDetail;
 import org.gr1fpt.childvaccinescheduletrackingsystem.vaccine.VaccineRepository;
@@ -37,10 +38,12 @@ public class BookingDetailService {
     VaccineComboService vaccineComboService;
     @Autowired
     MedicalHistoryService medicalHistoryService;
+    @Autowired
+    private BookingRepository bookingRepository;
+
     public java.util.List<BookingDetail> getAll() {
         return bookingDetailRepository.findAll();
     }
-
 
     @Transactional
     public void create(BookingDTO bookingDTO) {
@@ -64,13 +67,9 @@ public class BookingDetailService {
                 }
             }
         }
-        //test
-        System.out.println("tétttt"+listVaccineId);
-
 
         // Khởi tạo Detail Booking từ listvaccine
         for (String vaccineId : listVaccineId) {
-            System.out.println("tét");
             Vaccine vaccine = vaccineRepository.findById(vaccineId).orElseThrow(() -> new RuntimeException("Vaccine not found"));
             int dose = vaccine.getDoseNumber();
             int flag = 0;
@@ -95,7 +94,6 @@ public class BookingDetailService {
 
                 //BookingID sẽ được tạo ở đây
                 BookingDetail bookingDetail = new BookingDetail(UUID.randomUUID().toString(), booking, child, scheduleDate, null, vaccine, "none", vaccineCombo, 1);
-                System.out.println(bookingDetail);
                 bookingDetailRepository.save(bookingDetail);
             }
         }

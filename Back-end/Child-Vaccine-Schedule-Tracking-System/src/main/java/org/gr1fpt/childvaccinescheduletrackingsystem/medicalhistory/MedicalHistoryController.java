@@ -29,4 +29,6 @@ public class MedicalHistoryController {
     {
         medicalHistoryService.deleteAllByChildId(id);
     }
+
+
 }

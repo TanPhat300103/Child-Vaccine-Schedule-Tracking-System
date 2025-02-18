@@ -1,5 +1,6 @@
 package org.gr1fpt.childvaccinescheduletrackingsystem.vaccinecombo;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class VaccineComboController {
     }
 
     @PostMapping("create")
-    public VaccineCombo create (@RequestBody VaccineCombo vaccineCombo)
+    public VaccineCombo create (@RequestBody @Valid VaccineCombo vaccineCombo)
     {
         return vaccineComboService.create(vaccineCombo);
     }

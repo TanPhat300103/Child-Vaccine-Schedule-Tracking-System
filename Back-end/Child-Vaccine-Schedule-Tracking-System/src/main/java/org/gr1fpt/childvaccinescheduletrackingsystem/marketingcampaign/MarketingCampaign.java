@@ -23,7 +23,6 @@ public class MarketingCampaign {
     private String name;
     private Date startTime;
     private Date endTime;
-    @Pattern(regexp = "^[A-Za-z0-9]{6,10}$", message = "Wrong format coupon")
     @Column(unique = true)
     private String coupon;
     private int discount;

@@ -10,4 +10,6 @@ public interface FeedbackRepository extends JpaRepository<Feedback,String > {
     public Feedback findByBooking_BookingId(String feedbackId);
     public List<Feedback> findByRanking(int ranking);
     public List<Feedback> findByRankingGreaterThanEqual(int rankingGreaterThan);
+
+    public long countByBooking_BookingId(String bookingBookingId);
 }

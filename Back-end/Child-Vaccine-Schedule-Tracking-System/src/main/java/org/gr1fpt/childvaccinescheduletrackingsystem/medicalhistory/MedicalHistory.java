@@ -1,6 +1,7 @@
 package org.gr1fpt.childvaccinescheduletrackingsystem.medicalhistory;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 import org.gr1fpt.childvaccinescheduletrackingsystem.child.Child;
 import org.gr1fpt.childvaccinescheduletrackingsystem.vaccine.Vaccine;
@@ -23,6 +24,7 @@ public class MedicalHistory {
     @JoinColumn(name = "vaccineId", nullable = false)
     private Vaccine vaccine;
     private Date date;
+    @Min(value = 0,message = "dose must be greater than 0")
     private int dose;
     private String reaction;
 

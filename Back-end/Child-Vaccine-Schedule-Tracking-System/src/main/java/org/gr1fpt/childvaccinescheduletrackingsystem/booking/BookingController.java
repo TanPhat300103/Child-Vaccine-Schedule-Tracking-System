@@ -44,7 +44,7 @@ public class BookingController {
     }
 
     @PostMapping("update")
-    public Booking updateBooking(@RequestBody Booking booking) {
+    public Booking updateBooking(@RequestBody @Valid Booking booking) {
         return bookingService.updateBooking(booking);
     }
 

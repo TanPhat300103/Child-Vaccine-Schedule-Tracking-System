@@ -13,7 +13,7 @@ import org.gr1fpt.childvaccinescheduletrackingsystem.vaccinecombo.VaccineCombo;
 @Data
 @Table(name ="ComboDetail")
 public class ComboDetail {
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private String comboDetailId;
     @ManyToOne

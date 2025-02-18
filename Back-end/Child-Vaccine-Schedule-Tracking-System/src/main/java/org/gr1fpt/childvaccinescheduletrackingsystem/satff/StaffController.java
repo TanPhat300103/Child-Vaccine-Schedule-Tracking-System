@@ -23,7 +23,7 @@ public class StaffController {
         return staffService.findById(id);
     }
 
-    @PostMapping("/create")
+    @PostMapping("create")
     public Staff createStaff(@RequestBody @Valid Staff staff) {
         return staffService.create(staff);
     }

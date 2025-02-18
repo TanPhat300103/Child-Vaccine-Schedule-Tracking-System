@@ -27,11 +27,12 @@ public class CustomerService {
     public Customer create(Customer customer) {
 
         if (customerRepository.findByPhoneNumber(customer.getPhoneNumber()).isEmpty()) {
+            customer.setRoleId(2);
             customer.setCustomerId(generateCustomerId());
             customer.setActive(true);
             return customerRepository.save(customer);
         } else {
-            throw new CustomException("Customer Phone: " + customer.getPhoneNumber() + "has been used", HttpStatus.BAD_REQUEST);
+            throw new CustomException("Customer Phone: " + customer.getPhoneNumber() + " has been used", HttpStatus.BAD_REQUEST);
         }
     }
 
