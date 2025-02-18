@@ -18,6 +18,7 @@ import VaccineScheduling from "../pages/Vaccination/BookSchedule.jsx";
 import VaccinationSchedule from "../pages/Vaccination/StatusSchedule.jsx";
 import DetailVaccine from "../pages/Vaccination/ReactionVaccine.jsx";
 import DetailVaccine2 from "../pages/Vaccination/DetailVaccine.jsx";
+import CustomerPage from "../pages/CustomerPage/CustomerPage.jsx";
 
 // eslint-disable-next-line react-refresh/only-export-components
 const Main = () => {
@@ -38,6 +39,7 @@ const Main = () => {
         <Route path="/vaccine-page" element={<DetailVaccine />} />
         <Route path="/vaccine-page2" element={<DetailVaccine2 />} />
         <Route path="/status-schedule" element={<VaccinationSchedule />} />
+        <Route path="/customer" element={<CustomerPage />} />
       </Routes>
     </Router>
   );

@@ -1,276 +1,161 @@
-// src/pages/Dashboard/ChildDashboard.jsx
-import axios from "axios";
+// src/pages/Customer/Child.jsx
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { format } from "date-fns";
 
-const API_BASE_URL =
-  "https://5e98cacd-7394-4c32-8519-999883e59df3.mock.pstmn.io"; // Đường dẫn API
+// Lấy base API từ biến môi trường; tạm thời dùng http://localhost:8080
+const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
-const ChildDashboard = () => {
-  const [children, setChildren] = useState([]);
-  const [selectedChild, setSelectedChild] = useState(null);
-  const [formData, setFormData] = useState({
-    childId: "",
-    firstName: "",
-    lastName: "",
-    gender: true,
-    dob: "",
-    contraindications: "",
-    active: true,
-    // Chỉ sử dụng customerId cho ví dụ
-    customer: { customerId: "" },
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+const Child = () => {
+  const [child, setChild] = useState(null);
+  const [editing, setEditing] = useState(false);
+  const [editData, setEditData] = useState({});
 
-  // GET /child: Lấy danh sách Child
-  const fetchChildren = async () => {
-    setLoading(true);
+  // Ví dụ: Lấy thông tin trẻ em theo id = "child001"
+  const fetchChild = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/child`);
-      setChildren(response.data);
-      setError("");
+      const response = await axios.get(`${apiUrl}/child/findid`, {
+        params: { id: "child001" },
+      });
+      setChild(response.data);
     } catch (err) {
-      console.error("Error fetching children:", err);
-      setError("Error fetching children");
-    } finally {
-      setLoading(false);
+      console.error("Lỗi lấy dữ liệu trẻ:", err);
     }
   };
 
   useEffect(() => {
-    fetchChildren();
+    fetchChild();
   }, []);
 
-  // Xử lý thay đổi input
-  const handleChange = (e) => {
+  const handleEditChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setEditData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // POST /child/create: Tạo mới Child
-  const handleCreate = async () => {
+  const handleSave = async () => {
+    // Gửi yêu cầu cập nhật; JSON Server hỗ trợ PUT/PATCH ở /child/{id} nếu key id được xác định.
     try {
-      await axios.post(`${API_BASE_URL}/child/create`, formData);
-      alert("Child created successfully!");
-      fetchChildren();
-      setFormData({
-        childId: "",
-        firstName: "",
-        lastName: "",
-        gender: true,
-        dob: "",
-        contraindications: "",
-        active: true,
-        customer: { customerId: "" },
+      // Giả sử chúng ta dùng PUT; cần đảm bảo rằng JSON Server nhận diện id
+      await axios.put(`${apiUrl}/child/${child.childId}`, {
+        ...child,
+        ...editData,
       });
+      alert("Cập nhật thành công!");
+      setEditing(false);
+      fetchChild();
     } catch (err) {
-      console.error("Error creating child:", err);
-      alert("Error creating child");
+      console.error("Lỗi cập nhật trẻ:", err);
+      alert("Lỗi cập nhật trẻ");
     }
   };
 
-  // POST /child/update: Cập nhật Child
-  const handleUpdate = async () => {
-    try {
-      await axios.post(`${API_BASE_URL}/child/update`, formData);
-      alert("Child updated successfully!");
-      fetchChildren();
-      setSelectedChild(null);
-    } catch (err) {
-      console.error("Error updating child:", err);
-      alert("Error updating child");
-    }
-  };
-
-  // DELETE /child/delete?id=...: Xoá Child
-  const handleDelete = async (childId) => {
-    if (window.confirm("Are you sure to delete this child?")) {
-      try {
-        await axios.delete(`${API_BASE_URL}/child/delete`, {
-          params: { id: childId },
-        });
-        alert("Child deleted successfully!");
-        fetchChildren();
-      } catch (err) {
-        console.error("Error deleting child:", err);
-        alert("Error deleting child");
-      }
-    }
-  };
-
-  // GET /child/findid?id=...: Lấy Child theo id
-  const handleFindById = async (childId) => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/child/findid`, {
-        params: { id: childId },
-      });
-      setSelectedChild(response.data);
-      setFormData(response.data);
-    } catch (err) {
-      console.error("Error fetching child by id:", err);
-      alert("Error fetching child by id");
-    }
-  };
-
-  // GET /child/findbycustomer?id=...: Lấy danh sách Child theo customer id
-  const handleFindByCustomer = async (customerId) => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/child/findbycustomer`, {
-        params: { id: customerId },
-      });
-      setChildren(response.data);
-    } catch (err) {
-      console.error("Error fetching children by customer id:", err);
-      alert("Error fetching children by customer id");
-    }
-  };
+  if (!child) return <p>Đang tải dữ liệu trẻ em...</p>;
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h2 className="text-3xl font-bold text-center mb-6">Child Dashboard</h2>
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold text-center">
+        Hồ Sơ Tiêm Chủng Trẻ Em
+      </h2>
+      <table className="min-w-full bg-white border mb-4">
+        <tbody className="text-gray-600 text-sm font-light">
+          <tr className="border-b border-gray-200 hover:bg-gray-100">
+            <td className="py-3 px-6 text-left">Mã trẻ</td>
+            <td className="py-3 px-6 text-left">{child.childId}</td>
+          </tr>
+          <tr className="border-b border-gray-200 hover:bg-gray-100">
+            <td className="py-3 px-6 text-left">Họ và tên</td>
+            <td className="py-3 px-6 text-left">
+              {editing ? (
+                <>
+                  <input
+                    type="text"
+                    name="firstName"
+                    defaultValue={child.firstName}
+                    onChange={handleEditChange}
+                    className="border rounded px-2 py-1 mr-2"
+                  />
+                  <input
+                    type="text"
+                    name="lastName"
+                    defaultValue={child.lastName}
+                    onChange={handleEditChange}
+                    className="border rounded px-2 py-1"
+                  />
+                </>
+              ) : (
+                `${child.firstName} ${child.lastName}`
+              )}
+            </td>
+          </tr>
+          <tr className="border-b border-gray-200 hover:bg-gray-100">
+            <td className="py-3 px-6 text-left">Ngày sinh</td>
+            <td className="py-3 px-6 text-left">
+              {format(new Date(child.dob), "dd/MM/yyyy")}
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-      {loading && <p className="text-center text-blue-500">Loading...</p>}
-      {error && <p className="text-center text-red-500">{error}</p>}
-
-      {/* Form CRUD */}
-      <div className="bg-white shadow rounded p-6 max-w-xl mx-auto mb-8">
-        <h3 className="text-xl font-semibold mb-4">
-          {selectedChild ? "Update Child" : "Create Child"}
-        </h3>
-        <div className="space-y-4">
-          <input
-            className="w-full border rounded p-2"
-            type="text"
-            name="childId"
-            placeholder="Child ID"
-            value={formData.childId}
-            onChange={handleChange}
-          />
-          <input
-            className="w-full border rounded p-2"
-            type="text"
-            name="firstName"
-            placeholder="First Name"
-            value={formData.firstName}
-            onChange={handleChange}
-          />
-          <input
-            className="w-full border rounded p-2"
-            type="text"
-            name="lastName"
-            placeholder="Last Name"
-            value={formData.lastName}
-            onChange={handleChange}
-          />
-          <input
-            className="w-full border rounded p-2"
-            type="date"
-            name="dob"
-            placeholder="Date of Birth"
-            value={formData.dob}
-            onChange={handleChange}
-          />
-          <input
-            className="w-full border rounded p-2"
-            type="text"
-            name="contraindications"
-            placeholder="Contraindications"
-            value={formData.contraindications}
-            onChange={handleChange}
-          />
-          <input
-            className="w-full border rounded p-2"
-            type="text"
-            name="customer"
-            placeholder="Customer ID"
-            value={formData.customer.customerId}
-            onChange={(e) =>
-              setFormData((prev) => ({
-                ...prev,
-                customer: { customerId: e.target.value },
-              }))
-            }
-          />
-        </div>
-        <div className="flex justify-between mt-6">
-          {selectedChild ? (
-            <button
-              className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded"
-              onClick={handleUpdate}
-            >
-              Update Child
-            </button>
-          ) : (
-            <button
-              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
-              onClick={handleCreate}
-            >
-              Create Child
-            </button>
-          )}
+      {editing ? (
+        <div className="flex justify-end space-x-4">
           <button
-            className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded"
-            onClick={() =>
-              setSelectedChild(null) ||
-              setFormData({
-                childId: "",
-                firstName: "",
-                lastName: "",
-                gender: true,
-                dob: "",
-                contraindications: "",
-                active: true,
-                customer: { customerId: "" },
-              })
-            }
+            onClick={handleSave}
+            className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded"
           >
-            Clear
+            Lưu
+          </button>
+          <button
+            onClick={() => setEditing(false)}
+            className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded"
+          >
+            Hủy
           </button>
         </div>
-      </div>
+      ) : (
+        <div className="flex justify-end">
+          <button
+            onClick={() => {
+              setEditing(true);
+              // Khởi tạo dữ liệu chỉnh sửa với dữ liệu hiện tại
+              setEditData({
+                firstName: child.firstName,
+                lastName: child.lastName,
+              });
+            }}
+            className="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded"
+          >
+            Chỉnh sửa
+          </button>
+        </div>
+      )}
 
-      {/* Danh sách Child */}
-      <div className="max-w-4xl mx-auto bg-white shadow rounded overflow-x-auto">
-        <h3 className="text-xl font-semibold text-center py-4 border-b">
-          List of Children
-        </h3>
-        <table className="min-w-full">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="py-3 px-4 text-left">Child ID</th>
-              <th className="py-3 px-4 text-left">Name</th>
-              <th className="py-3 px-4 text-left">DOB</th>
-              <th className="py-3 px-4 text-left">Active</th>
-              <th className="py-3 px-4 text-center">Actions</th>
+      {/* Bảng Vaccine Đã Tiêm */}
+      <div>
+        <h3 className="text-xl font-bold text-center mb-2">Vaccine Đã Tiêm</h3>
+        <table className="min-w-full bg-white border">
+          <thead>
+            <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+              <th className="py-3 px-6 text-left">STT</th>
+              <th className="py-3 px-6 text-left">Vaccine Đã Tiêm</th>
+              <th className="py-3 px-6 text-left">Ngày tiêm</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
-            {children.map((child) => (
-              <tr key={child.childId} className="hover:bg-gray-50">
-                <td className="py-3 px-4">{child.childId}</td>
-                <td className="py-3 px-4">
-                  {child.firstName} {child.lastName}
-                </td>
-                <td className="py-3 px-4">
-                  {new Date(child.dob).toLocaleDateString()}
-                </td>
-                <td className="py-3 px-4">{child.active ? "Yes" : "No"}</td>
-                <td className="py-3 px-4 text-center space-x-2">
-                  <button
-                    className="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded"
-                    onClick={() => handleFindById(child.childId)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded"
-                    onClick={() => handleDelete(child.childId)}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
+          <tbody className="text-gray-600 text-sm font-light">
+            {child.vaccinations &&
+              child.vaccinations.map((vac, index) => (
+                <tr
+                  key={vac.id}
+                  className="border-b border-gray-200 hover:bg-gray-100"
+                >
+                  <td className="py-3 px-6 text-left text-center">
+                    {index + 1}
+                  </td>
+                  <td className="py-3 px-6 text-left">{vac.vaccine}</td>
+                  <td className="py-3 px-6 text-left">
+                    {format(new Date(vac.date), "dd/MM/yyyy")}
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
@@ -278,4 +163,4 @@ const ChildDashboard = () => {
   );
 };
 
-export default ChildDashboard;
+export default Child;

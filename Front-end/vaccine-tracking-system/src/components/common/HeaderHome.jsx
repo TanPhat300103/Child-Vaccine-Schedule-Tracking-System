@@ -46,7 +46,7 @@ const Navbar = () => {
             {isOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg">
                 <button
-                  onClick={() => navigate("/manage-account")}
+                  onClick={() => navigate("/customer")}
                   className="block w-full px-4 py-2 text-left hover:bg-gray-100"
                 >
                   Quản lý tài khoản
