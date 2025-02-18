@@ -1,50 +1,101 @@
-// src/components/Header.jsx
-// eslint-disable-next-line no-unused-vars
-import React from "react";
-import { FaSearch, FaBars, FaTimes } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaBars, FaTimes, FaUser } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-// eslint-disable-next-line react/prop-types
-const HeaderHome = ({ isMenuOpen, setIsMenuOpen }) => {
+const Navbar = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+
   return (
-    <header className="bg-primary p-4 sticky top-0 z-50 shadow-lg">
-      <div className="container mx-auto flex items-center justify-between">
-        <div className="flex items-center transition-transform hover:scale-105">
-          <img
-            src="https://images.unsplash.com/photo-1505751172876-fa1923c5c528"
-            alt="Logo"
-            className="h-12 w-auto cursor-pointer rounded-lg"
-          />
-        </div>
-
-        <div className="hidden md:flex items-center flex-1 mx-8">
-          <div className="relative w-full max-w-2xl mx-auto">
-            <input
-              type="text"
-              placeholder="Tìm kiếm..."
-              className="w-full px-4 py-2 rounded-lg border border-input focus:outline-none focus:ring-2 focus:ring-ring bg-white/90 backdrop-blur-sm"
-            />
-            <FaSearch className="absolute right-4 top-1/2 transform -translate-y-1/2 text-accent hover:text-primary cursor-pointer" />
-          </div>
-        </div>
-
-        <div className="hidden md:flex items-center space-x-4">
-          <Link to="/login">
-            <button className="px-6 py-2 text-primary-foreground border-2 border-primary-foreground rounded-lg hover:bg-primary-foreground hover:text-primary transition-all duration-300 font-semibold">
-              User
-            </button>
-          </Link>
-        </div>
-
-        <button
-          className="md:hidden text-primary-foreground transition-transform duration-300 hover:scale-110"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
+    <motion.header
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="fixed w-full z-50 bg-white/80 backdrop-blur-md shadow-md"
+    >
+      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <motion.div
+          initial={{ x: -100, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          className="text-2xl font-bold text-blue-600"
         >
-          {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-        </button>
+          VaccineCare
+        </motion.div>
+
+        <nav className="hidden md:flex items-center space-x-8">
+          {["Trang chủ", "Dịch vụ", "Đặt lịch", "Giới thiệu"].map((item) => (
+            <motion.a
+              key={item}
+              href="#"
+              whileHover={{ scale: 1.05 }}
+              className="text-gray-700 hover:text-blue-600 transition-colors relative group"
+            >
+              {item}
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform" />
+            </motion.a>
+          ))}
+
+          <div className="relative">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors"
+            >
+              <FaUser className="text-gray-700" />
+            </button>
+            {isOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg">
+                <button
+                  onClick={() => navigate("/manage-account")}
+                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                >
+                  Quản lý tài khoản
+                </button>
+                <button
+                  onClick={() => navigate("/")}
+                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                >
+                  Đăng xuất
+                </button>
+              </div>
+            )}
+          </div>
+        </nav>
+
+        <div className="md:hidden flex items-center space-x-4">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="text-gray-700 hover:text-blue-600 transition-colors"
+          >
+            {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+          </button>
+        </div>
       </div>
-    </header>
+
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-white"
+          >
+            <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
+              {["Home", "Services", "Schedule", "About"].map((item) => (
+                <button
+                  key={item}
+                  onClick={() => navigate("/")}
+                  className="text-gray-700 hover:text-blue-600 transition-colors px-4 py-2"
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.header>
   );
 };
 
-export default HeaderHome;
+export default Navbar;

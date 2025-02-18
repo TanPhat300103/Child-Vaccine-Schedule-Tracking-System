@@ -112,10 +112,10 @@ const LoginPage = () => {
             className="mx-auto h-16 w-16 rounded-full"
           />
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Vaccine Schedule Tracker
+            Trình Theo Dõi Lịch Tiêm Chủng
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Track your child's vaccination journey
+            Theo Dõi Hành Trình Tiêm Chủng Của Con Bạn
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

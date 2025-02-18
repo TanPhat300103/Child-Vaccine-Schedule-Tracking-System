@@ -121,10 +121,10 @@ const Register = () => {
       <div className="max-w-md w-full bg-white rounded-xl shadow-xl p-8 space-y-6">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-blue-600">
-            Vaccine Schedule Registration
+            Đăng Ký Lịch Tiêm Chủng
           </h1>
           <p className="mt-2 text-gray-600">
-            Create your account to track child vaccinations
+            Tạo tài khoản của bạn để theo dõi lịch tiêm chủng của trẻ
           </p>
         </div>
 
@@ -132,7 +132,7 @@ const Register = () => {
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
               <FaUser className="text-blue-500" />
-              Full Name
+              Họ và Tên
             </label>
             <input
               type="text"
@@ -142,7 +142,7 @@ const Register = () => {
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
                 errors.fullName ? "border-red-500" : "border-gray-300"
               }`}
-              placeholder="John Doe"
+              placeholder="Nguyễn A"
             />
             {errors.fullName && (
               <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>
@@ -151,7 +151,7 @@ const Register = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Gender
+              Giới Tính
             </label>
             <select
               name="gender"
@@ -161,11 +161,11 @@ const Register = () => {
                 errors.gender ? "border-red-500" : "border-gray-300"
               }`}
             >
-              <option value="">Select Gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-              <option value="prefer-not-to-say">Prefer Not to Say</option>
+              <option value="">Chọn Giới Tính</option>
+              <option value="male">Nam</option>
+              <option value="female">Nữ</option>
+              <option value="other">Khác</option>
+              <option value="prefer-not-to-say">Không Muốn Tiết Lộ</option>
             </select>
             {errors.gender && (
               <p className="text-red-500 text-sm mt-1">{errors.gender}</p>
@@ -175,7 +175,7 @@ const Register = () => {
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
               <FaEnvelope className="text-blue-500" />
-              Email Address
+              Email
             </label>
             <input
               type="email"
@@ -185,7 +185,7 @@ const Register = () => {
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
                 errors.email ? "border-red-500" : "border-gray-300"
               }`}
-              placeholder="your@email.com"
+              placeholder="nguyenA@email.com"
             />
             {errors.email && (
               <p className="text-red-500 text-sm mt-1">{errors.email}</p>
@@ -195,7 +195,7 @@ const Register = () => {
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
               <FaLock className="text-blue-500" />
-              Password
+              Mật khẩu
             </label>
             <div className="relative">
               {" "}
@@ -207,7 +207,7 @@ const Register = () => {
                 className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
                   errors.password ? "border-red-500" : "border-gray-300"
                 }`}
-                placeholder="••••••••"
+                placeholder=""
               />
               <button
                 type="button"
@@ -229,7 +229,7 @@ const Register = () => {
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
               <FaLock className="text-blue-500" />
-              Confirm Password
+              Xác nhận mật khẩu
             </label>
             <input
               type={showPassword ? "text" : "password"}
@@ -239,7 +239,7 @@ const Register = () => {
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
                 errors.confirmPassword ? "border-red-500" : "border-gray-300"
               }`}
-              placeholder="••••••••"
+              placeholder=""
             />
 
             {errors.confirmPassword && (
@@ -252,7 +252,7 @@ const Register = () => {
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
               <FaPhone className="text-blue-500" />
-              Phone Number (Optional)
+              Số Điện Thoại (Không Bắt Buộc)
             </label>
             <input
               type="tel"
@@ -272,7 +272,7 @@ const Register = () => {
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
               <FaMapMarkerAlt className="text-blue-500" />
-              Address (Optional)
+              Địa Chỉ (Không Bắt Buộc)
             </label>
             <textarea
               name="address"
@@ -293,21 +293,21 @@ const Register = () => {
               className="mt-1"
             />
             <label className="ml-2 text-sm text-gray-600">
-              I agree to the{" "}
+              Tôi đồng ý với{" "}
               <button
                 type="button"
                 className="text-blue-600 hover:underline"
                 onClick={() => navigate("/terms-of-service")}
               >
-                Terms of Service
+                Điều Khoản Dịch Vụ
               </button>{" "}
-              and{" "}
+              và{" "}
               <button
                 type="button"
                 className="text-blue-600 hover:underline"
                 onClick={() => navigate("/privacy-policy")}
               >
-                Privacy Policy
+                Chính Sách Bảo Mật
               </button>
             </label>
           </div>
@@ -332,12 +332,12 @@ const Register = () => {
         </form>
 
         <p className="text-center text-sm text-gray-600">
-          Already have an account?{" "}
+          Đã có tài khoản?{" "}
           <button
             onClick={() => navigate("/login")}
             className="text-blue-600 hover:underline font-medium"
           >
-            Sign in
+            Đăng Nhập
           </button>
         </p>
       </div>

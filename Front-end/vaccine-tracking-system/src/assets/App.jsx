@@ -10,6 +10,9 @@ import {
   FaUserMd,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import VaccinationPackages from "../components/homepage/VaccineAge";
+import VaccinePricingTable from "../components/homepage/VaccinePrice";
+import Footer from "../components/common/Footer";
 
 const App = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -19,33 +22,33 @@ const App = () => {
   const slides = [
     {
       image: "https://images.unsplash.com/photo-1584515933487-779824d29309",
-      title: "Protect Your Child's Future",
+      title: "Bảo Vệ Tương Lai Của Con Bạn",
     },
     {
       image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef",
-      title: "Professional Healthcare Service",
+      title: "Dịch Vụ Chăm Sóc Sức Khỏe Chuyên Nghiệp",
     },
     {
       image: "https://images.unsplash.com/photo-1576765608535-5f04d1e3f289",
-      title: "Safe and Reliable Vaccines",
+      title: "Vắc-xin An Toàn và Đáng Tin Cậy",
     },
   ];
 
   const benefits = [
     {
       icon: <FaSyringe />,
-      title: "Safe Vaccines",
-      description: "WHO-approved vaccines for children",
+      title: "Vắc-xin An Toàn",
+      description: "Vắc-xin cho trẻ em được WHO phê duyệt",
     },
     {
       icon: <FaRegCalendarCheck />,
-      title: "Easy Scheduling",
-      description: "Flexible appointment system",
+      title: "Đặt Lịch Dễ Dàng",
+      description: "Hệ Thống Đặt Lịch Linh Hoạt",
     },
     {
       icon: <FaUserMd />,
-      title: "Expert Care",
-      description: "Professional medical staff",
+      title: "Chăm Sóc Chuyên Sâu",
+      description: "Đội Ngũ Y Tế Chuyên Nghiệp",
     },
   ];
 
@@ -83,7 +86,7 @@ const App = () => {
           </motion.div>
 
           <nav className="hidden md:flex items-center space-x-8">
-            {["Home", "Services", "Contact", "About"].map((item) => (
+            {["Trang chủ", "Dịch vụ", "Liên lạc", "Giới thiệu"].map((item) => (
               <motion.a
                 key={item}
                 href="#"
@@ -222,7 +225,7 @@ const App = () => {
             viewport={{ once: true }}
             className="text-3xl font-bold text-center mb-12 text-gray-800"
           >
-            Vaccine Benefits
+            Lợi Ích Của Vắc-xin
           </motion.h2>
           <div className="grid md:grid-cols-3 gap-8">
             {benefits.map((benefit, index) => (
@@ -257,11 +260,11 @@ const App = () => {
               transition={{ delay: 0.2 }}
             >
               <h2 className="text-4xl font-bold text-gray-800 mb-6">
-                Protect Your Family With Quality Healthcare
+                Bảo Vệ Gia Đình Bạn Với Dịch Vụ Chăm Sóc Sức Khỏe Chất Lượng
               </h2>
               <p className="text-gray-600 mb-8">
-                Experience world-class vaccination services with our team of
-                expert healthcare professionals.
+                Trải nghiệm dịch vụ tiêm chủng đẳng cấp thế giới cùng đội ngũ
+                chuyên gia y tế của chúng tôi.
               </p>
               <div className="flex space-x-4">
                 <motion.div
@@ -269,14 +272,14 @@ const App = () => {
                   className="flex items-center text-blue-600"
                 >
                   <FaUserMd className="text-2xl mr-2" />
-                  <span>Expert Doctors</span>
+                  <span>Bác Sĩ Chuyên Gia</span>
                 </motion.div>
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   className="flex items-center text-blue-600"
                 >
                   <FaSyringe className="text-2xl mr-2" />
-                  <span>Quality Vaccines</span>
+                  <span>Vắc-xin Chất Lượng</span>
                 </motion.div>
               </div>
             </motion.div>
@@ -297,108 +300,9 @@ const App = () => {
         </div>
       </motion.section>
 
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8">
-            <motion.div
-              initial={{ x: -50, opacity: 0 }}
-              whileInView={{ x: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              className="bg-white rounded-xl shadow-lg p-6"
-            >
-              <div className="space-y-4">
-                {["Basic Package", "Standard Package", "Premium Package"].map(
-                  (pkg, index) => (
-                    <motion.div
-                      key={pkg}
-                      whileHover={{ scale: 1.02 }}
-                      className="p-4 border rounded-lg cursor-pointer hover:border-blue-500 hover:shadow-md transition-all"
-                    >
-                      {pkg}
-                    </motion.div>
-                  )
-                )}
-              </div>
-            </motion.div>
-            <motion.div
-              initial={{ y: 50, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              className="md:col-span-2 bg-white rounded-xl shadow-lg p-6"
-            >
-              <h3 className="text-2xl font-bold mb-4">Package Details</h3>
-              <div className="space-y-4">
-                <div className="p-4 border rounded-lg">
-                  <h4 className="font-semibold">Included Vaccines</h4>
-                  <ul className="mt-2 space-y-2">
-                    <li className="flex items-center">
-                      <FaSyringe className="text-blue-500 mr-2" />
-                      <span>Core Vaccinations</span>
-                    </li>
-                    <li className="flex items-center">
-                      <FaSyringe className="text-blue-500 mr-2" />
-                      <span>Booster Shots</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
+      <VaccinationPackages></VaccinationPackages>
 
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <motion.h2
-            initial={{ y: 20, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-3xl font-bold text-center mb-12"
-          >
-            Pricing Details
-          </motion.h2>
-          <motion.div
-            initial={{ y: 50, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            className="overflow-x-auto"
-          >
-            <table className="w-full">
-              <thead className="bg-blue-50">
-                <tr>
-                  <th className="px-6 py-4 text-left">Vaccine Type</th>
-                  <th className="px-6 py-4 text-left">Age Group</th>
-                  <th className="px-6 py-4 text-left">Price</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  {
-                    type: "Basic Immunization",
-                    age: "0-1 years",
-                    price: "$100",
-                  },
-                  { type: "Booster Shots", age: "1-5 years", price: "$150" },
-                  { type: "Advanced Package", age: "5+ years", price: "$200" },
-                ].map((item, index) => (
-                  <motion.tr
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    className="hover:bg-blue-50 transition-colors"
-                  >
-                    <td className="px-6 py-4 border-t">{item.type}</td>
-                    <td className="px-6 py-4 border-t">{item.age}</td>
-                    <td className="px-6 py-4 border-t">{item.price}</td>
-                  </motion.tr>
-                ))}
-              </tbody>
-            </table>
-          </motion.div>
-        </div>
-      </section>
+      <VaccinePricingTable></VaccinePricingTable>
 
       <section className="py-20 bg-blue-50">
         <div className="container mx-auto px-4">
@@ -422,7 +326,7 @@ const App = () => {
                 step: 2,
                 title: "Quá trình tiêm",
                 icon: "👨‍⚕️",
-                description: "Thực hiện tiêm chủng an toàn",
+                description: "Thực hiện tiêm chủng ở trung tâm",
               },
               {
                 step: 3,
@@ -513,75 +417,7 @@ const App = () => {
         </div>
       </section>
 
-      <footer className="bg-blue-900 text-white py-16">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              className="space-y-4"
-            >
-              <h3 className="text-xl font-bold mb-4">VaccineCare</h3>
-              <p className="text-blue-200">Chăm sóc sức khỏe tận tâm</p>
-            </motion.div>
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="space-y-4"
-            >
-              <h3 className="text-xl font-bold mb-4">Liên Hệ</h3>
-              <p className="text-blue-200">Hotline: 1900 1234</p>
-              <p className="text-blue-200">Email: info@vaccinecare.com</p>
-            </motion.div>
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4 }}
-              className="space-y-4"
-            >
-              <h3 className="text-xl font-bold mb-4">Thanh Toán</h3>
-              <div className="flex space-x-4">
-                {["💳", "🏦", "📱"].map((icon, index) => (
-                  <motion.span
-                    key={index}
-                    whileHover={{ scale: 1.2, rotate: 5 }}
-                    className="text-2xl cursor-pointer hover:text-blue-300 transition-colors"
-                  >
-                    {icon}
-                  </motion.span>
-                ))}
-              </div>
-            </motion.div>
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.6 }}
-              className="space-y-4"
-            >
-              <h3 className="text-xl font-bold mb-4">Theo dõi chúng tôi</h3>
-              <div className="flex space-x-4">
-                {["📘", "📸", "🐦"].map((icon, index) => (
-                  <motion.span
-                    key={index}
-                    whileHover={{ scale: 1.2, rotate: 5 }}
-                    className="text-2xl cursor-pointer hover:text-blue-300 transition-colors"
-                  >
-                    {icon}
-                  </motion.span>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-          <div className="mt-12 pt-8 border-t border-blue-800 text-center text-blue-200">
-            © 2024 VaccineCare. All rights reserved.
-          </div>
-        </div>
-      </footer>
+      <Footer></Footer>
     </div>
   );
 };
