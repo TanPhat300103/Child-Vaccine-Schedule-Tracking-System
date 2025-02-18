@@ -1,15 +1,18 @@
 // src/pages/Customer/AddChild.jsx
 import React, { useState } from "react";
+import axios from "axios";
 
-// Lấy base API từ .env nếu cần
-const apiUrl = import.meta.env.VITE_API_URL;
+const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
-const AddChild = () => {
+const AddChild = ({ refreshChildren }) => {
   const [childData, setChildData] = useState({
     firstName: "",
     lastName: "",
     gender: "",
     dob: "",
+    contraindications: "",
+    active: true,
+    customer: { customerId: "cust001" }, // Giả sử customer hiện tại là cust001
   });
 
   const handleChange = (e) => {
@@ -17,16 +20,25 @@ const AddChild = () => {
     setChildData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Logic gọi API tạo mới trẻ em có thể được thêm tại đây
-    alert("Đã thêm trẻ em: " + childData.firstName + " " + childData.lastName);
-    setChildData({
-      firstName: "",
-      lastName: "",
-      gender: "",
-      dob: "",
-    });
+    try {
+      await axios.post(`${apiUrl}/child`, childData);
+      alert("Thêm trẻ em thành công!");
+      setChildData({
+        firstName: "",
+        lastName: "",
+        gender: "",
+        dob: "",
+        contraindications: "",
+        active: true,
+        customer: { customerId: "cust001" },
+      });
+      if (refreshChildren) refreshChildren();
+    } catch (err) {
+      console.error("Lỗi thêm trẻ em:", err);
+      alert("Lỗi thêm trẻ em");
+    }
   };
 
   return (
@@ -82,6 +94,14 @@ const AddChild = () => {
           name="dob"
           required
           value={childData.dob}
+          onChange={handleChange}
+          className="w-full px-4 py-2 border rounded-md"
+        />
+        <input
+          type="text"
+          name="contraindications"
+          placeholder="Chống chỉ định (nếu có)"
+          value={childData.contraindications}
           onChange={handleChange}
           className="w-full px-4 py-2 border rounded-md"
         />

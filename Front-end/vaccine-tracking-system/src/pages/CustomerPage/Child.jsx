@@ -1,21 +1,21 @@
 // src/pages/Customer/Child.jsx
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import { format } from "date-fns";
 
-// Lấy base API từ biến môi trường; tạm thời dùng http://localhost:8080
 const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 const Child = () => {
+  const { childId } = useParams();
   const [child, setChild] = useState(null);
   const [editing, setEditing] = useState(false);
   const [editData, setEditData] = useState({});
 
-  // Ví dụ: Lấy thông tin trẻ em theo id = "child001"
   const fetchChild = async () => {
     try {
       const response = await axios.get(`${apiUrl}/child/findid`, {
-        params: { id: "child001" },
+        params: { id: childId },
       });
       setChild(response.data);
     } catch (err) {
@@ -25,7 +25,7 @@ const Child = () => {
 
   useEffect(() => {
     fetchChild();
-  }, []);
+  }, [childId]);
 
   const handleEditChange = (e) => {
     const { name, value } = e.target;
@@ -33,9 +33,8 @@ const Child = () => {
   };
 
   const handleSave = async () => {
-    // Gửi yêu cầu cập nhật; JSON Server hỗ trợ PUT/PATCH ở /child/{id} nếu key id được xác định.
     try {
-      // Giả sử chúng ta dùng PUT; cần đảm bảo rằng JSON Server nhận diện id
+      // Sử dụng PUT để cập nhật trẻ
       await axios.put(`${apiUrl}/child/${child.childId}`, {
         ...child,
         ...editData,
@@ -116,7 +115,6 @@ const Child = () => {
           <button
             onClick={() => {
               setEditing(true);
-              // Khởi tạo dữ liệu chỉnh sửa với dữ liệu hiện tại
               setEditData({
                 firstName: child.firstName,
                 lastName: child.lastName,

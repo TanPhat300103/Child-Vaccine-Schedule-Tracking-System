@@ -1,7 +1,10 @@
 // src/pages/Customer/CustomerPage.jsx
-import React, { useState } from "react";
-import Child from "./Child"; // Component hiển thị thông tin trẻ em
-import AddChild from "./AddChild"; // Component form thêm trẻ em
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Child from "./Child"; // Component hiển thị thông tin trẻ em (dùng cho route riêng)
+import AddChild from "./AddChild";
+import Footer from "../../components/common/Footer";
 import {
   FiUser,
   FiMail,
@@ -13,27 +16,69 @@ import {
   FiEyeOff,
 } from "react-icons/fi";
 
+// Lấy base API từ biến môi trường VITE_API_URL
+const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
+
 const CustomerPage = () => {
+  // Giả sử đang đăng nhập với customerId "cust001"
+  const customerId = "cust001";
   const [activeSection, setActiveSection] = useState("profile");
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    fullName: "Nguyễn Văn A",
-    gender: "male",
-    dob: "1990-01-01",
-    email: "nguyenvana@example.com",
-    phone: "+1234567890",
-    address: "123 Đường Chính, Thành phố",
-    password: "********",
-  });
+  const [customer, setCustomer] = useState(null);
+  const [children, setChildren] = useState([]);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        await Promise.all([fetchCustomer(), fetchChildren()]);
+      } catch (err) {
+        setError("Không thể tải dữ liệu");
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, []);
+
+  // Lấy thông tin customer (sử dụng endpoint /customers)
+  // Sửa phần fetch customer
+  const fetchCustomer = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/customers/${customerId}`); // Sửa endpoint
+      setCustomer(response.data); // Bỏ [0] vì API trả về object trực tiếp
+    } catch (err) {
+      console.error("Lỗi lấy thông tin khách hàng:", err);
+    }
   };
+
+  // Sửa phần fetch children
+  const fetchChildren = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/child`, {
+        params: { "customer.customerId": customerId },
+      });
+      setChildren(response.data);
+    } catch (err) {
+      console.error("Lỗi lấy thông tin trẻ em:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchCustomer();
+    fetchChildren();
+  }, [customerId]);
+
+  if (loading) return <div>Đang tải...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
+  if (!customer) return <div>Không tìm thấy khách hàng</div>;
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8 flex flex-col md:flex-row gap-8">
-        {/* Sidebar bên trái */}
+        {/* Sidebar */}
         <div className="w-full md:w-1/4 bg-white rounded-lg shadow-md p-6">
           <div className="space-y-4">
             <button
@@ -49,19 +94,15 @@ const CustomerPage = () => {
 
             <div className="space-y-2">
               <h3 className="font-medium px-4">Hồ sơ trẻ em</h3>
-              {/* Ví dụ, bạn có thể có danh sách trẻ em từ backend */}
-              <button
-                onClick={() => setActiveSection("child-1")}
-                className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 rounded-md"
-              >
-                Sarah Doe
-              </button>
-              <button
-                onClick={() => setActiveSection("child-2")}
-                className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 rounded-md"
-              >
-                Mike Doe
-              </button>
+              {children.map((child) => (
+                <button
+                  key={child.childId}
+                  onClick={() => navigate(`/customer/child/${child.childId}`)}
+                  className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 rounded-md"
+                >
+                  {child.firstName} {child.lastName}
+                </button>
+              ))}
             </div>
 
             <button
@@ -84,137 +125,45 @@ const CustomerPage = () => {
           </div>
         </div>
 
-        {/* Khu vực nội dung bên phải */}
+        {/* Nội dung chính */}
         <div className="w-full md:w-3/4 bg-white rounded-lg shadow-md p-6">
-          {activeSection === "profile" && (
+          {activeSection === "profile" && customer && (
             <div className="space-y-6">
               <div className="text-center">
                 <div className="w-32 h-32 mx-auto bg-gray-200 rounded-full flex items-center justify-center">
                   <FiUser className="w-16 h-16 text-gray-400" />
                 </div>
               </div>
-
-              <form className="max-w-2xl mx-auto space-y-6">
-                <div className="space-y-4">
-                  <div className="relative">
-                    <FiUser className="absolute top-3 left-3 text-gray-400" />
-                    <input
-                      type="text"
-                      name="fullName"
-                      value={formData.fullName}
-                      onChange={handleInputChange}
-                      className="w-full pl-10 pr-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Họ và tên"
-                    />
-                  </div>
-
-                  <div className="flex gap-4">
-                    <label className="flex items-center">
-                      <input
-                        type="radio"
-                        name="gender"
-                        value="male"
-                        checked={formData.gender === "male"}
-                        onChange={handleInputChange}
-                        className="mr-2"
-                      />
-                      Nam
-                    </label>
-                    <label className="flex items-center">
-                      <input
-                        type="radio"
-                        name="gender"
-                        value="female"
-                        checked={formData.gender === "female"}
-                        onChange={handleInputChange}
-                        className="mr-2"
-                      />
-                      Nữ
-                    </label>
-                  </div>
-
-                  <div className="relative">
-                    <FiCalendar className="absolute top-3 left-3 text-gray-400" />
-                    <input
-                      type="date"
-                      name="dob"
-                      value={formData.dob}
-                      onChange={handleInputChange}
-                      className="w-full pl-10 pr-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                  </div>
-
-                  <div className="relative">
-                    <FiMail className="absolute top-3 left-3 text-gray-400" />
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className="w-full pl-10 pr-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Email"
-                    />
-                  </div>
-
-                  <div className="relative">
-                    <FiPhone className="absolute top-3 left-3 text-gray-400" />
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className="w-full pl-10 pr-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Số điện thoại"
-                    />
-                  </div>
-
-                  <div className="relative">
-                    <FiHome className="absolute top-3 left-3 text-gray-400" />
-                    <input
-                      type="text"
-                      name="address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      className="w-full pl-10 pr-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Địa chỉ"
-                    />
-                  </div>
-
-                  <div className="relative">
-                    <FiLock className="absolute top-3 left-3 text-gray-400" />
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      name="password"
-                      value={formData.password}
-                      onChange={handleInputChange}
-                      className="w-full pl-10 pr-12 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Mật khẩu"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-3 text-gray-400"
-                    >
-                      {showPassword ? <FiEyeOff /> : <FiEye />}
-                    </button>
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-                >
-                  Lưu Thay Đổi
-                </button>
-              </form>
+              <div className="max-w-2xl mx-auto space-y-4">
+                <p>
+                  <strong>Họ và tên:</strong> {customer.firstName}{" "}
+                  {customer.lastName}
+                </p>
+                <p>
+                  <strong>Email:</strong> {customer.email}
+                </p>
+                <p>
+                  <strong>Số điện thoại:</strong> {customer.phoneNumber}
+                </p>
+                <p>
+                  <strong>Địa chỉ:</strong> {customer.address}
+                </p>
+                <p>
+                  <strong>Ngày sinh:</strong>{" "}
+                  {new Date(customer.dob).toLocaleDateString()}
+                </p>
+              </div>
             </div>
           )}
 
-          {activeSection.startsWith("child-") && <Child />}
+          {activeSection === "add-child" && (
+            <AddChild refreshChildren={fetchChildren} />
+          )}
 
-          {activeSection === "add-child" && <AddChild />}
+          {/* Khi chuyển sang trang Child, sẽ do route riêng */}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
