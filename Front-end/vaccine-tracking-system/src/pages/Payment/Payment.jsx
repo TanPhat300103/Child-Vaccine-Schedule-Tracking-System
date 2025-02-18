@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { FaMoneyBillWave, FaCreditCard } from "react-icons/fa";
 import { format } from "date-fns";
 
+const apiUrl = import.meta.env.VITE_API_URL;
 const VaccinePaymentPage = () => {
   const { state } = useLocation();
   const [paymentMethod, setPaymentMethod] = useState("");

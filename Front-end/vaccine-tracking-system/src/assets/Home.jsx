@@ -1,18 +1,17 @@
-import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  FaSearch,
-  FaUser,
   FaBars,
-  FaTimes,
-  FaSyringe,
   FaRegCalendarCheck,
+  FaSyringe,
+  FaTimes,
+  FaUser,
   FaUserMd,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import Footer from "../components/common/Footer";
 import VaccinationPackages from "../components/homepage/VaccineAge";
 import VaccinePricingTable from "../components/homepage/VaccinePrice";
-import Footer from "../components/common/Footer";
 
 const App = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

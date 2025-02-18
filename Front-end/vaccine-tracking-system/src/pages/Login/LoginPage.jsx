@@ -11,7 +11,7 @@ import {
   signInWithPopup,
   provider,
 } from "../../config/firebase.js";
-
+const apiUrl = import.meta.env.VITE_API_URL;
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -45,9 +45,7 @@ const LoginPage = () => {
       // Simulate API call
       try {
         // API call simulation
-        const response = await fetch(
-          "https://67aa281d65ab088ea7e5d7ab.mockapi.io/user"
-        );
+        const response = await fetch("${apiUrl}/user");
         const data = await response.json();
         const user = data.find(
           (user) => user.email === email && user.password === password
