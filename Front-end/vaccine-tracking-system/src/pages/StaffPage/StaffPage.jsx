@@ -1,7 +1,6 @@
 // src/pages/Staff/StaffPage.jsx
 import React from "react";
-import { Link } from "react-router-dom";
-import { Outlet } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 
 import {
   FiHome,
@@ -83,6 +82,7 @@ const StaffPage = () => {
             </div>
           </div>
         </div>
+        <Outlet />
       </main>
     </div>
   );

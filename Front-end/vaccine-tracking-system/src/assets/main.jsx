@@ -43,8 +43,9 @@ const Main = () => {
         <Route path="/status-schedule" element={<VaccinationSchedule />} />
         <Route path="/customer" element={<CustomerPage />} />
         <Route path="/staff" element={<StaffPage />}>
+          <Route index element={<div>Trang chủ Staff</div>} />{" "}
+          {/* Trang mặc định */}
           <Route path="customers" element={<Customers />} />
-          {/* Add other nested routes here */}
         </Route>
       </Routes>
     </Router>

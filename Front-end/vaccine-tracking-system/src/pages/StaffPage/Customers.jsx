@@ -7,11 +7,12 @@ const Customers = () => {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await axios.get("/customer");
+        const response = await axios.get(`${apiUrl}/customer`);
         setCustomers(response.data);
       } catch (err) {
         setError(err.message);
