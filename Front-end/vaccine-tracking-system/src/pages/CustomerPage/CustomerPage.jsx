@@ -1,29 +1,18 @@
-// src/pages/Customer/CustomerPage.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Child from "./Child"; // Component hiển thị thông tin trẻ em (dùng cho route riêng)
+import Child from "./Child";
 import AddChild from "./AddChild";
 import Footer from "../../components/common/Footer";
-import {
-  FiUser,
-  FiMail,
-  FiPhone,
-  FiHome,
-  FiLock,
-  FiCalendar,
-  FiEye,
-  FiEyeOff,
-} from "react-icons/fi";
+import { FiUser } from "react-icons/fi";
 
 // Lấy base API từ biến môi trường VITE_API_URL
 const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 const CustomerPage = () => {
-  // Giả sử đang đăng nhập với customerId "cust001"
-  const customerId = "cust001";
+  // Trong thực tế, nên lấy từ context hoặc localStorage
+  const customerId = localStorage.getItem("customerId") || "cust001";
   const [activeSection, setActiveSection] = useState("profile");
-  const [showPassword, setShowPassword] = useState(false);
   const [customer, setCustomer] = useState(null);
   const [children, setChildren] = useState([]);
   const navigate = useNavigate();
@@ -32,48 +21,71 @@ const CustomerPage = () => {
 
   useEffect(() => {
     const loadData = async () => {
+      setLoading(true);
+      setError(null);
+
       try {
         await Promise.all([fetchCustomer(), fetchChildren()]);
       } catch (err) {
-        setError("Không thể tải dữ liệu");
+        setError(
+          "Không thể tải dữ liệu: " + (err.message || "Lỗi không xác định")
+        );
+        console.error("Lỗi tải dữ liệu:", err);
       } finally {
         setLoading(false);
       }
     };
-    loadData();
-  }, []);
 
-  // Lấy thông tin customer (sử dụng endpoint /customers)
-  // Sửa phần fetch customer
+    loadData();
+  }, [customerId]); // Thêm customerId vào dependencies
+
+  // Lấy thông tin customer
   const fetchCustomer = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/customers/${customerId}`); // Sửa endpoint
-      setCustomer(response.data); // Bỏ [0] vì API trả về object trực tiếp
+      const response = await axios.get(`${apiUrl}/customers/${customerId}`);
+      setCustomer(response.data);
     } catch (err) {
       console.error("Lỗi lấy thông tin khách hàng:", err);
+      throw new Error("Không thể tải thông tin khách hàng");
     }
   };
 
-  // Sửa phần fetch children
+  // Lấy thông tin trẻ em
   const fetchChildren = async () => {
     try {
+      // Sử dụng cách đặt tham số chuẩn RESTful
       const response = await axios.get(`${apiUrl}/child`, {
-        params: { "customer.customerId": customerId },
+        params: { customerId: customerId },
       });
       setChildren(response.data);
     } catch (err) {
       console.error("Lỗi lấy thông tin trẻ em:", err);
+      throw new Error("Không thể tải thông tin trẻ em");
     }
   };
 
-  useEffect(() => {
-    fetchCustomer();
-    fetchChildren();
-  }, [customerId]);
+  if (loading)
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-xl text-gray-600">Đang tải dữ liệu...</div>
+      </div>
+    );
 
-  if (loading) return <div>Đang tải...</div>;
-  if (error) return <div className="text-red-500">{error}</div>;
-  if (!customer) return <div>Không tìm thấy khách hàng</div>;
+  if (error)
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-xl text-red-500">{error}</div>
+      </div>
+    );
+
+  if (!customer)
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-xl text-gray-700">
+          Không tìm thấy thông tin khách hàng
+        </div>
+      </div>
+    );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -94,15 +106,21 @@ const CustomerPage = () => {
 
             <div className="space-y-2">
               <h3 className="font-medium px-4">Hồ sơ trẻ em</h3>
-              {children.map((child) => (
-                <button
-                  key={child.childId}
-                  onClick={() => navigate(`/customer/child/${child.childId}`)}
-                  className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 rounded-md"
-                >
-                  {child.firstName} {child.lastName}
-                </button>
-              ))}
+              {children.length > 0 ? (
+                children.map((child) => (
+                  <button
+                    key={child.childId}
+                    onClick={() => navigate(`/customer/child/${child.childId}`)}
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 rounded-md"
+                  >
+                    {child.firstName} {child.lastName}
+                  </button>
+                ))
+              ) : (
+                <p className="text-sm text-gray-500 px-4">
+                  Chưa có thông tin trẻ em
+                </p>
+              )}
             </div>
 
             <button
@@ -112,12 +130,18 @@ const CustomerPage = () => {
               Thêm trẻ em
             </button>
 
-            <button className="w-full text-left px-4 py-2 hover:bg-gray-50 rounded-md">
+            <button
+              onClick={() => navigate("/schedule")}
+              className="w-full text-left px-4 py-2 hover:bg-gray-50 rounded-md"
+            >
               Lịch tiêm chủng
             </button>
 
             <button
-              onClick={() => navigate("/")}
+              onClick={() => {
+                localStorage.removeItem("customerId");
+                navigate("/");
+              }}
               className="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-50 rounded-md"
             >
               Đăng xuất
@@ -143,24 +167,35 @@ const CustomerPage = () => {
                   <strong>Email:</strong> {customer.email}
                 </p>
                 <p>
-                  <strong>Số điện thoại:</strong> {customer.phoneNumber}
+                  <strong>Số điện thoại:</strong>{" "}
+                  {customer.phoneNumber || "Chưa cập nhật"}
                 </p>
                 <p>
-                  <strong>Địa chỉ:</strong> {customer.address}
+                  <strong>Địa chỉ:</strong>{" "}
+                  {customer.address || "Chưa cập nhật"}
                 </p>
                 <p>
                   <strong>Ngày sinh:</strong>{" "}
-                  {new Date(customer.dob).toLocaleDateString()}
+                  {customer.dob
+                    ? new Date(customer.dob).toLocaleDateString("vi-VN")
+                    : "Chưa cập nhật"}
                 </p>
+
+                <div className="pt-4">
+                  <button
+                    onClick={() => navigate("/edit-profile")}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+                  >
+                    Chỉnh sửa thông tin
+                  </button>
+                </div>
               </div>
             </div>
           )}
 
           {activeSection === "add-child" && (
-            <AddChild refreshChildren={fetchChildren} />
+            <AddChild customerId={customerId} refreshChildren={fetchChildren} />
           )}
-
-          {/* Khi chuyển sang trang Child, sẽ do route riêng */}
         </div>
       </div>
       <Footer />
