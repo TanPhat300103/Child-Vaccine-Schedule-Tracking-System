@@ -4,7 +4,16 @@ import axios from "axios";
 import AddChild from "./AddChild";
 import { Children } from "react";
 import Footer from "../../components/common/Footer";
-import { FiUser } from "react-icons/fi";
+import {
+  FiUser,
+  FiCalendar,
+  FiMail,
+  FiPhone,
+  FiHome,
+  FiLock,
+  FiEye,
+  FiEyeOff,
+} from "react-icons/fi";
 
 // Lấy base API từ biến môi trường VITE_API_URL
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -19,6 +28,68 @@ const CustomerPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [formData, setFormData] = useState({
+    firstName: customer?.firstName || "",
+    lastName: customer?.lastName || "",
+    dob: customer?.dob
+      ? new Date(customer.dob).toISOString().split("T")[0]
+      : "",
+    gender: customer?.gender ? "male" : "female",
+    email: customer?.email || "",
+    phoneNumber: customer?.phoneNumber || "",
+    address: customer?.address || "",
+    password: "", // Để trống cho người dùng nhập mật khẩu mới
+  });
+
+  // Cập nhật formData khi customer data thay đổi
+  useEffect(() => {
+    if (customer) {
+      setFormData({
+        firstName: customer.firstName,
+        lastName: customer.lastName,
+        dob: new Date(customer.dob).toISOString().split("T")[0],
+        gender: customer.gender ? "male" : "female",
+        email: customer.email,
+        phoneNumber: customer.phoneNumber,
+        address: customer.address,
+        password: "",
+      });
+    }
+  }, [customer]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const payload = {
+        ...formData,
+        gender: formData.gender === "male",
+        dob: new Date(formData.dob).toISOString(),
+        // Chỉ gửi password nếu có thay đổi
+        password: formData.password || undefined,
+      };
+
+      const response = await axios.put(
+        `${apiUrl}/customers/${customerId}`,
+        payload
+      );
+
+      // Cập nhật dữ liệu local
+      setCustomer(response.data);
+      alert("Cập nhật thành công!");
+    } catch (error) {
+      console.error("Lỗi cập nhật:", error);
+      alert("Cập nhật thất bại!");
+    }
+  };
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -97,7 +168,7 @@ const CustomerPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8 flex flex-col md:flex-row gap-8">
-        {/* Sidebar */}
+        {/* Left Sidebar */}
         <div className="w-full md:w-1/4 bg-white rounded-lg shadow-md p-6">
           <div className="space-y-4">
             <button
@@ -113,32 +184,22 @@ const CustomerPage = () => {
 
             <div className="space-y-2">
               <h3 className="font-medium px-4">Hồ sơ trẻ em</h3>
-              {Children.count(children) > 0 ? (
-                Children.map(children, (child) => (
-                  <button
-                    key={child.childId}
-                    onClick={() =>
-                      navigate(`/customer/child/findid?id=${child.childId}`)
-                    }
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 rounded-md flex items-center"
-                  >
-                    <span className="truncate">
-                      {child.firstName} {child.lastName}
-                    </span>
-                  </button>
-                ))
-              ) : (
-                <p className="text-sm text-gray-500 px-4">
-                  Chưa có thông tin trẻ em
-                </p>
-              )}
+              {children.slice(0, 5).map((child) => (
+                <button
+                  key={child.id}
+                  onClick={() => setActiveSection(`child-${child.id}`)}
+                  className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 rounded-md"
+                >
+                  {child.name}
+                </button>
+              ))}
             </div>
 
             <button
               onClick={() => setActiveSection("add-child")}
               className="w-full px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
             >
-              Thêm trẻ em
+              Thêm hồ sơ
             </button>
 
             <button
@@ -160,7 +221,7 @@ const CustomerPage = () => {
           </div>
         </div>
 
-        {/* Nội dung chính */}
+        {/* Right Content Area */}
         <div className="w-full md:w-3/4 bg-white rounded-lg shadow-md p-6">
           {activeSection === "profile" && customer && (
             <div className="space-y-6">
@@ -169,43 +230,143 @@ const CustomerPage = () => {
                   <FiUser className="w-16 h-16 text-gray-400" />
                 </div>
               </div>
-              <div className="max-w-2xl mx-auto space-y-4">
-                <p>
-                  <strong>Họ và tên:</strong> {customer.firstName}{" "}
-                  {customer.lastName}
-                </p>
-                <p>
-                  <strong>Email:</strong> {customer.email}
-                </p>
-                <p>
-                  <strong>Số điện thoại:</strong>{" "}
-                  {customer.phoneNumber || "Chưa cập nhật"}
-                </p>
-                <p>
-                  <strong>Địa chỉ:</strong>{" "}
-                  {customer.address || "Chưa cập nhật"}
-                </p>
-                <p>
-                  <strong>Ngày sinh:</strong>{" "}
-                  {customer.dob
-                    ? new Date(customer.dob).toLocaleDateString("vi-VN")
-                    : "Chưa cập nhật"}
-                </p>
 
-                <div className="pt-4">
-                  <button
-                    onClick={() => navigate("/edit-profile")}
-                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-                  >
-                    Chỉnh sửa thông tin
-                  </button>
+              <form
+                className="max-w-2xl mx-auto space-y-6"
+                onSubmit={handleSubmit}
+              >
+                <div className="space-y-4">
+                  <div className="relative">
+                    <FiUser className="absolute top-3 left-3 text-gray-400" />
+                    <input
+                      type="text"
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleInputChange}
+                      className="w-full pl-10 pr-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Họ"
+                    />
+                  </div>
+
+                  <div className="relative">
+                    <FiUser className="absolute top-3 left-3 text-gray-400" />
+                    <input
+                      type="text"
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleInputChange}
+                      className="w-full pl-10 pr-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Tên"
+                    />
+                  </div>
+
+                  <div className="flex gap-4">
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="male"
+                        checked={formData.gender === "male"}
+                        onChange={handleInputChange}
+                        className="mr-2"
+                      />
+                      Nam
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="female"
+                        checked={formData.gender === "female"}
+                        onChange={handleInputChange}
+                        className="mr-2"
+                      />
+                      Nữ
+                    </label>
+                  </div>
+
+                  <div className="relative">
+                    <FiCalendar className="absolute top-3 left-3 text-gray-400" />
+                    <input
+                      type="date"
+                      name="dob"
+                      value={formData.dob}
+                      onChange={handleInputChange}
+                      className="w-full pl-10 pr-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div className="relative">
+                    <FiMail className="absolute top-3 left-3 text-gray-400" />
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="w-full pl-10 pr-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Email"
+                    />
+                  </div>
+
+                  <div className="relative">
+                    <FiPhone className="absolute top-3 left-3 text-gray-400" />
+                    <input
+                      type="tel"
+                      name="phoneNumber"
+                      value={formData.phoneNumber}
+                      onChange={handleInputChange}
+                      className="w-full pl-10 pr-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Số điện thoại"
+                    />
+                  </div>
+
+                  <div className="relative">
+                    <FiHome className="absolute top-3 left-3 text-gray-400" />
+                    <input
+                      type="text"
+                      name="address"
+                      value={formData.address}
+                      onChange={handleInputChange}
+                      className="w-full pl-10 pr-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Địa chỉ"
+                    />
+                  </div>
+
+                  <div className="relative">
+                    <FiLock className="absolute top-3 left-3 text-gray-400" />
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      className="w-full pl-10 pr-12 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Mật khẩu mới (để trống nếu không đổi)"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-3 text-gray-400 hover:text-blue-500 transition-colors"
+                      aria-label={
+                        showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"
+                      }
+                    >
+                      {showPassword ? (
+                        <FiEyeOff className="w-5 h-5" />
+                      ) : (
+                        <FiEye className="w-5 h-5" />
+                      )}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </div>
-          )}
 
-          {activeSection === "add-child" && (
-            <AddChild customerId={customerId} refreshChildren={fetchChildren} />
+                <button
+                  type="submit"
+                  className="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+                >
+                  Lưu thay đổi
+                </button>
+              </form>
+            </div>
           )}
         </div>
       </div>

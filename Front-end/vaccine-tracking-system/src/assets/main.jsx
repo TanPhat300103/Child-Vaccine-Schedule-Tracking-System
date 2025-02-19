@@ -19,6 +19,8 @@ import VaccinationSchedule from "../pages/Vaccination/StatusSchedule.jsx";
 import DetailVaccine from "../pages/Vaccination/ReactionVaccine.jsx";
 import DetailVaccine2 from "../pages/Vaccination/DetailVaccine.jsx";
 import CustomerPage from "../pages/CustomerPage/CustomerPage.jsx";
+import StaffPage from "../pages/StaffPage/StaffPage.jsx";
+import Customers from "../pages/StaffPage/Customers.jsx";
 
 // eslint-disable-next-line react-refresh/only-export-components
 const Main = () => {
@@ -40,6 +42,10 @@ const Main = () => {
         <Route path="/vaccine-page2" element={<DetailVaccine2 />} />
         <Route path="/status-schedule" element={<VaccinationSchedule />} />
         <Route path="/customer" element={<CustomerPage />} />
+        <Route path="/staff" element={<StaffPage />}>
+          <Route path="customers" element={<Customers />} />
+          {/* Add other nested routes here */}
+        </Route>
       </Routes>
     </Router>
   );
