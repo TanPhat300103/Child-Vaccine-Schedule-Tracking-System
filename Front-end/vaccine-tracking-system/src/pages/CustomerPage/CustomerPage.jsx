@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Child from "./Child";
 import AddChild from "./AddChild";
+import { Children } from "react";
 import Footer from "../../components/common/Footer";
 import { FiUser } from "react-icons/fi";
 
 // Lấy base API từ biến môi trường VITE_API_URL
-const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const CustomerPage = () => {
-  // Trong thực tế, nên lấy từ context hoặc localStorage
-  const customerId = localStorage.getItem("customerId") || "cust001";
+  // Lấy customerId từ localStorage - sẽ được thiết lập khi đăng nhập
+  // const customerId = localStorage.getItem("customerId") || "cust001";
+  const customerId = "cust001";
   const [activeSection, setActiveSection] = useState("profile");
   const [customer, setCustomer] = useState(null);
   const [children, setChildren] = useState([]);
@@ -37,31 +38,37 @@ const CustomerPage = () => {
     };
 
     loadData();
-  }, [customerId]); // Thêm customerId vào dependencies
+  }, [customerId]);
 
   // Lấy thông tin customer
   const fetchCustomer = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/customers/${customerId}`);
+      const response = await axios.get(
+        `${apiUrl}/customer/findid?id=${customerId}`
+      );
       setCustomer(response.data);
     } catch (err) {
       console.error("Lỗi lấy thông tin khách hàng:", err);
-      throw new Error("Không thể tải thông tin khách hàng");
+      setError("Không thể tải thông tin khách hàng");
     }
   };
 
   // Lấy thông tin trẻ em
   const fetchChildren = async () => {
-    try {
-      // Sử dụng cách đặt tham số chuẩn RESTful
-      const response = await axios.get(`${apiUrl}/child`, {
-        params: { customerId: customerId },
-      });
-      setChildren(response.data);
-    } catch (err) {
-      console.error("Lỗi lấy thông tin trẻ em:", err);
-      throw new Error("Không thể tải thông tin trẻ em");
-    }
+    // try {
+    //   const response = await axios.get(
+    //     `${apiUrl}/child/findbycustomer?id=${customerId}`
+    //   );
+    //   // Kiểm tra dữ liệu trả về từ API, nếu không phải mảng thì gán là mảng rỗng
+    //   if (Array.isArray(response.data)) {
+    //     setChildren(response.data);
+    //   } else {
+    //     setChildren([]); // Nếu không phải mảng, gán children là mảng rỗng
+    //   }
+    // } catch (err) {
+    //   console.error("Lỗi lấy thông tin trẻ em:", err);
+    //   setChildren([]); // Nếu có lỗi, gán children là mảng rỗng
+    // }
   };
 
   if (loading)
@@ -106,14 +113,18 @@ const CustomerPage = () => {
 
             <div className="space-y-2">
               <h3 className="font-medium px-4">Hồ sơ trẻ em</h3>
-              {children.length > 0 ? (
-                children.map((child) => (
+              {Children.count(children) > 0 ? (
+                Children.map(children, (child) => (
                   <button
                     key={child.childId}
-                    onClick={() => navigate(`/customer/child/${child.childId}`)}
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 rounded-md"
+                    onClick={() =>
+                      navigate(`/customer/child/findid?id=${child.childId}`)
+                    }
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 rounded-md flex items-center"
                   >
-                    {child.firstName} {child.lastName}
+                    <span className="truncate">
+                      {child.firstName} {child.lastName}
+                    </span>
                   </button>
                 ))
               ) : (
