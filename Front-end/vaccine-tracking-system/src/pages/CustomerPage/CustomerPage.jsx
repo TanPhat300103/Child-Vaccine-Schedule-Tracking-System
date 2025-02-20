@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
 import axios from "axios";
 import AddChild from "./AddChild";
 import { Children } from "react";
 import Footer from "../../components/common/Footer";
+import Navbar from "../../components/common/HeaderHome";
+
 import {
   FiUser,
   FiCalendar,
@@ -21,7 +23,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 const CustomerPage = () => {
   // Lấy customerId từ localStorage - sẽ được thiết lập khi đăng nhập
   // const customerId = localStorage.getItem("customerId") || "cust001";
-  const customerId = "cust001";
+  const customerId = "C002";
   const [activeSection, setActiveSection] = useState("profile");
   const [customer, setCustomer] = useState(null);
   const [children, setChildren] = useState([]);
@@ -75,12 +77,7 @@ const CustomerPage = () => {
         // Chỉ gửi password nếu có thay đổi
         password: formData.password || undefined,
       };
-
-      const response = await axios.put(
-        `${apiUrl}/customers/${customerId}`,
-        payload
-      );
-
+      const response = await axios.put(`${apiUrl}/customers/update`, payload);
       // Cập nhật dữ liệu local
       setCustomer(response.data);
       alert("Cập nhật thành công!");
@@ -126,20 +123,20 @@ const CustomerPage = () => {
 
   // Lấy thông tin trẻ em
   const fetchChildren = async () => {
-    // try {
-    //   const response = await axios.get(
-    //     `${apiUrl}/child/findbycustomer?id=${customerId}`
-    //   );
-    //   // Kiểm tra dữ liệu trả về từ API, nếu không phải mảng thì gán là mảng rỗng
-    //   if (Array.isArray(response.data)) {
-    //     setChildren(response.data);
-    //   } else {
-    //     setChildren([]); // Nếu không phải mảng, gán children là mảng rỗng
-    //   }
-    // } catch (err) {
-    //   console.error("Lỗi lấy thông tin trẻ em:", err);
-    //   setChildren([]); // Nếu có lỗi, gán children là mảng rỗng
-    // }
+    try {
+      const response = await axios.get(
+        `${apiUrl}/child/findbycustomer?id=${customerId}`
+      );
+      // Kiểm tra dữ liệu trả về từ API, nếu không phải mảng thì gán là mảng rỗng
+      if (Array.isArray(response.data)) {
+        setChildren(response.data);
+      } else {
+        setChildren([]); // Nếu không phải mảng, gán children là mảng rỗng
+      }
+    } catch (err) {
+      console.error("Lỗi lấy thông tin trẻ em:", err);
+      setChildren([]); // Nếu có lỗi, gán children là mảng rỗng
+    }
   };
 
   if (loading)
