@@ -27,7 +27,7 @@ public class CustomerService {
     public Customer create(Customer customer) {
 
         if (customerRepository.findByPhoneNumber(customer.getPhoneNumber()).isEmpty()) {
-            customer.setRoleId(2);
+            customer.setRoleId(1);
             customer.setCustomerId(generateCustomerId());
             customer.setActive(true);
             return customerRepository.save(customer);

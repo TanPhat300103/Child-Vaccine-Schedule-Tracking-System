@@ -8,6 +8,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("vaccinecombo")
+@CrossOrigin(origins = "*")
 public class VaccineComboController {
 
     @Autowired

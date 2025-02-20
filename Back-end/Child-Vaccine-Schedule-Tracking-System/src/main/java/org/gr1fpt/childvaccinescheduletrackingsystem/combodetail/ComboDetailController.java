@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("combodetail")
+@CrossOrigin(origins = "*")
 public class ComboDetailController {
 
     @Autowired

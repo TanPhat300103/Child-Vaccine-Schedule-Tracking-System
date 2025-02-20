@@ -100,17 +100,17 @@ public class PaymentService {
                 if (!marketing.isActive()){
                     throw new CustomException("Coupon is not active",HttpStatus.CONFLICT);
                 }
-
+                payment.setMarketingCampaign(marketing);
                 discount = marketing.getDiscount();
             }
         }
         int total = booking.getTotalAmount();
         int totalAfterDiscount = calculateTotal(discount, total);
         payment.setTotal(totalAfterDiscount);
+        payment.setDate(Date.valueOf(LocalDate.now()));
         if(!payment.isStatus()){
         payment.setStatus(true);}
-        else
-            payment.setStatus(false);
+
         return paymentRepository.save(payment);
     }
 

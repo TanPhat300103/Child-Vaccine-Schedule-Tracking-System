@@ -19,5 +19,8 @@ public class Role {
     @Min(value = 1,message = "Invalid Id")
     @Max(value = 3,message = "Invalid Id")
     private int roleId;
+    //1 customer
+    //2 staff
+    //3 admin
     private String roleName;
 }

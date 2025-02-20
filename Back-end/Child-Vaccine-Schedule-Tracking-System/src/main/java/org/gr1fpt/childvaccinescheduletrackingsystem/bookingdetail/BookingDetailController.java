@@ -7,6 +7,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("bookingdetail")
+@CrossOrigin(origins = "*")
 public class BookingDetailController {
 
     @Autowired

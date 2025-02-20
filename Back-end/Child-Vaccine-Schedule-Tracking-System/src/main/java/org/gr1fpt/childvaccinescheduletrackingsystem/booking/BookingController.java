@@ -8,6 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("booking")
+@CrossOrigin(origins = "*")
 public class BookingController {
     @Autowired
     private BookingService bookingService;

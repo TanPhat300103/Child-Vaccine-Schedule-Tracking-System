@@ -7,6 +7,7 @@ import java.util.List;
 
 @RestController()
 @RequestMapping("vaccinedetail")
+@CrossOrigin(origins = "*")
 public class VaccineDetailController {
     @Autowired
     VaccineDetailService vaccineDetailService;
