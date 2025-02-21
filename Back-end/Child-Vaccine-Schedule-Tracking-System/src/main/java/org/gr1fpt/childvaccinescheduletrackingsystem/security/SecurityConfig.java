@@ -10,11 +10,10 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
+
 // import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder; // Chỉ dùng cho mục đích thử nghiệm
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 // import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -31,9 +30,16 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())  // tắt csrf để đơn giản hóa việc test API
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/customer/create").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/staff/**").hasAnyRole("STAFF", "ADMIN")
-                        .requestMatchers("/customer/**").hasAnyRole("CUSTOMER", "STAFF", "ADMIN")
+                        .requestMatchers("/customer/findid","/booking/create","/booking/findbycustomer","/bookingdetail/findbybooking","/bookingdetail/updatereaction","/booking/cancel","/child/create","/child/findbycustomer","/child/update","/combodetail","/combodetail/findid","/combodetail/findcomboid","/combodetail/findvaccineid","/customer/update","/feedback/**","/marketing","/medicalhistory/updatereaction","/medicalhistory/findbychildid","/payment/findbybooking","/payment/update","/vaccine/findid","/vaccine/findbyage","/vaccine/findbycountry","/vaccine/findbyprice","/vaccine/findbyname","/vaccinecombo","/vaccine","/vaccinecombo/findid","/vaccinecombo/findname","/vaccinedetail","/vaccinedetail/findbyvaccine")
+                        .hasAnyRole("CUSTOMER", "STAFF", "ADMIN")
+
+
+                        .requestMatchers("/staff/create","/vaccine/**","/booking/**","/bookingdetail/**","/child/**","/combodetail/**","/customer/**","/email/**","/marketing/**","/medicalhistory/**","/payment/**","/vaccinecombo/**","/vaccinedetail/**")
+                        .hasAnyRole("STAFF", "ADMIN")
+
+
+                        .requestMatchers("/admin/**","/staff/**")
+                        .hasRole("ADMIN")
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form

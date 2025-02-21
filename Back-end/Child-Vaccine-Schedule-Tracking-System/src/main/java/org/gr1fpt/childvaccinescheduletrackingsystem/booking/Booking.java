@@ -1,6 +1,7 @@
 package org.gr1fpt.childvaccinescheduletrackingsystem.booking;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -23,9 +24,10 @@ public class Booking {
     @JoinColumn(name = "customerId", nullable = false)
     @NotNull(message = "Customer Id cannot be null")
     private Customer customer;
-    @Min(value = 0,message = "Invalid status")
+    @Min(value = 0,message = "Invalid status of booking")
+    @Max(value = 4, message = "invalid status of booking")
     private int status;
-    //booked inprocess complete cancled
+    //booked complete canceled
     @Min(value = 0,message = "Amount must be greater than 0")
     private int totalAmount;
 

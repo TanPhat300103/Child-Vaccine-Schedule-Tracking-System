@@ -125,6 +125,7 @@ public class AdminDashboardService {
         return vaccineList;
     }
     //Bộ lọc theo ngày, trạng thái, loại vaccine
+
     //Tỷ lệ tiêm vaccine theo độ tuổi / giới tính
     //Xu hướng đặt lịch (loại vaccine nào được chọn nhiều)
     public Map<String,Integer> getBestsellerVaccine(){
