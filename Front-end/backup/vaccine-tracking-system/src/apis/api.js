@@ -1,12 +1,11 @@
 import axios from "axios";
 
-// const API_BASE_URL = "https://67aa281d65ab088ea7e5d7ab.mockapi.io";
 const API_BASE_URL = "http://localhost:8080";
 
 export const getUsers = async () => {
   try {
-    // const response = await axios.get(`${API_BASE_URL}/user`);
     const response = await axios.get(`${API_BASE_URL}/customer`);
+    console.log("API Response (Get Users):", response.data); // In toàn bộ dữ liệu người dùng nhận được
     return response.data;
   } catch (error) {
     throw new Error("Không thể lấy dữ liệu người dùng");
@@ -14,9 +13,9 @@ export const getUsers = async () => {
 };
 
 export const postUser = async (formData) => {
+  console.log("Form data being sent to API:", formData); // In dữ liệu gửi đi
   try {
     const response = await axios.post(`${API_BASE_URL}/customer/create`, {
-      customerId: formData.customerId,
       phoneNumber: formData.phoneNumber,
       firstName: formData.firstName,
       lastName: formData.lastName,
@@ -30,9 +29,11 @@ export const postUser = async (formData) => {
       active: formData.active,
     });
 
-    console.log(response); // In toàn bộ phản hồi từ backend
+    // In ra status code trả về từ backend
+    console.log("API Response Status:", response.status); // Status code
+    console.log("API Response Data:", response.data); // Dữ liệu trả về
 
-    if (response.status === 201) {
+    if (response.status === 200) {
       return { success: true, message: "Đăng ký thành công" };
     } else {
       return {
@@ -43,15 +44,16 @@ export const postUser = async (formData) => {
   } catch (error) {
     console.error("Error during registration:", error);
 
-    // In chi tiết lỗi từ backend (nếu có)
     if (error.response) {
-      console.error("Error response data:", error.response.data);
-      console.error("Error response status:", error.response.status);
-      // Nếu có lỗi liên quan đến số điện thoại đã tồn tại, hiển thị thông báo cụ thể
+      // In chi tiết về status và dữ liệu lỗi từ backend
+      console.error("Error response status:", error.response.status); // In status code
+      console.error("Error response data:", error.response.data); // In dữ liệu lỗi
+      console.error("Error response headers:", error.response.headers); // In headers (nếu cần)
+
       if (error.response.data && error.response.data.message) {
         return {
           success: false,
-          message: error.response.data.message, // Lấy thông báo lỗi từ backend
+          message: error.response.data.message,
         };
       }
     }

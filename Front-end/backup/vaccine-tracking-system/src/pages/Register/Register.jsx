@@ -20,9 +20,8 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  //Form data
+  // Form data
   const [formData, setFormData] = useState({
-    customerId: "",
     phoneNumber: "",
     firstName: "",
     lastName: "",
@@ -37,7 +36,7 @@ const Register = () => {
     agreeToTerms: false,
   });
 
-  // check validate data
+  // Check validate data
   const validateForm = () => {
     const newErrors = {};
     if (!formData.firstName) newErrors.firstName = "Họ không được để trống";
@@ -48,36 +47,47 @@ const Register = () => {
       newErrors.phoneNumber = "Số điện thoại không hợp lệ";
     if (!formData.password || formData.password.length < 6)
       newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự";
-    // Thêm các kiểm tra khác nếu cần
+    if (!formData.dob) newErrors.dob = "Ngày sinh không được để trống";
+    if (formData.gender === undefined)
+      newErrors.gender = "Giới tính không được để trống";
+    if (!formData.agreeToTerms)
+      newErrors.agreeToTerms =
+        "Bạn cần đồng ý với Điều khoản dịch vụ và Chính sách bảo mật";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  //Submit and handle API
+  // Submit and handle API
   const handleSubmit = async (e) => {
     e.preventDefault();
+    formData.gender = formData.gender === "true";
+    // Kiểm tra dữ liệu đầu vào
     if (validateForm()) {
       setIsLoading(true);
       try {
-        const result = await postUser(formData);
+        const result = await postUser(formData); // Không cần gửi customerId nữa
         console.log("API Result:", result);
         if (result.success) {
           toast.success(result.message);
           navigate("/login");
         } else {
-          toast.error(result.message);
-          setErrors({ submit: result.message });
+          toast.error(
+            result.message ||
+              "Đăng ký thất bại. Vui lòng kiểm tra lại thông tin."
+          );
+          setErrors({ submit: result.message || "Đăng ký thất bại" });
         }
       } catch (error) {
         console.error("Registration failed:", error);
         toast.error("Đã có lỗi xảy ra. Vui lòng thử lại.");
       } finally {
-        setIsLoading(false); // Đảm bảo set lại isLoading về false sau khi xử lý xong
+        setIsLoading(false);
       }
     }
   };
 
-  //handle checkbox agree and input
+  // Handle change for form fields
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -300,6 +310,8 @@ const Register = () => {
               <p className="text-red-500 text-sm mt-1">{errors.roleId}</p>
             )}
           </div>
+
+          {/* Agree to Terms */}
           <div className="flex items-start">
             <input
               type="checkbox"

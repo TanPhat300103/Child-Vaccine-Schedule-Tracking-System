@@ -6,8 +6,6 @@ import { useNavigate } from "react-router-dom";
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const vaccinePricingRef = useRef(null);
-  const footerRef = useRef(null);
 
   //scroll to pricing
   const scrollVaccinePricing = () => {
