@@ -79,4 +79,8 @@ public class VaccineService {
        }
        return list;
     }
+
+    public List<Vaccine> findByNameContain(String name){
+        return vaccineRepository.findByNameContaining(name);
+    }
 }

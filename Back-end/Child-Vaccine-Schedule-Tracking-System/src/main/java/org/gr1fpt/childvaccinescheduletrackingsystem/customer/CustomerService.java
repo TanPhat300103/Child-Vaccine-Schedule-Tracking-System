@@ -38,7 +38,7 @@ public class CustomerService {
 
     private String generateCustomerId() {
         long count = customerRepository.count();
-        return "C" + String.format("%02d", count + 1);
+        return "C" + String.format("%03d", count + 1);
     }
 
     public void deleteById(String id) {

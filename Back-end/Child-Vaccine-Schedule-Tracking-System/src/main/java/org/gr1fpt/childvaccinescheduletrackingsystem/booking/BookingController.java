@@ -49,6 +49,11 @@ public class BookingController {
         return bookingService.updateBooking(booking);
     }
 
+    @PostMapping("cancel")
+    public void canceledBooking(@RequestParam String bookingId) {
+        bookingService.canceledBooking(bookingId);
+    }
+
     @DeleteMapping("delete")
     public void deleteBooking(@RequestParam String id)
     {

@@ -116,6 +116,15 @@ public class BookingService {
     }
 
     @Transactional
+    public void canceledBooking(String bookingId) {
+        Booking booking = getBookingById(bookingId);
+        booking.setStatus(3);
+        //status: canceled
+        bookingDetailService.canceledBookingDetail(bookingId);
+        bookingRepository.save(booking);
+    }
+
+    @Transactional
     public void delete (String id)
     {
         bookingDetailService.deleteByBookingId(id);

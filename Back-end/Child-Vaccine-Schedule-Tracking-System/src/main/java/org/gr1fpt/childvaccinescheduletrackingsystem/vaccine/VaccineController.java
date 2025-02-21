@@ -50,6 +50,11 @@ public class VaccineController {
         return vaccineService.findByCountry(country);
     }
 
+    @GetMapping("findbyname")
+    public List<Vaccine> findByName(@RequestParam String name){
+        return vaccineService.findByNameContain(name);
+    }
+
     @PostMapping("update")
     public Vaccine update (@RequestBody @Valid Vaccine vaccine)
     {

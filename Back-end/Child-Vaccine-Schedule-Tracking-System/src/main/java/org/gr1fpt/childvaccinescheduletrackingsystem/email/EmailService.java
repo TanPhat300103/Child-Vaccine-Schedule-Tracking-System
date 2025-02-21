@@ -24,6 +24,7 @@ public class EmailService {
     private final String companyEmail = "khangqhse184031@fpt.edu.vn";
     private final String companyPhone = "0987654321";
     private final String signature = "TÔI YÊU SPRING BOOT";
+
     public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }

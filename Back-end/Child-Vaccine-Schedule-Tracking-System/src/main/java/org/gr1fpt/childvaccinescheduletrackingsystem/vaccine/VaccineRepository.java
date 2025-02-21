@@ -9,5 +9,5 @@ import java.util.List;
 public interface VaccineRepository extends JpaRepository<Vaccine,String> {
     List<Vaccine> findByCountry(String country);
     List<Vaccine> findByPriceBetween(int minPrice, int maxPrice);
-
+    List<Vaccine> findByNameContaining(String name);
 }
