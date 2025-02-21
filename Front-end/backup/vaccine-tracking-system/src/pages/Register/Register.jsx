@@ -43,8 +43,12 @@ const Register = () => {
     if (!formData.lastName) newErrors.lastName = "Tên không được để trống";
     if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
       newErrors.email = "Email không hợp lệ";
-    if (!formData.phoneNumber)
+    if (
+      !formData.phoneNumber ||
+      !/^(\+84|0)[3|5|7|8|9][0-9]{8}$/.test(formData.phoneNumber)
+    )
       newErrors.phoneNumber = "Số điện thoại không hợp lệ";
+
     if (!formData.password || formData.password.length < 6)
       newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự";
     if (!formData.dob) newErrors.dob = "Ngày sinh không được để trống";
@@ -287,27 +291,6 @@ const Register = () => {
             />
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-            )}
-          </div>
-
-          {/* Role Id */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Quyền
-            </label>
-            <select
-              name="roleId"
-              value={formData.roleId}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
-                errors.roleId ? "border-red-500" : "border-gray-300"
-              }`}
-            >
-              <option value="1">Quản Trị</option>
-              <option value="2">Nhân Viên</option>
-            </select>
-            {errors.roleId && (
-              <p className="text-red-500 text-sm mt-1">{errors.roleId}</p>
             )}
           </div>
 

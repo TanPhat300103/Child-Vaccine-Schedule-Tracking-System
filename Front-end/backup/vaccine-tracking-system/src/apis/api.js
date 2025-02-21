@@ -33,7 +33,7 @@ export const postUser = async (formData) => {
     console.log("API Response Status:", response.status); // Status code
     console.log("API Response Data:", response.data); // Dữ liệu trả về
 
-    if (response.status === 200) {
+    if (response.status === 201) {
       return { success: true, message: "Đăng ký thành công" };
     } else {
       return {
