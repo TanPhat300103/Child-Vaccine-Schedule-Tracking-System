@@ -24,6 +24,9 @@ public class PaymentService {
     @Autowired
     private BookingRepository bookingRepository;
 
+    //CHO MỤC ĐÍCH KIỂM THỬ
+
+
     public List<Payment> getAllPayments() {
         return paymentRepository.findAll();
     }
@@ -87,10 +90,11 @@ public class PaymentService {
 
     }
 
-    public Payment updatePayment(String paymentId,String coupon) {
+    public Payment updatePayment(String paymentId,String coupon, boolean method) {
         if(!paymentRepository.existsById(paymentId)){
             throw new CustomException("Payment not found",HttpStatus.NOT_FOUND);
         }
+        int alreadyDiscounted =0;
         Payment payment = getPaymentById(paymentId);
         Booking booking = getBookingById(payment.getBooking().getBookingId());
         int discount = 0;
@@ -100,18 +104,31 @@ public class PaymentService {
                 if (!marketing.isActive()){
                     throw new CustomException("Coupon is not active",HttpStatus.CONFLICT);
                 }
+                //Dùng biến alreadyDiscounted để chặn trường hợp thanh toán lần 2 bị discount 2 lần
+                if(payment.getMarketingCampaign()!=null)
+                {
+                    alreadyDiscounted=1;
+                }
                 payment.setMarketingCampaign(marketing);
                 discount = marketing.getDiscount();
             }
         }
         int total = booking.getTotalAmount();
         int totalAfterDiscount = calculateTotal(discount, total);
-        payment.setTotal(totalAfterDiscount);
+        if (alreadyDiscounted==0) {
+            payment.setTotal(totalAfterDiscount);
+        }
         payment.setDate(Date.valueOf(LocalDate.now()));
-        if(!payment.isStatus()){
+        payment.setMethod(method);
+        if(!method){
         payment.setStatus(true);}
+        else
+        {
+            payment.setStatus(false);
+        }
+        // nêu method là true có nghĩa là dùng vnpay để thanh toán
 
-        return paymentRepository.save(payment);
+        return  paymentRepository.save(payment);
     }
 
     //update tu chua thanh toan -> da thanh toan
