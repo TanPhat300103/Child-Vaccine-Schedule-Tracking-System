@@ -31,5 +31,10 @@ public class MedicalHistoryController {
         medicalHistoryService.deleteAllByChildId(id);
     }
 
+    @GetMapping("findbychildid")
+    public List<MedicalHistory> findByChildId (@RequestParam String id)
+    {
+        return medicalHistoryService.findByChildId(id);
+    }
 
 }

@@ -9,6 +9,7 @@ import org.gr1fpt.childvaccinescheduletrackingsystem.vaccine.VaccineRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.vaccinecombo.VaccineCombo;
 import org.gr1fpt.childvaccinescheduletrackingsystem.vaccinecombo.VaccineComboRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,14 +19,13 @@ import java.util.List;
 @Service
 public class BookingService {
     @Autowired
+    private ApplicationEventPublisher eventPublisher;
+    @Autowired
     private BookingRepository bookingRepository;
-
     @Autowired
     private CustomerRepository customerRepository;
-
     @Autowired
     private BookingDetailService bookingDetailService;
-
     @Autowired
     private PaymentService paymentService;
     @Autowired
@@ -81,6 +81,7 @@ public class BookingService {
             //PAYMENT
             paymentService.createPayment(savedBooking);
             bookingDetailService.create(bookingDTO);
+            eventPublisher.publishEvent(bookingDTO);
             return savedBooking;
         }
         else throw new CustomException("Customer Id " + booking.getCustomer().getCustomerId()+" does not exist", HttpStatus.BAD_REQUEST);

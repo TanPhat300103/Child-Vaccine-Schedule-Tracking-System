@@ -19,7 +19,7 @@ public class EmailController {
     @GetMapping("/send")
     public String sendTestEmail(@RequestParam String to) {
         try {
-            emailService.sendBookingConfirmationEmail(to);
+            emailService.sendBookingConfirmationEmail(to,"1","2","name");
             return "Email sent successfully to " + to;
         } catch (MessagingException e) {
             return "Error sending email: " + e.getMessage();

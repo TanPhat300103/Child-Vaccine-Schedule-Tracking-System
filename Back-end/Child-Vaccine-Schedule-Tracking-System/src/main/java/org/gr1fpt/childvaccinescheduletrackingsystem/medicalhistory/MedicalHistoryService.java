@@ -39,6 +39,11 @@ public class MedicalHistoryService {
        return medicalHistoryRepository.save(medicalHistory);
     }
 
+    public List<MedicalHistory> findByChildId(String id)
+    {
+        return medicalHistoryRepository.findByChild_ChildId(id);
+    }
+
     @Transactional
     public void deleteAllByChildId (String id)
     {

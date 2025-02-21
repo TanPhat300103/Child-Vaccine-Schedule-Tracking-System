@@ -33,6 +33,7 @@ export default function () {
 
     check(res, {
         "status is 200 or 201": (r) => r.status === 200 || r.status === 201,
+        'response time < 500ms': (r) => r.timings.duration < 500,
     });
     
 

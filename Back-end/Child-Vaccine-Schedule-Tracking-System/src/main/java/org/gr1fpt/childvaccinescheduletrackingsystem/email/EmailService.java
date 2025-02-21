@@ -41,14 +41,14 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    // Phương thức gửi email xác nhận đặt lịch với nội dung doanh nghiệp chuyên nghiệp
-    public void sendBookingConfirmationEmail(String to) throws MessagingException {
-        // Lấy thời điểm hiện tại
+
+    public void sendBookingConfirmationEmail(String to, String child, String bookingDate,String customerName) throws MessagingException {
+
         String currentTime = LocalDateTime.now().format(dateTimeFormatter);
 
         String subject = "Xác nhận đặt lịch thành công - Dịch vụ của " + companyName;
 
-        // Nội dung email với định dạng HTML chuyên nghiệp
+
         String body = "<html>" +
                 "<body style='font-family: Arial, sans-serif; color: #333333; margin:0; padding:0;'>" +
                 "  <table align='center' style='width:600px; border:1px solid #dddddd; padding:20px;'>" +
@@ -59,9 +59,11 @@ public class EmailService {
                 "    </tr>" +
                 "    <tr>" +
                 "      <td>" +
-                "         <p>Kính gửi Quý khách,</p>" +
+                "          <p>Chào " + customerName + ",</p>" +
                 "         <p>Chúng tôi xin trân trọng thông báo rằng Quý khách đã đặt lịch thành công cho dịch vụ của <strong>" + companyName + "</strong>." +
                 "         <br><strong>Ngày đặt lịch:</strong> " + currentTime + "</p>" +
+                "         <p><strong>Thông tin trẻ:</strong> " + child + "</p>" +
+                "         <p><strong>Ngày hẹn:</strong> " + bookingDate + "</p>" +
                 "         <p>Nếu Quý khách không thực hiện yêu cầu đặt lịch này, xin vui lòng liên hệ ngay với Tổng đài hỗ trợ qua số điện thoại <strong>" + supportPhone + "</strong> để được tư vấn và hỗ trợ kịp thời.</p>" +
                 "         <p>Chúng tôi rất vinh hạnh được phục vụ Quý khách và mong rằng Quý khách sẽ có trải nghiệm tuyệt vời với dịch vụ của chúng tôi.</p>" +
                 "         <p>Trân trọng,</p>" +
@@ -78,4 +80,5 @@ public class EmailService {
 
         sendEmail(to, subject, body);
     }
+
 }
