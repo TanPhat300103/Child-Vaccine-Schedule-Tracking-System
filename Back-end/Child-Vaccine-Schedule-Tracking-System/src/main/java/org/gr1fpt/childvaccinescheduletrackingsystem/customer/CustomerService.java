@@ -26,10 +26,11 @@ public class CustomerService {
 
     public Customer create(Customer customer) {
 
-        if (customerRepository.findByPhoneNumber(customer.getPhoneNumber()) != null) {
+        if (customerRepository.findByPhoneNumber(customer.getPhoneNumber()).isPresent()) {
             throw new CustomException("Phone number is exist ",HttpStatus.BAD_REQUEST);
         }
-        if(customerRepository.findByEmail(customer.getEmail()) != null) {
+        
+        if(customerRepository.findByEmail(customer.getEmail()) .isPresent()) {
             throw new CustomException("Email is exist ",HttpStatus.BAD_REQUEST);
         }
         customer.setRoleId(1);
