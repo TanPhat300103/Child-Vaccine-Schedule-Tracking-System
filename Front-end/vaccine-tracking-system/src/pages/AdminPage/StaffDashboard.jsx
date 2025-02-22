@@ -2,10 +2,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-const API_BASE_URL =
-  "https://5e98cacd-7394-4c32-8519-999883e59df3.mock.pstmn.io"; // Đường dẫn API
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const StaffDashboard = () => {
+  const staffId = 1;
   const [staffs, setStaffs] = useState([]);
   const [selectedStaff, setSelectedStaff] = useState(null);
   const [formData, setFormData] = useState({
@@ -17,7 +17,7 @@ const StaffDashboard = () => {
     address: "",
     mail: "",
     password: "",
-    roleId: 1,
+    roleId: 2,
     active: true,
   });
   const [loading, setLoading] = useState(false);
@@ -27,7 +27,7 @@ const StaffDashboard = () => {
   const fetchStaffs = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_BASE_URL}/staff`);
+      const response = await axios.get(`${apiUrl}/staff/findby?id=${staffId}`);
       setStaffs(response.data);
       setError("");
     } catch (err) {
@@ -50,7 +50,7 @@ const StaffDashboard = () => {
   // Tạo mới Staff (POST /staff/create)
   const handleCreate = async () => {
     try {
-      await axios.post(`${API_BASE_URL}/staff/create`, formData);
+      await axios.post(`${apiUrl}/staff/create`, formData);
       alert("Staff created successfully!");
       fetchStaffs();
       setFormData({
@@ -74,7 +74,7 @@ const StaffDashboard = () => {
   // Cập nhật Staff (POST /staff/update)
   const handleUpdate = async () => {
     try {
-      await axios.post(`${API_BASE_URL}/staff/update`, formData);
+      await axios.post(`${apiUrl}/staff/update`, formData);
       alert("Staff updated successfully!");
       fetchStaffs();
       setSelectedStaff(null);
@@ -88,7 +88,7 @@ const StaffDashboard = () => {
   const handleDelete = async (staffId) => {
     if (window.confirm("Are you sure to delete this staff?")) {
       try {
-        await axios.delete(`${API_BASE_URL}/staff/delete`, {
+        await axios.delete(`${apiUrl}/staff/delete`, {
           params: { id: staffId },
         });
         alert("Staff deleted successfully!");
@@ -103,7 +103,7 @@ const StaffDashboard = () => {
   // Tìm Staff theo id (GET /staff/findid?id=...)
   const handleFindById = async (staffId) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/staff/findid`, {
+      const response = await axios.get(`${apiUrl}/staff/findid`, {
         params: { id: staffId },
       });
       setSelectedStaff(response.data);

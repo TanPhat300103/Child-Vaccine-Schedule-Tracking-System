@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, Outlet } from "react-router-dom";
+import { useNavigate, NavLink, Outlet } from "react-router-dom";
 import axios from "axios";
 import AddChild from "./AddChild";
 import { Children } from "react";
@@ -40,7 +40,7 @@ const CustomerPage = () => {
     email: customer?.email || "",
     phoneNumber: customer?.phoneNumber || "",
     address: customer?.address || "",
-    password: "", // Để trống cho người dùng nhập mật khẩu mới
+    password: customer?.password || "", // Để trống cho người dùng nhập mật khẩu mới
   });
 
   // Cập nhật formData khi customer data thay đổi
@@ -54,7 +54,7 @@ const CustomerPage = () => {
         email: customer.email,
         phoneNumber: customer.phoneNumber,
         address: customer.address,
-        password: "",
+        password: customer.password,
       });
     }
   }, [customer]);
@@ -181,15 +181,26 @@ const CustomerPage = () => {
 
             <div className="space-y-2">
               <h3 className="font-medium px-4">Hồ sơ trẻ em</h3>
-              {children.slice(0, 5).map((child) => (
-                <button
-                  key={child.id}
-                  onClick={() => setActiveSection(`child-${child.id}`)}
-                  className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 rounded-md"
-                >
-                  {child.name}
-                </button>
-              ))}
+              {children && children.length > 0 ? (
+                children.slice(0, 5).map((child) => (
+                  <NavLink
+                    key={child.childId}
+                    to={`/customer/child/${child.childId}`}
+                    className={({ isActive }) =>
+                      "w-full text-left px-4 py-2 text-sm rounded-md " +
+                      (isActive
+                        ? "bg-blue-50 text-blue-600"
+                        : "hover:bg-gray-50")
+                    }
+                  >
+                    {child.firstName} {child.lastName}
+                  </NavLink>
+                ))
+              ) : (
+                <p className="text-sm text-gray-500 px-4">
+                  Chưa có thông tin trẻ em
+                </p>
+              )}
             </div>
 
             <button
@@ -363,6 +374,7 @@ const CustomerPage = () => {
                   Lưu thay đổi
                 </button>
               </form>
+              <Outlet />
             </div>
           )}
         </div>
