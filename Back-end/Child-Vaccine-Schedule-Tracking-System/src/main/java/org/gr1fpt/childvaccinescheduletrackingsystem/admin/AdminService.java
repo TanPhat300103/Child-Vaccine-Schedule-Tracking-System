@@ -17,6 +17,8 @@ public class AdminService {
     }
 
     public Admin createAdmin(Admin admin) {
+        admin.setRoleId(3);
+        admin.setActive(true);
         admin.setAdminId(generateId());
         return adminRepository.save(admin);
     }
