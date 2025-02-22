@@ -30,8 +30,6 @@ public class Customer {
     private String banking;
     @Email(message = "Email should be valid")
     private String email;
-    @Min(value = 1,message = "Invalid Id")
-    @Max(value = 3,message = "Invalid Id")
     private int roleId;
     private boolean active;
 }
