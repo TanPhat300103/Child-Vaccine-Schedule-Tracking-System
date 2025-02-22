@@ -29,7 +29,9 @@ public class StaffService {
 
     public Staff create(Staff staff) {
             if(staffRepository.findByPhone(staff.getPhone()).isEmpty()) {
+            staff.setRoleId(2);
             staff.setStaffId(generateStaffId());
+            staff.setActive(true);
             return staffRepository.save(staff);}
             else throw new CustomException("Phone number is exist !!", HttpStatus.BAD_REQUEST);
     }
