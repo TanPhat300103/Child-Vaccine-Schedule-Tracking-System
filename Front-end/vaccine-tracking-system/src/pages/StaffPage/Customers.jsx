@@ -2,18 +2,26 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import {
+  getUsers,
+  postUser,
+  updateUser,
+  fetchChildren,
+  fetchCustomer,
+  deleteUser,
+} from "../../apis/api";
 
 const Customers = () => {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const apiUrl = import.meta.env.VITE_API_URL;
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/customer`);
-        setCustomers(response.data);
+        const response = await getUsers();
+        setCustomers(response);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -23,6 +31,36 @@ const Customers = () => {
 
     fetchCustomers();
   }, []);
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+  const handleDelete = async (customerId) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa khách hàng này?")) {
+      try {
+        const response = await deleteUser(customerId);
+
+        if (response.success) {
+          setCustomers((prevCustomers) =>
+            prevCustomers.filter(
+              (customer) => customer.customerId !== customerId
+            )
+          );
+          console.log(response.message);
+        } else {
+          setError(response.message);
+        }
+      } catch (err) {
+        console.error("Lỗi khi xóa khách hàng:", err);
+        setError("Không thể xóa khách hàng. Vui lòng thử lại sau.");
+      }
+    }
+  };
+
+  const filteredCustomers = customers.filter((customer) =>
+    `${customer.firstName} ${customer.lastName}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
 
   if (loading) return <div>Đang tải...</div>;
   if (error) return <div>Lỗi: {error}</div>;
@@ -34,6 +72,13 @@ const Customers = () => {
           <h2 className="text-xl font-semibold text-gray-800">
             Danh Sách Khách Hàng
           </h2>
+          <input
+            type="text"
+            placeholder="Tìm kiếm khách hàng..."
+            value={searchTerm}
+            onChange={handleSearch}
+            className="mt-2 p-2 border border-gray-300 rounded w-full"
+          />
         </div>
 
         <div className="overflow-x-auto">
@@ -53,25 +98,31 @@ const Customers = () => {
                   Địa Chỉ
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  Ngân Hàng
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                   Trạng Thái
                 </th>
               </tr>
             </thead>
 
             <tbody className="divide-y divide-gray-200">
-              {customers.map((customer) => (
+              {filteredCustomers.map((customer) => (
                 <tr key={customer.customerId}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {customer.firstName} {customer.lastName}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {customer.phone}
+                    {customer.phoneNumber}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {customer.mail}
+                    {customer.email}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {customer.address}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {customer.banking}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
@@ -84,10 +135,29 @@ const Customers = () => {
                       {customer.active ? "Hoạt động" : "Không hoạt động"}
                     </span>
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <button
+                      onClick={() => handleDelete(customer.customerId)}
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      Xóa
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+
+        <div className="p-6 border-t border-gray-200">
+          <button
+            onClick={() =>
+              alert("Chức năng xóa tất cả khách hàng chưa được triển khai")
+            }
+            className="bg-red-600 text-white px-4 py-2 rounded"
+          >
+            Xóa Tất Cả Khách Hàng
+          </button>
         </div>
       </div>
     </div>

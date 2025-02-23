@@ -176,15 +176,70 @@ export const createChild = async (formData) => {
       lastName: formData.lastName,
       dob: new Date(formData.dob).toISOString().split("T")[0],
       gender: formData.gender,
-      vaccineId: formData.vaccineId,
-      vaccineDate: new Date(formData.vaccineDate).toISOString().split("T")[0],
-      vaccineStatus: formData.vaccineStatus,
+      contraindications: formData.contraindications,
+      active: formData.active,
     });
     console.log("API Response Status:", response.status); // Status code
     console.log("API Response Data:", response.data); // Dữ liệu trả về
-    return response.data;
+    if (response.status === 201) {
+      return { success: true, message: "Tạo trẻ em thành công" };
+    } else {
+      return {
+        success: false,
+        message: "Tạo trẻ em thất bại",
+      };
+    }
   } catch (error) {
     console.error("Error creating child:", error);
-    throw new Error("Không thể tạo trẻ em");
+    if (error.response) {
+      // In chi tiết về status và dữ liệu lỗi từ backend
+      console.error("Error response status:", error.response.status); // In status code
+      console.error("Error response data:", error.response.data); // In dữ liệu lỗi
+      console.error("Error response headers:", error.response.headers); // In headers (nếu cần)
+      if (error.response.data && error.response.data.message) {
+        return {
+          success: false,
+          message: error.response.data.message,
+        };
+      }
+    }
+    return {
+      success: false,
+      message: "Gửi biểu mẫu không thành công. Vui lòng thử lại.",
+    };
+  }
+};
+export const deleteUser = async (id) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/customer/delete`, {
+      params: { id }, // Truyền tham số id dưới dạng query parameter
+    });
+
+    console.log("API Response Status:", response.status);
+    console.log("API Response Data:", response.data);
+
+    if (response.status === 200 || response.status === 204) {
+      return { success: true, message: "Xóa người dùng thành công" };
+    } else {
+      return { success: false, message: "Xóa người dùng thất bại" };
+    }
+  } catch (error) {
+    console.error("Error deleting user:", error);
+
+    if (error.response) {
+      console.error("Error response status:", error.response.status);
+      console.error("Error response data:", error.response.data);
+
+      if (error.response.data && error.response.data.message) {
+        return {
+          success: false,
+          message: error.response.data.message,
+        };
+      }
+    }
+    return {
+      success: false,
+      message: "Không thể xóa người dùng. Vui lòng thử lại.",
+    };
   }
 };

@@ -26,7 +26,6 @@ const AddChild = ({ customerId, refreshChildren }) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-
     try {
       // Chuẩn bị dữ liệu gửi đi theo đúng định dạng API của bạn
       const payload = {
@@ -34,25 +33,29 @@ const AddChild = ({ customerId, refreshChildren }) => {
         // Thêm customerId vào payload theo cấu trúc API
         customerId: customerId,
       };
-
       // Gửi request đến API endpoint
-      await axios.post(`${apiUrl}/child/create`, payload);
+      const { success, message } = await createChild(childData);
 
-      // Reset form sau khi thêm thành công
-      setChildData({
-        firstName: "",
-        lastName: "",
-        gender: "",
-        dob: "",
-        contraindications: "",
-        active: true,
-      });
+      if (success) {
+        // Reset form sau khi thêm thành công
+        setChildData({
+          firstName: "",
+          lastName: "",
+          gender: "",
+          dob: "",
+          contraindications: "",
+          active: true,
+        });
 
-      // Hiển thị thông báo thành công
-      alert("Thêm trẻ em thành công!");
+        // Hiển thị thông báo thành công
+        alert(message);
 
-      // Gọi function refresh danh sách trẻ em
-      if (refreshChildren) refreshChildren();
+        // Gọi function refresh danh sách trẻ em
+        if (refreshChildren) refreshChildren();
+      } else {
+        // Hiển thị thông báo lỗi
+        setError(message);
+      }
     } catch (err) {
       console.error("Lỗi thêm trẻ em:", err);
       setError(
