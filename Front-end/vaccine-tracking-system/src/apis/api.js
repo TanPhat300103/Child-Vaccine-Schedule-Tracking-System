@@ -268,7 +268,6 @@ export const createChild = async (formData) => {
   try {
     console.log("Form data being sent to API (createChild):", formData);
     const response = await axios.post(`${API_BASE_URL}/child/create`, {
-      childId: "87",
       customer: {
         customerId: formData.customerId, // Đảm bảo gửi customerId bên trong customer object
       },

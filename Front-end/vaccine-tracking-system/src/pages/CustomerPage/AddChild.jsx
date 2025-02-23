@@ -35,7 +35,6 @@ const AddChild = ({ refreshChildren }) => {
       // Chuẩn bị dữ liệu gửi đi theo đúng định dạng API của bạn
       const payload = {
         ...childData,
-        childId: "77",
         // Bao bọc customerId trong một đối tượng customer
         customer: {
           customerId: customerId,
