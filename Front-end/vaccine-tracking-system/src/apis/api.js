@@ -167,11 +167,108 @@ export const getStaffs = async () => {
     throw new Error("Không thể lấy danh sách nhân viên");
   }
 };
+// Tạo mới nhân viên (Staff)
+export const createStaff = async (formData) => {
+  console.log("Form data being sent to API (createStaff):", formData);
+  try {
+    const response = await axios.post(`${API_BASE_URL}/staff/create`, {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      phone: formData.phoneNumber, // Chuyển từ phoneNumber sang phone
+      dob: new Date(formData.dob).toISOString(), // Gửi dạng ISO
+      address: formData.address,
+      mail: formData.email, // Chuyển từ email sang mail
+      password: formData.password,
+      roleId: formData.roleId,
+      active: formData.active,
+    });
+    console.log("API Response Status (createStaff):", response.status);
+    console.log("API Response Data (createStaff):", response.data);
+    if (response.status === 201) {
+      return { success: true, message: "Tạo nhân viên thành công" };
+    } else {
+      return { success: false, message: "Tạo nhân viên thất bại" };
+    }
+  } catch (error) {
+    console.error("Error creating staff:", error);
+    if (error.response && error.response.data && error.response.data.message) {
+      return { success: false, message: error.response.data.message };
+    }
+    return {
+      success: false,
+      message: "Gửi biểu mẫu không thành công. Vui lòng thử lại.",
+    };
+  }
+};
+
+// Cập nhật nhân viên (Staff)
+export const updateStaff = async (formData) => {
+  console.log("Form data being sent to API (updateStaff):", formData);
+  try {
+    const response = await axios.post(`${API_BASE_URL}/staff/update`, {
+      staffId: formData.staffId,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      phone: formData.phoneNumber, // Sử dụng phone
+      dob: new Date(formData.dob).toISOString(), // Gửi dạng ISO
+      address: formData.address,
+      mail: formData.email, // Sử dụng mail
+      password: formData.password,
+      roleId: formData.roleId,
+      active: formData.active,
+    });
+    console.log("API Response Status (updateStaff):", response.status);
+    console.log("API Response Data (updateStaff):", response.data);
+    if (response.status === 200 || response.status === 201) {
+      return { success: true, message: "Cập nhật nhân viên thành công" };
+    } else {
+      return { success: false, message: "Cập nhật nhân viên thất bại" };
+    }
+  } catch (error) {
+    console.error("Error updating staff:", error);
+    if (error.response && error.response.data && error.response.data.message) {
+      return { success: false, message: error.response.data.message };
+    }
+    return {
+      success: false,
+      message: "Cập nhật không thành công. Vui lòng thử lại.",
+    };
+  }
+};
+
+// Xóa nhân viên (Staff)
+export const deleteStaff = async (staffId) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/staff/delete`, {
+      params: { id: staffId },
+    });
+    console.log("API Response Status (deleteStaff):", response.status);
+    console.log("API Response Data (deleteStaff):", response.data);
+    if (response.status === 200 || response.status === 204) {
+      return { success: true, message: "Xóa nhân viên thành công" };
+    } else {
+      return { success: false, message: "Xóa nhân viên thất bại" };
+    }
+  } catch (error) {
+    console.error("Error deleting staff:", error);
+    if (error.response && error.response.data && error.response.data.message) {
+      return { success: false, message: error.response.data.message };
+    }
+    return {
+      success: false,
+      message: "Không thể xóa nhân viên. Vui lòng thử lại.",
+    };
+  }
+};
 
 export const createChild = async (formData) => {
   try {
+    console.log("Form data being sent to API (createChild):", formData);
     const response = await axios.post(`${API_BASE_URL}/child/create`, {
-      customerId: formData.customerId,
+      childId: "87",
+      customer: {
+        customerId: formData.customerId, // Đảm bảo gửi customerId bên trong customer object
+      },
       firstName: formData.firstName,
       lastName: formData.lastName,
       dob: new Date(formData.dob).toISOString().split("T")[0],
@@ -180,7 +277,7 @@ export const createChild = async (formData) => {
       active: formData.active,
     });
     console.log("API Response Status:", response.status); // Status code
-    console.log("API Response Data:", response.data); // Dữ liệu trả về
+    console.log("API Response Data:", response); // Dữ liệu trả về
     if (response.status === 201) {
       return { success: true, message: "Tạo trẻ em thành công" };
     } else {
@@ -241,5 +338,80 @@ export const deleteUser = async (id) => {
       success: false,
       message: "Không thể xóa người dùng. Vui lòng thử lại.",
     };
+  }
+};
+
+export const updateChild = async (formData) => {
+  try {
+    // Giả sử BE dùng endpoint /child/update với method POST
+    console.log("Payload being sent to API (updateChild):", formData);
+    const response = await axios.post(`${API_BASE_URL}/child/update`, formData);
+    console.log("API Response Status (updateChild):", response.status);
+    console.log("API Response Data (updateChild):", response.data);
+    if (response.status === 200 || response.status === 201) {
+      return { success: true, message: "Cập nhật trẻ em thành công" };
+    } else {
+      return { success: false, message: "Cập nhật trẻ em thất bại" };
+    }
+  } catch (error) {
+    console.error("Error updating child:", error);
+    if (error.response && error.response.data && error.response.data.message) {
+      return { success: false, message: error.response.data.message };
+    }
+    return {
+      success: false,
+      message: "Cập nhật không thành công. Vui lòng thử lại.",
+    };
+  }
+};
+
+// Xóa hồ sơ trẻ em
+export const deleteChild = async (childId) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/child/delete`, {
+      params: { id: childId },
+    });
+    console.log("API Response Status (deleteChild):", response.status);
+    console.log("API Response Data (deleteChild):", response.data);
+    if (response.status === 200 || response.status === 204) {
+      return { success: true, message: "Xóa trẻ em thành công" };
+    } else {
+      return { success: false, message: "Xóa trẻ em thất bại" };
+    }
+  } catch (error) {
+    console.error("Error deleting child:", error);
+    if (error.response && error.response.data && error.response.data.message) {
+      return { success: false, message: error.response.data.message };
+    }
+    return {
+      success: false,
+      message: "Không thể xóa trẻ em. Vui lòng thử lại.",
+    };
+  }
+};
+
+export const getBookingByCustomer = async (customerId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/booking/findbycustomer`, {
+      params: { id: customerId },
+    });
+    console.log("API Response (Get Booking By Customer):", response.data);
+    return response.data; // Trả về mảng booking
+  } catch (error) {
+    console.error("Error fetching bookings:", error);
+    throw new Error("Không thể lấy thông tin đặt lịch");
+  }
+};
+
+export const getChild = async (childId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/child/findid`, {
+      params: { id: childId },
+    });
+    console.log("API Response (Get Child):", response.data);
+    return response.data; // Trả về dữ liệu nhận được từ API
+  } catch (error) {
+    console.error("Error fetching child:", error);
+    throw new Error("Không thể lấy thông tin trẻ em"); // Đảm bảo trả về thông báo lỗi
   }
 };

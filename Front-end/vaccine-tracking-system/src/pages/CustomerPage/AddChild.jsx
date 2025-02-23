@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-
-const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
-
-const AddChild = ({ customerId, refreshChildren }) => {
+import { useLocation } from "react-router-dom";
+import { createChild } from "../../apis/api";
+const AddChild = ({ refreshChildren }) => {
+  const location = useLocation();
+  const customerId = location.state?.customerId; // Lấy customerId từ state
   const [childData, setChildData] = useState({
     firstName: "",
     lastName: "",
@@ -14,6 +15,10 @@ const AddChild = ({ customerId, refreshChildren }) => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    console.log("Received customerId in AddChild:", customerId);
+  }, [customerId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,11 +35,14 @@ const AddChild = ({ customerId, refreshChildren }) => {
       // Chuẩn bị dữ liệu gửi đi theo đúng định dạng API của bạn
       const payload = {
         ...childData,
-        // Thêm customerId vào payload theo cấu trúc API
-        customerId: customerId,
+        childId: "77",
+        // Bao bọc customerId trong một đối tượng customer
+        customer: {
+          customerId: customerId,
+        },
       };
       // Gửi request đến API endpoint
-      const { success, message } = await createChild(childData);
+      const { success, message } = await createChild(payload);
 
       if (success) {
         // Reset form sau khi thêm thành công
@@ -125,9 +133,9 @@ const AddChild = ({ customerId, refreshChildren }) => {
               <input
                 type="radio"
                 name="gender"
-                value="male"
+                value="true"
                 required
-                checked={childData.gender === "male"}
+                checked={childData.gender === "true"}
                 onChange={handleChange}
                 className="mr-2"
               />
@@ -137,9 +145,9 @@ const AddChild = ({ customerId, refreshChildren }) => {
               <input
                 type="radio"
                 name="gender"
-                value="female"
+                value="false"
                 required
-                checked={childData.gender === "female"}
+                checked={childData.gender === "false"}
                 onChange={handleChange}
                 className="mr-2"
               />

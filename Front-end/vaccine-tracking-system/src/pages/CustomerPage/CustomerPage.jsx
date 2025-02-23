@@ -48,7 +48,7 @@ const CustomerPage = () => {
     dob: customer?.dob
       ? new Date(customer.dob).toISOString().split("T")[0]
       : "",
-    gender: customer?.gender ? "male" : "female",
+    gender: customer?.gender ? "true" : "false",
     email: customer?.email || "",
     phoneNumber: customer?.phoneNumber || "",
     address: customer?.address || "",
@@ -62,7 +62,7 @@ const CustomerPage = () => {
         firstName: customer.firstName,
         lastName: customer.lastName,
         dob: new Date(customer.dob).toISOString().split("T")[0],
-        gender: customer.gender,
+        gender: customer.gender ? "true" : "false",
         email: customer.email,
         phoneNumber: customer.phoneNumber,
         address: customer.address,
@@ -204,6 +204,7 @@ const CustomerPage = () => {
                   <NavLink
                     key={child.childId}
                     to={`/customer/child/${child.childId}`}
+                    state={{ customerId: customerId }}
                     className={({ isActive }) =>
                       "w-full text-left px-4 py-2 text-sm rounded-md " +
                       (isActive
@@ -220,24 +221,34 @@ const CustomerPage = () => {
                 </p>
               )}
             </div>
-
-            <NavLink
-              to="/customer/add-child"
-              className={({ isActive }) =>
-                `w-full px-4 py-2 text-center rounded-md transition-colors ${
-                  isActive ? "bg-green-600" : "bg-green-500 hover:bg-green-600"
-                } text-white`
-              }
-            >
-              Thêm hồ sơ
-            </NavLink>
-
-            <button
-              onClick={() => navigate("/schedule")}
-              className="w-full text-left px-4 py-2 hover:bg-gray-50 rounded-md"
-            >
-              Lịch tiêm chủng
-            </button>
+            <div className="space-y-2">
+              <NavLink
+                to="/customer/add-child"
+                state={{ customerId: customerId }}
+                className={({ isActive }) =>
+                  `w-full px-4 py-2 text-center rounded-md transition-colors ${
+                    isActive
+                      ? "bg-green-600"
+                      : "bg-green-500 hover:bg-green-600"
+                  } text-white`
+                }
+              >
+                Thêm hồ sơ
+              </NavLink>
+            </div>
+            <div className="space-y-2">
+              <NavLink
+                to="/customer/booking"
+                state={{ customerId: customerId }}
+                className={({ isActive }) =>
+                  `w-full px-4 py-2 text-center rounded-md transition-colors ${
+                    isActive ? "bg-blue-600" : "bg-blue-500 hover:bg-blue-600"
+                  } text-white`
+                }
+              >
+                Xem đặt lịch
+              </NavLink>
+            </div>
 
             <button
               onClick={() => {
@@ -295,8 +306,8 @@ const CustomerPage = () => {
                       <input
                         type="radio"
                         name="gender"
-                        value="male"
-                        checked={formData.gender === "male"}
+                        value="true"
+                        checked={formData.gender === "true"}
                         onChange={handleInputChange}
                         className="mr-2"
                       />
@@ -306,8 +317,8 @@ const CustomerPage = () => {
                       <input
                         type="radio"
                         name="gender"
-                        value="female"
-                        checked={formData.gender === "female"}
+                        value="false"
+                        checked={formData.gender === "false"}
                         onChange={handleInputChange}
                         className="mr-2"
                       />
