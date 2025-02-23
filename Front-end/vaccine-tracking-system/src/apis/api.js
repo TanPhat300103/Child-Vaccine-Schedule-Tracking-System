@@ -65,23 +65,27 @@ export const postUser = async (formData) => {
   }
 };
 
-export const updateUser = async (id, formData) => {
+export const updateUser = async (formData) => {
   console.log("Form data being sent to API:", formData); // In dữ liệu gửi đi
   try {
-    const response = await axios.put(`${API_BASE_URL}/customer/update`, {
+    const response = await axios.post(`${API_BASE_URL}/customer/update`, {
+      customerId: formData.customerId,
       firstName: formData.firstName,
       lastName: formData.lastName,
       dob: new Date(formData.dob).toISOString().split("T")[0],
-      gender: formData.gender ? "male" : "female",
+      gender: formData.gender,
       email: formData.email,
       phoneNumber: formData.phoneNumber,
       address: formData.address,
       password: formData.password,
+      banking: formData.banking,
+      roleId: formData.roleId,
+      active: formData.active,
     });
     console.log("API Response Status:", response.status); // Status code
     console.log("API Response Data:", response.data); // Dữ liệu trả về
 
-    if (response.status === 201) {
+    if (response.status === 200) {
       return { success: true, message: "Cập nhật thành công" };
     } else {
       return {
@@ -113,14 +117,74 @@ export const updateUser = async (id, formData) => {
   }
 };
 
-const fetchCustomer = async () => {
+export const fetchCustomer = async (customerId) => {
   try {
+    // Đảm bảo customerId được truyền đúng
     const response = await axios.get(
       `${API_BASE_URL}/customer/findid?id=${customerId}`
     );
-    setCustomer(response.data);
+    console.log("API Response (Get Customer):", response.data);
+    return response.data; // Trả về dữ liệu nhận được từ API
   } catch (err) {
-    console.error("Lỗi lấy thông tin khách hàng:", err);
-    setError("Không thể tải thông tin khách hàng");
+    console.error("Error fetching customer:", err);
+    throw new Error("Không thể lấy thông tin khách hàng");
+  }
+};
+
+export const fetchChildren = async (customerId) => {
+  try {
+    // Đảm bảo customerId được truyền đúng
+    const response = await axios.get(
+      `${API_BASE_URL}/child/findbycustomer?id=${customerId}`
+    );
+    console.log("API Response (Get Children):", response.data);
+    return response.data; // Trả về dữ liệu nhận được từ API
+  } catch (err) {
+    console.error("Error fetching children:", err);
+    throw new Error("Không thể lấy thông tin trẻ em");
+  }
+};
+
+export const fetchStaff = async (staffId) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/staff/findid?id=${staffId}`
+    );
+    console.log("API Response (Get Staff):", response.data);
+    return response.data; // Trả về dữ liệu nhận được từ API
+  } catch (err) {
+    console.error("Error fetching staff:", err);
+    throw new Error("Không thể lấy thông tin nhân viên");
+  }
+};
+
+export const getStaffs = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/staff`);
+    console.log("API Response (Get Staffs):", response.data);
+    return response.data;
+  } catch (error) {
+    throw new Error("Không thể lấy danh sách nhân viên");
+  }
+};
+
+export const createChild = async (formData) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/child/create`, {
+      customerId: formData.customerId,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      dob: new Date(formData.dob).toISOString().split("T")[0],
+      gender: formData.gender,
+      vaccineId: formData.vaccineId,
+      vaccineDate: new Date(formData.vaccineDate).toISOString().split("T")[0],
+      vaccineStatus: formData.vaccineStatus,
+    });
+    console.log("API Response Status:", response.status); // Status code
+    console.log("API Response Data:", response.data); // Dữ liệu trả về
+    return response.data;
+  } catch (error) {
+    console.error("Error creating child:", error);
+    throw new Error("Không thể tạo trẻ em");
   }
 };

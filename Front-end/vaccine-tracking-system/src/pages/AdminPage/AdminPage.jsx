@@ -12,21 +12,19 @@ import {
 } from "react-icons/fi";
 
 const AdminPage = () => {
-  const AdminName = "LORD"; // Lấy từ API hoặc state
+  const AdminName = "Nguyễn Văn A"; // Lấy từ API hoặc state
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <h1 className="text-2xl font-semibold text-gray-800">
-            Chào Mừng Quản Trị Viên{" "}
-            <span className="relative group">
-              <span className="text-blue-600 cursor-pointer">{AdminName}</span>
-              <span className="absolute left-0 bottom-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-            </span>
+            Chào Mừng Quản Trị Viên {AdminName}
           </h1>
         </div>
       </header>
+
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">

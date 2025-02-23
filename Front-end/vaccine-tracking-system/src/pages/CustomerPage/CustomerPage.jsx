@@ -4,7 +4,15 @@ import axios from "axios";
 import AddChild from "./AddChild";
 import { Children } from "react";
 import Footer from "../../components/common/Footer";
-import { getUsers, postUser, updateUser } from "../../apis/api";
+import { toast } from "react-toastify";
+import {
+  getUsers,
+  postUser,
+  updateUser,
+  fetchChildren,
+  fetchCustomer,
+} from "../../apis/api";
+
 import {
   FiUser,
   FiCalendar,
@@ -15,22 +23,25 @@ import {
   FiEye,
   FiEyeOff,
 } from "react-icons/fi";
-import { toast } from "react-toastify";
 
 // Lấy base API từ biến môi trường VITE_API_URL
 
 const CustomerPage = () => {
   // Lấy customerId từ localStorage - sẽ được thiết lập khi đăng nhập
   // const customerId = localStorage.getItem("customerId") || "cust001";
-  const customerId = "C001";
-  const [activeSection, setActiveSection] = useState("profile");
+  const customerId = "C002";
   const [customer, setCustomer] = useState(null);
   const [children, setChildren] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const location = useLocation();
   const isExactPath = location.pathname === "/customer";
+  const [error, setError] = useState(null);
+
+  // Form data
   const [formData, setFormData] = useState({
     firstName: customer?.firstName || "",
     lastName: customer?.lastName || "",
@@ -51,7 +62,7 @@ const CustomerPage = () => {
         firstName: customer.firstName,
         lastName: customer.lastName,
         dob: new Date(customer.dob).toISOString().split("T")[0],
-        gender: customer.gender ? "male" : "female",
+        gender: customer.gender,
         email: customer.email,
         phoneNumber: customer.phoneNumber,
         address: customer.address,
@@ -60,51 +71,40 @@ const CustomerPage = () => {
     }
   }, [customer]);
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.firstName) newErrors.firstName = "Họ không được để trống";
-    if (!formData.lastName) newErrors.lastName = "Tên không được để trống";
-    if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
-      newErrors.email = "Email không hợp lệ";
-    if (
-      !formData.phoneNumber ||
-      !/^(\+84|0)[3|5|7|8|9][0-9]{8}$/.test(formData.phoneNumber)
-    )
-      newErrors.phoneNumber = "Số điện thoại không hợp lệ";
-
-    if (!formData.password || formData.password.length < 6)
-      newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự";
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    formData.gender = formData.gender === "true"; // Chuyển đổi gender thành boolean
+    setIsLoading(true);
     try {
-      const payload = {
-        ...formData,
-        gender: formData.gender === "male",
-        dob: new Date(formData.dob).toISOString(),
-        // Chỉ gửi password nếu có thay đổi
-        password: formData.password || undefined,
-      };
-      const response = await axios.put(`${apiUrl}/customers/update`, payload);
-      // Cập nhật dữ liệu local
-      setCustomer(response.data);
-      alert("Cập nhật thành công!");
+      // Lấy id từ formData (giả sử formData đã chứa id người dùng hiện tại)
+      const result = await updateUser(formData); // Truyền id và formData
+      console.log("API Result:", result);
+
+      if (result.success) {
+        toast.success(result.message); // Thông báo thành công
+        navigate("/customer"); // Điều hướng đến trang profile (hoặc trang khác)
+      } else {
+        toast.error(
+          result.message ||
+            "Cập nhật thất bại. Vui lòng kiểm tra lại thông tin."
+        );
+        setErrors({ submit: result.message || "Cập nhật thất bại" });
+      }
     } catch (error) {
-      console.error("Lỗi cập nhật:", error);
-      alert("Cập nhật thất bại!");
+      console.error("Update failed:", error);
+      toast.error("Đã có lỗi xảy ra. Vui lòng thử lại.");
+    } finally {
+      setIsLoading(false);
     }
   };
-  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -112,7 +112,10 @@ const CustomerPage = () => {
       setError(null);
 
       try {
-        await Promise.all([fetchCustomer(), fetchChildren()]);
+        await Promise.all([
+          loadCustomerData(customerId),
+          loadChildrenData(customerId),
+        ]);
       } catch (err) {
         setError(
           "Không thể tải dữ liệu: " + (err.message || "Lỗi không xác định")
@@ -127,27 +130,23 @@ const CustomerPage = () => {
   }, [customerId]);
 
   // Lấy thông tin customer
-  const fetchCustomer = async () => {
+  const loadCustomerData = async (customerId) => {
     try {
-      const response = await axios.get(
-        `${apiUrl}/customer/findid?id=${customerId}`
-      );
-      setCustomer(response.data);
-    } catch (err) {
-      console.error("Lỗi lấy thông tin khách hàng:", err);
-      setError("Không thể tải thông tin khách hàng");
+      const data = await fetchCustomer(customerId);
+      setFormData(data); // Cập nhật dữ liệu vào formData
+    } catch (error) {
+      toast.error("Không thể lấy thông tin khách hàng.");
     }
   };
 
   // Lấy thông tin trẻ em
-  const fetchChildren = async () => {
+  const loadChildrenData = async (customerId) => {
     try {
-      const response = await axios.get(
-        `${apiUrl}/child/findbycustomer?id=${customerId}`
-      );
+      const response = await fetchChildren(customerId);
+      console.log("Dữ liệu trẻ em nhận được:", response);
       // Kiểm tra dữ liệu trả về từ API, nếu không phải mảng thì gán là mảng rỗng
-      if (Array.isArray(response.data)) {
-        setChildren(response.data);
+      if (Array.isArray(response)) {
+        setChildren(response);
       } else {
         setChildren([]); // Nếu không phải mảng, gán children là mảng rỗng
       }
@@ -171,7 +170,7 @@ const CustomerPage = () => {
       </div>
     );
 
-  if (!customer)
+  if (!formData)
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-xl text-gray-700">
@@ -200,7 +199,7 @@ const CustomerPage = () => {
 
             <div className="space-y-2">
               <h3 className="font-medium px-4">Hồ sơ trẻ em</h3>
-              {children && children.length > 0 ? (
+              {children.length > 0 ? (
                 children.slice(0, 5).map((child) => (
                   <NavLink
                     key={child.childId}
