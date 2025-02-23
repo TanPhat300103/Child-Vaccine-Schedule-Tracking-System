@@ -1,73 +1,28 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  FaSearch,
-  FaUser,
-  FaBars,
-  FaTimes,
-  FaSyringe,
-  FaRegCalendarCheck,
-  FaUserMd,
-} from "react-icons/fa";
+import { FaSyringe, FaUserMd } from "react-icons/fa";
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import VaccinationPackages from "../components/homepage/VaccineAge";
-import VaccinePricingTable from "../components/homepage/VaccinePrice";
+import { slides, benefits, process, address } from "../stores/homedata.jsx";
+import PriceVaccine from "../components/homepage/PriceVaccine.jsx";
+import AgeVaccine from "../components/homepage/AgeVaccine.jsx";
 import Footer from "../components/common/Footer";
 
 const App = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrollPosition, setScrollPosition] = useState(0);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const navigate = useNavigate();
   const vaccinePricingRef = useRef(null);
   const footerRef = useRef(null);
-  const slides = [
-    {
-      image: "https://images.unsplash.com/photo-1584515933487-779824d29309",
-      title: "Bảo Vệ Tương Lai Của Con Bạn",
-    },
-    {
-      image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef",
-      title: "Dịch Vụ Chăm Sóc Sức Khỏe Chuyên Nghiệp",
-    },
-    {
-      image: "https://images.unsplash.com/photo-1576765608535-5f04d1e3f289",
-      title: "Vắc-xin An Toàn và Đáng Tin Cậy",
-    },
-  ];
+  const navigate = useNavigate();
 
-  const benefits = [
-    {
-      icon: <FaSyringe />,
-      title: "Vắc-xin An Toàn",
-      description: "Vắc-xin cho trẻ em được WHO phê duyệt",
-    },
-    {
-      icon: <FaRegCalendarCheck />,
-      title: "Đặt Lịch Dễ Dàng",
-      description: "Hệ Thống Đặt Lịch Linh Hoạt",
-    },
-    {
-      icon: <FaUserMd />,
-      title: "Chăm Sóc Chuyên Sâu",
-      description: "Đội Ngũ Y Tế Chuyên Nghiệp",
-    },
-  ];
-
-  useEffect(() => {
-    const handleScroll = () => setScrollPosition(window.scrollY);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
+  //move slides
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000);
+    }, 4000);
     return () => clearInterval(timer);
   }, []);
-  const scrollToVaccinePricingTable = () => {
-    // Only scroll if ref is not null
+
+  //scroll to pricing
+  const scrollVaccinePricing = () => {
     if (vaccinePricingRef.current) {
       vaccinePricingRef.current.scrollIntoView({
         behavior: "smooth",
@@ -75,6 +30,8 @@ const App = () => {
       });
     }
   };
+
+  //scroll to footer
   const scrollToFooter = () => {
     if (footerRef.current) {
       footerRef.current.scrollIntoView({
@@ -83,14 +40,17 @@ const App = () => {
       });
     }
   };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+      {/* Header */}
       <motion.header
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         className={`fixed w-full z-50 transition-all duration-300 bg-white shadow-md`}
       >
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          {/* Vaccine Care */}
           <motion.div
             initial={{ x: -100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
@@ -98,20 +58,27 @@ const App = () => {
           >
             VaccineCare
           </motion.div>
-
+          {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
+            {/* Navbar */}
             {["Trang chủ", "Đặt lịch", "Gói tiêm", "Liên lạc"].map((item) => (
               <motion.a
                 key={item}
                 onClick={() => {
                   if (item === "Gói tiêm") {
-                    scrollToVaccinePricingTable(); // Cuộn đến phần VaccinePricingTable
+                    scrollVaccinePricing(); // Cuộn đến phần VaccinePricingTable
                   }
                   if (item === "Liên lạc") {
                     scrollToFooter(); // Cuộn đến Footer
                   }
                   if (item === "Đặt lịch") {
                     navigate("/login");
+                  }
+                  if (item === "Trang chủ") {
+                    window.scrollTo({
+                      top: 0,
+                      behavior: "smooth", // Cuộn mượt mà lên đầu trang
+                    });
                   }
                 }}
                 whileHover={{ scale: 1.05 }}
@@ -120,7 +87,8 @@ const App = () => {
                 {item}
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform " />
               </motion.a>
-            ))}
+            ))}{" "}
+            {/* Login and signup */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               className="px-4 py-2 text-blue-600 border border-blue-600 rounded-full hover:bg-blue-50 transition-colors"
@@ -137,55 +105,10 @@ const App = () => {
             </motion.button>
           </nav>
         </div>
-
-        <AnimatePresence>
-          {isMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="md:hidden bg-white"
-            >
-              <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
-                {["Home", "Services", "Contact", "About"].map((item) => (
-                  <button
-                    key={item}
-                    onClick={() => {
-                      if (item === "Schedule") {
-                        navigate("/bookschedule-vaccine");
-                      } else if (item === "Home") {
-                        navigate("/");
-                      } else {
-                        navigate(`/${item.toLowerCase()}`);
-                      }
-                    }}
-                    className="text-gray-700 hover:text-blue-600 transition-colors px-4 py-2"
-                  >
-                    {item}
-                  </button>
-                ))}
-
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  className="px-4 py-2 text-blue-600 border border-blue-600 rounded-full hover:bg-blue-50 transition-colors w-full"
-                  onClick={() => navigate("/login")}
-                >
-                  Login
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors w-full"
-                  onClick={() => navigate("/register")}
-                >
-                  Sign Up
-                </motion.button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </motion.header>
 
-      <section className="relative h-screen overflow-hidden">
+      {/* Banner */}
+      <motion.section className="relative h-screen overflow-hidden">
         <motion.div
           animate={{ x: `-${currentSlide * 100}%` }}
           transition={{ type: "tween", duration: 0.5 }}
@@ -224,9 +147,10 @@ const App = () => {
             </div>
           ))}
         </motion.div>
-      </section>
+      </motion.section>
 
-      <section className="py-20 bg-white">
+      {/* Benefit */}
+      <motion.section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <motion.h2
             initial={{ y: 20, opacity: 0 }}
@@ -257,8 +181,9 @@ const App = () => {
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
+      {/* Quality */}
       <motion.section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -309,11 +234,15 @@ const App = () => {
         </div>
       </motion.section>
 
-      <VaccinationPackages></VaccinationPackages>
+      {/* Vaccine Age */}
+      <AgeVaccine></AgeVaccine>
 
+      {/* Vaccine Price */}
       <motion.section className="py-20 bg-white" ref={vaccinePricingRef}>
-        <VaccinePricingTable />
+        <PriceVaccine></PriceVaccine>
       </motion.section>
+
+      {/* Processing */}
       <section className="py-20 bg-blue-50">
         <div className="container mx-auto px-4">
           <motion.h2
@@ -325,26 +254,7 @@ const App = () => {
             Quy Trình Tiêm Chủng
           </motion.h2>
           <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                step: 1,
-                title: "Trước khi tiêm",
-                icon: "💉",
-                description: "Kiểm tra sức khỏe và tư vấn",
-              },
-              {
-                step: 2,
-                title: "Quá trình tiêm",
-                icon: "👨‍⚕️",
-                description: "Thực hiện tiêm chủng ở trung tâm",
-              },
-              {
-                step: 3,
-                title: "Sau khi tiêm",
-                icon: "✅",
-                description: "Theo dõi và chăm sóc sau tiêm",
-              },
-            ].map((item, index) => (
+            {process.map((item, index) => (
               <motion.div
                 key={index}
                 initial={{ y: 50, opacity: 0 }}
@@ -369,6 +279,7 @@ const App = () => {
         </div>
       </section>
 
+      {/* Address */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <motion.h2
@@ -396,14 +307,7 @@ const App = () => {
               ></iframe>
             </motion.div>
             <div className="grid grid-cols-1 gap-4">
-              {[
-                {
-                  name: "Trung tâm Y tế Quận 1",
-                  address: "123 Nguyễn Huệ, Quận 1",
-                },
-                { name: "Bệnh viện Nhi Đồng", address: "456 Lê Lợi, Quận 5" },
-                { name: "Phòng khám Đa khoa", address: "789 CMT8, Quận 3" },
-              ].map((location, index) => (
+              {address.map((location, index) => (
                 <motion.div
                   key={index}
                   initial={{ x: 50, opacity: 0 }}
@@ -427,6 +331,7 @@ const App = () => {
         </div>
       </section>
 
+      {/* Footer */}
       <section ref={footerRef}>
         <Footer />
       </section>

@@ -36,7 +36,7 @@ const AddChild = ({ customerId, refreshChildren }) => {
       };
 
       // Gửi request đến API endpoint
-      await axios.post("${apiUrl}/api/children}", payload);
+      await axios.post(`${apiUrl}/child/create`, payload);
 
       // Reset form sau khi thêm thành công
       setChildData({

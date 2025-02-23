@@ -1,16 +1,11 @@
-// src/firebase-config.js
-
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
   sendPasswordResetEmail,
   GoogleAuthProvider,
   signInWithPopup,
-  signOut,
 } from "firebase/auth";
 
-// Firebase config
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyADx99bMyqn8R7kzas59S9ext3r9eh6WSk",
   authDomain: "vaccine-b5359.firebaseapp.com",
@@ -32,4 +27,3 @@ const provider = new GoogleAuthProvider();
 
 export { auth, provider, sendPasswordResetEmail, signInWithPopup };
 export const signInWithGoogle = () => signInWithPopup(auth, provider);
-export const logout = () => signOut(auth);

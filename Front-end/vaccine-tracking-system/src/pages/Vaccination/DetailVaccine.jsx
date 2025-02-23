@@ -1,5 +1,6 @@
 import React from "react";
 import { useLocation } from "react-router-dom"; // Dùng để lấy dữ liệu từ navigate
+import Header from "../../components/common/Header";
 
 const DetailVaccine2 = () => {
   const { state } = useLocation(); // Lấy dữ liệu vaccine từ state
@@ -12,7 +13,8 @@ const DetailVaccine2 = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-xl p-8">
+      <Header></Header>
+      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-xl p-8 mt-20">
         {/* Title Section */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-extrabold text-gray-900 mb-4">

@@ -1,63 +1,55 @@
 import React, { useState } from "react";
+import { signInWithGoogle } from "../../config/firebase.js";
 import { FcGoogle } from "react-icons/fc";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { FaSyringe, FaHospital } from "react-icons/fa";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-import {
-  auth,
-  logout,
-  signInWithPopup,
-  provider,
-} from "../../config/firebase.js";
-const apiUrl = import.meta.env.VITE_API_URL;
+import { getUsers } from "../../apis/api.js";
+
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
+  //check validate phone and password
   const validateForm = () => {
     const newErrors = {};
-    if (!email) {
-      newErrors.email = "Email is required / Email là bắt buộc";
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = "Invalid email format / Định dạng email không hợp lệ";
+    if (!phoneNumber) {
+      newErrors.phoneNumber = "Số điện thoại là bắt buộc";
+    } else if (!/^\d{10}$/.test(phoneNumber)) {
+      newErrors.phoneNumber = "Số điện thoại không hợp lệ";
     }
     if (!password) {
-      newErrors.password = "Password is required / Mật khẩu là bắt buộc";
+      newErrors.password = "Mật khẩu là bắt buộc";
     } else if (password.length < 6) {
-      newErrors.password =
-        "Password must be at least 6 characters / Mật khẩu phải có ít nhất 6 ký tự";
+      newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  //Submit and handle API
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
       setIsLoading(true);
-      // Simulate API call
       try {
-        // API call simulation
-        const response = await fetch("${apiUrl}/user");
-        const data = await response.json();
-        const user = data.find(
-          (user) => user.email === email && user.password === password
+        const users = await getUsers();
+        const user = users.find(
+          (user) =>
+            user.phoneNumber === phoneNumber && user.password === password
         );
         if (user) {
           toast.success("Đăng nhập thành công");
-          console.log("Login successful");
           navigate("/home");
         } else {
-          setErrors({ email: "Email hoặc Password không đúng" });
-          toast.error("Email hoặc mật khẩu không đúng");
-          console.error("Login failed: Incorrect email or password");
+          setErrors({ phoneNumber: "Số điện thoại hoặc Mật khẩu không đúng" });
+          toast.error("Số điện thoại hoặc mật khẩu không đúng");
         }
       } catch (error) {
         console.error("Login failed:", error);
@@ -67,27 +59,23 @@ const LoginPage = () => {
     }
   };
 
+  //Login with Google
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
+      await signInWithGoogle();
       toast.success("Đăng nhập thành công");
-      console.log("Google login successful", user);
       navigate("/home");
     } catch (error) {
-      toast.error("Email hoặc mật khẩu không đúng");
-      console.error("Google login failed:", error.message);
+      toast.error("Số điện thoại hoặc mật khẩu không đúng");
     } finally {
       setIsLoading(false);
     }
   };
-  const handleLogout = async () => {
-    await logout();
-    setUser(null);
-  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center px-4 sm:px-6 lg:px-8">
+      {/* Background */}
       <div className="absolute inset-0 z-0 opacity-10">
         <div className="grid grid-cols-6 gap-4 h-full">
           {[...Array(24)].map((_, i) => (
@@ -102,6 +90,7 @@ const LoginPage = () => {
         </div>
       </div>
 
+      {/* Logo */}
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-2xl relative z-10">
         <div>
           <img
@@ -118,28 +107,31 @@ const LoginPage = () => {
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm space-y-4">
+            {/* Phone Number */}
             <div>
-              <label htmlFor="email" className="sr-only">
-                Email
+              <label htmlFor="phoneNumber" className="sr-only">
+                Số điện thoại
               </label>
               <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
+                id="phoneNumber"
+                name="phoneNumber"
+                type="text"
+                autoComplete="phoneNumber"
                 required
                 className={`appearance-none rounded-lg relative block w-full px-3 py-2 border ${
-                  errors.email ? "border-red-300" : "border-gray-300"
+                  errors.phoneNumber ? "border-red-300" : "border-gray-300"
                 } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
-                placeholder="Nhập email "
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Nhập số điện thoại "
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
               />
-              {errors.email && (
-                <p className="mt-2 text-sm text-red-600">{errors.email}</p>
+              {errors.phoneNumber && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.phoneNumber}
+                </p>
               )}
             </div>
-
+            {/* Password */}
             <div className="relative">
               <label htmlFor="password" className="sr-only">
                 Password
@@ -173,7 +165,7 @@ const LoginPage = () => {
               )}
             </div>
           </div>
-
+          {/* Forgot password */}
           <div className="flex items-center justify-between">
             <div className="text-sm">
               <button
@@ -207,13 +199,13 @@ const LoginPage = () => {
           </div>
         </form>
         <div className="text-center">
-          <a
-            href="#"
-            className="font-medium text-blue-600 hover:text-blue-500 text-sm"
+          <button
+            type="button"
+            className="font-medium text-blue-600 hover:text-blue-500 text-sm bg-transparent border-none cursor-pointer"
             onClick={() => navigate("/register")}
           >
             Chưa có tài khoản? Hãy đăng ký ngay
-          </a>
+          </button>
         </div>
       </div>
     </div>

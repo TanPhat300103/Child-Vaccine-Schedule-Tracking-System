@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-
 import {
   FaGoogle,
   FaUser,
@@ -8,104 +7,91 @@ import {
   FaMapMarkerAlt,
   FaLock,
   FaEnvelope,
+  FaCalendarAlt,
+  FaWallet,
 } from "react-icons/fa";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { postUser } from "../../apis/api";
+import { toast } from "react-toastify";
 
-const apiUrl = import.meta.env.VITE_API_URL;
 const Register = () => {
-  const [formData, setFormData] = useState({
-    fullName: "",
-    gender: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    phone: "",
-    address: "",
-    agreeToTerms: false,
-  });
-
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
+  // Form data
+  const [formData, setFormData] = useState({
+    phoneNumber: "",
+    firstName: "",
+    lastName: "",
+    dob: "",
+    gender: false,
+    password: "",
+    address: "",
+    banking: "",
+    email: "",
+    roleId: 2,
+    active: true,
+    agreeToTerms: false,
+  });
+
+  // Check validate data
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.fullName || formData.fullName.length < 2) {
-      newErrors.fullName = "Name must be at least 2 characters long";
-    }
-    if (!formData.gender) {
-      newErrors.gender = "Please select a gender";
-    }
-    if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
-    }
+    if (!formData.firstName) newErrors.firstName = "Họ không được để trống";
+    if (!formData.lastName) newErrors.lastName = "Tên không được để trống";
+    if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
+      newErrors.email = "Email không hợp lệ";
     if (
-      !formData.password ||
-      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
-        formData.password
-      )
-    ) {
-      newErrors.password =
-        "Password must contain at least 8 characters, including uppercase, lowercase, number and special character";
-    }
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
-    }
-    if (formData.phone && !/^0\d{9,11}$/.test(formData.phone)) {
-      newErrors.phone = "Please enter a valid phone number";
-    }
-    if (formData.phone && !/^0\d{9,11}$/.test(formData.phone)) {
-      newErrors.phone =
-        "Please enter a valid Vietnamese phone number (10-12 digits, starting with 0)";
-    }
+      !formData.phoneNumber ||
+      !/^(\+84|0)[3|5|7|8|9][0-9]{8}$/.test(formData.phoneNumber)
+    )
+      newErrors.phoneNumber = "Số điện thoại không hợp lệ";
+
+    if (!formData.password || formData.password.length < 6)
+      newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự";
+    if (!formData.dob) newErrors.dob = "Ngày sinh không được để trống";
+    if (formData.gender === undefined)
+      newErrors.gender = "Giới tính không được để trống";
+    if (!formData.agreeToTerms)
+      newErrors.agreeToTerms =
+        "Bạn cần đồng ý với Điều khoản dịch vụ và Chính sách bảo mật";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  // Submit and handle API
   const handleSubmit = async (e) => {
     e.preventDefault();
+    formData.gender = formData.gender === "true";
+    // Kiểm tra dữ liệu đầu vào
     if (validateForm()) {
       setIsLoading(true);
       try {
-        // API call simulation
-        const response = await axios.post("${apiUrl}/user", {
-          fullName: formData.fullName,
-          email: formData.email,
-          password: formData.password,
-          phone: formData.phone,
-          address: formData.address,
-          gender: formData.gender,
-        });
-        if (response.status === 201) {
-          console.log("Registration successful");
+        const result = await postUser(formData); // Không cần gửi customerId nữa
+        console.log("API Result:", result);
+        if (result.success) {
+          toast.success(result.message);
           navigate("/login");
         } else {
-          setErrors({ submit: "Something went wrong, please try again." });
-          console.error("Registration failed: ", response);
+          toast.error(
+            result.message ||
+              "Đăng ký thất bại. Vui lòng kiểm tra lại thông tin."
+          );
+          setErrors({ submit: result.message || "Đăng ký thất bại" });
         }
-
-        setFormData({
-          fullName: "",
-          gender: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-          phone: "",
-          address: "",
-          agreeToTerms: false,
-        });
       } catch (error) {
         console.error("Registration failed:", error);
-        setErrors({ submit: "Failed to submit form. Please try again." });
+        toast.error("Đã có lỗi xảy ra. Vui lòng thử lại.");
       } finally {
         setIsLoading(false);
       }
     }
   };
 
+  // Handle change for form fields
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -121,32 +107,72 @@ const Register = () => {
           <h1 className="text-3xl font-bold text-blue-600">
             Đăng Ký Lịch Tiêm Chủng
           </h1>
-          <p className="mt-2 text-gray-600">
-            Tạo tài khoản của bạn để theo dõi lịch tiêm chủng của trẻ
-          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* First Name */}
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
               <FaUser className="text-blue-500" />
-              Họ và Tên
+              Họ
             </label>
             <input
               type="text"
-              name="fullName"
-              value={formData.fullName}
+              name="firstName"
+              value={formData.firstName}
               onChange={handleChange}
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
-                errors.fullName ? "border-red-500" : "border-gray-300"
+                errors.firstName ? "border-red-500" : "border-gray-300"
               }`}
-              placeholder="Nguyễn A"
+              placeholder=""
             />
-            {errors.fullName && (
-              <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>
+            {errors.firstName && (
+              <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
             )}
           </div>
 
+          {/* Last Name */}
+          <div>
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+              <FaUser className="text-blue-500" />
+              Tên
+            </label>
+            <input
+              type="text"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
+                errors.lastName ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder=""
+            />
+            {errors.lastName && (
+              <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
+            )}
+          </div>
+
+          {/* Date of Birth */}
+          <div>
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+              <FaCalendarAlt className="text-blue-500" />
+              Ngày Sinh
+            </label>
+            <input
+              type="date"
+              name="dob"
+              value={formData.dob}
+              onChange={handleChange}
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
+                errors.dob ? "border-red-500" : "border-gray-300"
+              }`}
+            />
+            {errors.dob && (
+              <p className="text-red-500 text-sm mt-1">{errors.dob}</p>
+            )}
+          </div>
+
+          {/* Gender */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Giới Tính
@@ -160,16 +186,15 @@ const Register = () => {
               }`}
             >
               <option value="">Chọn Giới Tính</option>
-              <option value="male">Nam</option>
-              <option value="female">Nữ</option>
-              <option value="other">Khác</option>
-              <option value="prefer-not-to-say">Không Muốn Tiết Lộ</option>
+              <option value={true}>Nam</option>
+              <option value={false}>Nữ</option>
             </select>
             {errors.gender && (
               <p className="text-red-500 text-sm mt-1">{errors.gender}</p>
             )}
           </div>
 
+          {/* Email */}
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
               <FaEnvelope className="text-blue-500" />
@@ -190,87 +215,32 @@ const Register = () => {
             )}
           </div>
 
-          <div>
-            <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
-              <FaLock className="text-blue-500" />
-              Mật khẩu
-            </label>
-            <div className="relative">
-              {" "}
-              <input
-                type={showPassword ? "text" : "password"} // Thay đổi giữa text & password
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
-                  errors.password ? "border-red-500" : "border-gray-300"
-                }`}
-                placeholder=""
-              />
-              <button
-                type="button"
-                className="absolute inset-y-0 right-3 pr-3 flex items-center"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? (
-                  <AiOutlineEyeInvisible className="h-5 w-5 text-gray-400" />
-                ) : (
-                  <AiOutlineEye className="h-5 w-5 text-gray-400" />
-                )}
-              </button>
-            </div>
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
-              <FaLock className="text-blue-500" />
-              Xác nhận mật khẩu
-            </label>
-            <input
-              type={showPassword ? "text" : "password"}
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
-                errors.confirmPassword ? "border-red-500" : "border-gray-300"
-              }`}
-              placeholder=""
-            />
-
-            {errors.confirmPassword && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.confirmPassword}
-              </p>
-            )}
-          </div>
-
+          {/* Phone Number */}
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
               <FaPhone className="text-blue-500" />
-              Số Điện Thoại (Không Bắt Buộc)
+              Số Điện Thoại
             </label>
             <input
               type="tel"
-              name="phone"
-              value={formData.phone}
+              name="phoneNumber"
+              value={formData.phoneNumber}
               onChange={handleChange}
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
-                errors.phone ? "border-red-500" : "border-gray-300"
+                errors.phoneNumber ? "border-red-500" : "border-gray-300"
               }`}
-              placeholder=""
+              placeholder="(+84) 516 233 428"
             />
-            {errors.phone && (
-              <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+            {errors.phoneNumber && (
+              <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>
             )}
           </div>
 
+          {/* Address */}
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
               <FaMapMarkerAlt className="text-blue-500" />
-              Địa Chỉ (Không Bắt Buộc)
+              Địa Chỉ
             </label>
             <textarea
               name="address"
@@ -278,10 +248,53 @@ const Register = () => {
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
               rows="3"
-              placeholder=""
+              placeholder="Địa chỉ của bạn"
             />
           </div>
 
+          {/* Banking Information */}
+          <div>
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+              <FaWallet className="text-blue-500" />
+              Thông Tin Ngân Hàng
+            </label>
+            <input
+              type="text"
+              name="banking"
+              value={formData.banking}
+              onChange={handleChange}
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
+                errors.banking ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder="Thông tin ngân hàng"
+            />
+            {errors.banking && (
+              <p className="text-red-500 text-sm mt-1">{errors.banking}</p>
+            )}
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+              <FaLock className="text-blue-500" />
+              Mật khẩu
+            </label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
+                errors.password ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder="Mật khẩu"
+            />
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+            )}
+          </div>
+
+          {/* Agree to Terms */}
           <div className="flex items-start">
             <input
               type="checkbox"

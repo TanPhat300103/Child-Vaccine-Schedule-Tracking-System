@@ -35,7 +35,7 @@ const Child = () => {
   const handleSave = async () => {
     try {
       // Sử dụng PUT để cập nhật trẻ
-      await axios.put(`${apiUrl}/child/${child.childId}`, {
+      await axios.put(`${apiUrl}/child/update`, {
         ...child,
         ...editData,
       });

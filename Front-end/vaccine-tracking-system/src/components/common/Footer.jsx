@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useRef } from "react";
 import { motion } from "framer-motion";
 import { FaCcVisa, FaCcMastercard } from "react-icons/fa";
 import { FaFacebook, FaInstagram, FaPhone } from "react-icons/fa"; // Facebook, Instagram
 import { SiZalo } from "react-icons/si"; // Zalo
 
-const Footer = () => {
+const Footer = React.forwardRef((props, ref) => {
   return (
-    <footer className="bg-blue-900 text-white py-16">
+    <footer ref={ref} className="bg-blue-900 text-white py-16">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-8">
+          {/* Vaccine Care */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
@@ -19,6 +20,7 @@ const Footer = () => {
             <p className="text-blue-200">Chăm sóc sức khỏe tận tâm</p>
           </motion.div>
 
+          {/* Contact */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
@@ -31,7 +33,7 @@ const Footer = () => {
             <p className="text-blue-200">Email: info@vaccinecare.com</p>
           </motion.div>
 
-          {/* Thanh toán với hình ảnh logo ZaloPay & MoMo */}
+          {/* Payment */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
@@ -71,6 +73,7 @@ const Footer = () => {
             </div>
           </motion.div>
 
+          {/* About */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
@@ -131,6 +134,6 @@ const Footer = () => {
       </div>
     </footer>
   );
-};
+});
 
 export default Footer;

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, NavLink, Outlet } from "react-router-dom";
+import { useNavigate, NavLink, useLocation, Outlet } from "react-router-dom";
 import axios from "axios";
 import AddChild from "./AddChild";
 import { Children } from "react";
 import Footer from "../../components/common/Footer";
-import Navbar from "../../components/common/HeaderHome";
-
+import { getUsers, postUser, updateUser } from "../../apis/api";
 import {
   FiUser,
   FiCalendar,
@@ -16,20 +15,22 @@ import {
   FiEye,
   FiEyeOff,
 } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 // Lấy base API từ biến môi trường VITE_API_URL
-const apiUrl = import.meta.env.VITE_API_URL;
 
 const CustomerPage = () => {
   // Lấy customerId từ localStorage - sẽ được thiết lập khi đăng nhập
   // const customerId = localStorage.getItem("customerId") || "cust001";
-  const customerId = "C002";
+  const customerId = "C001";
   const [activeSection, setActiveSection] = useState("profile");
   const [customer, setCustomer] = useState(null);
   const [children, setChildren] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const location = useLocation();
+  const isExactPath = location.pathname === "/customer";
   const [formData, setFormData] = useState({
     firstName: customer?.firstName || "",
     lastName: customer?.lastName || "",
@@ -58,6 +59,23 @@ const CustomerPage = () => {
       });
     }
   }, [customer]);
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.firstName) newErrors.firstName = "Họ không được để trống";
+    if (!formData.lastName) newErrors.lastName = "Tên không được để trống";
+    if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
+      newErrors.email = "Email không hợp lệ";
+    if (
+      !formData.phoneNumber ||
+      !/^(\+84|0)[3|5|7|8|9][0-9]{8}$/.test(formData.phoneNumber)
+    )
+      newErrors.phoneNumber = "Số điện thoại không hợp lệ";
+
+    if (!formData.password || formData.password.length < 6)
+      newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự";
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -168,16 +186,17 @@ const CustomerPage = () => {
         {/* Left Sidebar */}
         <div className="w-full md:w-1/4 bg-white rounded-lg shadow-md p-6">
           <div className="space-y-4">
-            <button
-              onClick={() => setActiveSection("profile")}
-              className={`w-full text-left px-4 py-2 rounded-md ${
-                activeSection === "profile"
-                  ? "bg-blue-50 text-blue-600"
-                  : "hover:bg-gray-50"
-              }`}
+            <NavLink
+              to="/customer"
+              end
+              className={({ isActive }) =>
+                `w-full text-left px-4 py-2 rounded-md ${
+                  isActive ? "bg-blue-50 text-blue-600" : "hover:bg-gray-50"
+                }`
+              }
             >
               Hồ sơ của tôi
-            </button>
+            </NavLink>
 
             <div className="space-y-2">
               <h3 className="font-medium px-4">Hồ sơ trẻ em</h3>
@@ -203,12 +222,16 @@ const CustomerPage = () => {
               )}
             </div>
 
-            <button
-              onClick={() => setActiveSection("add-child")}
-              className="w-full px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
+            <NavLink
+              to="/customer/add-child"
+              className={({ isActive }) =>
+                `w-full px-4 py-2 text-center rounded-md transition-colors ${
+                  isActive ? "bg-green-600" : "bg-green-500 hover:bg-green-600"
+                } text-white`
+              }
             >
               Thêm hồ sơ
-            </button>
+            </NavLink>
 
             <button
               onClick={() => navigate("/schedule")}
@@ -228,10 +251,10 @@ const CustomerPage = () => {
             </button>
           </div>
         </div>
-
         {/* Right Content Area */}
         <div className="w-full md:w-3/4 bg-white rounded-lg shadow-md p-6">
-          {activeSection === "profile" && customer && (
+          {isExactPath ? (
+            // Nếu đúng /customer thì hiển thị nội dung Customer
             <div className="space-y-6">
               <div className="text-center">
                 <div className="w-32 h-32 mx-auto bg-gray-200 rounded-full flex items-center justify-center">
@@ -374,8 +397,10 @@ const CustomerPage = () => {
                   Lưu thay đổi
                 </button>
               </form>
-              <Outlet />
             </div>
+          ) : (
+            // Nếu không phải /customer, mà là /customer/child, ta sẽ hiển thị Outlet
+            <Outlet />
           )}
         </div>
       </div>

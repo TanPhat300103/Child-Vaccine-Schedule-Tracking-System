@@ -15,7 +15,7 @@ const VaccinationSchedule = () => {
   const [error, setError] = useState(null); // Trạng thái lỗi khi gọi API
   const { state } = useLocation(); // Lấy dữ liệu từ state nếu có
   const navigate = useNavigate(); // Hook navigate để chuyển hướng
-  const apiUrl = import.meta.env.VITE_API_URL;
+
   // Hàm để chuyển timestamp thành ngày
   const formatDate = (timestamp) => {
     const date = new Date(timestamp * 1000); // Chuyển đổi timestamp (giây) thành mili giây
@@ -32,7 +32,9 @@ const VaccinationSchedule = () => {
     const fetchVaccines = async () => {
       setLoading(true);
       try {
-        const response = await fetch("${apiUrl}/Schedule");
+        const response = await fetch(
+          "https://67aa281d65ab088ea7e5d7ab.mockapi.io/Schedule"
+        );
         if (!response.ok) {
           throw new Error("Có lỗi khi tải dữ liệu");
         }

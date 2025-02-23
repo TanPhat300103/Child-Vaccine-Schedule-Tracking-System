@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { auth, sendPasswordResetEmail } from "../../config/firebase.js";
 
-export default function ForgotPassword() {
+const ForgotPassword = () => {
   const [email, setEmail] = useState("");
 
   const handleForgotPassword = async () => {
@@ -35,4 +35,5 @@ export default function ForgotPassword() {
       </button>
     </div>
   );
-}
+};
+export default ForgotPassword;
