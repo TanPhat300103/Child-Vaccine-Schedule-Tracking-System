@@ -1,6 +1,6 @@
 // src/pages/Staff/StaffPage.jsx
 import React from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, NavLink } from "react-router-dom";
 
 import {
   FiHome,
@@ -12,86 +12,96 @@ import {
 } from "react-icons/fi";
 
 const AdminPage = () => {
-  const AdminName = "Nguyễn Văn A"; // Lấy từ API hoặc state
+  const adminData = {
+    firstName: "Placeholder",
+    lastName: "Admin",
+    // TODO: Sau này lấy từ API
+  }; // Lấy từ API hoặc state
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-4">
-          <h1 className="text-2xl font-semibold text-gray-800">
-            Chào Mừng Quản Trị Viên {AdminName}
-          </h1>
+    <div className="min-h-screen flex">
+      {/* Sidebar */}
+      <aside className="w-64 bg-gray-800 text-white flex flex-col">
+        {/* Logo hoặc tên Brand */}
+        <div className="p-4 font-bold text-xl border-b border-gray-700">
+          Admin Panel
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          {/* Quản lý khách hàng */}
-          <Link
+        {/* Các đường dẫn */}
+        <nav className="flex-1 p-4 space-y-2">
+          <NavLink
+            // to="/admin/dashboard"
+            className={({ isActive }) =>
+              isActive
+                ? "bg-gray-700 block px-3 py-2 rounded"
+                : "block px-3 py-2 hover:bg-gray-700 rounded"
+            }
+          >
+            Dashboard
+          </NavLink>
+          <NavLink
             to="/admin/customers"
-            className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow text-center border-2 border-blue-200"
+            className={({ isActive }) =>
+              isActive
+                ? "bg-gray-700 block px-3 py-2 rounded"
+                : "block px-3 py-2 hover:bg-gray-700 rounded"
+            }
           >
-            <div className="flex flex-col items-center">
-              <FiUsers className="w-12 h-12 text-blue-600 mb-2" />
-              <span className="text-gray-700 font-medium">
-                Quản Lý Khách Hàng
-              </span>
-            </div>
-          </Link>
-
-          {/* Lịch đăng ký tiêm */}
-          <Link
-            to="/schedule"
-            className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow text-center"
+            Customers
+          </NavLink>
+          <NavLink
+            to="/admin/bookings"
+            className={({ isActive }) =>
+              isActive
+                ? "bg-gray-700 block px-3 py-2 rounded"
+                : "block px-3 py-2 hover:bg-gray-700 rounded"
+            }
           >
-            <div className="flex flex-col items-center">
-              <FiCalendar className="w-12 h-12 text-green-600 mb-2" />
-              <span className="text-gray-700 font-medium">
-                Lịch Đăng Ký Tiêm
-              </span>
-            </div>
-          </Link>
-
-          {/* Trang chủ */}
-          <Link
-            to="/home"
-            className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow text-center"
+            Bookings
+          </NavLink>
+          <NavLink
+            to="/admin/staffs"
+            className={({ isActive }) =>
+              isActive
+                ? "bg-gray-700 block px-3 py-2 rounded"
+                : "block px-3 py-2 hover:bg-gray-700 rounded"
+            }
           >
-            <div className="flex flex-col items-center">
-              <FiHome className="w-12 h-12 text-orange-600 mb-2" />
-              <span className="text-gray-700 font-medium">Trang Chủ</span>
-            </div>
-          </Link>
+            Staffs
+          </NavLink>
+          <NavLink
+            to="/admin/incomes"
+            className={({ isActive }) =>
+              isActive
+                ? "bg-gray-700 block px-3 py-2 rounded"
+                : "block px-3 py-2 hover:bg-gray-700 rounded"
+            }
+          >
+            Incomes
+          </NavLink>
+          <NavLink
+            to="/admin/vaccines"
+            className={({ isActive }) =>
+              isActive
+                ? "bg-gray-700 block px-3 py-2 rounded"
+                : "block px-3 py-2 hover:bg-gray-700 rounded"
+            }
+          >
+            Vaccines
+          </NavLink>
+        </nav>
 
-          {/* Báo cáo phản ứng */}
-          <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow text-center cursor-not-allowed">
-            <div className="flex flex-col items-center">
-              <FiAlertTriangle className="w-12 h-12 text-red-600 mb-2" />
-              <span className="text-gray-700 font-medium">
-                Báo Cáo Phản Ứng
-              </span>
-            </div>
-          </div>
-
-          {/* Feedback */}
-          <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow text-center cursor-not-allowed">
-            <div className="flex flex-col items-center">
-              <FiMessageSquare className="w-12 h-12 text-purple-600 mb-2" />
-              <span className="text-gray-700 font-medium">Phản Hồi</span>
-            </div>
-          </div>
-          {/* Staff */}
-          <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow text-center cursor-pointer">
-            <div className="flex flex-col items-center">
-              <FiUser className="w-12 h-12 text-blue-600 mb-2" />
-              <span className="text-gray-700 font-medium">
-                Quản Lý Nhân Viên
-              </span>
-            </div>
-          </div>
+        {/* Thông tin admin tạm */}
+        <div className="p-4 border-t border-gray-700">
+          <p className="text-sm">
+            Xin chào, {adminData.firstName} {adminData.lastName}!
+          </p>
         </div>
+      </aside>
+
+      {/* Main content */}
+      <main className="flex-1 p-6 bg-gray-100">
+        {/* Outlet để render các trang con */}
         <Outlet />
       </main>
     </div>

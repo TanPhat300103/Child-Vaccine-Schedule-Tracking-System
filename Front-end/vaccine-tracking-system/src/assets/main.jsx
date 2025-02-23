@@ -14,26 +14,25 @@ import PaymentGateway from "../pages/Payment/Payment.jsx";
 import PaymentGatewayOnline from "../pages/Payment/PaymentOnline.jsx";
 
 import VaccineScheduling from "../pages/Vaccination/BookSchedule.jsx";
-
 import VaccinationSchedule from "../pages/Vaccination/StatusSchedule.jsx";
 import DetailVaccine from "../pages/Vaccination/ReactionVaccine.jsx";
 import DetailVaccine2 from "../pages/Vaccination/DetailVaccine.jsx";
 
 import CustomerPage from "../pages/CustomerPage/CustomerPage.jsx";
-import StaffPage from "../pages/StaffPage/StaffPage.jsx";
-import Customers from "../pages/StaffPage/Customers.jsx";
-
-import AdminPage from "./pages/AdminPage/AdminPage";
-import AdminDashboard from "./pages/AdminPage/AdminDashboard";
-import Customers from "./pages/AdminPage/Customers";
-import Bookings from "./pages/AdminPage/Bookings";
-import Staffs from "./pages/AdminPage/Staffs";
-import Incomes from "./pages/AdminPage/Incomes";
-import Vaccines from "./pages/AdminPage/Vaccines";
-
 import AddChild from "../pages/CustomerPage/AddChild.jsx";
 import Child from "../pages/CustomerPage/Child.jsx";
 import BookingCustomer from "../pages/CustomerPage/BookingCustomer.jsx";
+
+import StaffPage from "../pages/StaffPage/StaffPage.jsx";
+import Customers from "../pages/StaffPage/Customers.jsx";
+
+import AdminPage from "../pages/AdminPage/AdminPage.jsx";
+// import Dashboard from "../pages/AdminPage/Dashboard.jsx";
+// import Customers from "./pages/AdminPage/Customers.jsx";
+// import Bookings from "./pages/AdminPage/Bookings.jsx";
+import Staffs from "../pages/AdminPage/Staffs.jsx";
+// import Incomes from "./pages/AdminPage/Incomes.jsx";
+// import Vaccines from "./pages/AdminPage/Vaccines.jsx";
 
 import { ToastContainer } from "react-toastify";
 
@@ -67,12 +66,12 @@ const Main = () => {
         </Route>
         <Route path="/admin" element={<AdminPage />}>
           {/* Các route con hiển thị qua Outlet */}
-          <Route path="dashboard" element={<AdminDashboard />} />
+          {/* <Route path="dashboard" element={<Dashboard />} />
           <Route path="customers" element={<Customers />} />
-          <Route path="bookings" element={<Bookings />} />
+          <Route path="bookings" element={<Bookings />} /> */}
           <Route path="staffs" element={<Staffs />} />
-          <Route path="incomes" element={<Incomes />} />
-          <Route path="vaccines" element={<Vaccines />} />
+          {/* <Route path="incomes" element={<Incomes />} />
+          <Route path="vaccines" element={<Vaccines />} /> */}
         </Route>
       </Routes>
     </Router>

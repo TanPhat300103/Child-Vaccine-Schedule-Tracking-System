@@ -184,7 +184,7 @@ export const createStaff = async (formData) => {
     });
     console.log("API Response Status (createStaff):", response.status);
     console.log("API Response Data (createStaff):", response.data);
-    if (response.status === 201) {
+    if (response.status === 200) {
       return { success: true, message: "Tạo nhân viên thành công" };
     } else {
       return { success: false, message: "Tạo nhân viên thất bại" };
@@ -203,20 +203,23 @@ export const createStaff = async (formData) => {
 
 // Cập nhật nhân viên (Staff)
 export const updateStaff = async (formData) => {
-  console.log("Form data being sent to API (updateStaff):", formData);
+  const payload = {
+    staffId: formData.staffId,
+    firstName: formData.firstName,
+    lastName: formData.lastName,
+    phone: formData.phoneNumber, // Đổi từ phoneNumber thành phone
+    dob: new Date(formData.dob).toISOString(), // Định dạng ISO (VD: "1990-02-02T00:00:00.000Z")
+    address: formData.address,
+    mail: formData.email, // Đổi từ email thành mail
+    password: formData.password,
+    roleId: formData.roleId,
+    active: formData.active,
+  };
+
+  console.log("Payload being sent to API (updateStaff):", payload);
+
   try {
-    const response = await axios.post(`${API_BASE_URL}/staff/update`, {
-      staffId: formData.staffId,
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      phone: formData.phoneNumber, // Sử dụng phone
-      dob: new Date(formData.dob).toISOString(), // Gửi dạng ISO
-      address: formData.address,
-      mail: formData.email, // Sử dụng mail
-      password: formData.password,
-      roleId: formData.roleId,
-      active: formData.active,
-    });
+    const response = await axios.post(`${API_BASE_URL}/staff/update`, payload);
     console.log("API Response Status (updateStaff):", response.status);
     console.log("API Response Data (updateStaff):", response.data);
     if (response.status === 200 || response.status === 201) {

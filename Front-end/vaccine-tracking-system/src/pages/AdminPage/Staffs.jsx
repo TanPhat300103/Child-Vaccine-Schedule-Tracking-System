@@ -1,300 +1,450 @@
-// src/pages/Dashboard/StaffDashboard.jsx
-import axios from "axios";
 import React, { useEffect, useState } from "react";
+import {
+  getStaffs,
+  createStaff,
+  updateStaff,
+  deleteStaff,
+} from "../../apis/api";
 
-const apiUrl = import.meta.env.VITE_API_URL;
-
-const StaffDashboard = () => {
-  const staffId = 1;
-  const [staffs, setStaffs] = useState([]);
-  const [selectedStaff, setSelectedStaff] = useState(null);
-  const [formData, setFormData] = useState({
-    staffId: "",
+const Staffs = () => {
+  // Danh sách staff
+  const [staffList, setStaffList] = useState([]);
+  // State để quản lý form tạo mới
+  const [newStaff, setNewStaff] = useState({
     firstName: "",
     lastName: "",
-    phone: "",
+    phoneNumber: "",
     dob: "",
     address: "",
-    mail: "",
+    email: "",
     password: "",
-    roleId: 2,
+    roleId: 1,
     active: true,
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  // State để quản lý form chỉnh sửa
+  const [editStaff, setEditStaff] = useState(null);
+  // Thông báo lỗi hoặc thành công
+  const [message, setMessage] = useState("");
 
-  // Lấy danh sách staff (GET /staff)
-  const fetchStaffs = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`${apiUrl}/staff/findby?id=${staffId}`);
-      setStaffs(response.data);
-      setError("");
-    } catch (err) {
-      console.error("Error fetching staffs:", err);
-      setError("Error fetching staffs");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Lấy danh sách staff khi component mount
   useEffect(() => {
-    fetchStaffs();
+    fetchStaffList();
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const fetchStaffList = async () => {
+    try {
+      const data = await getStaffs();
+      setStaffList(data);
+    } catch (err) {
+      console.error("Error fetching staff list:", err);
+      setMessage("Không thể tải danh sách nhân viên.");
+    }
   };
 
-  // Tạo mới Staff (POST /staff/create)
-  const handleCreate = async () => {
+  // Xử lý thay đổi input cho form tạo mới
+  const handleNewStaffChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setNewStaff((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  // Thêm staff mới
+  const handleAddStaff = async (e) => {
+    e.preventDefault();
+    setMessage("");
     try {
-      await axios.post(`${apiUrl}/staff/create`, formData);
-      alert("Staff created successfully!");
-      fetchStaffs();
-      setFormData({
-        staffId: "",
-        firstName: "",
-        lastName: "",
-        phone: "",
-        dob: "",
-        address: "",
-        mail: "",
-        password: "",
-        roleId: 1,
-        active: true,
-      });
+      const { success, message } = await createStaff(newStaff);
+      if (success) {
+        setMessage("Thêm nhân viên thành công!");
+        // Reset form
+        setNewStaff({
+          firstName: "",
+          lastName: "",
+          phoneNumber: "",
+          dob: "",
+          address: "",
+          email: "",
+          password: "",
+          roleId: 1,
+          active: true,
+        });
+        // Refresh danh sách
+        fetchStaffList();
+      } else {
+        setMessage(message || "Không thể thêm nhân viên.");
+      }
     } catch (err) {
       console.error("Error creating staff:", err);
-      alert("Error creating staff");
+      setMessage("Có lỗi xảy ra khi thêm nhân viên.");
     }
   };
 
-  // Cập nhật Staff (POST /staff/update)
-  const handleUpdate = async () => {
+  // Bắt đầu chỉnh sửa staff
+  const handleEditClick = (staff) => {
+    setMessage("");
+    setEditStaff({
+      staffId: staff.staffId,
+      firstName: staff.firstName,
+      lastName: staff.lastName,
+      phoneNumber: staff.phone, // staff trả về phone, FE dùng phoneNumber
+      dob: staff.dob ? staff.dob.split("T")[0] : "",
+      address: staff.address,
+      email: staff.mail, // staff trả về mail, FE dùng email
+      password: staff.password,
+      roleId: staff.roleId,
+      active: staff.active,
+    });
+  };
+
+  // Xử lý thay đổi input cho form chỉnh sửa
+  const handleEditChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setEditStaff((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  // Lưu chỉnh sửa staff
+  const handleEditSave = async (e) => {
+    e.preventDefault();
+    if (!editStaff) return;
+    setMessage("");
     try {
-      await axios.post(`${apiUrl}/staff/update`, formData);
-      alert("Staff updated successfully!");
-      fetchStaffs();
-      setSelectedStaff(null);
+      const { success, message } = await updateStaff(editStaff);
+      if (success) {
+        setMessage("Cập nhật nhân viên thành công!");
+        setEditStaff(null);
+        fetchStaffList();
+      } else {
+        setMessage(message || "Không thể cập nhật nhân viên.");
+      }
     } catch (err) {
       console.error("Error updating staff:", err);
-      alert("Error updating staff");
+      setMessage("Có lỗi xảy ra khi cập nhật nhân viên.");
     }
   };
 
-  // Xoá Staff (DELETE /staff/delete?id=...)
-  const handleDelete = async (staffId) => {
-    if (window.confirm("Are you sure to delete this staff?")) {
+  // Hủy chỉnh sửa
+  const handleEditCancel = () => {
+    setEditStaff(null);
+  };
+
+  // Xóa staff
+  const handleDeleteStaff = async (staffId) => {
+    setMessage("");
+    if (window.confirm("Bạn có chắc chắn muốn xóa nhân viên này?")) {
       try {
-        await axios.delete(`${apiUrl}/staff/delete`, {
-          params: { id: staffId },
-        });
-        alert("Staff deleted successfully!");
-        fetchStaffs();
+        const { success, message } = await deleteStaff(staffId);
+        if (success) {
+          setMessage("Xóa nhân viên thành công!");
+          fetchStaffList();
+        } else {
+          setMessage(message || "Không thể xóa nhân viên.");
+        }
       } catch (err) {
         console.error("Error deleting staff:", err);
-        alert("Error deleting staff");
+        setMessage("Có lỗi xảy ra khi xóa nhân viên.");
       }
     }
   };
 
-  // Tìm Staff theo id (GET /staff/findid?id=...)
-  const handleFindById = async (staffId) => {
-    try {
-      const response = await axios.get(`${apiUrl}/staff/findid`, {
-        params: { id: staffId },
-      });
-      setSelectedStaff(response.data);
-      setFormData(response.data);
-    } catch (err) {
-      console.error("Error fetching staff by id:", err);
-      alert("Error fetching staff by id");
-    }
-  };
-
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h2 className="text-2xl font-bold mb-4 text-center">
-        Staff Dashboard (Admin Only)
-      </h2>
+    <div className="p-4 space-y-6">
+      <h1 className="text-2xl font-bold">Quản lý Nhân Viên</h1>
 
-      {loading && <p className="text-center text-blue-500">Loading...</p>}
-      {error && <p className="text-center text-red-500">{error}</p>}
+      {message && (
+        <div className="bg-blue-100 text-blue-700 px-4 py-2 rounded">
+          {message}
+        </div>
+      )}
 
-      {/* Form CRUD */}
-      <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 max-w-xl mx-auto">
-        <h3 className="text-xl font-semibold mb-4">
-          {selectedStaff ? "Update Staff" : "Create Staff"}
-        </h3>
-        <div className="grid grid-cols-1 gap-4">
-          <input
-            className="border rounded p-2"
-            type="text"
-            name="staffId"
-            placeholder="Staff ID"
-            value={formData.staffId}
-            onChange={handleChange}
-          />
-          <input
-            className="border rounded p-2"
-            type="text"
-            name="firstName"
-            placeholder="First Name"
-            value={formData.firstName}
-            onChange={handleChange}
-          />
-          <input
-            className="border rounded p-2"
-            type="text"
-            name="lastName"
-            placeholder="Last Name"
-            value={formData.lastName}
-            onChange={handleChange}
-          />
-          <input
-            className="border rounded p-2"
-            type="text"
-            name="phone"
-            placeholder="Phone"
-            value={formData.phone}
-            onChange={handleChange}
-          />
-          <input
-            className="border rounded p-2"
-            type="date"
-            name="dob"
-            placeholder="Date of Birth"
-            value={formData.dob}
-            onChange={handleChange}
-          />
-          <input
-            className="border rounded p-2"
-            type="text"
-            name="address"
-            placeholder="Address"
-            value={formData.address}
-            onChange={handleChange}
-          />
-          <input
-            className="border rounded p-2"
-            type="email"
-            name="mail"
-            placeholder="Email"
-            value={formData.mail}
-            onChange={handleChange}
-          />
-          <input
-            className="border rounded p-2"
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-          />
-          <input
-            className="border rounded p-2"
-            type="number"
-            name="roleId"
-            placeholder="Role ID"
-            value={formData.roleId}
-            onChange={handleChange}
-          />
+      {/* Form chỉnh sửa nhân viên (nếu có dữ liệu chỉnh sửa) */}
+      {editStaff && (
+        <div className="border rounded p-4 bg-white shadow mb-6">
+          <h2 className="text-xl font-semibold mb-2">Chỉnh sửa Nhân Viên</h2>
+          <form onSubmit={handleEditSave} className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block mb-1 font-medium">Họ</label>
+              <input
+                type="text"
+                name="firstName"
+                value={editStaff.firstName}
+                onChange={handleEditChange}
+                className="border rounded w-full px-2 py-1"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-1 font-medium">Tên</label>
+              <input
+                type="text"
+                name="lastName"
+                value={editStaff.lastName}
+                onChange={handleEditChange}
+                className="border rounded w-full px-2 py-1"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-1 font-medium">Số điện thoại</label>
+              <input
+                type="text"
+                name="phoneNumber"
+                value={editStaff.phoneNumber}
+                onChange={handleEditChange}
+                className="border rounded w-full px-2 py-1"
+              />
+            </div>
+            <div>
+              <label className="block mb-1 font-medium">Ngày sinh</label>
+              <input
+                type="date"
+                name="dob"
+                value={editStaff.dob}
+                onChange={handleEditChange}
+                className="border rounded w-full px-2 py-1"
+              />
+            </div>
+            <div>
+              <label className="block mb-1 font-medium">Địa chỉ</label>
+              <input
+                type="text"
+                name="address"
+                value={editStaff.address}
+                onChange={handleEditChange}
+                className="border rounded w-full px-2 py-1"
+              />
+            </div>
+            <div>
+              <label className="block mb-1 font-medium">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={editStaff.email}
+                onChange={handleEditChange}
+                className="border rounded w-full px-2 py-1"
+              />
+            </div>
+            <div>
+              <label className="block mb-1 font-medium">Mật khẩu</label>
+              <input
+                type="password"
+                name="password"
+                value={editStaff.password}
+                onChange={handleEditChange}
+                className="border rounded w-full px-2 py-1"
+              />
+            </div>
+
+            <div className="col-span-2 flex items-center">
+              <input
+                type="checkbox"
+                name="active"
+                checked={editStaff.active}
+                onChange={handleEditChange}
+                className="mr-2"
+              />
+              <label>Kích hoạt</label>
+            </div>
+            <div className="col-span-2 flex justify-end space-x-4">
+              <button
+                type="submit"
+                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+              >
+                Lưu
+              </button>
+              <button
+                type="button"
+                onClick={handleEditCancel}
+                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+              >
+                Hủy
+              </button>
+            </div>
+          </form>
         </div>
-        <div className="flex justify-between mt-4">
-          {selectedStaff ? (
+      )}
+
+      {/* Form thêm nhân viên */}
+      <div className="border rounded p-4 bg-white shadow">
+        <h2 className="text-xl font-semibold mb-2">Thêm Nhân Viên Mới</h2>
+        <form onSubmit={handleAddStaff} className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block mb-1 font-medium">Họ</label>
+            <input
+              type="text"
+              name="firstName"
+              value={newStaff.firstName}
+              onChange={handleNewStaffChange}
+              className="border rounded w-full px-2 py-1"
+              required
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium">Tên</label>
+            <input
+              type="text"
+              name="lastName"
+              value={newStaff.lastName}
+              onChange={handleNewStaffChange}
+              className="border rounded w-full px-2 py-1"
+              required
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium">Số điện thoại</label>
+            <input
+              type="text"
+              name="phoneNumber"
+              value={newStaff.phoneNumber}
+              onChange={handleNewStaffChange}
+              className="border rounded w-full px-2 py-1"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium">Ngày sinh</label>
+            <input
+              type="date"
+              name="dob"
+              value={newStaff.dob}
+              onChange={handleNewStaffChange}
+              className="border rounded w-full px-2 py-1"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium">Địa chỉ</label>
+            <input
+              type="text"
+              name="address"
+              value={newStaff.address}
+              onChange={handleNewStaffChange}
+              className="border rounded w-full px-2 py-1"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={newStaff.email}
+              onChange={handleNewStaffChange}
+              className="border rounded w-full px-2 py-1"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium">Mật khẩu</label>
+            <input
+              type="password"
+              name="password"
+              value={newStaff.password}
+              onChange={handleNewStaffChange}
+              className="border rounded w-full px-2 py-1"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium">Role ID</label>
+            <input
+              type="number"
+              name="roleId"
+              value={newStaff.roleId}
+              onChange={handleNewStaffChange}
+              className="border rounded w-full px-2 py-1"
+            />
+          </div>
+          <div className="col-span-2 flex items-center">
+            <input
+              type="checkbox"
+              name="active"
+              checked={newStaff.active}
+              onChange={handleNewStaffChange}
+              className="mr-2"
+            />
+            <label>Kích hoạt</label>
+          </div>
+          <div className="col-span-2 text-right">
             <button
-              className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded"
-              onClick={handleUpdate}
+              type="submit"
+              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
             >
-              Update Staff
+              Thêm Nhân Viên
             </button>
-          ) : (
-            <button
-              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
-              onClick={handleCreate}
-            >
-              Create Staff
-            </button>
-          )}
-          <button
-            className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded"
-            onClick={() => {
-              setSelectedStaff(null);
-              setFormData({
-                staffId: "",
-                firstName: "",
-                lastName: "",
-                phone: "",
-                dob: "",
-                address: "",
-                mail: "",
-                password: "",
-                roleId: 1,
-                active: true,
-              });
-            }}
-          >
-            Clear
-          </button>
-        </div>
+          </div>
+        </form>
       </div>
 
-      {/* Danh sách Staff */}
-      <div className="overflow-x-auto">
-        <h3 className="text-xl font-semibold mb-2 text-center">
-          List of Staff
-        </h3>
-        <table className="min-w-full bg-white border">
-          <thead>
-            <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-              <th className="py-3 px-6 text-left">Staff ID</th>
-              <th className="py-3 px-6 text-left">Name</th>
-              <th className="py-3 px-6 text-left">Phone</th>
-              <th className="py-3 px-6 text-left">Email</th>
-              <th className="py-3 px-6 text-left">Active</th>
-              <th className="py-3 px-6 text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="text-gray-600 text-sm font-light">
-            {staffs.map((staff) => (
-              <tr
-                key={staff.staffId}
-                className="border-b border-gray-200 hover:bg-gray-100"
-              >
-                <td className="py-3 px-6 text-left whitespace-nowrap">
-                  {staff.staffId}
-                </td>
-                <td className="py-3 px-6 text-left">
-                  {staff.firstName} {staff.lastName}
-                </td>
-                <td className="py-3 px-6 text-left">{staff.phone}</td>
-                <td className="py-3 px-6 text-left">{staff.mail}</td>
-                <td className="py-3 px-6 text-left">
-                  {staff.active ? "Yes" : "No"}
-                </td>
-                <td className="py-3 px-6 text-center">
-                  <button
-                    className="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded mr-2"
-                    onClick={() => handleFindById(staff.staffId)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded"
-                    onClick={() => handleDelete(staff.staffId)}
-                  >
-                    Delete
-                  </button>
-                </td>
+      {/* Danh sách staff */}
+      <div className="border rounded p-4 bg-white shadow">
+        <h2 className="text-xl font-semibold mb-2">Danh Sách Nhân Viên</h2>
+        <div className="overflow-x-auto">
+          <table className="min-w-full border">
+            <thead className="bg-gray-200">
+              <tr>
+                <th className="px-4 py-2 border">Mã NV</th>
+                <th className="px-4 py-2 border">Họ</th>
+                <th className="px-4 py-2 border">Tên</th>
+                <th className="px-4 py-2 border">SĐT</th>
+                <th className="px-4 py-2 border">Ngày Sinh</th>
+                <th className="px-4 py-2 border">Địa chỉ</th>
+                <th className="px-4 py-2 border">Email</th>
+                <th className="px-4 py-2 border">Active</th>
+                <th className="px-4 py-2 border">Thao tác</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {staffList.map((staff) => (
+                <StaffRow
+                  key={staff.staffId}
+                  staff={staff}
+                  onUpdate={() => handleEditClick(staff)}
+                  onDelete={() => handleDeleteStaff(staff.staffId)}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
 };
 
-export default StaffDashboard;
+// Row component để hiển thị mỗi staff
+const StaffRow = ({ staff, onUpdate, onDelete }) => {
+  return (
+    <tr className="border-b">
+      <td className="px-4 py-2 border text-center">{staff.staffId}</td>
+      <td className="px-4 py-2 border">{staff.firstName}</td>
+      <td className="px-4 py-2 border">{staff.lastName}</td>
+      <td className="px-4 py-2 border">{staff.phone}</td>
+      <td className="px-4 py-2 border">
+        {staff.dob ? staff.dob.split("T")[0] : ""}
+      </td>
+      <td className="px-4 py-2 border">{staff.address}</td>
+      <td className="px-4 py-2 border">{staff.mail}</td>
+      <td className="px-4 py-2 border text-center">
+        {staff.active ? "Yes" : "No"}
+      </td>
+      <td className="px-4 py-2 border text-center">
+        <button
+          onClick={() => {
+            console.log("Button Edit clicked in StaffRow");
+            onUpdate();
+          }}
+          className="bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-1 rounded mr-2"
+        >
+          Edit
+        </button>
+        <button
+          onClick={onDelete}
+          className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded"
+        >
+          Delete
+        </button>
+      </td>
+    </tr>
+  );
+};
+
+export default Staffs;
