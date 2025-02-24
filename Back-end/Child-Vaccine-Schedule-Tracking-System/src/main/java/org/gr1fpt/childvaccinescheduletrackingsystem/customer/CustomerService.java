@@ -41,9 +41,10 @@ public class CustomerService {
         customer.setActive(true);
         applicationEventPublisher.publishEvent(customer);
         return customerRepository.save(customer);
+        //return customer;
     }
 
-    private String generateCustomerId() {
+    public String generateCustomerId() {
         long count = customerRepository.count();
         return "C" + String.format("%03d", count + 1);
     }

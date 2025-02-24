@@ -23,6 +23,8 @@ public class SecurityConfig {
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
+    @Autowired
+    private CustomOAuth2UserService  customOAuth2UserService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -37,13 +39,17 @@ public class SecurityConfig {
                         .hasAnyRole("CUSTOMER", "STAFF", "ADMIN")
 
 
-                        .requestMatchers("/staff/create","/vaccine/**","/booking/**","/bookingdetail/**","/child/**","/combodetail/**","/customer/**","/email/**","/marketing/**","/medicalhistory/**","/payment/**","/vaccinecombo/**","/vaccinedetail/**")
+                        .requestMatchers("/staff/create","/vaccine/**","/booking/**","/bookingdetail/**","/child/**","/combodetail/**","/email/**","/marketing/**","/medicalhistory/**","/payment/**","/vaccinecombo/**","/vaccinedetail/**")
                         .hasAnyRole("STAFF", "ADMIN")
-
 
                         .requestMatchers("/admin/**","/staff/**")
                         .hasRole("ADMIN")
                         .anyRequest().permitAll()
+                ).oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)
+                        )
+                        .defaultSuccessUrl("/auth/user", true)
                 )
 
                 .formLogin(form -> form

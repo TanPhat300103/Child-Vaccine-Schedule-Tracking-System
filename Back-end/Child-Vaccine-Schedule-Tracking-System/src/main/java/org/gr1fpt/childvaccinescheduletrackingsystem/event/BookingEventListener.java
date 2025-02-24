@@ -10,6 +10,7 @@ import org.gr1fpt.childvaccinescheduletrackingsystem.customer.CustomerRepository
 import org.gr1fpt.childvaccinescheduletrackingsystem.email.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;

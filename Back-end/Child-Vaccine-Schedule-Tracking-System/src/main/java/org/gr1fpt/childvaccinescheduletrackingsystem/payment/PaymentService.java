@@ -119,6 +119,7 @@ public class PaymentService {
             payment.setTotal(totalAfterDiscount);
         }
         payment.setDate(Date.valueOf(LocalDate.now()));
+
         payment.setMethod(method);
         if(!method){
         payment.setStatus(true);}
