@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("medicalhistory")
 public class MedicalHistoryController {
@@ -30,5 +31,10 @@ public class MedicalHistoryController {
         medicalHistoryService.deleteAllByChildId(id);
     }
 
+    @GetMapping("findbychildid")
+    public List<MedicalHistory> findByChildId (@RequestParam String id)
+    {
+        return medicalHistoryService.findByChildId(id);
+    }
 
 }

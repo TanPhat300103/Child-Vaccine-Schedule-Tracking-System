@@ -133,4 +133,14 @@ public class BookingDetailService {
         int dosecount = bookingDetailRepository.countByBookingIdAndVaccineIdAndAdministeredDateNotNull(bookingid, vaccineid);
         medicalHistoryService.create(bookingDetail,dosecount);
     }
+
+    public void canceledBookingDetail(String bookingId){
+        List<BookingDetail> bookingDetail = bookingDetailRepository.findByBooking_BookingId(bookingId);
+        for(BookingDetail detail : bookingDetail){
+            if(detail.getStatus()==1) {
+                detail.setStatus(3);
+                bookingDetailRepository.save(detail);
+            }
+        }
+    }
 }

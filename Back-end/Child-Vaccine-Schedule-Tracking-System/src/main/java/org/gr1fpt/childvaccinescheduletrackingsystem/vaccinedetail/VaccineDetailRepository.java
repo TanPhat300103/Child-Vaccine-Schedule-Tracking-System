@@ -9,4 +9,5 @@ import java.util.List;
 public interface VaccineDetailRepository extends JpaRepository<VaccineDetail, Integer> {
     List<VaccineDetail> findByVaccine_VaccineIdAndQuantityGreaterThanOrderByExpiredDateAsc(String vaccineId, int quantity);
     List<VaccineDetail> findByVaccine_VaccineId(String vaccineId);
+
 }

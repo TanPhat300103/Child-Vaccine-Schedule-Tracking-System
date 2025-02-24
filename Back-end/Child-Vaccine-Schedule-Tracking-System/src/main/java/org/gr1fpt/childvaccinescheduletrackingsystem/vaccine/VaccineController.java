@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/vaccine")
 public class VaccineController {
@@ -47,6 +48,11 @@ public class VaccineController {
     public List<Vaccine> findByCountry (@RequestParam String country)
     {
         return vaccineService.findByCountry(country);
+    }
+
+    @GetMapping("findbyname")
+    public List<Vaccine> findByName(@RequestParam String name){
+        return vaccineService.findByNameContain(name);
     }
 
     @PostMapping("update")

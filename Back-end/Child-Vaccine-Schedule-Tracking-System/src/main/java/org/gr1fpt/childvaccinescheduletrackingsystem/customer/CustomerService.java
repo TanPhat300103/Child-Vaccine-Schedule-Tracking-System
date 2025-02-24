@@ -26,19 +26,22 @@ public class CustomerService {
 
     public Customer create(Customer customer) {
 
-        if (customerRepository.findByPhoneNumber(customer.getPhoneNumber()).isEmpty()) {
-            customer.setRoleId(2);
-            customer.setCustomerId(generateCustomerId());
-            customer.setActive(true);
-            return customerRepository.save(customer);
-        } else {
-            throw new CustomException("Customer Phone: " + customer.getPhoneNumber() + " has been used", HttpStatus.BAD_REQUEST);
+        if (customerRepository.findByPhoneNumber(customer.getPhoneNumber()).isPresent()) {
+            throw new CustomException("Phone number is exist ",HttpStatus.BAD_REQUEST);
         }
+        
+        if(customerRepository.findByEmail(customer.getEmail()) .isPresent()) {
+            throw new CustomException("Email is exist ",HttpStatus.BAD_REQUEST);
+        }
+        customer.setRoleId(1);
+        customer.setCustomerId(generateCustomerId());
+        customer.setActive(true);
+        return customerRepository.save(customer);
     }
 
     private String generateCustomerId() {
         long count = customerRepository.count();
-        return "C" + String.format("%02d", count + 1);
+        return "C" + String.format("%03d", count + 1);
     }
 
     public void deleteById(String id) {

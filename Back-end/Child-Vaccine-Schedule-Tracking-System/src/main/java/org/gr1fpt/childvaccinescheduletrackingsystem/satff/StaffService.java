@@ -29,9 +29,14 @@ public class StaffService {
 
     public Staff create(Staff staff) {
             if(staffRepository.findByPhone(staff.getPhone()).isEmpty()) {
+            if(staffRepository.findByMail(staff.getMail()).isPresent()) {
+                throw new CustomException("Email is exist",HttpStatus.CONFLICT);
+            }
+            staff.setRoleId(2);
             staff.setStaffId(generateStaffId());
+            staff.setActive(true);
             return staffRepository.save(staff);}
-            else throw new CustomException("Phone number is exist !!", HttpStatus.BAD_REQUEST);
+            else throw new CustomException("Phone number is exist !!", HttpStatus.CONFLICT);
     }
 
     public void deleteById(String id) {

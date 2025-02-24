@@ -8,6 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("booking")
+@CrossOrigin(origins = "*")
 public class BookingController {
     @Autowired
     private BookingService bookingService;
@@ -46,6 +47,11 @@ public class BookingController {
     @PostMapping("update")
     public Booking updateBooking(@RequestBody @Valid Booking booking) {
         return bookingService.updateBooking(booking);
+    }
+
+    @PostMapping("cancel")
+    public void canceledBooking(@RequestParam String bookingId) {
+        bookingService.canceledBooking(bookingId);
     }
 
     @DeleteMapping("delete")

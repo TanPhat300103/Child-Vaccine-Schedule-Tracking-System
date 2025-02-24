@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @RestController()
 @RequestMapping("child")
+@CrossOrigin(origins = "*")
 public class ChildController {
 
     @Autowired

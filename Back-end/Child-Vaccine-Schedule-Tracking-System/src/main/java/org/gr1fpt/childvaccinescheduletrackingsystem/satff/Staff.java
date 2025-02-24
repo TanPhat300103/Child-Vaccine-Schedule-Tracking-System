@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Nationalized;
 
 import java.sql.Date;
 
@@ -22,12 +23,12 @@ public class Staff {
     @NotBlank(message = "Phone number cannot be empty")
     @Pattern(regexp = "^(\\+84|0)[3|5|7|8|9][0-9]{8}$", message = "Invalid phone number format")
     private String phone;
-
     @Past(message = "Date of birth must be in the past")
     private Date dob;
     private String address;
     @Email(message = "Email should be valid")
     private String mail;
+    private Boolean gender;
     private String password;
     @Min(value = 1,message = "Invalid Id")
     @Max(value = 3,message = "Invalid Id")
