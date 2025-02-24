@@ -1,11 +1,16 @@
 package org.gr1fpt.childvaccinescheduletrackingsystem.vaccinedetail;
 
 import org.gr1fpt.childvaccinescheduletrackingsystem.exception.CustomException;
+import org.gr1fpt.childvaccinescheduletrackingsystem.notification.Notification;
+import org.gr1fpt.childvaccinescheduletrackingsystem.role.Role;
 import org.gr1fpt.childvaccinescheduletrackingsystem.vaccine.VaccineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -14,6 +19,9 @@ public class VaccineDetailService {
     VaccineDetailRepository vaccineDetailRepository;
     @Autowired
     VaccineRepository vaccineRepository;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
     public List<VaccineDetail> getAll() {
         return vaccineDetailRepository.findAll();
     }
@@ -52,6 +60,11 @@ public class VaccineDetailService {
         }
         VaccineDetail nearestVaccineDetail = vaccineDetails.getFirst();
         nearestVaccineDetail.setQuantity(nearestVaccineDetail.getQuantity() - 1);
+        if(nearestVaccineDetail.getQuantity()<10){
+            System.out.println("Nearest VaccineDetail Quantity less than 10");
+            eventPublisher.publishEvent(nearestVaccineDetail);
+            //DANG CODE
+        }
         return vaccineDetailRepository.save(nearestVaccineDetail);
     }
 

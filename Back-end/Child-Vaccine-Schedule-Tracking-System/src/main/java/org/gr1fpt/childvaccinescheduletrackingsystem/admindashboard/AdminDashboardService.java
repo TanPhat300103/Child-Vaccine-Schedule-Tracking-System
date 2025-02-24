@@ -3,6 +3,7 @@ package org.gr1fpt.childvaccinescheduletrackingsystem.admindashboard;
 
 import org.gr1fpt.childvaccinescheduletrackingsystem.booking.Booking;
 import org.gr1fpt.childvaccinescheduletrackingsystem.booking.BookingRepository;
+import org.gr1fpt.childvaccinescheduletrackingsystem.booking.BookingService;
 import org.gr1fpt.childvaccinescheduletrackingsystem.bookingdetail.BookingDetail;
 import org.gr1fpt.childvaccinescheduletrackingsystem.bookingdetail.BookingDetailRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.feedback.Feedback;
@@ -39,6 +40,8 @@ public class AdminDashboardService {
     private BookingDetailRepository bookingDetailRepository;
     @Autowired
     private FeedbackService feedbackService;
+    @Autowired
+    private BookingService bookingService;
 
 
     //thu nhập theo ngay
@@ -124,9 +127,19 @@ public class AdminDashboardService {
         }
         return vaccineList;
     }
-    //Bộ lọc theo ngày, trạng thái, loại vaccine
+    //Bộ lọc theo trạng thái
+    public List<Booking> getBookingByStatus(int status){
+        List<Booking> bookingList = new ArrayList<>();
+        for (Booking booking : bookingService.getAllBookings()){
+            if(booking.getStatus()==status){
+                bookingList.add(booking);
+            }
+        }
+        return bookingList;
+    }
 
     //Tỷ lệ tiêm vaccine theo độ tuổi / giới tính
+
     //Xu hướng đặt lịch (loại vaccine nào được chọn nhiều)
     public Map<String,Integer> getBestsellerVaccine(){
         Map<String,Integer> bestsellerVaccine = new HashMap<>();
@@ -140,5 +153,7 @@ public class AdminDashboardService {
     public List<Feedback> getAllFeedback(){
         return feedbackService.getAllFeedback();
     }
+
+    //vaccine con it trong kho
 
 }

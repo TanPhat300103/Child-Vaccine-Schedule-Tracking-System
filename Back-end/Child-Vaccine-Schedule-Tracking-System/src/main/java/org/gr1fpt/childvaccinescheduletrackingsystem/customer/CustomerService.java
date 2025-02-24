@@ -3,6 +3,7 @@ package org.gr1fpt.childvaccinescheduletrackingsystem.customer;
 
 import org.gr1fpt.childvaccinescheduletrackingsystem.exception.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,8 @@ public class CustomerService {
 
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
     public List<Customer> getAll() {
         return customerRepository.findAll();
@@ -36,6 +39,7 @@ public class CustomerService {
         customer.setRoleId(1);
         customer.setCustomerId(generateCustomerId());
         customer.setActive(true);
+        applicationEventPublisher.publishEvent(customer);
         return customerRepository.save(customer);
     }
 
@@ -61,12 +65,15 @@ public class CustomerService {
     }
 
     public Customer active(String id) {
-        Customer c1 = customerRepository.findById(id).orElseThrow(() -> new CustomException("Customer ID: " + id + " does not exist", HttpStatus.BAD_REQUEST));
-        if (c1.isActive()) {
-            c1.setActive(false);
-        } else
-            c1.setActive(true);
-        return customerRepository.save(c1);
+        Customer customer = customerRepository.findById(id).orElseThrow(() -> new CustomException("Customer ID: " + id + " does not exist", HttpStatus.BAD_REQUEST));
+
+        if (customer.isActive()) {
+            customer.setActive(false);
+        }
+        else
+        {
+            customer.setActive(true);}
+        return customerRepository.save(customer);
 
     }
 

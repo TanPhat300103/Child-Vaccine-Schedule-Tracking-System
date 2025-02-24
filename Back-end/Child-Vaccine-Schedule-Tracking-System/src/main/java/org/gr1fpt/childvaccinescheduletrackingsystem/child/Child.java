@@ -32,6 +32,5 @@ public class Child {
     private boolean active;
 
 
-
     //done validation
 }

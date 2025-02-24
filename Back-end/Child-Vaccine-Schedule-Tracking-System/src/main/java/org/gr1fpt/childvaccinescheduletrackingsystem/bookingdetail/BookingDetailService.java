@@ -5,6 +5,7 @@ import org.gr1fpt.childvaccinescheduletrackingsystem.booking.BookingDTO;
 import org.gr1fpt.childvaccinescheduletrackingsystem.booking.BookingRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.child.Child;
 import org.gr1fpt.childvaccinescheduletrackingsystem.combodetail.ComboDetail;
+import org.gr1fpt.childvaccinescheduletrackingsystem.notification.Notification;
 import org.gr1fpt.childvaccinescheduletrackingsystem.vaccine.VaccineRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.combodetail.ComboDetailService;
 import org.gr1fpt.childvaccinescheduletrackingsystem.medicalhistory.MedicalHistoryService;
@@ -14,6 +15,7 @@ import org.gr1fpt.childvaccinescheduletrackingsystem.vaccine.Vaccine;
 import org.gr1fpt.childvaccinescheduletrackingsystem.vaccinecombo.VaccineCombo;
 import org.gr1fpt.childvaccinescheduletrackingsystem.vaccinedetail.VaccineDetail;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +42,9 @@ public class BookingDetailService {
     MedicalHistoryService medicalHistoryService;
     @Autowired
     private BookingRepository bookingRepository;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     public java.util.List<BookingDetail> getAll() {
         return bookingDetailRepository.findAll();
@@ -120,6 +125,7 @@ public class BookingDetailService {
         //Đồng thời tạo 1 medicalhistory
         vaccineDetailService.useNearestVaccineDetail(bookingDetail.getVaccine().getVaccineId());
         createMedicalHistory(bookingDetail.getBooking().getBookingId(), bookingDetail.getVaccine().getVaccineId(),bookingDetail);
+
         return bookingDetailRepository.save(bookingDetail);
     }
 

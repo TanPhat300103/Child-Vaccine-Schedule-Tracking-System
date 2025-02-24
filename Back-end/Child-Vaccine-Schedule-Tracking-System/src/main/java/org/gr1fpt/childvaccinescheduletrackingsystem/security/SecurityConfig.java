@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .hasRole("ADMIN")
                         .anyRequest().permitAll()
                 )
+
                 .formLogin(form -> form
                         .loginProcessingUrl("/login")  // URL xử lý đăng nhập là /login
                         .defaultSuccessUrl("/customer", true)
