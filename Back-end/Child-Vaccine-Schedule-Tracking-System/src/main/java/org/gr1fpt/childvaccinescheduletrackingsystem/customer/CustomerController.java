@@ -34,7 +34,7 @@ public class CustomerController {
     }
 
     @PostMapping("create")
-    public Customer create(@Valid @RequestBody Customer customer) {
+    public Customer create(@RequestBody @Valid Customer customer) {
         return customerService.create(customer);
     }
 

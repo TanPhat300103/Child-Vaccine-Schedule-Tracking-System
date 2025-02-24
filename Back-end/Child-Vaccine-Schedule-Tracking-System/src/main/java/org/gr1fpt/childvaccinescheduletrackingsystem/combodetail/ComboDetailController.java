@@ -1,5 +1,6 @@
 package org.gr1fpt.childvaccinescheduletrackingsystem.combodetail;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,7 @@ public class ComboDetailController {
     }
 
     @PostMapping("create")
-    public ComboDetail create (@RequestBody ComboDetail comboDetail)
+    public ComboDetail create (@RequestBody @Valid ComboDetail comboDetail)
     {
         return comboDetailService.create(comboDetail);
     }

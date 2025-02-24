@@ -16,10 +16,14 @@ public class ComboDetailService {
         return comboDetailRepository.findAll();
     }
 
+    public String generateId() {
+        long count = comboDetailRepository.count();
+        return "CD" + String.format("%03d", count + 1);
+    }
+
     public ComboDetail create(ComboDetail comboDetail) {
-        if (comboDetailRepository.existsById(comboDetail.getComboDetailId()))
-            throw new CustomException("Combo Detail ID: " + comboDetail.getComboDetailId() + " Exist", HttpStatus.BAD_REQUEST);
-        return comboDetailRepository.save(comboDetail);
+      comboDetail.setComboDetailId(generateId());
+      return comboDetailRepository.save(comboDetail);
     }
 
     public Optional<ComboDetail> findById(String id) {
