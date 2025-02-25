@@ -1,13 +1,12 @@
-// src/pages/Staff/StaffPage.jsx
 import React from "react";
 import { Outlet, Link } from "react-router-dom";
-
 import {
   FiHome,
   FiUsers,
   FiCalendar,
   FiAlertTriangle,
   FiMessageSquare,
+  FiShield,
 } from "react-icons/fi";
 
 const StaffPage = () => {
@@ -42,7 +41,7 @@ const StaffPage = () => {
 
           {/* Lịch đăng ký tiêm */}
           <Link
-            to="/schedule"
+            to="/staff/schedule"
             className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow text-center"
           >
             <div className="flex flex-col items-center">
@@ -81,6 +80,35 @@ const StaffPage = () => {
               <span className="text-gray-700 font-medium">Phản Hồi</span>
             </div>
           </div>
+
+          {/* Quản lý vắc xin */}
+          <Link
+            to="vaccines"
+            className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow text-center border-2 border-green-200"
+          >
+            <div className="flex flex-col items-center">
+              <FiShield className="w-12 h-12 text-green-600 mb-2" />
+              <span className="text-gray-700 font-medium">Quản Lý Vắc Xin</span>
+            </div>
+          </Link>
+          <Link
+            to="/staff/marketing-campains"
+            className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow text-center"
+          >
+            <div className="flex flex-col items-center">
+              <FiCalendar className="w-12 h-12 text-green-600 mb-2" />
+              <span className="text-gray-700 font-medium">Marketing</span>
+            </div>
+          </Link>
+          <Link
+            to="/staff/vaccine-combos"
+            className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow text-center"
+          >
+            <div className="flex flex-col items-center">
+              <FiCalendar className="w-12 h-12 text-green-600 mb-2" />
+              <span className="text-gray-700 font-medium">Vaccine Combo</span>
+            </div>
+          </Link>
         </div>
         <Outlet />
       </main>

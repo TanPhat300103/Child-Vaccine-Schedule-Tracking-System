@@ -242,9 +242,9 @@ export const updateStaff = async (formData) => {
 // Xóa nhân viên (Staff)
 export const deleteStaff = async (staffId) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/staff/delete`, {
-      params: { id: staffId },
-    });
+    const response = await axios.post(
+      `${API_BASE_URL}/staff/inactive?id=${staffId}`
+    );
     console.log("API Response Status (deleteStaff):", response.status);
     console.log("API Response Data (deleteStaff):", response.data);
     if (response.status === 200 || response.status === 204) {
@@ -267,20 +267,10 @@ export const deleteStaff = async (staffId) => {
 export const createChild = async (formData) => {
   try {
     console.log("Form data being sent to API (createChild):", formData);
-    const response = await axios.post(`${API_BASE_URL}/child/create`, {
-      customer: {
-        customerId: formData.customerId, // Đảm bảo gửi customerId bên trong customer object
-      },
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      dob: new Date(formData.dob).toISOString().split("T")[0],
-      gender: formData.gender,
-      contraindications: formData.contraindications,
-      active: formData.active,
-    });
+    const response = await axios.post(`${API_BASE_URL}/child/create`, formData);
     console.log("API Response Status:", response.status); // Status code
     console.log("API Response Data:", response); // Dữ liệu trả về
-    if (response.status === 201) {
+    if (response.status === 200) {
       return { success: true, message: "Tạo trẻ em thành công" };
     } else {
       return {
@@ -310,9 +300,9 @@ export const createChild = async (formData) => {
 };
 export const deleteUser = async (id) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/customer/delete`, {
-      params: { id }, // Truyền tham số id dưới dạng query parameter
-    });
+    const response = await axios.post(
+      `${API_BASE_URL}/customer/inactive?id=${id}`
+    );
 
     console.log("API Response Status:", response.status);
     console.log("API Response Data:", response.data);
@@ -370,9 +360,9 @@ export const updateChild = async (formData) => {
 // Xóa hồ sơ trẻ em
 export const deleteChild = async (childId) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/child/delete`, {
-      params: { id: childId },
-    });
+    const response = await axios.post(
+      `${API_BASE_URL}/child/inactive?id=${childId}`
+    );
     console.log("API Response Status (deleteChild):", response.status);
     console.log("API Response Data (deleteChild):", response.data);
     if (response.status === 200 || response.status === 204) {

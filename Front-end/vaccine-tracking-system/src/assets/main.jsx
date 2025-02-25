@@ -24,16 +24,21 @@ import Child from "../pages/CustomerPage/Child.jsx";
 import BookingCustomer from "../pages/CustomerPage/BookingCustomer.jsx";
 
 import StaffPage from "../pages/StaffPage/StaffPage.jsx";
-import Customers from "../pages/StaffPage/Customers.jsx";
+
+import Customers from "../pages/Manager/Customers.jsx";
+import Childs from "../pages/Manager/Childs.jsx";
+import Vaccines from "../pages/Manager/Vaccines.jsx";
+// import Bookings from "./pages/Manager/Bookings.jsx";
+import VaccineDetail from "../pages/Manager/VaccineDetail.jsx";
+import MarketingCampains from "../pages/Manager/MarketingCampains.jsx";
+import VaccineCombos from "../pages/Manager/VaccineCombos.jsx";
 
 import AdminPage from "../pages/AdminPage/AdminPage.jsx";
 // import Dashboard from "../pages/AdminPage/Dashboard.jsx";
 // import Customers from "./pages/AdminPage/Customers.jsx";
-// import Bookings from "./pages/AdminPage/Bookings.jsx";
 import Staffs from "../pages/AdminPage/Staffs.jsx";
 // import Incomes from "./pages/AdminPage/Incomes.jsx";
-// import Vaccines from "./pages/AdminPage/Vaccines.jsx";
-
+import CustomerTable from "../apis/teststaff.jsx";
 import { ToastContainer } from "react-toastify";
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -51,6 +56,7 @@ const Main = () => {
         <Route path="/privacy-policy" element={<Policy />} />
         <Route path="/payment" element={<PaymentGateway />} />
         <Route path="/payment-online" element={<PaymentGatewayOnline />} />
+        <Route path="/customer-table" element={<CustomerTable />} />
 
         <Route path="/bookschedule-vaccine" element={<VaccineScheduling />} />
         <Route path="/vaccine-page" element={<DetailVaccine />} />
@@ -63,15 +69,23 @@ const Main = () => {
         </Route>
         <Route path="/staff" element={<StaffPage />}>
           <Route path="customers" element={<Customers />} />
+          <Route path="childs/:customerId" element={<Childs />} />
+          <Route path="vaccines" element={<Vaccines />} />
+          <Route path="vaccine-detail/:vaccineId" element={<VaccineDetail />} />
+          <Route path="marketing-campains" element={<MarketingCampains />} />
+          <Route path="vaccine-combos" element={<VaccineCombos />} />
         </Route>
+
         <Route path="/admin" element={<AdminPage />}>
           {/* Các route con hiển thị qua Outlet */}
-          {/* <Route path="dashboard" element={<Dashboard />} />
+          {/* <Route path="dashboard" element={<Dashboard />} /> */}
           <Route path="customers" element={<Customers />} />
-          <Route path="bookings" element={<Bookings />} /> */}
+          <Route path="childs/:customerId" element={<Childs />} />
+          {/* <Route path="bookings" element={<Bookings />} />  */}
           <Route path="staffs" element={<Staffs />} />
-          {/* <Route path="incomes" element={<Incomes />} />
-          <Route path="vaccines" element={<Vaccines />} /> */}
+          {/* <Route path="incomes" element={<Incomes />} /> */}
+          <Route path="vaccines" element={<Vaccines />} />
+          <Route path="vaccine-detail/:vaccineId" element={<VaccineDetail />} />
         </Route>
       </Routes>
     </Router>

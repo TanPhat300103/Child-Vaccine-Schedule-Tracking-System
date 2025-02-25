@@ -21,7 +21,12 @@ const AddChild = ({ refreshChildren }) => {
   }, [customerId]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
+    let newValue = value;
+    if (type === "radio" && name === "gender") {
+      // Chuyển giá trị chuỗi thành boolean
+      newValue = value === "true";
+    }
     setChildData((prev) => ({ ...prev, [name]: value }));
     // Clear error when user types
     if (error) setError(null);
@@ -40,6 +45,9 @@ const AddChild = ({ refreshChildren }) => {
           customerId: customerId,
         },
       };
+      console.log("🚀 Dữ liệu gửi lên API:", JSON.stringify(payload, null, 2));
+      console.log("customerId:", customerId);
+      console.log("Form Data:", childData);
       // Gửi request đến API endpoint
       const { success, message } = await createChild(payload);
 
