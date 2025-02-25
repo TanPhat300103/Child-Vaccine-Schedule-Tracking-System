@@ -32,13 +32,12 @@ import Vaccines from "../pages/Manager/Vaccines.jsx";
 import VaccineDetail from "../pages/Manager/VaccineDetail.jsx";
 import MarketingCampains from "../pages/Manager/MarketingCampains.jsx";
 import VaccineCombos from "../pages/Manager/VaccineCombos.jsx";
+import ComboDetail from "../pages/Manager/ComboDetail.jsx";
 
 import AdminPage from "../pages/AdminPage/AdminPage.jsx";
 // import Dashboard from "../pages/AdminPage/Dashboard.jsx";
-// import Customers from "./pages/AdminPage/Customers.jsx";
 import Staffs from "../pages/AdminPage/Staffs.jsx";
 // import Incomes from "./pages/AdminPage/Incomes.jsx";
-import CustomerTable from "../apis/teststaff.jsx";
 import { ToastContainer } from "react-toastify";
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -56,7 +55,6 @@ const Main = () => {
         <Route path="/privacy-policy" element={<Policy />} />
         <Route path="/payment" element={<PaymentGateway />} />
         <Route path="/payment-online" element={<PaymentGatewayOnline />} />
-        <Route path="/customer-table" element={<CustomerTable />} />
 
         <Route path="/bookschedule-vaccine" element={<VaccineScheduling />} />
         <Route path="/vaccine-page" element={<DetailVaccine />} />
@@ -74,6 +72,10 @@ const Main = () => {
           <Route path="vaccine-detail/:vaccineId" element={<VaccineDetail />} />
           <Route path="marketing-campains" element={<MarketingCampains />} />
           <Route path="vaccine-combos" element={<VaccineCombos />} />
+          <Route
+            path="combo-detail/:vaccineComboId"
+            element={<ComboDetail />}
+          />
         </Route>
 
         <Route path="/admin" element={<AdminPage />}>
@@ -86,6 +88,12 @@ const Main = () => {
           {/* <Route path="incomes" element={<Incomes />} /> */}
           <Route path="vaccines" element={<Vaccines />} />
           <Route path="vaccine-detail/:vaccineId" element={<VaccineDetail />} />
+          <Route path="marketing-campains" element={<MarketingCampains />} />
+          <Route path="vaccine-combos" element={<VaccineCombos />} />
+          <Route
+            path="combo-detail/:vaccineComboId"
+            element={<ComboDetail />}
+          />
         </Route>
       </Routes>
     </Router>
