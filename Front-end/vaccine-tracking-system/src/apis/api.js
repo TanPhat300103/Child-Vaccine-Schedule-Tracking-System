@@ -2,6 +2,7 @@ import axios from "axios";
 
 const API_BASE_URL = "http://localhost:8080";
 
+// Users
 export const getUsers = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/customer`);
@@ -12,8 +13,8 @@ export const getUsers = async () => {
   }
 };
 
-export const postUser = async (formData) => {
-  console.log("Form data being sent to API:", formData); // In dữ liệu gửi đi
+export const postUsers = async (formData) => {
+  console.log("Form data being sent to API:", formData);
   try {
     const response = await axios.post(`${API_BASE_URL}/customer/create`, {
       phoneNumber: formData.phoneNumber,
@@ -25,15 +26,11 @@ export const postUser = async (formData) => {
       address: formData.address,
       banking: formData.banking,
       email: formData.email,
-      roleId: formData.roleId,
-      active: formData.active,
     });
+    console.log("API Response Status:", response.status);
+    console.log("API Response Data:", response.data);
 
-    // In ra status code trả về từ backend
-    console.log("API Response Status:", response.status); // Status code
-    console.log("API Response Data:", response.data); // Dữ liệu trả về
-
-    if (response.status === 201) {
+    if (response.status === 200) {
       return { success: true, message: "Đăng ký thành công" };
     } else {
       return {
@@ -45,17 +42,23 @@ export const postUser = async (formData) => {
     console.error("Error during registration:", error);
 
     if (error.response) {
-      // In chi tiết về status và dữ liệu lỗi từ backend
-      console.error("Error response status:", error.response.status); // In status code
-      console.error("Error response data:", error.response.data); // In dữ liệu lỗi
-      console.error("Error response headers:", error.response.headers); // In headers (nếu cần)
+      console.error("Error response status:", error.response.status);
+      console.error("Error response data:", error.response.data);
 
-      if (error.response.data && error.response.data.message) {
+      // Kiểm tra lỗi cụ thể từ backend (email đã tồn tại)
+      if (error.response.data && error.response.data === "Email is exist") {
         return {
           success: false,
-          message: error.response.data.message,
+          message: "Email này đã được sử dụng", // Trả về thông báo lỗi cụ thể
         };
       }
+
+      return {
+        success: false,
+        message:
+          error.response.data ||
+          "Gửi biểu mẫu không thành công. Vui lòng thử lại.",
+      };
     }
 
     return {
@@ -65,6 +68,210 @@ export const postUser = async (formData) => {
   }
 };
 
+// Child
+export const getChilds = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/child`);
+    console.log("API Response (Get Childs):", response.data);
+    return response.data;
+  } catch (error) {
+    throw new Error("Không thể lấy dữ liệu người dùng");
+  }
+};
+
+//Customers
+export const getCustomerId = async (customerId) => {
+  try {
+    // Hardcode customerId (thay "C001" bằng giá trị bạn muốn)
+    const hardcodedCustomerId = "C001"; // Hardcode giá trị customerId
+    const response = await axios.get(`${API_BASE_URL}/customer/findid`, {
+      params: { id: hardcodedCustomerId }, // Sử dụng customerId hardcoded
+    });
+
+    console.log("📡 API Response (getCustomerId):", response.data);
+    return response.data; // Trả về dữ liệu customer
+  } catch (error) {
+    console.error("Lỗi khi lấy thông tin khách hàng:", error);
+    return null; // Trả về null nếu có lỗi
+  }
+};
+
+//Vaccine
+export const getVaccines = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/vaccine`);
+    console.log("API Response (Get Vaccines):", response.data);
+    return response.data;
+  } catch (error) {
+    throw new Error("Không thể lấy dữ liệu người dùng");
+  }
+};
+
+export const getVaccineDetail = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/vaccinedetail`);
+    console.log("API Response (Get Vaccines):", response.data);
+    return response.data;
+  } catch (error) {
+    throw new Error("Không thể lấy dữ liệu người dùng");
+  }
+};
+
+export const getVaccinesByAge = async (ageMin, ageMax) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/vaccine/findbyage`, {
+      params: {
+        ageMin,
+        ageMax,
+      },
+    });
+
+    console.log("API Response (Get Vaccines by Age):", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy dữ liệu từ API:", error.message);
+    throw new Error("Không thể lấy dữ liệu người dùng");
+  }
+};
+
+export const getVaccineCombos = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/vaccinecombo`);
+    console.log("API Response (Get VaccineCombos):", response.data);
+    return response.data;
+  } catch (error) {
+    throw new Error("Không thể lấy dữ liệu người dùng");
+  }
+};
+// Bookings
+export const getBookingDetails = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/bookingdetail`);
+    console.log("API Response (Get BookingDetails):", response.data); // In toàn bộ dữ liệu người dùng nhận được
+    return response.data;
+  } catch (error) {
+    throw new Error("Không thể lấy dữ liệu người dùng");
+  }
+};
+
+export const getBookingDetailsByBookID = async (bookingId) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/bookingdetail/findbybooking`,
+      {
+        params: { id: bookingId }, // Truyền ID qua query
+      }
+    );
+
+    console.log("📡 API Response (getCustomerID):", response.data);
+    return response.data; // Trả về dữ liệu customerID
+  } catch (error) {
+    console.error(" Lỗi khi lấy customer ID:", error);
+    return null; // Trả về null nếu lỗi
+  }
+};
+
+export const getBookingByCustomerId = async (customerId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/booking/findbycustomer`, {
+      params: { customerId },
+    });
+
+    console.log("📡 API Response (getCustomerID):", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(" Lỗi khi lấy customer ID:", error);
+    return null;
+  }
+};
+
+export const postSchedules = async (formData) => {
+  // 🚀 Log dữ liệu để kiểm tra trước khi gửi
+  console.log(
+    "🚀 Form data being sent to API:",
+    JSON.stringify(formData, null, 2)
+  );
+
+  try {
+    // ✅ Gửi đúng format theo yêu cầu của Backend
+    const response = await axios.post(
+      `${API_BASE_URL}/booking/create`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    );
+
+    // ✅ Log phản hồi từ Backend
+    console.log("✅ API Response Status:", response.status);
+    console.log("✅ API Response Data:", response.data);
+
+    // Generalized success check for any 2xx status codes
+    if (response.status >= 200 && response.status < 300) {
+      return { success: true, message: "Đặt lịch thành công" };
+    } else {
+      return { success: false, message: "Đặt lịch thất bại" };
+    }
+  } catch (error) {
+    console.error("❌ Error during registration:", error);
+
+    if (error.response) {
+      // Error response data logging
+      console.error("❌ Error response status:", error.response.status);
+      console.error("❌ Error response data:", error.response.data);
+      console.error("❌ Error response headers:", error.response.headers);
+
+      // Ensure that error message is properly handled
+      return {
+        success: false,
+        message:
+          error.response.data?.message ||
+          "Gửi biểu mẫu không thành công. Vui lòng thử lại.",
+      };
+    }
+
+    // If there is no response object
+    return {
+      success: false,
+      message: "Gửi biểu mẫu không thành công. Vui lòng thử lại.",
+    };
+  }
+};
+
+export const getMedicalHistory = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/medicalhistory`);
+    console.log("API Response (Get BookingDetails):", response.data); // In toàn bộ dữ liệu người dùng nhận được
+    return response.data;
+  } catch (error) {
+    throw new Error("Không thể lấy dữ liệu người dùng");
+  }
+};
+// payment
+export const getPaymentByBookID = async (bookingId) => {
+  try {
+    // Hardcode dữ liệu thanh toán
+    return {
+      status: "Chưa thanh toán",
+      amount: 0,
+      customerId: "C001",
+      bookingId: bookingId,
+    };
+  } catch (error) {
+    console.error("Lỗi khi lấy thông tin thanh toán:", error);
+    return {
+      status: "Chưa thanh toán",
+      amount: 0,
+      customerId: "C001",
+      bookingId: bookingId,
+    };
+  }
+};
+
+//
 export const updateUser = async (formData) => {
   console.log("Form data being sent to API:", formData); // In dữ liệu gửi đi
   try {

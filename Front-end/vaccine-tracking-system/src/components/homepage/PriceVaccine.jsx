@@ -1,60 +1,130 @@
-import { motion } from "framer-motion";
-import React from "react";
-import { pricepackage } from "../../stores/vaccinedata.jsx";
+import React, { useState, useEffect } from "react";
+import { useCart } from "../homepage/AddCart"; // Sử dụng useCart để lấy addToCart từ CartContext
+import { getVaccines } from "../../apis/api"; // API lấy thông tin vắc xin
+import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
+import { FaSyringe } from "react-icons/fa"; // Biểu tượng kim tiêm
 
 const PriceVaccine = () => {
-  return (
-    <section className="py-20 bg-white">
-      <div className="container mx-auto px-4">
-        <motion.h2
-          initial={{ y: 20, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-3xl font-bold text-center text-blue-700 mb-12"
-        >
-          Bảng Giá Vắc Xin
-        </motion.h2>
+  const [pricePackages, setPricePackages] = useState([]);
+  const [selectedPackage, setSelectedPackage] = useState([]);
+  const { addToCart } = useCart(); // Lấy addToCart từ CartContext
 
-        <motion.div
-          initial={{ y: 50, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          viewport={{ once: true }}
-          className="overflow-x-auto"
-        >
-          <table className="w-full border border-gray-300">
-            <thead className="bg-blue-700 text-white">
-              <tr>
-                <th className="px-6 py-4 text-left">Phòng bệnh</th>
-                <th className="px-6 py-4 text-left">Tên vắc xin</th>
-                <th className="px-6 py-4 text-left">Nước sản xuất</th>
-                <th className="px-6 py-4 text-left">Giá niêm yết (VND)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pricepackage.map((item, index) => (
-                <React.Fragment key={index}>
-                  {item.vaccines.map((vaccine, i) => (
-                    <tr key={i} className="border hover:bg-gray-50 transition">
-                      {i === 0 && (
-                        <td
-                          className="px-6 py-4 border bg-gray-100 font-semibold"
-                          rowSpan={item.vaccines.length}
-                        >
-                          {item.disease}
-                        </td>
+  // Fetch price data from API
+  useEffect(() => {
+    const fetchPriceData = async () => {
+      try {
+        const data = await getVaccines(); // API lấy tất cả vắc xin
+        setPricePackages(data);
+        setSelectedPackage(data); // Mặc định chọn tất cả các vắc xin
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu bảng giá vắc xin:", error.message);
+      }
+    };
+
+    fetchPriceData();
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-[#F0F4F8] p-4 md:p-8">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-[#1A365D] text-3xl md:text-4xl font-bold mb-8 text-center">
+          Bảng Giá Vắc Xin
+        </h1>
+
+        <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-1">
+          <div className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
+            <div
+              onClick={() => setSelectedPackage(pricePackages)}
+              className="cursor-pointer bg-[#2C5DA3] text-white p-6 flex items-center justify-between"
+            >
+              <div className="flex items-center space-x-4">
+                <FaSyringe className="text-3xl" /> {/* Biểu tượng kim tiêm */}
+                <h2 className="text-xl font-semibold">Tất cả vắc xin</h2>
+              </div>
+              {selectedPackage === pricePackages ? (
+                <IoMdArrowDropup className="text-2xl" />
+              ) : (
+                <IoMdArrowDropdown className="text-2xl" />
+              )}
+            </div>
+
+            {selectedPackage === pricePackages && (
+              <div className="p-6">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-gray-200">
+                        <th className="text-left py-3 px-4 text-[#1A365D]">
+                          Tên
+                        </th>
+                        <th className="text-left py-3 px-4 text-[#1A365D]">
+                          Phòng bệnh
+                        </th>
+                        <th className="text-left py-3 px-4 text-[#1A365D]">
+                          Nước sản xuất
+                        </th>
+                        <th className="text-left py-3 px-4 text-[#1A365D]">
+                          Số mũi
+                        </th>
+                        <th className="text-left py-3 px-4 text-[#1A365D]">
+                          Giá
+                        </th>
+                        <th className="text-left py-3 px-4 text-[#1A365D]">
+                          Action
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {pricePackages.length > 0 ? (
+                        pricePackages.map((vaccine) => (
+                          <tr
+                            key={vaccine.vaccineId}
+                            className="border-b border-gray-100 hover:bg-gray-50"
+                          >
+                            <td className="py-4 px-4">
+                              {/* Biểu tượng kim tiêm */}
+                              {vaccine.name}
+                            </td>
+                            <td className="py-4 px-4">{vaccine.description}</td>
+                            <td className="py-4 px-4">{vaccine.country}</td>
+                            <td className="py-4 px-4">{vaccine.doseNumber}</td>
+                            <td className="py-4 px-4">{vaccine.price}</td>
+                            <td className="py-4 px-4">
+                              <button
+                                onClick={() => addToCart(vaccine)}
+                                className={`px-4 py-2 rounded-lg transition-colors ${
+                                  selectedPackage.includes(vaccine.id)
+                                    ? "bg-[#5D90D4] text-white"
+                                    : "bg-gray-100 text-[#1A365D] hover:bg-[#2C5DA3] hover:text-white"
+                                }`}
+                              >
+                                {selectedPackage.includes(vaccine.id)
+                                  ? "Selected"
+                                  : "Select"}
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td
+                            colSpan="6"
+                            className="text-center py-4 text-gray-500"
+                          >
+                            Không có dữ liệu bảng giá vắc xin.
+                          </td>
+                        </tr>
                       )}
-                      <td className="px-6 py-4 border">{vaccine.name}</td>
-                      <td className="px-6 py-4 border">{vaccine.country}</td>
-                      <td className="px-6 py-4 border">{vaccine.price}</td>
-                    </tr>
-                  ))}
-                </React.Fragment>
-              ))}
-            </tbody>
-          </table>
-        </motion.div>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
   );
 };
+
 export default PriceVaccine;

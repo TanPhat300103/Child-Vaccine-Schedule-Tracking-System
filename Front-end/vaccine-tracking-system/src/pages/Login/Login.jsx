@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { getUsers } from "../../apis/api.js";
 
-const LoginPage = () => {
+const Login = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -21,13 +21,20 @@ const LoginPage = () => {
     const newErrors = {};
     if (!phoneNumber) {
       newErrors.phoneNumber = "Số điện thoại là bắt buộc";
-    } else if (!/^\d{10}$/.test(phoneNumber)) {
-      newErrors.phoneNumber = "Số điện thoại không hợp lệ";
+    } else if (!/^0\d{9}$/.test(phoneNumber)) {
+      newErrors.phoneNumber =
+        "Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0";
     }
     if (!password) {
       newErrors.password = "Mật khẩu là bắt buộc";
     } else if (password.length < 6) {
       newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự";
+    } else if (!/[a-z]/.test(password)) {
+      newErrors.password = "Mật khẩu phải có ít nhất một chữ cái thường";
+    } else if (!/[A-Z]/.test(password)) {
+      newErrors.password = "Mật khẩu phải có ít nhất một chữ cái hoa";
+    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      newErrors.password = "Mật khẩu phải có ít nhất một ký tự đặc biệt";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -44,7 +51,15 @@ const LoginPage = () => {
           (user) =>
             user.phoneNumber === phoneNumber && user.password === password
         );
+
         if (user) {
+          console.log("User data:", user);
+          localStorage.setItem("userId", user.customerId);
+          console.log(
+            "UserId đã được lưu vào localStorage:",
+            localStorage.getItem("userId")
+          );
+
           toast.success("Đăng nhập thành công");
           navigate("/home");
         } else {
@@ -212,4 +227,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default Login;

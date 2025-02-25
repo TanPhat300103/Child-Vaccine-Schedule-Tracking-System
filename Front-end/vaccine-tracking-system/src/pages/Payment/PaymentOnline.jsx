@@ -68,7 +68,7 @@ const PaymentGatewayOnline = () => {
               <h2 className="text-xl font-semibold text-gray-800">
                 Tổng Số Tiền
               </h2>
-              <p className="text-3xl font-bold text-blue-600 mt-2">150.000đ</p>
+              <p className="text-3xl font-bold text-blue-600 mt-2">207.000đ</p>
             </div>
             <div className="text-right">
               <p className="text-gray-600">Gói: Tiêm Chủng Hoàn Chỉnh</p>
@@ -129,6 +129,12 @@ const PaymentGatewayOnline = () => {
                   >
                     <FaCopy className="mr-2" />{" "}
                     {copied ? "Đã Sao Chép!" : "Sao Chép"}
+                  </button>
+                  <button
+                    onClick={() => navigate("/react-vaccine")}
+                    className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-700"
+                  >
+                    View Details
                   </button>
                 </div>
               </div>

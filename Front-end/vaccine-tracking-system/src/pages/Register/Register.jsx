@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import {
-  FaGoogle,
   FaUser,
   FaPhone,
   FaMapMarkerAlt,
@@ -11,7 +9,7 @@ import {
   FaWallet,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { postUser } from "../../apis/api";
+import { postUsers } from "../../apis/api";
 import { toast } from "react-toastify";
 
 const Register = () => {
@@ -26,13 +24,11 @@ const Register = () => {
     firstName: "",
     lastName: "",
     dob: "",
-    gender: false,
+    gender: "",
     password: "",
     address: "",
     banking: "",
     email: "",
-    roleId: 2,
-    active: true,
     agreeToTerms: false,
   });
 
@@ -45,19 +41,32 @@ const Register = () => {
       newErrors.email = "Email không hợp lệ";
     if (
       !formData.phoneNumber ||
-      !/^(\+84|0)[3|5|7|8|9][0-9]{8}$/.test(formData.phoneNumber)
+      !/^0\d{9}$/.test(formData.phoneNumber) // Kiểm tra số điện thoại 10 chữ số bắt đầu bằng 0
     )
       newErrors.phoneNumber = "Số điện thoại không hợp lệ";
-
-    if (!formData.password || formData.password.length < 6)
+    if (!formData.password || formData.password.length < 6) {
       newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự";
-    if (!formData.dob) newErrors.dob = "Ngày sinh không được để trống";
+    } else if (!/[a-z]/.test(formData.password)) {
+      newErrors.password = "Mật khẩu phải có ít nhất một chữ cái thường";
+    } else if (!/[A-Z]/.test(formData.password)) {
+      newErrors.password = "Mật khẩu phải có ít nhất một chữ cái hoa";
+    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(formData.password)) {
+      newErrors.password = "Mật khẩu phải có ít nhất một ký tự đặc biệt";
+    }
+    if (!formData.dob) {
+      newErrors.dob = "Ngày sinh không được để trống";
+    } else {
+      const today = new Date();
+      const dob = new Date(formData.dob);
+      if (dob > today) {
+        newErrors.dob = "Ngày sinh không được là ngày trong tương lai";
+      }
+    }
     if (formData.gender === undefined)
       newErrors.gender = "Giới tính không được để trống";
     if (!formData.agreeToTerms)
       newErrors.agreeToTerms =
         "Bạn cần đồng ý với Điều khoản dịch vụ và Chính sách bảo mật";
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -65,15 +74,12 @@ const Register = () => {
   // Submit and handle API
   const handleSubmit = async (e) => {
     e.preventDefault();
-    formData.gender = formData.gender === "true";
-    // Kiểm tra dữ liệu đầu vào
     if (validateForm()) {
       setIsLoading(true);
       try {
-        const result = await postUser(formData); // Không cần gửi customerId nữa
-        console.log("API Result:", result);
+        const result = await postUsers(formData);
         if (result.success) {
-          toast.success(result.message);
+          toast.success(result.message); // Thông báo thành công
           navigate("/login");
         } else {
           toast.error(
@@ -208,7 +214,7 @@ const Register = () => {
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
                 errors.email ? "border-red-500" : "border-gray-300"
               }`}
-              placeholder="nguyenA@gmail.com"
+              placeholder=""
             />
             {errors.email && (
               <p className="text-red-500 text-sm mt-1">{errors.email}</p>
@@ -229,10 +235,70 @@ const Register = () => {
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
                 errors.phoneNumber ? "border-red-500" : "border-gray-300"
               }`}
-              placeholder="(+84) 516 233 428"
+              placeholder=""
             />
             {errors.phoneNumber && (
               <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>
+            )}
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
+              <FaLock className="text-blue-500" />
+              Mật khẩu
+            </label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"} // Thay đổi loại nhập liệu dựa trên showPassword
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
+                  errors.password ? "border-red-500" : "border-gray-300"
+                }`}
+                placeholder=""
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)} // Thay đổi trạng thái showPassword khi nhấn
+                className="absolute inset-y-0 right-2 flex items-center text-gray-500"
+              >
+                {showPassword ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M15 12c0-2.21-1.79-4-4-4s-4 1.79-4 4 1.79 4 4 4 4-1.79 4-4zM12 10a2 2 0 10-2 2 2 2 0 002-2z"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M13.875 18.825A7.931 7.931 0 0012 18c-1.314 0-2.563-.362-3.75-.98M5.636 5.636A9.938 9.938 0 0112 3c2.463 0 4.72.874 6.364 2.636m-6.364 12.728C8.48 20.398 6.037 21 4.5 21c-1.037 0-2.067-.254-2.915-.636l6.591-6.592M9 5.632a9.91 9.91 0 014.5-.632c3.457 0 6.5 2.303 7.22 5.518m-5.72-.9A5.968 5.968 0 0012 10c-2.211 0-4 1.79-4 4 0 2.211 1.79 4 4 4 1.768 0 3.291-.964 4.02-2.39"
+                    />
+                  </svg>
+                )}
+              </button>
+            </div>
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
             )}
           </div>
 
@@ -248,7 +314,7 @@ const Register = () => {
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
               rows="3"
-              placeholder="Địa chỉ của bạn"
+              placeholder=""
             />
           </div>
 
@@ -266,31 +332,10 @@ const Register = () => {
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
                 errors.banking ? "border-red-500" : "border-gray-300"
               }`}
-              placeholder="Thông tin ngân hàng"
+              placeholder=""
             />
             {errors.banking && (
               <p className="text-red-500 text-sm mt-1">{errors.banking}</p>
-            )}
-          </div>
-
-          {/* Password */}
-          <div>
-            <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
-              <FaLock className="text-blue-500" />
-              Mật khẩu
-            </label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
-                errors.password ? "border-red-500" : "border-gray-300"
-              }`}
-              placeholder="Mật khẩu"
-            />
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
             )}
           </div>
 

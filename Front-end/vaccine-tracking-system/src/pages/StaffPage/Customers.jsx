@@ -4,7 +4,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import {
   getUsers,
-  postUser,
+  postUsers,
   updateUser,
   fetchChildren,
   fetchCustomer,
