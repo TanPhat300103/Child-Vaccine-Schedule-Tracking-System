@@ -337,7 +337,7 @@ const Customers = () => {
 
       {/* Modal Tạo Khách Hàng */}
       {showAddForm && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 backdrop-blur-md z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-opacity-30 backdrop-blur-md z-50">
           <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-3xl ring-1 ring-gray-200">
             <h3 className="text-2xl font-semibold mb-6">Thêm Khách Hàng Mới</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -509,7 +509,7 @@ const Customers = () => {
 
       {/* Modal Cập Nhật Khách Hàng */}
       {editingCustomer && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 backdrop-blur-md z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-opacity-30 backdrop-blur-md z-50">
           <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-3xl ring-1 ring-gray-200">
             <h3 className="text-2xl font-semibold mb-6">Cập Nhật Khách Hàng</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
