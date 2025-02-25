@@ -304,8 +304,8 @@ const Vaccines = () => {
         <h2 className="text-4xl font-bold text-blue-700 mb-8 text-center">
           Danh sách Vắc xin
         </h2>
-        {/* Thanh tìm kiếm theo tiêu chí */}
-        <div className="mb-6 flex flex-wrap gap-4 justify-center">
+        {/* Thanh tìm kiếm và nút tạo mới trên cùng 1 hàng */}
+        <div className="mb-6 flex flex-wrap gap-4 justify-center items-center">
           <select
             value={searchType}
             onChange={(e) => {
@@ -348,6 +348,20 @@ const Vaccines = () => {
               />
             </>
           )}
+          <button
+            onClick={() => {
+              // Nút tìm kiếm, nếu cần có thể thêm logic refresh ở đây.
+            }}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-all"
+          >
+            Tìm kiếm
+          </button>
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-all"
+          >
+            Tạo mới Vaccine
+          </button>
         </div>
 
         {filteredVaccines.length === 0 ? (
@@ -523,15 +537,6 @@ const Vaccines = () => {
             </div>
           </div>
         )}
-        {/* Nút mở modal Tạo mới Vaccine */}
-        <div className="flex justify-center mt-6">
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-all"
-          >
-            Tạo mới Vaccine
-          </button>
-        </div>
       </div>
     </div>
   );

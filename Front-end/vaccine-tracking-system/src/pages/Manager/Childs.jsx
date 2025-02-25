@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import { FaPowerOff, FaChild } from "react-icons/fa";
 
 const Childs = () => {
   const { customerId } = useParams();
   const [customerInfo, setCustomerInfo] = useState(null);
   const [children, setChildren] = useState([]);
+
+  // Search and filter state (chỉ tìm theo tên)
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all"); // "all", "active", "inactive"
+
+  // Modal state for adding and editing child
   const [showAddChildForm, setShowAddChildForm] = useState(false);
   const [newChild, setNewChild] = useState({
     firstName: "",
@@ -16,11 +23,10 @@ const Childs = () => {
   });
   const [childError, setChildError] = useState(null);
 
-  // State cho cập nhật hồ sơ trẻ em
   const [editingChild, setEditingChild] = useState(null);
   const [childUpdateError, setChildUpdateError] = useState(null);
 
-  // Lấy thông tin khách hàng để hiển thị tiêu đề
+  // Lấy thông tin khách hàng
   useEffect(() => {
     fetch(`http://localhost:8080/customer/findid?id=${customerId}`)
       .then((response) => response.json())
@@ -33,7 +39,7 @@ const Childs = () => {
       );
   }, [customerId]);
 
-  // Lấy danh sách hồ sơ trẻ em của khách hàng
+  // Lấy danh sách hồ sơ trẻ em
   useEffect(() => {
     fetch(`http://localhost:8080/child/findbycustomer?id=${customerId}`)
       .then((response) => response.json())
@@ -89,7 +95,7 @@ const Childs = () => {
     setChildUpdateError(null);
   };
 
-  // Gửi yêu cầu cập nhật hồ sơ trẻ em
+  // Gửi API cập nhật hồ sơ trẻ em
   const handleChildSave = () => {
     console.log("Gửi API cập nhật hồ sơ trẻ em với dữ liệu:", editingChild);
     fetch("http://localhost:8080/child/update", {
@@ -121,16 +127,16 @@ const Childs = () => {
       });
   };
 
-  // Chuyển trạng thái inactive cho hồ sơ trẻ em
+  // Chuyển trạng thái active/inactive cho hồ sơ trẻ em
   const handleChildInactive = (childId, e) => {
     e.stopPropagation();
-    console.log("Gửi API inactive cho hồ sơ trẻ em với childId:", childId);
+    console.log("Gửi API cập nhật trạng thái cho childId:", childId);
     fetch(`http://localhost:8080/child/active?id=${childId}`, {
       method: "POST",
     })
       .then((response) => response.json())
       .then((updatedChild) => {
-        console.log("Cập nhật trạng thái inactive thành công:", updatedChild);
+        console.log("Cập nhật trạng thái thành công:", updatedChild);
         setChildren((prev) =>
           prev.map((child) =>
             child.childId === updatedChild.childId ? updatedChild : child
@@ -138,332 +144,372 @@ const Childs = () => {
         );
       })
       .catch((error) =>
-        console.error(
-          "Lỗi khi cập nhật trạng thái inactive của hồ sơ trẻ em:",
-          error
-        )
+        console.error("Lỗi khi cập nhật trạng thái hồ sơ trẻ em:", error)
       );
   };
 
+  // Lọc danh sách hồ sơ trẻ em theo tên và trạng thái
+  const filteredChildren = children.filter((child) => {
+    let matchesSearch = true;
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      matchesSearch =
+        child.firstName.toLowerCase().includes(term) ||
+        child.lastName.toLowerCase().includes(term);
+    }
+    let matchesStatus = true;
+    if (filterStatus === "active") {
+      matchesStatus = child.active;
+    } else if (filterStatus === "inactive") {
+      matchesStatus = !child.active;
+    }
+    return matchesSearch && matchesStatus;
+  });
+
+  // Hàm chuyển đổi trạng thái bộ lọc (cycle qua "all" -> "active" -> "inactive" -> "all")
+  const cycleFilterStatus = () => {
+    if (filterStatus === "all") setFilterStatus("active");
+    else if (filterStatus === "active") setFilterStatus("inactive");
+    else if (filterStatus === "inactive") setFilterStatus("all");
+  };
+
+  const filterButtonClass =
+    filterStatus === "all"
+      ? "bg-blue-500 hover:bg-blue-700"
+      : filterStatus === "active"
+      ? "bg-green-500 hover:bg-green-700"
+      : "bg-red-500 hover:bg-red-700";
+
   return (
-    <div className="mt-8 p-4 border-t border-gray-300">
-      <h1 className="text-3xl font-bold text-center mb-6">
-        Hồ Sơ Trẻ Em của{" "}
-        <span className="text-blue-600 font-bold">
-          {customerInfo
-            ? `${customerInfo.firstName} ${customerInfo.lastName}`
-            : ""}
-        </span>
-      </h1>
-      <Link
-        to="/staff/customers"
-        className="inline-block mb-4 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-      >
-        Quay lại danh sách khách hàng
-      </Link>
-      <button
-        onClick={() => {
-          setShowAddChildForm(true);
-          setChildError(null);
-        }}
-        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-4"
-      >
-        Thêm Hồ Sơ Trẻ Em
-      </button>
-      {showAddChildForm && (
-        <div className="mb-4 p-4 border border-gray-300 rounded-md">
-          <h3 className="text-xl font-semibold mb-4">Thêm Hồ Sơ Trẻ Em Mới</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Họ
-              </label>
+    <div className="max-w-7xl mx-auto p-6">
+      {/* Header: hiển thị thông tin khách hàng bên trái, danh sách hồ sơ bên phải */}
+      <div className="flex flex-col md:flex-row gap-6">
+        {/* Cột trái: Thông tin khách hàng */}
+        <div className="md:w-1/3">
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-2xl font-bold text-blue-600 mb-4">
+              {customerInfo
+                ? `${customerInfo.firstName} ${customerInfo.lastName}`
+                : "Thông tin khách hàng"}
+            </h2>
+            {customerInfo && (
+              <>
+                <p className="text-gray-700">
+                  <strong>SĐT:</strong> {customerInfo.phoneNumber}
+                </p>
+                <p className="text-gray-700">
+                  <strong>Email:</strong> {customerInfo.email}
+                </p>
+                <p className="text-gray-700">
+                  <strong>Địa chỉ:</strong> {customerInfo.address}
+                </p>
+              </>
+            )}
+          </div>
+          <Link
+            to="/staff/customers"
+            className="inline-block mt-4 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Quay lại danh sách khách hàng
+          </Link>
+        </div>
+
+        {/* Cột phải: Danh sách hồ sơ trẻ em */}
+        <div className="md:w-2/3">
+          <div className="flex flex-wrap items-center justify-between mb-6 gap-4">
+            <div className="flex items-center gap-4">
               <input
                 type="text"
-                value={newChild.firstName}
-                onChange={(e) =>
-                  setNewChild({ ...newChild, firstName: e.target.value })
-                }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                placeholder="Tìm theo tên..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Tên
-              </label>
-              <input
-                type="text"
-                value={newChild.lastName}
-                onChange={(e) =>
-                  setNewChild({ ...newChild, lastName: e.target.value })
-                }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Ngày Sinh
-              </label>
-              <input
-                type="date"
-                value={newChild.dob}
-                onChange={(e) =>
-                  setNewChild({ ...newChild, dob: e.target.value })
-                }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Giới Tính
-              </label>
-              <select
-                value={newChild.gender ? "true" : "false"}
-                onChange={(e) =>
-                  setNewChild({
-                    ...newChild,
-                    gender: e.target.value === "true",
-                  })
-                }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+            <div className="flex items-center gap-4">
+              <button
+                onClick={cycleFilterStatus}
+                className={`${filterButtonClass} text-white font-bold py-3 px-6 rounded-lg`}
               >
-                <option value="true">Nam</option>
-                <option value="false">Nữ</option>
-              </select>
-            </div>
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Chống Chỉ Định
-              </label>
-              <input
-                type="text"
-                value={newChild.contraindications}
-                onChange={(e) =>
-                  setNewChild({
-                    ...newChild,
-                    contraindications: e.target.value,
-                  })
-                }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-              />
+                {filterStatus === "all"
+                  ? "Hiện Tất Cả"
+                  : filterStatus === "active"
+                  ? "Đang Hoạt Động"
+                  : "Đã Dừng"}
+              </button>
+              <button
+                onClick={() => setShowAddChildForm(true)}
+                className="border-2 border-yellow-500 text-yellow-500 font-bold py-3 px-6 rounded-full hover:bg-yellow-500 hover:text-white transition-all"
+              >
+                Thêm Hồ Sơ Trẻ Em
+              </button>
             </div>
           </div>
-          {childError && (
-            <p className="text-red-500 text-sm mt-2">{childError}</p>
-          )}
-          <div className="flex space-x-4 mt-4">
-            <button
-              onClick={handleCreateChild}
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded"
-            >
-              Tạo Mới
-            </button>
-            <button
-              onClick={() => setShowAddChildForm(false)}
-              className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-3 rounded"
-            >
-              Hủy
-            </button>
+
+          {/* Danh sách hồ sơ trẻ em hiển thị dạng Card */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {filteredChildren.map((child) => (
+              <div
+                key={child.childId}
+                className="bg-white rounded-lg shadow-lg p-6 hover:shadow-2xl transition transform hover:scale-105 cursor-pointer"
+              >
+                <h3 className="text-xl font-extrabold text-blue-600 mb-2">
+                  {child.firstName} {child.lastName}
+                </h3>
+                <p className="text-sm text-gray-700">
+                  <strong>Mã:</strong> {child.childId}
+                </p>
+                <p className="text-sm text-gray-700">
+                  <strong>Giới Tính:</strong> {child.gender ? "Nam" : "Nữ"}
+                </p>
+                <p className="text-sm text-gray-700">
+                  <strong>Ngày Sinh:</strong>{" "}
+                  {new Date(child.dob).toLocaleDateString()}
+                </p>
+                <p className="text-sm text-gray-700">
+                  <strong>Chống chỉ định:</strong> {child.contraindications}
+                </p>
+                <p
+                  className={`text-sm font-bold ${
+                    child.active ? "text-green-500" : "text-red-500"
+                  }`}
+                >
+                  {child.active ? "Active" : "Inactive"}
+                </p>
+                <div className="flex flex-wrap gap-2 mt-4">
+                  <button
+                    onClick={(e) => handleChildInactive(child.childId, e)}
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded flex items-center justify-center"
+                  >
+                    <FaPowerOff size={18} />
+                  </button>
+                  <button
+                    onClick={(e) => handleChildEdit(child, e)}
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
+                  >
+                    Cập Nhật
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Modal Tạo Hồ Sơ Trẻ Em */}
+      {showAddChildForm && (
+        <div className="fixed inset-0 flex items-center justify-center bg-opacity-30 backdrop-blur-md z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-3xl ring-1 ring-gray-200">
+            <h3 className="text-2xl font-semibold mb-6">
+              Thêm Hồ Sơ Trẻ Em Mới
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Họ
+                </label>
+                <input
+                  type="text"
+                  value={newChild.firstName}
+                  onChange={(e) =>
+                    setNewChild({ ...newChild, firstName: e.target.value })
+                  }
+                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Tên
+                </label>
+                <input
+                  type="text"
+                  value={newChild.lastName}
+                  onChange={(e) =>
+                    setNewChild({ ...newChild, lastName: e.target.value })
+                  }
+                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Ngày Sinh
+                </label>
+                <input
+                  type="date"
+                  value={newChild.dob}
+                  onChange={(e) =>
+                    setNewChild({ ...newChild, dob: e.target.value })
+                  }
+                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Giới Tính
+                </label>
+                <select
+                  value={newChild.gender ? "true" : "false"}
+                  onChange={(e) =>
+                    setNewChild({
+                      ...newChild,
+                      gender: e.target.value === "true",
+                    })
+                  }
+                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                >
+                  <option value="true">Nam</option>
+                  <option value="false">Nữ</option>
+                </select>
+              </div>
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Chống chỉ định
+                </label>
+                <input
+                  type="text"
+                  value={newChild.contraindications}
+                  onChange={(e) =>
+                    setNewChild({
+                      ...newChild,
+                      contraindications: e.target.value,
+                    })
+                  }
+                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+            </div>
+            {childError && (
+              <p className="text-red-500 text-sm mt-4">{childError}</p>
+            )}
+            <div className="flex justify-end space-x-4 mt-6">
+              <button
+                onClick={handleCreateChild}
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg"
+              >
+                Tạo Mới
+              </button>
+              <button
+                onClick={() => setShowAddChildForm(false)}
+                className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg"
+              >
+                Hủy
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Bảng danh sách hồ sơ trẻ em */}
-      <table className="min-w-full border divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Mã Trẻ Em
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Họ
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Tên
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Giới Tính
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Ngày Sinh
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Chống Chỉ Định
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Trạng Thái
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Hành Động
-            </th>
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {children.map((child) => (
-            <React.Fragment key={child.childId}>
-              <tr className="cursor-pointer hover:bg-gray-100">
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {child.childId}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {child.firstName}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {child.lastName}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {child.gender ? "Nam" : "Nữ"}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {new Date(child.dob).toLocaleDateString()}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {child.contraindications}
-                </td>
-                <td
-                  className={`px-6 py-4 whitespace-nowrap text-sm font-bold ${
-                    child.active ? "text-blue-500" : "text-red-500"
-                  }`}
+      {/* Modal Cập Nhật Hồ Sơ Trẻ Em */}
+      {editingChild && (
+        <div className="fixed inset-0 flex items-center justify-center bg-opacity-30 backdrop-blur-md z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-3xl ring-1 ring-gray-200">
+            <h3 className="text-2xl font-semibold mb-6">
+              Cập Nhật Hồ Sơ Trẻ Em
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Họ
+                </label>
+                <input
+                  type="text"
+                  value={editingChild.firstName}
+                  onChange={(e) =>
+                    setEditingChild({
+                      ...editingChild,
+                      firstName: e.target.value,
+                    })
+                  }
+                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Tên
+                </label>
+                <input
+                  type="text"
+                  value={editingChild.lastName}
+                  onChange={(e) =>
+                    setEditingChild({
+                      ...editingChild,
+                      lastName: e.target.value,
+                    })
+                  }
+                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Ngày Sinh
+                </label>
+                <input
+                  type="date"
+                  value={editingChild.dob}
+                  onChange={(e) =>
+                    setEditingChild({
+                      ...editingChild,
+                      dob: e.target.value,
+                    })
+                  }
+                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Giới Tính
+                </label>
+                <select
+                  value={editingChild.gender ? "true" : "false"}
+                  onChange={(e) =>
+                    setEditingChild({
+                      ...editingChild,
+                      gender: e.target.value === "true",
+                    })
+                  }
+                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 >
-                  {child.active ? "Active" : "Inactive"}
-                </td>
-                <td
-                  className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <button
-                    onClick={(e) => handleChildEdit(child, e)}
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded mr-2"
-                  >
-                    Cập Nhật
-                  </button>
-                  <button
-                    onClick={(e) => handleChildInactive(child.childId, e)}
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded"
-                  >
-                    Inactive
-                  </button>
-                </td>
-              </tr>
-              {/* Form cập nhật hồ sơ trẻ em */}
-              {editingChild && editingChild.childId === child.childId && (
-                <tr>
-                  <td colSpan="8" className="px-6 py-4">
-                    <div className="p-4 border border-gray-300 rounded-md">
-                      <h3 className="text-xl font-semibold mb-4">
-                        Cập Nhật Hồ Sơ Trẻ Em
-                      </h3>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700">
-                            Họ
-                          </label>
-                          <input
-                            type="text"
-                            value={editingChild.firstName}
-                            onChange={(e) =>
-                              setEditingChild({
-                                ...editingChild,
-                                firstName: e.target.value,
-                              })
-                            }
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700">
-                            Tên
-                          </label>
-                          <input
-                            type="text"
-                            value={editingChild.lastName}
-                            onChange={(e) =>
-                              setEditingChild({
-                                ...editingChild,
-                                lastName: e.target.value,
-                              })
-                            }
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700">
-                            Ngày Sinh
-                          </label>
-                          <input
-                            type="date"
-                            value={editingChild.dob}
-                            onChange={(e) =>
-                              setEditingChild({
-                                ...editingChild,
-                                dob: e.target.value,
-                              })
-                            }
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700">
-                            Giới Tính
-                          </label>
-                          <select
-                            value={editingChild.gender ? "true" : "false"}
-                            onChange={(e) =>
-                              setEditingChild({
-                                ...editingChild,
-                                gender: e.target.value === "true",
-                              })
-                            }
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                          >
-                            <option value="true">Nam</option>
-                            <option value="false">Nữ</option>
-                          </select>
-                        </div>
-                        <div className="col-span-2">
-                          <label className="block text-sm font-medium text-gray-700">
-                            Chống Chỉ Định
-                          </label>
-                          <input
-                            type="text"
-                            value={editingChild.contraindications}
-                            onChange={(e) =>
-                              setEditingChild({
-                                ...editingChild,
-                                contraindications: e.target.value,
-                              })
-                            }
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                          />
-                        </div>
-                      </div>
-                      {childUpdateError && (
-                        <p className="text-red-500 text-sm mt-2">
-                          {childUpdateError}
-                        </p>
-                      )}
-                      <div className="flex space-x-4 mt-4">
-                        <button
-                          onClick={handleChildSave}
-                          className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded"
-                        >
-                          Lưu
-                        </button>
-                        <button
-                          onClick={() => setEditingChild(null)}
-                          className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-3 rounded"
-                        >
-                          Hủy
-                        </button>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              )}
-            </React.Fragment>
-          ))}
-        </tbody>
-      </table>
+                  <option value="true">Nam</option>
+                  <option value="false">Nữ</option>
+                </select>
+              </div>
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Chống chỉ định
+                </label>
+                <input
+                  type="text"
+                  value={editingChild.contraindications}
+                  onChange={(e) =>
+                    setEditingChild({
+                      ...editingChild,
+                      contraindications: e.target.value,
+                    })
+                  }
+                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+            </div>
+            {childUpdateError && (
+              <p className="text-red-500 text-sm mt-4">{childUpdateError}</p>
+            )}
+            <div className="flex justify-end space-x-4 mt-6">
+              <button
+                onClick={handleChildSave}
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg"
+              >
+                Lưu
+              </button>
+              <button
+                onClick={() => setEditingChild(null)}
+                className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg"
+              >
+                Hủy
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
