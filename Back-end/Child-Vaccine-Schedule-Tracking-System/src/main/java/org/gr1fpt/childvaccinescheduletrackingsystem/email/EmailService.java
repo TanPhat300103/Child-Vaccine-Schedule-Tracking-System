@@ -6,6 +6,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -80,6 +81,28 @@ public class EmailService {
                 "</html>";
 
         sendEmail(to, subject, body);
+    }
+
+    public void sendReminderEmail(String to, String child, String customerName, Date date) throws MessagingException{
+        String subject = "Nhắc nhở lịch tiêm chủng hôm nay";
+        String body = "<div style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>"
+                + "<div style='max-width: 600px; background: #ffffff; margin: 0 auto; padding: 20px; border-radius: 8px; "
+                + "box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);'>"
+                + "<div style='background: #3498db; color: #ffffff; text-align: center; padding: 15px; font-size: 22px; font-weight: bold; "
+                + "border-top-left-radius: 8px; border-top-right-radius: 8px;'>🏥 Nhắc nhở lịch tiêm chủng</div>"
+                + "<div style='padding: 20px; color: #333; line-height: 1.6;'>"
+                + "<p>Chào <b>" + customerName + "</b>,</p>"
+                + "<p>Hôm nay là ngày <span style='color: #e74c3c; font-weight: bold;'>" + date + "</span>, bé <b>" + child + "</b> có lịch tiêm chủng.</p>"
+                + "<p>Vui lòng đến địa điểm đã đăng ký đúng giờ để tránh chờ đợi.</p>"
+                + "<p>Nếu có bất kỳ thắc mắc nào, vui lòng liên hệ với chúng tôi.</p>"
+                + "</div>"
+                + "<div style='text-align: center; font-size: 14px; color: #666; padding-top: 15px; border-top: 1px solid #ddd;'>"
+                + "<p>Trân trọng,</p>"
+                + "<p><b>Group 1 - Hệ thống Quản lý Tiêm chủng</b></p>"
+                + "</div>"
+                + "</div>"
+                + "</div>";
+        sendEmail(to,subject,body);
     }
 
 }
