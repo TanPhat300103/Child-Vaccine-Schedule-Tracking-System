@@ -48,7 +48,15 @@ const AdminPage = () => {
                 <span className="ml-4">Dashboard</span>
               </Link>
             </li>
-
+            <li>
+              <Link
+                to="/admin/staffs"
+                className="flex items-center p-3 text-lg font-medium rounded hover:bg-indigo-700 transition-colors"
+              >
+                <FiUser className="w-6 h-6" />
+                <span className="ml-4">Quản Lý Nhân Viên</span>
+              </Link>
+            </li>
             {/* Customers */}
             <li>
               <Link
@@ -72,15 +80,6 @@ const AdminPage = () => {
             </li>
 
             {/* Staff */}
-            <li>
-              <Link
-                to="/admin/staffs"
-                className="flex items-center p-3 text-lg font-medium rounded hover:bg-indigo-700 transition-colors"
-              >
-                <FiUser className="w-6 h-6" />
-                <span className="ml-4">Quản Lý Nhân Viên</span>
-              </Link>
-            </li>
 
             {/* Marketing */}
             <li>
