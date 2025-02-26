@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import dayjs from "dayjs";
 import { FaPlus, FaSearch, FaFilter, FaEdit, FaPowerOff } from "react-icons/fa";
 
-// Hàm parse/format thời gian
+// Hàm parse/format thời gian (chỉ ngày)
 function parseLocalDateString(str) {
-  if (!str) return null;
-  return dayjs(str, "YYYY-MM-DDTHH:mm").toDate();
+  if (!str) return "";
+  return dayjs(str).format("YYYY-MM-DD");
 }
 
 function formatLocalDateString(date) {
   if (!date) return "";
-  return dayjs(date).format("YYYY-MM-DDTHH:mm");
+  return dayjs(date).format("YYYY-MM-DD");
 }
 
 // --- Component ModalForm (cập nhật) ---
@@ -26,8 +24,8 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
         }
       : {
           name: "",
-          startTime: null,
-          endTime: null,
+          startTime: "",
+          endTime: "",
           coupon: "",
           discount: 0,
           description: "",
@@ -45,12 +43,12 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
     setFormData((prev) => ({ ...prev, [name]: checked }));
   };
 
-  const handleStartDateChange = (date) => {
-    setFormData((prev) => ({ ...prev, startTime: date }));
+  const handleStartDateChange = (e) => {
+    setFormData((prev) => ({ ...prev, startTime: e.target.value }));
   };
 
-  const handleEndDateChange = (date) => {
-    setFormData((prev) => ({ ...prev, endTime: date }));
+  const handleEndDateChange = (e) => {
+    setFormData((prev) => ({ ...prev, endTime: e.target.value }));
   };
 
   const handleFormSubmit = async (e) => {
@@ -109,13 +107,11 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
             <label className="block text-sm font-medium text-gray-700">
               Bắt đầu
             </label>
-            <DatePicker
-              selected={formData.startTime}
+            <input
+              type="date"
+              name="startTime"
+              value={formData.startTime}
               onChange={handleStartDateChange}
-              showTimeSelect
-              timeFormat="HH:mm"
-              timeIntervals={15}
-              dateFormat="yyyy-MM-dd HH:mm"
               className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
               required
             />
@@ -124,13 +120,11 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
             <label className="block text-sm font-medium text-gray-700">
               Kết thúc
             </label>
-            <DatePicker
-              selected={formData.endTime}
+            <input
+              type="date"
+              name="endTime"
+              value={formData.endTime}
               onChange={handleEndDateChange}
-              showTimeSelect
-              timeFormat="HH:mm"
-              timeIntervals={15}
-              dateFormat="yyyy-MM-dd HH:mm"
               className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
               required
             />
