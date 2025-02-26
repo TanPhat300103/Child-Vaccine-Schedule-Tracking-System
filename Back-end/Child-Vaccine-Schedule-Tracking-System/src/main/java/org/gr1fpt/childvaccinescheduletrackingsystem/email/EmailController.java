@@ -29,10 +29,12 @@ public class EmailController {
         }
     }
 
+
+    //TEST
     @GetMapping("/reminder")
     public String reminderTestEmail() {
         try {
-            emailService.sendReminderEmail("nha3697@gmail.com","1","Thu Hà", Date.valueOf(LocalDate.now()));
+            emailService.sendReminderEmail("nha3697@gmail.com","1","Thu Hà", Date.valueOf(LocalDate.now()),"");
             return "Email sent successfully to " ;
         } catch (MessagingException e) {
             return "Error sending email: " + e.getMessage();

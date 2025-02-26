@@ -12,11 +12,14 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Service
 public class Schedule {
+
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
     @Autowired
     VaccineDetailRepository vaccineDetailRepo;
@@ -37,11 +40,19 @@ public class Schedule {
         }
     }
 
-    @Scheduled(cron = "0 00 8 * * ?")
+    @Scheduled(cron = "0 00 7 * * ?")
+    //0: giây thứ 0
+    //00: phút
+    //8: giờ
+    // * *: gửi hằng ngày không kể thứ, tuần
     public void sendReminder() throws MessagingException {
         for(BookingDetail detail : bookingDetailRepo.findAll()){
             if(detail.getScheduledDate().equals(Date.valueOf(LocalDate.now()))){
-                emailService.sendReminderEmail(detail.getBooking().getCustomer().getEmail(),detail.getChild().getLastName()+" "+detail.getChild().getFirstName(),detail.getBooking().getCustomer().getLastName()+" "+detail.getBooking().getCustomer().getFirstName(),detail.getScheduledDate());
+                String vaccineName= detail.getVaccine().getName();
+                if(detail.getVaccineCombo()!=null){
+                    vaccineName = detail.getVaccineCombo().getName();
+                }
+                emailService.sendReminderEmail(detail.getBooking().getCustomer().getEmail(),detail.getChild().getLastName()+" "+detail.getChild().getFirstName(),detail.getBooking().getCustomer().getLastName()+" "+detail.getBooking().getCustomer().getFirstName(), detail.getScheduledDate(),vaccineName);
             }
         }
     }
