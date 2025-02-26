@@ -22,6 +22,7 @@ public class VaccineDetailService {
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+    
     public List<VaccineDetail> getAll() {
         return vaccineDetailRepository.findAll();
     }

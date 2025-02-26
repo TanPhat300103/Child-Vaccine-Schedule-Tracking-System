@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FaSyringe, FaUserMd } from "react-icons/fa";
+import { FaShoppingCart, FaSyringe, FaUserMd } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { slides, benefits, process, address } from "../stores/homedata.jsx";
+import { slides, benefits, process } from "../stores/homedata.jsx";
 import PriceVaccine from "../components/homepage/PriceVaccine.jsx";
 import AgeVaccine from "../components/homepage/AgeVaccine.jsx";
 import Footer from "../components/common/Footer";
@@ -103,6 +103,21 @@ const App = () => {
             >
               Đăng ký
             </motion.button>
+            {/* Icon Cart */}
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="relative cursor-pointer ml-4"
+              onClick={() => navigate("/cart")} // Di chuyển đến giỏ hàng
+            >
+              <FaShoppingCart
+                size={24}
+                className="text-blue-600 hover:text-blue-700"
+              />
+              {/* Thêm số lượng sản phẩm vào giỏ hàng nếu cần */}
+              <span className="absolute top-0 right-0 text-xs bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center">
+                3 {/* Số sản phẩm trong giỏ */}
+              </span>
+            </motion.div>
           </nav>
         </div>
       </motion.header>
@@ -234,10 +249,10 @@ const App = () => {
         </div>
       </motion.section>
 
-      {/* Vaccine Age */}
+      {/* Age Vaccine */}
       <AgeVaccine></AgeVaccine>
 
-      {/* Vaccine Price */}
+      {/* Price Vaccine */}
       <motion.section className="py-20 bg-white" ref={vaccinePricingRef}>
         <PriceVaccine></PriceVaccine>
       </motion.section>
@@ -275,58 +290,6 @@ const App = () => {
                 <p className="text-gray-600">{item.description}</p>
               </motion.div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Address */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <motion.h2
-            initial={{ y: 20, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-3xl font-bold text-center mb-12"
-          >
-            Địa Điểm Tiêm Chủng
-          </motion.h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 1 }}
-              viewport={{ once: true }}
-              className="h-[400px] bg-gray-100 rounded-xl overflow-hidden"
-            >
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.5!2d106.7!3d10.8!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDQ4JzAwLjAiTiAxMDbCsDQyJzAwLjAiRQ!5e0!3m2!1sen!2s!4v1629789456789!5m2!1sen!2s"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-              ></iframe>
-            </motion.div>
-            <div className="grid grid-cols-1 gap-4">
-              {address.map((location, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ x: 50, opacity: 0 }}
-                  whileInView={{ x: 0, opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{
-                    y: -5,
-                    boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
-                  }}
-                  className="p-6 bg-blue-50 rounded-lg cursor-pointer"
-                >
-                  <h3 className="font-semibold text-lg mb-2">
-                    {location.name}
-                  </h3>
-                  <p className="text-gray-600">{location.address}</p>
-                </motion.div>
-              ))}
-            </div>
           </div>
         </div>
       </section>

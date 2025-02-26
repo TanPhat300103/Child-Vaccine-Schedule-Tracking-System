@@ -58,10 +58,7 @@ const Header = () => {
                   navigate("/bookschedule-vaccine");
                 }
                 if (item === "Trang chủ") {
-                  window.scrollTo({
-                    top: 0,
-                    behavior: "smooth", // Cuộn mượt mà lên đầu trang
-                  });
+                  navigate("/home");
                 }
               }}
               whileHover={{ scale: 1.05 }}

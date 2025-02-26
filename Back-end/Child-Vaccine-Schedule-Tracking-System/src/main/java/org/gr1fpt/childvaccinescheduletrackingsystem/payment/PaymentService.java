@@ -5,6 +5,8 @@ import org.gr1fpt.childvaccinescheduletrackingsystem.booking.Booking;
 import org.gr1fpt.childvaccinescheduletrackingsystem.marketingcampaign.MarketingCampaign;
 import org.gr1fpt.childvaccinescheduletrackingsystem.booking.BookingRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.marketingcampaign.MarketingCampaignRepository;
+import org.gr1fpt.childvaccinescheduletrackingsystem.notification.Notification;
+import org.gr1fpt.childvaccinescheduletrackingsystem.notification.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,9 @@ public class PaymentService {
 
     @Autowired
     private BookingRepository bookingRepository;
+
+    @Autowired
+    private NotificationService notificationService;
 
     //CHO MỤC ĐÍCH KIỂM THỬ
 
@@ -128,6 +133,12 @@ public class PaymentService {
             payment.setStatus(false);
         }
         // nêu method là true có nghĩa là dùng vnpay để thanh toán
+
+        //sau khi thanh toan thi gui thong bao cho customer
+        Notification notification = new Notification();
+        notification.setCustomer(payment.getBooking().getCustomer());
+        notification.setMessage("Đã thanh toán xong. Bạn có góp ý gì cho chúng tôi không? ");
+        notificationService.createNotificationAfterPayment(notification);
 
         return  paymentRepository.save(payment);
     }

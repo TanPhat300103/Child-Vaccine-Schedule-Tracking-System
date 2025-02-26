@@ -7,8 +7,9 @@ import {
   FaUpload,
 } from "react-icons/fa";
 import { BsClockHistory } from "react-icons/bs";
+import { getMedicalHistory } from "../../apis/api";
 
-const VaccinePage = () => {
+const ReactVaccine = () => {
   const [formData, setFormData] = useState({
     name: "",
     ageGroup: "",
@@ -18,31 +19,37 @@ const VaccinePage = () => {
     isAnonymous: false,
     file: null,
   });
-
   const [errors, setErrors] = useState({});
   const [charCount, setCharCount] = useState(0);
   const maxChars = 500;
+  const [medicalHistory, setMedicalHistory] = useState(null); // State for medical history data
 
-  const vaccineInfo = {
-    name: "Vaccine COVID-19",
-    brand: "PfizerBioNTech",
-    description: "Vaccine mRNA chống virus SARS-CoV-2",
-    dosageInfo: "Tiêm 0.3 mL qua cơ",
+  // Fetching medical history data when the component mounts
+  useEffect(() => {
+    const fetchMedicalHistoryData = async () => {
+      try {
+        const data = await getMedicalHistory(); // Fetch data from the API
+        setMedicalHistory(data); // Set medical history data to state
+      } catch (error) {
+        console.error("Error fetching medical history:", error);
+      }
+    };
+
+    fetchMedicalHistoryData();
+  }, []);
+
+  // Validation for form fields
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.ageGroup) newErrors.ageGroup = "Nhóm tuổi là bắt buộc";
+    if (!formData.reactionSeverity)
+      newErrors.reactionSeverity = "Mức độ phản ứng là bắt buộc";
+    if (!formData.description) newErrors.description = "Mô tả là bắt buộc";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const recommendedDoses = [
-    { id: 1, date: "Mũi đầu tiên", status: "completed" },
-    { id: 2, date: "Mũi thứ hai (21 ngày sau)", status: "current" },
-    { id: 3, date: "Mũi tăng cường (6 tháng sau)", status: "pending" },
-  ];
-
-  const commonReactions = [
-    { symptom: "Đau tại chỗ tiêm", severity: "Nhẹ" },
-    { symptom: "Mệt mỏi", severity: "Vừa" },
-    { symptom: "Đau đầu", severity: "Nhẹ" },
-    { symptom: "Đau cơ", severity: "Vừa" },
-  ];
-
+  // Handle input changes for the form
   const handleInputChange = (e) => {
     const { name, value, type, checked, files } = e.target;
     const inputValue =
@@ -58,24 +65,15 @@ const VaccinePage = () => {
     }
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.ageGroup) newErrors.ageGroup = "Nhóm tuổi là bắt buộc";
-    if (!formData.reactionSeverity)
-      newErrors.reactionSeverity = "Mức độ phản ứng là bắt buộc";
-    if (!formData.description) newErrors.description = "Mô tả là bắt buộc";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Validate form before submission
     if (validateForm()) {
       try {
-        // Make API call to send form data to MockAPI
+        // Make an API call to send form data
         const response = await axios.post(
-          "https://your-mockapi-url.com/feedbacks", // URL của MockAPI
+          "https://your-mockapi-url.com/feedbacks", // Your mock API URL
           formData
         );
         console.log("Feedback submitted:", response.data);
@@ -87,6 +85,14 @@ const VaccinePage = () => {
     }
   };
 
+  // If medical history data is not loaded yet
+  if (!medicalHistory) {
+    return <div>Loading...</div>; // Show loading while fetching the medical history data
+  }
+
+  // Extracting the data from medicalHistory for display
+  const { child, vaccine, date, dose, reaction } = medicalHistory;
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
@@ -96,74 +102,36 @@ const VaccinePage = () => {
             <FaSyringe className="text-blue-500 text-4xl" />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {vaccineInfo.name}
+            Vaccine Feedback
           </h1>
-          <p className="text-gray-600">{vaccineInfo.brand}</p>
+          <p className="text-gray-600">Doses</p>
         </div>
 
-        {/* Vaccine Information */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Thông tin vaccine</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <h3 className="font-medium text-gray-900 mb-2">Mô tả</h3>
-              <p className="text-gray-600">{vaccineInfo.description}</p>
-            </div>
-            <div>
-              <h3 className="font-medium text-gray-900 mb-2">
-                Thông tin liều lượng
-              </h3>
-              <p className="text-gray-600">{vaccineInfo.dosageInfo}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Recommended Doses */}
+        {/* Medical History Information */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
           <h2 className="text-2xl font-semibold mb-4">
-            Các mũi tiêm khuyến nghị
+            Thông Tin Lịch Sử Y Tế
           </h2>
-          <div className="space-y-4">
-            {recommendedDoses.map((dose) => (
-              <div
-                key={dose.id}
-                className={`flex items-center p-4 rounded-lg ${
-                  dose.status === "current"
-                    ? "bg-blue-50 border border-blue-200"
-                    : "bg-gray-50"
-                }`}
-              >
-                <BsClockHistory className="text-blue-500 mr-4" />
-                <span className="flex-grow">{dose.date}</span>
-                {dose.status === "completed" && (
-                  <FaCheckCircle className="text-green-500" />
-                )}
-                {dose.status === "current" && (
-                  <FaExclamationTriangle className="text-yellow-500" />
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Common Reactions */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Phản ứng phổ biến</h2>
-          <div className="grid md:grid-cols-2 gap-4">
-            {commonReactions.map((reaction, index) => (
-              <div
-                key={index}
-                className="flex items-center p-4 bg-gray-50 rounded-lg"
-              >
-                <FaThermometerHalf className="text-red-500 mr-3" />
-                <div>
-                  <p className="font-medium">{reaction.symptom}</p>
-                  <p className="text-sm text-gray-600">
-                    Mức độ: {reaction.severity}
-                  </p>
-                </div>
-              </div>
-            ))}
+          <div>
+            <p>
+              <strong>Child's Name:</strong>
+            </p>
+            <p>
+              <strong>Child's Age:</strong> years
+            </p>
+            <p>
+              <strong>Reaction Severity:</strong> {reaction}
+            </p>
+            <p>
+              <strong>Vaccine Given:</strong>
+            </p>
+            <p>
+              <strong>Vaccine Dose:</strong> {dose}
+            </p>
+            <p>
+              <strong>Vaccine Date:</strong>{" "}
+              {new Date(date).toLocaleDateString()}
+            </p>
           </div>
         </div>
 
@@ -205,6 +173,7 @@ const VaccinePage = () => {
               </div>
             )}
 
+            {/* Feedback Form Fields */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Nhóm tuổi*
@@ -228,6 +197,7 @@ const VaccinePage = () => {
               )}
             </div>
 
+            {/* Reaction Severity */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Mức độ phản ứng*
@@ -252,6 +222,7 @@ const VaccinePage = () => {
               )}
             </div>
 
+            {/* Description */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Mô tả phản ứng*
@@ -276,6 +247,7 @@ const VaccinePage = () => {
               )}
             </div>
 
+            {/* Rating */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Đánh giá (1-5 sao)
@@ -291,6 +263,7 @@ const VaccinePage = () => {
               />
             </div>
 
+            {/* File Upload */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Tải lên ảnh (Tùy chọn)
@@ -317,4 +290,4 @@ const VaccinePage = () => {
   );
 };
 
-export default VaccinePage;
+export default ReactVaccine;

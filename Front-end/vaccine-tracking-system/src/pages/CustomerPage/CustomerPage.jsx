@@ -7,7 +7,7 @@ import Footer from "../../components/common/Footer";
 import { toast } from "react-toastify";
 import {
   getUsers,
-  postUser,
+  postUsers,
   updateUser,
   fetchChildren,
   fetchCustomer,

@@ -1,18 +1,51 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaMoneyBillWave, FaCreditCard } from "react-icons/fa";
-import { format } from "date-fns";
+import { getPaymentByBookID } from "../../apis/api"; // Import API
 
-const VaccinePaymentPage = () => {
+const Payment = () => {
   const { state } = useLocation();
   const [paymentMethod, setPaymentMethod] = useState("");
   const [errors, setErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
+  const [paymentData, setPaymentData] = useState(null); // Default data
   const navigate = useNavigate();
 
-  if (!state) {
-    return <p>Error: Không có dữ liệu từ trang trước!</p>;
-  }
+  // Hardcode bookingId and customerId
+  const hardcodedBookingId = "C001-B25"; // Hardcoded bookingId
+  const hardcodedCustomerId = "C001"; // Hardcoded customerId
+
+  useEffect(() => {
+    const fetchPaymentData = async () => {
+      try {
+        // Thử lấy dữ liệu từ API hoặc dùng dữ liệu mặc định nếu API không hoạt động
+        const data = await getPaymentByBookID(hardcodedBookingId); // Sử dụng bookingId hardcoded
+        if (data) {
+          setPaymentData(data); // Lưu dữ liệu thanh toán
+        } else {
+          console.log("Không có dữ liệu từ API, sử dụng dữ liệu mặc định.");
+          // Hardcode giá trị thanh toán mặc định
+          setPaymentData({
+            status: "Chưa thanh toán",
+            amount: 0,
+            customerId: hardcodedCustomerId, // Hardcode customerId
+            bookingId: hardcodedBookingId, // Hardcode bookingId
+          });
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy thông tin thanh toán:", error);
+        // Hardcode giá trị nếu gặp lỗi
+        setPaymentData({
+          status: "Chưa thanh toán",
+          amount: 0,
+          customerId: hardcodedCustomerId, // Hardcode customerId
+          bookingId: hardcodedBookingId, // Hardcode bookingId
+        });
+      }
+    };
+
+    fetchPaymentData();
+  }, []); // Không phụ thuộc vào state.bookingId nữa vì chúng ta đã hardcode
 
   useEffect(() => {
     const isValid = validateForm();
@@ -33,31 +66,17 @@ const VaccinePaymentPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
+    if (isFormValid) {
       if (paymentMethod === "offline") {
-        // Nếu thanh toán trực tiếp, thực hiện thanh toán và chuyển hướng về trang /home
-        try {
-          const response = await fetch(
-            "https://67aa281d65ab088ea7e5d7ab.mockapi.io/Schedule",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ ...state, paymentMethod }),
-            }
-          );
-
-          if (!response.ok) throw new Error("Thanh toán thất bại");
-
-          alert("Thanh toán thành công!");
-          navigate("/status-schedule"); // Chuyển hướng về trang /home
-        } catch (error) {
-          alert(error.message);
-        }
+        // Thanh toán trực tiếp, chuyển hướng tới trang /bill
+        navigate("/status-vaccine", {
+          state: { ...state, paymentMethod, bookingId: hardcodedBookingId },
+        });
       } else if (paymentMethod === "online") {
-        // Nếu thanh toán online, chuyển hướng đến trang /payment-online
-        navigate("/payment-online");
+        // Thanh toán online, chuyển hướng tới trang /payment-online
+        navigate("/payment-online", {
+          state: { ...state, paymentMethod, bookingId: hardcodedBookingId },
+        });
       }
     }
   };
@@ -87,32 +106,10 @@ const VaccinePaymentPage = () => {
                 Thông Tin Đặt Lịch Tiêm
               </h3>
               <div className="space-y-4 text-lg text-gray-700">
-                <p>
-                  <strong>Họ và tên:</strong> {state.childName}
+                <p className="mt-4 text-xl font-semibold">
+                  <strong>Tổng Số Tiền:</strong> 207000 VND
                 </p>
-                <p>
-                  <strong>Ngày sinh:</strong>{" "}
-                  {format(new Date(state.dateOfBirth), "dd/MM/yyyy")}
-                </p>
-                <p>
-                  <strong>Số điện thoại:</strong> {state.phoneNumber}
-                </p>
-                <p>
-                  <strong>Email:</strong> {state.email}
-                </p>
-                <p>
-                  <strong>Trung tâm tiêm:</strong> {state.center}
-                </p>
-                <p>
-                  <strong>Vắc-xin:</strong> {state.vaccine}
-                </p>
-                <p>
-                  <strong>Ngày tiêm:</strong>{" "}
-                  {format(new Date(state.appointmentDate), "dd/MM/yyyy")}
-                </p>
-                <p>
-                  <strong>Khung giờ:</strong> {state.timeSlot}
-                </p>
+                {paymentData && <div className="mt-4"></div>}
               </div>
             </div>
 
@@ -183,4 +180,4 @@ const VaccinePaymentPage = () => {
   );
 };
 
-export default VaccinePaymentPage;
+export default Payment;
