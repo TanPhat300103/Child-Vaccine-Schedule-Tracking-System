@@ -24,16 +24,14 @@ public class VaccineDetail {
     @JoinColumn(name = "vaccineId", nullable = false)
     private Vaccine vaccine;
     @NotNull(message = "Entry date cannot be null")
-    @PastOrPresent(message = "Entry date must be in the past or present")
     private java.sql.Date entryDate;
     @NotNull(message = "Expired date cannot be null")
-    @Future(message = "Expired date must be in the future")
     private java.sql.Date expiredDate;
     private boolean status;
     private String img;
     private int day;
     private int tolerance;
-    @Min(value = 1, message = "Quantity must be greater than 1")
+    @Min(value = 0, message = "Quantity must be greater than 0")
     private int quantity;
 
 }
