@@ -2,6 +2,7 @@ package org.gr1fpt.childvaccinescheduletrackingsystem.email;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.gr1fpt.childvaccinescheduletrackingsystem.vaccine.Vaccine;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -83,25 +84,31 @@ public class EmailService {
         sendEmail(to, subject, body);
     }
 
-    public void sendReminderEmail(String to, String child, String customerName, Date date) throws MessagingException{
+    public void sendReminderEmail(String to, String child, String customerName, Date date, String vaccineName) throws MessagingException{
         String subject = "Nhắc nhở lịch tiêm chủng hôm nay";
         String body = "<div style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>"
                 + "<div style='max-width: 600px; background: #ffffff; margin: 0 auto; padding: 20px; border-radius: 8px; "
                 + "box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);'>"
                 + "<div style='background: #3498db; color: #ffffff; text-align: center; padding: 15px; font-size: 22px; font-weight: bold; "
-                + "border-top-left-radius: 8px; border-top-right-radius: 8px;'>🏥 Nhắc nhở lịch tiêm chủng</div>"
+                + "border-top-left-radius: 8px; border-top-right-radius: 8px;'>🏥 Nhắc nhở lịch tiêm chủng của Bé: <span style='text-transform: uppercase;'>" + child + "</span></div>"
                 + "<div style='padding: 20px; color: #333; line-height: 1.6;'>"
                 + "<p>Chào <b>" + customerName + "</b>,</p>"
-                + "<p>Hôm nay là ngày <span style='color: #e74c3c; font-weight: bold;'>" + date + "</span>, bé <b>" + child + "</b> có lịch tiêm chủng.</p>"
+                + "<p>Hôm nay là ngày <span style='color: #e74c3c; font-weight: bold;'>" + date + "</span>, bé <b>" + child + "</b> có lịch tiêm vaccine <b style='color: #3498db;'>" + vaccineName + "</b>.</p>"
                 + "<p>Vui lòng đến địa điểm đã đăng ký đúng giờ để tránh chờ đợi.</p>"
-                + "<p>Nếu có bất kỳ thắc mắc nào, vui lòng liên hệ với chúng tôi.</p>"
+                + "<p>Nếu có bất kỳ thắc mắc nào, vui lòng liên hệ với chúng tôi qua số hotline: <b style='color: #e74c3c;'>" + supportPhone + "</b>.</p>"
                 + "</div>"
-                + "<div style='text-align: center; font-size: 14px; color: #666; padding-top: 15px; border-top: 1px solid #ddd;'>"
-                + "<p>Trân trọng,</p>"
-                + "<p><b>Group 1 - Hệ thống Quản lý Tiêm chủng</b></p>"
+                + "<div style='text-align: center; background: #ecf0f1; padding: 15px; border-radius: 8px;'>"
+                + "<p style='margin: 5px 0;'><b>" + companyName + "</b></p>"
+                + "<p style='margin: 5px 0;'>" + companyAddress + "</p>"
+                + "<p style='margin: 5px 0;'>📧 Email: <a href='mailto:" + companyEmail + "' style='color: #3498db; text-decoration: none;'>" + companyEmail + "</a></p>"
+                + "<p style='margin: 5px 0;'>📞 Điện thoại: <b>" + companyPhone + "</b></p>"
+                + "</div>"
+                + "<div style='text-align: center; font-size: 14px; color: #666; padding-top: 15px;'>"
                 + "</div>"
                 + "</div>"
                 + "</div>";
+
+
         sendEmail(to,subject,body);
     }
 
