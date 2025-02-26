@@ -32,6 +32,7 @@ import ComboDetail from "../pages/Manager/ComboDetail.jsx";
 
 import AdminPage from "../pages/AdminPage/AdminPage.jsx";
 import Staffs from "../pages/AdminPage/Staffs.jsx";
+import Dashboard from "../pages/AdminPage/Dasboard.jsx";
 
 // Các import từ nhánh main
 import DetailVaccine from "../pages/Vaccination/DetailVaccine.jsx";
@@ -122,6 +123,7 @@ const Main = () => {
                 path="combo-detail/:vaccineComboId"
                 element={<ComboDetail />}
               />
+              <Route path="dashboard" element={<Dashboard />} />
             </Route>
           </Routes>
         </CartProvider>
