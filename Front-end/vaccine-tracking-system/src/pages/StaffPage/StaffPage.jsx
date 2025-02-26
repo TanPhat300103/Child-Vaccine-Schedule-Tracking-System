@@ -19,7 +19,7 @@ const StaffPage = () => {
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar với kích thước phóng to (w-80) */}
-      <aside className="w-80 bg-gray-900 text-white flex flex-col">
+      <aside className="w-80 bg-gray-900 text-white flex flex-col sticky top-0 h-screen overflow-y-auto">
         {/* Header trong sidebar: Home và Staff Dashboard */}
         <div className="p-4 border-b border-gray-700 flex items-center space-x-3">
           {/* Nút Home nổi bật */}

@@ -21,8 +21,8 @@ const AdminPage = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      <aside className="w-80 bg-indigo-900 text-white flex flex-col">
+      {/* Sidebar với sticky */}
+      <aside className="w-80 bg-indigo-900 text-white flex flex-col sticky top-0 h-screen overflow-y-auto">
         {/* Header trong sidebar: Nút Home và Admin Panel */}
         <div className="p-4 border-b border-indigo-800 flex items-center space-x-3">
           <Link
@@ -67,7 +67,6 @@ const AdminPage = () => {
                 <span className="ml-4">Quản Lý Khách Hàng</span>
               </Link>
             </li>
-
             {/* Bookings */}
             <li>
               <Link
@@ -78,9 +77,6 @@ const AdminPage = () => {
                 <span className="ml-4">Bookings</span>
               </Link>
             </li>
-
-            {/* Staff */}
-
             {/* Marketing */}
             <li>
               <Link
@@ -91,7 +87,6 @@ const AdminPage = () => {
                 <span className="ml-4">Marketing</span>
               </Link>
             </li>
-
             {/* Vaccine với submenu */}
             <li className="relative group">
               <div className="flex items-center p-3 text-lg font-medium rounded hover:bg-indigo-700 transition-colors cursor-pointer">
