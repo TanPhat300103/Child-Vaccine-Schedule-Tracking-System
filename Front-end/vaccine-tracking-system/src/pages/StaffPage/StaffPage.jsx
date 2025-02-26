@@ -80,6 +80,16 @@ const StaffPage = () => {
                 <span className="ml-4">Phản Hồi</span>
               </button>
             </li>
+            {/* Marketing */}
+            <li>
+              <Link
+                to="/staff/marketing-campains"
+                className="flex items-center p-3 text-lg font-medium rounded hover:bg-gray-700 transition-colors"
+              >
+                <FiBarChart2 className="w-6 h-6" />
+                <span className="ml-4">Marketing</span>
+              </Link>
+            </li>
 
             {/* Vaccine (gộp Quản Lý Vaccine và Vaccine Combo) */}
             <li className="relative group">
@@ -114,17 +124,6 @@ const StaffPage = () => {
                   </Link>
                 </li>
               </ul>
-            </li>
-
-            {/* Marketing */}
-            <li>
-              <Link
-                to="/staff/marketing-campains"
-                className="flex items-center p-3 text-lg font-medium rounded hover:bg-gray-700 transition-colors"
-              >
-                <FiBarChart2 className="w-6 h-6" />
-                <span className="ml-4">Marketing</span>
-              </Link>
             </li>
           </ul>
         </nav>
