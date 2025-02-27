@@ -20,12 +20,11 @@ const Home = () => {
   const vaccinePricingRef = useRef(null);
   const footerRef = useRef(null);
   const navigate = useNavigate();
-  const { cart, addToCart, removeFromCart } = useCart(); // Sử dụng useCart để lấy giá trị từ CartContext
+  const { cart, addToCart, removeFromCart } = useCart();
   const cartItemCount = Object.values(cart).reduce(
-    (total, vaccine) => total + (vaccine.doseNumber || 0), // Đảm bảo sử dụng doseNumber
+    (total, vaccine) => total + 1,
     0
   );
-  console.log(cartItemCount); // Kiểm tra lại số lượng
 
   //move slides
   useEffect(() => {

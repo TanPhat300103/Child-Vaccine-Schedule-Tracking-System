@@ -39,9 +39,9 @@ const StatusVaccine = () => {
       case 1:
         return "pending"; // Chờ xử lý
       case 2:
-        return "completed"; // Đã tiêm
+        return "completed";
       case 3:
-        return "upcoming"; // Sắp tiêm
+        return "upcoming";
       default:
         return "unknown";
     }
@@ -82,9 +82,9 @@ const StatusVaccine = () => {
       case "completed":
         return <BsCheckCircleFill className="text-green-500" />;
       case "pending":
-        return <BsExclamationCircleFill className="text-yellow-500" />;
+        return <BsClockFill className="text-yellow-500" />;
       case "upcoming":
-        return <BsClockFill className="text-blue-500" />;
+        return <BsExclamationCircleFill className="text-blue-500" />;
       default:
         return null;
     }
@@ -92,7 +92,7 @@ const StatusVaccine = () => {
 
   // Xem chi tiết lịch tiêm
   const handleViewDetail = (booking) => {
-    navigate("/react-vaccine", { state: booking });
+    navigate("/react-vaccine2", { state: booking });
   };
 
   return (
@@ -141,7 +141,7 @@ const StatusVaccine = () => {
                   ? "Đã tiêm"
                   : tab === "pending"
                   ? "Chờ xác nhận"
-                  : "Sắp tiêm"}
+                  : "Hủy tiêm"}
               </button>
             ))}
           </div>
