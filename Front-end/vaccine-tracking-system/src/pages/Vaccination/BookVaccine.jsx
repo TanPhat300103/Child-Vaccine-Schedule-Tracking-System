@@ -16,18 +16,17 @@ const BookVaccine = () => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [children, setChildren] = useState([]);
-  const [customerId, setCustomerId] = useState(null);
   const [vaccines, setVaccines] = useState([]);
   const [vaccineCombos, setVaccineCombos] = useState([]);
   const navigate = useNavigate();
   const [isVaccineListVisible, setIsVaccineListVisible] = useState(false);
   const [isVaccineComboListVisible, setIsVaccineComboListVisible] =
     useState(false);
-
+  const userId = localStorage.getItem("userId");
+  console.log("customerId: ", userId);
   // form data
   const [formData, setFormData] = useState({
     bookingDate: "",
-    customerId: customerId || "",
     vaccineId: [],
     vaccineComboId: [],
     childId: "",
@@ -38,27 +37,12 @@ const BookVaccine = () => {
   useEffect(() => {
     const fetchCustomerId = async () => {
       try {
-        const userId = localStorage.getItem("userId");
-        console.log(localStorage.getItem("userId"));
-        if (!userId) {
-          toast.error("Lỗi: Không tìm thấy userId, vui lòng đăng nhập lại!");
-          return;
-        }
         const customer = await getCustomerId(userId);
-        if (customer && customer.customerId) {
-          setCustomerId(customer.customerId);
-          console.log("✅ Customer ID lấy được:", customer.customerId);
-        } else {
-          toast.error(
-            "Không thể lấy thông tin khách hàng. Vui lòng đăng nhập lại!"
-          );
-        }
       } catch (error) {
         console.error("Lỗi khi lấy thông tin khách hàng:", error);
         toast.error(`Lỗi khi lấy thông tin khách hàng: ${error.message}`);
       }
     };
-
     fetchCustomerId();
   }, []);
 
@@ -68,7 +52,6 @@ const BookVaccine = () => {
       try {
         const data = await getChilds();
         setChildren(data);
-        console.log("API Response (Get Childs):", data);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu trẻ em:", error);
       }
@@ -81,7 +64,6 @@ const BookVaccine = () => {
     const fetchVaccines = async () => {
       try {
         const data = await getVaccines();
-        console.log("📡 API Response (Get Vaccines):", data);
         setVaccines(data);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu vắc-xin:", error);
@@ -95,7 +77,6 @@ const BookVaccine = () => {
     const fetchVaccineCombos = async () => {
       try {
         const data = await getVaccineCombos();
-        console.log("📡 API Response (Get Vaccine Combos):", data);
         setVaccineCombos(data);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu combo vắc-xin:", error);
@@ -126,7 +107,6 @@ const BookVaccine = () => {
       } else {
         updatedValue = value;
       }
-
       return { ...prev, [name]: updatedValue };
     });
   };
@@ -135,7 +115,6 @@ const BookVaccine = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    // Kiểm tra nếu ngày đặt lịch không được để trống
     if (!formData.bookingDate) {
       newErrors.bookingDate = "Ngày đặt lịch là bắt buộc";
     } else {
@@ -146,7 +125,6 @@ const BookVaccine = () => {
       }
     }
 
-    // Kiểm tra các trường khác
     if (!formData.vaccineId.length && !formData.vaccineComboId.length) {
       newErrors.vaccineId = "Vui lòng chọn vắc-xin hoặc combo vắc-xin";
     }
@@ -167,43 +145,38 @@ const BookVaccine = () => {
         const payload = {
           booking: {
             bookingDate: formData.bookingDate,
-            customer: { customerId: customerId },
+            customer: { customerId: userId },
           },
-          vaccineId: formData.vaccineId.length > 0 ? formData.vaccineId : [], // Đảm bảo gửi mảng
+          vaccineId: formData.vaccineId.length > 0 ? formData.vaccineId : [],
           vaccineComboId:
-            formData.vaccineComboId.length > 0 ? formData.vaccineComboId : [], // Đảm bảo gửi mảng
+            formData.vaccineComboId.length > 0 ? formData.vaccineComboId : [],
           child: { childId: formData.childId },
         };
 
         console.log("Payload:", payload);
-
         const result = await postSchedules(payload);
-        console.log("API Response:", result);
-
-        // Kiểm tra nếu result có success và bookingId
         if (result.success) {
           toast.update(loadingToast, {
             render: "Đặt lịch thành công!",
             type: "success",
             isLoading: false,
-            autoClose: 3000,
+            autoClose: 1000,
           });
 
-          console.log(
-            "Navigating to /detail-vaccine with bookingId:",
-            result.bookingId
-          );
-
-          // Điều hướng tới trang detail-vaccine với bookingId
-          navigate("/detail-vaccine", {
-            state: { bookingId: result.bookingId },
+          navigate("/detail-vaccine2", {
+            state: {
+              bookingId: "C001-B1", // Booking ID as a string
+              children: children, // Passing the children array directly
+              vaccines: vaccines, // Passing the vaccines array directly
+              vaccineCombos: vaccineCombos, // Passing the vaccineCombos array directly
+            },
           });
         } else {
           toast.update(loadingToast, {
             render: result.message || "Đặt lịch thất bại. Vui lòng thử lại.",
             type: "error",
             isLoading: false,
-            autoClose: 3000,
+            autoClose: 1000,
           });
         }
       } catch (error) {
@@ -212,7 +185,7 @@ const BookVaccine = () => {
           render: "Đã có lỗi xảy ra. Vui lòng thử lại.",
           type: "error",
           isLoading: false,
-          autoClose: 3000,
+          autoClose: 1000,
         });
       } finally {
         setIsLoading(false);
