@@ -202,27 +202,32 @@ const CustomerPage = () => {
 
       <div className="container mx-auto px-6 py-8 flex flex-col md:flex-row gap-6">
         {/* Sidebar */}
-        <aside className="w-full md:w-1/4 bg-white rounded-lg shadow p-6 flex flex-col justify-between">
+        <aside className="w-full md:w-1/4 bg-white text-blue-700 border border-blue-300 rounded-lg shadow p-6 flex flex-col justify-between">
           <nav className="space-y-3 text-base">
+            {/* Mục “Hồ sơ của tôi” với icon nhà */}
             <NavLink
               to="/customer"
               end
               className={({ isActive }) =>
-                `block px-4 py-3 rounded-md font-bold text-2xl transition-colors ${
-                  isActive
-                    ? "bg-indigo-50 text-indigo-600"
-                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                `flex items-center px-4 py-3 rounded-md font-bold text-xl transition-colors [text-shadow:1px_1px_2px_rgba(59,130,246,0.3)] ${
+                  isActive ? "bg-blue-100" : "hover:bg-blue-50"
                 }`
               }
             >
+              <FiHome className="mr-2 w-6 h-6" />
               Hồ sơ của tôi
             </NavLink>
 
             {/* Hồ sơ trẻ em */}
             <div className="mt-3">
-              <h3 className="px-4 py-2 text-gray-500 font-bold text-2xl">
-                Hồ sơ trẻ em
-              </h3>
+              <div className="flex items-center px-4 py-2 text-1sm font-bold uppercase tracking-wider [text-shadow:1px_1px_2px_rgba(59,130,246,0.3)]">
+                <span>Hồ sơ trẻ em</span>
+                {children.length > 0 && (
+                  <span className="ml-auto bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                    {children.length}
+                  </span>
+                )}
+              </div>
               {children.length > 0 ? (
                 <>
                   {(showAllChildren ? children : children.slice(0, 5)).map(
@@ -232,14 +237,14 @@ const CustomerPage = () => {
                         to={`/customer/child/${child.childId}`}
                         state={{ customerId }}
                         className={({ isActive }) =>
-                          `flex items-center px-4 py-3 text-xl rounded-lg transition-all transform hover:shadow-md ${
+                          `flex items-center px-4 py-2 rounded-lg transition-all transform hover:shadow-md text-1xl ${
                             isActive
-                              ? "bg-indigo-50 text-indigo-600"
-                              : "hover:bg-gray-100 text-gray-700"
+                              ? "bg-blue-100"
+                              : "hover:bg-blue-50 text-blue-700"
                           }`
                         }
                       >
-                        <FaChild className="mr-2 text-gray-500" />
+                        <FaChild className="mr-2 w-5 h-5" />
                         {child.firstName} {child.lastName}
                       </NavLink>
                     )
@@ -247,65 +252,67 @@ const CustomerPage = () => {
                   {children.length > 5 && (
                     <button
                       onClick={() => setShowAllChildren((prev) => !prev)}
-                      className="block w-full text-left px-4 py-3 text-xl text-indigo-500 hover:underline transition-colors"
+                      className="block w-full text-left px-4 py-2 text-xl text-blue-500 hover:underline transition-colors"
                     >
                       {showAllChildren ? "Thu gọn" : "Xem thêm..."}
                     </button>
                   )}
                 </>
               ) : (
-                <p className="px-4 py-3 text-xl text-gray-400">
+                <p className="px-4 py-2 text-xl text-blue-300">
                   Chưa có thông tin
                 </p>
               )}
             </div>
 
+            {/* Thêm hồ sơ */}
             <NavLink
               to="/customer/add-child"
               state={{ customerId }}
               className={({ isActive }) =>
-                `block mt-3 text-center px-4 py-3 rounded-md font-bold text-2xl transition-colors ${
+                `flex items-center justify-center px-4 py-3 mt-3 rounded-md font-bold text-xl transition-colors ${
                   isActive
-                    ? "bg-green-50 text-green-700"
+                    ? "bg-green-600 text-white"
                     : "bg-green-500 text-white hover:bg-green-600"
                 }`
               }
             >
-              Thêm hồ sơ
+              ➕ Thêm hồ sơ
             </NavLink>
 
+            {/* Xem đặt lịch */}
             <NavLink
               to="/customer/booking"
               state={{ customerId }}
               className={({ isActive }) =>
-                `block mt-3 text-center px-4 py-3 rounded-md font-bold text-2xl transition-colors ${
+                `flex items-center justify-center px-4 py-3 mt-3 rounded-md font-bold text-xl transition-colors ${
                   isActive
-                    ? "bg-indigo-600 text-white"
-                    : "bg-indigo-500 text-white hover:bg-indigo-600"
+                    ? "bg-blue-600 text-white"
+                    : "bg-blue-500 text-white hover:bg-blue-600"
                 }`
               }
             >
-              Xem đặt lịch
+              🗓 Xem đặt lịch
             </NavLink>
           </nav>
 
-          {/* Nút đăng xuất ở dưới cùng */}
+          {/* Nút Đăng xuất */}
           <div className="mt-6 flex justify-center">
             <button
               onClick={() => {
                 localStorage.removeItem("customerId");
                 navigate("/");
               }}
-              className="flex items-center gap-2 px-4 py-3 bg-red-500 text-white rounded-full shadow-md hover:bg-red-600 transition-colors font-bold text-2xl"
+              className="flex items-center gap-2 px-5 py-3 bg-red-500 text-white rounded-full shadow hover:bg-red-600 transition-colors font-bold text-xl"
             >
-              <FiLogOut className="w-6 h-6" />
+              <FiLogOut className="w-5 h-5" />
               Đăng xuất
             </button>
           </div>
         </aside>
 
         {/* Right Content Area */}
-        <main className="w-full md:w-3/4">
+        <main className="w-full md:w-10/10  bg-white text-blue-700 border border-blue-300 rounded-lg shadow p-6 flex flex-col justify-between">
           <div className="bg-white rounded-lg shadow p-6">
             {isExactPath ? (
               <div className="space-y-8">
@@ -446,26 +453,8 @@ const CustomerPage = () => {
                     </div>
                   </div>
 
-                  {/* Địa chỉ */}
-                  <div className="space-y-3">
-                    <label className="text-base font-medium text-gray-600 block">
-                      Địa chỉ
-                    </label>
-                    <div className="relative">
-                      <FiHome className="absolute top-3 left-3 text-gray-400" />
-                      <input
-                        type="text"
-                        name="address"
-                        value={formData.address}
-                        onChange={handleInputChange}
-                        className="w-full pl-10 pr-4 py-2 border rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-                        placeholder="Địa chỉ"
-                      />
-                    </div>
-                  </div>
-
                   {/* Mật khẩu */}
-                  <div className="space-y-3 md:col-span-2">
+                  <div className="space-y-3 ">
                     <label className="text-base font-medium text-gray-600 block">
                       Mật khẩu mới (để trống nếu không đổi)
                     </label>
@@ -493,6 +482,24 @@ const CustomerPage = () => {
                           <FiEye className="w-5 h-5" />
                         )}
                       </button>
+                    </div>
+                  </div>
+
+                  {/* Địa chỉ */}
+                  <div className="space-y-3 sm:col-span-2">
+                    <label className="text-base font-medium text-gray-600 block">
+                      Địa chỉ
+                    </label>
+                    <div className="relative">
+                      <FiHome className="absolute top-3 left-3 text-gray-400" />
+                      <input
+                        type="text"
+                        name="address"
+                        value={formData.address}
+                        onChange={handleInputChange}
+                        className="w-full pl-10 pr-4 py-2 border rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                        placeholder="Địa chỉ"
+                      />
                     </div>
                   </div>
 
