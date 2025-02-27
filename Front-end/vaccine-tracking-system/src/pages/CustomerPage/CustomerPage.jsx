@@ -4,16 +4,9 @@ import axios from "axios";
 import AddChild from "./AddChild";
 import Footer from "../../components/common/Footer";
 import { toast } from "react-toastify";
-import {
-  getUsers,
-  postUsers,
-  updateUser,
-  fetchChildren,
-  fetchCustomer,
-} from "../../apis/api";
+import { updateUser, fetchChildren, fetchCustomer } from "../../apis/api";
 
 import {
-  FiUser,
   FiCalendar,
   FiMail,
   FiPhone,
@@ -21,12 +14,27 @@ import {
   FiLock,
   FiEye,
   FiEyeOff,
+  FiUser as FiUserOutline,
+  FiLogOut,
 } from "react-icons/fi";
+import { FaMars, FaVenus, FaChild } from "react-icons/fa";
+
+// Hàm so sánh dữ liệu form và dữ liệu gốc
+const isFormChanged = (formData, originalData) => {
+  if (!originalData) return false;
+  for (let key in formData) {
+    if (formData[key] !== originalData[key]) {
+      return true;
+    }
+  }
+  return false;
+};
 
 const CustomerPage = () => {
   const customerId = "C002";
   const [customer, setCustomer] = useState(null);
   const [children, setChildren] = useState([]);
+  const [showAllChildren, setShowAllChildren] = useState(false);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState({});
@@ -36,23 +44,26 @@ const CustomerPage = () => {
   const isExactPath = location.pathname === "/customer";
   const [error, setError] = useState(null);
 
+  // Lưu dữ liệu gốc để kiểm tra khi thay đổi
+  const [originalData, setOriginalData] = useState(null);
+  const [isChanged, setIsChanged] = useState(false);
+
   // Form data
   const [formData, setFormData] = useState({
-    firstName: customer?.firstName || "",
-    lastName: customer?.lastName || "",
-    dob: customer?.dob
-      ? new Date(customer.dob).toISOString().split("T")[0]
-      : "",
-    gender: customer?.gender ? "true" : "false",
-    email: customer?.email || "",
-    phoneNumber: customer?.phoneNumber || "",
-    address: customer?.address || "",
-    password: customer?.password || "",
+    firstName: "",
+    lastName: "",
+    dob: "",
+    gender: "false", // mặc định nữ
+    email: "",
+    phoneNumber: "",
+    address: "",
+    password: "",
   });
 
+  // Khi customer thay đổi => set lại formData và originalData
   useEffect(() => {
     if (customer) {
-      setFormData({
+      const newForm = {
         firstName: customer.firstName,
         lastName: customer.lastName,
         dob: new Date(customer.dob).toISOString().split("T")[0],
@@ -61,9 +72,16 @@ const CustomerPage = () => {
         phoneNumber: customer.phoneNumber,
         address: customer.address,
         password: customer.password,
-      });
+      };
+      setFormData(newForm);
+      setOriginalData(newForm);
     }
   }, [customer]);
+
+  // Theo dõi thay đổi form để bật tắt nút lưu
+  useEffect(() => {
+    setIsChanged(isFormChanged(formData, originalData));
+  }, [formData, originalData]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -73,15 +91,24 @@ const CustomerPage = () => {
     }));
   };
 
+  // Toggle giới tính bằng icon
+  const toggleGender = () => {
+    setFormData((prev) => ({
+      ...prev,
+      gender: prev.gender === "true" ? "false" : "true",
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     formData.gender = formData.gender === "true";
     setIsLoading(true);
     try {
       const result = await updateUser(formData);
-      console.log("API Result:", result);
       if (result.success) {
         toast.success(result.message);
+        setOriginalData({ ...formData });
+        setIsChanged(false);
         navigate("/customer");
       } else {
         toast.error(
@@ -122,7 +149,7 @@ const CustomerPage = () => {
   const loadCustomerData = async (customerId) => {
     try {
       const data = await fetchCustomer(customerId);
-      setFormData(data);
+      setCustomer(data);
     } catch (error) {
       toast.error("Không thể lấy thông tin khách hàng.");
     }
@@ -131,7 +158,6 @@ const CustomerPage = () => {
   const loadChildrenData = async (customerId) => {
     try {
       const response = await fetchChildren(customerId);
-      console.log("Dữ liệu trẻ em nhận được:", response);
       if (Array.isArray(response)) {
         setChildren(response);
       } else {
@@ -168,95 +194,114 @@ const CustomerPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Giả lập top bar, có thể tuỳ chỉnh thêm nếu muốn */}
+      {/* Top Bar */}
       <div className="bg-white shadow-sm py-3 px-6 flex items-center justify-between">
         <div className="text-xl font-bold">CRM</div>
         <div className="text-sm text-gray-500">Xin chào, Customer!</div>
       </div>
 
       <div className="container mx-auto px-6 py-8 flex flex-col md:flex-row gap-6">
-        {/* Left Sidebar */}
-        <aside className="w-full md:w-1/4 bg-white rounded-lg shadow p-6 h-fit">
-          <nav className="space-y-2">
+        {/* Sidebar */}
+        <aside className="w-full md:w-1/4 bg-white rounded-lg shadow p-6 flex flex-col justify-between">
+          <nav className="space-y-3 text-base">
             <NavLink
               to="/customer"
               end
               className={({ isActive }) =>
-                `block px-4 py-3 rounded-md font-semibold transition-colors ${
+                `block px-4 py-3 rounded-md font-bold text-2xl transition-colors ${
                   isActive
                     ? "bg-indigo-50 text-indigo-600"
-                    : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                 }`
               }
             >
               Hồ sơ của tôi
             </NavLink>
 
-            {/* Hồ Sơ Trẻ Em dưới dạng hover dropdown */}
-            <div className="relative group px-4 py-2 rounded-md cursor-pointer font-semibold text-gray-600 hover:bg-gray-100 hover:text-gray-900">
-              Hồ sơ trẻ em
-              <div className="absolute left-0 mt-1 hidden group-hover:block bg-white border border-gray-200 rounded-md shadow-md w-48 z-10">
-                {children.length > 0 ? (
-                  children.map((child) => (
-                    <NavLink
-                      key={child.childId}
-                      to={`/customer/child/${child.childId}`}
-                      state={{ customerId: customerId }}
-                      className={({ isActive }) =>
-                        `block px-3 py-2 text-sm rounded-md transition-colors ${
-                          isActive
-                            ? "bg-indigo-50 text-indigo-600"
-                            : "hover:bg-gray-100 text-gray-600"
-                        }`
-                      }
+            {/* Hồ sơ trẻ em */}
+            <div className="mt-3">
+              <h3 className="px-4 py-2 text-gray-500 font-bold text-2xl">
+                Hồ sơ trẻ em
+              </h3>
+              {children.length > 0 ? (
+                <>
+                  {(showAllChildren ? children : children.slice(0, 5)).map(
+                    (child) => (
+                      <NavLink
+                        key={child.childId}
+                        to={`/customer/child/${child.childId}`}
+                        state={{ customerId }}
+                        className={({ isActive }) =>
+                          `flex items-center px-4 py-3 text-xl rounded-lg transition-all transform hover:shadow-md ${
+                            isActive
+                              ? "bg-indigo-50 text-indigo-600"
+                              : "hover:bg-gray-100 text-gray-700"
+                          }`
+                        }
+                      >
+                        <FaChild className="mr-2 text-gray-500" />
+                        {child.firstName} {child.lastName}
+                      </NavLink>
+                    )
+                  )}
+                  {children.length > 5 && (
+                    <button
+                      onClick={() => setShowAllChildren((prev) => !prev)}
+                      className="block w-full text-left px-4 py-3 text-xl text-indigo-500 hover:underline transition-colors"
                     >
-                      {child.firstName} {child.lastName}
-                    </NavLink>
-                  ))
-                ) : (
-                  <p className="px-3 py-2 text-sm text-gray-400">
-                    Chưa có thông tin
-                  </p>
-                )}
-              </div>
+                      {showAllChildren ? "Thu gọn" : "Xem thêm..."}
+                    </button>
+                  )}
+                </>
+              ) : (
+                <p className="px-4 py-3 text-xl text-gray-400">
+                  Chưa có thông tin
+                </p>
+              )}
             </div>
 
             <NavLink
               to="/customer/add-child"
-              state={{ customerId: customerId }}
+              state={{ customerId }}
               className={({ isActive }) =>
-                `block px-4 py-3 rounded-md font-semibold transition-colors ${
+                `block mt-3 text-center px-4 py-3 rounded-md font-bold text-2xl transition-colors ${
                   isActive
                     ? "bg-green-50 text-green-700"
-                    : "bg-green-500 text-white hover:bg-green-600 hover:text-white"
-                } mt-2 text-center`
+                    : "bg-green-500 text-white hover:bg-green-600"
+                }`
               }
             >
               Thêm hồ sơ
             </NavLink>
+
             <NavLink
               to="/customer/booking"
-              state={{ customerId: customerId }}
+              state={{ customerId }}
               className={({ isActive }) =>
-                `block px-4 py-3 rounded-md font-semibold transition-colors text-center ${
+                `block mt-3 text-center px-4 py-3 rounded-md font-bold text-2xl transition-colors ${
                   isActive
                     ? "bg-indigo-600 text-white"
                     : "bg-indigo-500 text-white hover:bg-indigo-600"
-                } mt-2`
+                }`
               }
             >
               Xem đặt lịch
             </NavLink>
+          </nav>
+
+          {/* Nút đăng xuất ở dưới cùng */}
+          <div className="mt-6 flex justify-center">
             <button
               onClick={() => {
                 localStorage.removeItem("customerId");
                 navigate("/");
               }}
-              className="w-full text-left px-4 py-3 mt-2 text-red-600 hover:bg-gray-100 rounded-md font-semibold transition-colors"
+              className="flex items-center gap-2 px-4 py-3 bg-red-500 text-white rounded-full shadow-md hover:bg-red-600 transition-colors font-bold text-2xl"
             >
+              <FiLogOut className="w-6 h-6" />
               Đăng xuất
             </button>
-          </nav>
+          </div>
         </aside>
 
         {/* Right Content Area */}
@@ -264,20 +309,46 @@ const CustomerPage = () => {
           <div className="bg-white rounded-lg shadow p-6">
             {isExactPath ? (
               <div className="space-y-8">
-                {/* Tiêu đề My Profile */}
-                <h2 className="text-xl font-bold text-gray-700 mb-4">
-                  Thông Tin Khách Hàng
-                </h2>
-                {/* Ảnh đại diện */}
-                <div className="flex items-center gap-4">
-                  <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center">
-                    <FiUser className="w-12 h-12 text-gray-400" />
+                {/* Header thông tin khách hàng với avatar ở bên trái và giới tính bên phải */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center">
+                      <FiUserOutline className="w-12 h-12 text-gray-400" />
+                    </div>
+                    <div>
+                      <p className="text-xl font-bold text-gray-800">
+                        {formData.firstName} {formData.lastName}
+                      </p>
+                      <p className="text-base text-gray-500">
+                        Mã KH: {customerId}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-lg font-semibold text-gray-800">
-                      {formData.firstName} {formData.lastName}
-                    </p>
-                    <p className="text-sm text-gray-500">Mã KH: {customerId}</p>
+                  {/* Giới tính: đặt ở bên phải */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg font-semibold text-gray-700">
+                      Giới Tính:
+                    </span>
+                    <button
+                      type="button"
+                      onClick={toggleGender}
+                      className="flex items-center justify-center w-16 h-16 rounded-full transition-colors shadow hover:shadow-lg"
+                      title="Nhấn để đổi giới tính"
+                      style={
+                        formData.gender === "true"
+                          ? { backgroundColor: "#3B82F6" }
+                          : { backgroundColor: "#EC4899" }
+                      }
+                    >
+                      {formData.gender === "true" ? (
+                        <FaMars className="w-8 h-8 text-white" />
+                      ) : (
+                        <FaVenus className="w-8 h-8 text-white" />
+                      )}
+                    </button>
+                    <span className="text-lg font-semibold text-gray-800">
+                      {formData.gender === "true" ? "" : ""}
+                    </span>
                   </div>
                 </div>
 
@@ -286,12 +357,13 @@ const CustomerPage = () => {
                   className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6"
                   onSubmit={handleSubmit}
                 >
+                  {/* Họ */}
                   <div className="space-y-3">
-                    <label className="text-sm font-medium text-gray-600 block">
+                    <label className="text-base font-medium text-gray-600 block">
                       Họ
                     </label>
                     <div className="relative">
-                      <FiUser className="absolute top-3 left-3 text-gray-400" />
+                      <FiUserOutline className="absolute top-3 left-3 text-gray-400" />
                       <input
                         type="text"
                         name="firstName"
@@ -303,12 +375,13 @@ const CustomerPage = () => {
                     </div>
                   </div>
 
+                  {/* Tên */}
                   <div className="space-y-3">
-                    <label className="text-sm font-medium text-gray-600 block">
+                    <label className="text-base font-medium text-gray-600 block">
                       Tên
                     </label>
                     <div className="relative">
-                      <FiUser className="absolute top-3 left-3 text-gray-400" />
+                      <FiUserOutline className="absolute top-3 left-3 text-gray-400" />
                       <input
                         type="text"
                         name="lastName"
@@ -320,38 +393,9 @@ const CustomerPage = () => {
                     </div>
                   </div>
 
+                  {/* Ngày sinh */}
                   <div className="space-y-3">
-                    <label className="text-sm font-medium text-gray-600 block">
-                      Giới tính
-                    </label>
-                    <div className="flex items-center gap-4">
-                      <label className="flex items-center text-gray-600">
-                        <input
-                          type="radio"
-                          name="gender"
-                          value="true"
-                          checked={formData.gender === "true"}
-                          onChange={handleInputChange}
-                          className="mr-2"
-                        />
-                        Nam
-                      </label>
-                      <label className="flex items-center text-gray-600">
-                        <input
-                          type="radio"
-                          name="gender"
-                          value="false"
-                          checked={formData.gender === "false"}
-                          onChange={handleInputChange}
-                          className="mr-2"
-                        />
-                        Nữ
-                      </label>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <label className="text-sm font-medium text-gray-600 block">
+                    <label className="text-base font-medium text-gray-600 block">
                       Ngày sinh
                     </label>
                     <div className="relative">
@@ -366,8 +410,9 @@ const CustomerPage = () => {
                     </div>
                   </div>
 
+                  {/* Email */}
                   <div className="space-y-3">
-                    <label className="text-sm font-medium text-gray-600 block">
+                    <label className="text-base font-medium text-gray-600 block">
                       Email
                     </label>
                     <div className="relative">
@@ -383,8 +428,9 @@ const CustomerPage = () => {
                     </div>
                   </div>
 
+                  {/* Số điện thoại */}
                   <div className="space-y-3">
-                    <label className="text-sm font-medium text-gray-600 block">
+                    <label className="text-base font-medium text-gray-600 block">
                       Số điện thoại
                     </label>
                     <div className="relative">
@@ -400,8 +446,9 @@ const CustomerPage = () => {
                     </div>
                   </div>
 
+                  {/* Địa chỉ */}
                   <div className="space-y-3">
-                    <label className="text-sm font-medium text-gray-600 block">
+                    <label className="text-base font-medium text-gray-600 block">
                       Địa chỉ
                     </label>
                     <div className="relative">
@@ -417,8 +464,9 @@ const CustomerPage = () => {
                     </div>
                   </div>
 
+                  {/* Mật khẩu */}
                   <div className="space-y-3 md:col-span-2">
-                    <label className="text-sm font-medium text-gray-600 block">
+                    <label className="text-base font-medium text-gray-600 block">
                       Mật khẩu mới (để trống nếu không đổi)
                     </label>
                     <div className="relative">
@@ -448,10 +496,16 @@ const CustomerPage = () => {
                     </div>
                   </div>
 
+                  {/* Nút Lưu thay đổi */}
                   <div className="md:col-span-2 flex justify-end mt-4">
                     <button
                       type="submit"
-                      className="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors font-semibold"
+                      disabled={!isChanged}
+                      className={`px-6 py-3 rounded-md transition-colors font-semibold ${
+                        isChanged
+                          ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                          : "bg-gray-400 text-white cursor-not-allowed"
+                      }`}
                     >
                       Lưu thay đổi
                     </button>
