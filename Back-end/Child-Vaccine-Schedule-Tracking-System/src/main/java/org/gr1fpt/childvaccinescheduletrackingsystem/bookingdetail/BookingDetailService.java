@@ -125,6 +125,7 @@ public class BookingDetailService {
         //Đồng thời tạo 1 medicalhistory
         vaccineDetailService.useNearestVaccineDetail(bookingDetail.getVaccine().getVaccineId());
         createMedicalHistory(bookingDetail.getBooking().getBookingId(), bookingDetail.getVaccine().getVaccineId(),bookingDetail);
+        
 
         return bookingDetailRepository.save(bookingDetail);
     }
