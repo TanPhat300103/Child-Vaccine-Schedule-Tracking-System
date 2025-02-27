@@ -31,7 +31,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())  // tắt csrf để đơn giản hóa việc test API
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/customer/create","/vaccine/findid","/vaccine/findbyage","/vaccine/findbycountry","/vaccine/findbyprice","/vaccine/findbyname","/vaccinecombo","/vaccine","/vaccinecombo/findid","/vaccinecombo/findname","/vaccinedetail","/vaccinedetail/findbyvaccine","/combodetail","/combodetail/findid","/combodetail/findcomboid","/combodetail/findvaccineid","/feedback/**")
+                        .requestMatchers("/customer/create","/customer/findid", "/customer/update","/vaccine/findid","/vaccine/findbyage","/vaccine/findbycountry","/vaccine/findbyprice","/vaccine/findbyname","/vaccinecombo","/vaccine","/vaccinecombo/findid","/vaccinecombo/findname","/vaccinedetail","/vaccinedetail/findbyvaccine","/combodetail","/combodetail/findid","/combodetail/findcomboid","/combodetail/findvaccineid","/feedback/**")
                         .permitAll()
                         
 
@@ -39,7 +39,7 @@ public class SecurityConfig {
                         .hasAnyRole("CUSTOMER", "STAFF", "ADMIN")
 
 
-                        .requestMatchers("/staff/create","/vaccine/**","/booking/**","/bookingdetail/**","/child/**","/combodetail/**","/email/**","/marketing/**","/medicalhistory/**","/payment/**","/vaccinecombo/**","/vaccinedetail/**")
+                        .requestMatchers("/staff/create","/vaccine/**","/booking/**","/bookingdetail/**","/child/**","/combodetail/**","/email/**","/marketing/**","/medicalhistory/**","/payment/**","/vaccinecombo/**","/vaccinedetail/**","/customer/**")
                         .hasAnyRole("STAFF", "ADMIN")
 
                         .requestMatchers("/admin/**","/staff/**")

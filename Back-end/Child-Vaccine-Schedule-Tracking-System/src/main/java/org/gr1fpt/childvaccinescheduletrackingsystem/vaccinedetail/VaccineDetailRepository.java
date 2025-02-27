@@ -10,4 +10,5 @@ public interface VaccineDetailRepository extends JpaRepository<VaccineDetail, In
     List<VaccineDetail> findByVaccine_VaccineIdAndQuantityGreaterThanOrderByExpiredDateAsc(String vaccineId, int quantity);
     List<VaccineDetail> findByVaccine_VaccineId(String vaccineId);
 
+
 }
