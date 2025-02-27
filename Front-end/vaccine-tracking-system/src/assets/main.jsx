@@ -44,6 +44,11 @@ import Cart from "../pages/CartPage/Carts.jsx";
 import Error from "../components/common/Error.jsx";
 import SpecificVaccine from "../pages/Vaccination/SpecificVaccine.jsx";
 import SpecificCombo from "../pages/Vaccination/SpecificCombo.jsx";
+import ErrorBoundary from "../components/common/ErrorBoundary.jsx";
+import BookVaccine2 from "../pages/Vaccination/BookVaccine2.jsx";
+import DetailVaccine2 from "../pages/Vaccination/DetailVaccine2.jsx";
+import ReactVaccine2 from "../pages/Vaccination/ReactVaccine2.jsx";
+import Feedback from "../pages/Feedback/Feedback.jsx";
 
 const Main = () => {
   return (
@@ -67,15 +72,19 @@ const Main = () => {
             <Route path="/payment" element={<Payment />} />
             <Route path="/payment-online" element={<PaymentGatewayOnline />} />
             <Route path="/book-vaccine" element={<BookVaccine />} />
+            <Route path="/book-vaccine2" element={<BookVaccine2 />} />
             <Route path="/detail-vaccine" element={<DetailVaccine />} />
+            <Route path="/detail-vaccine2" element={<DetailVaccine2 />} />
             <Route path="/status-vaccine" element={<StatusVaccine />} />
             <Route path="/react-vaccine" element={<ReactVaccine />} />
+            <Route path="/react-vaccine2" element={<ReactVaccine2 />} />
             <Route path="/specific-vaccine" element={<SpecificVaccine />} />
             <Route path="/specific-combo" element={<SpecificCombo />} />
 
             {/* Các route mới từ main */}
             <Route path="/cart" element={<Cart />} />
             <Route path="/error" element={<Error />} />
+            <Route path="/feedback" element={<Feedback />} />
 
             {/* Route /customer */}
             <Route path="/customer" element={<CustomerPage />}>
