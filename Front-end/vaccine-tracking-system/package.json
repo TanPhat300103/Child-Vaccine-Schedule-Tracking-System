@@ -19,6 +19,7 @@
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "firebase": "^11.3.0",
+    "formik": "^2.4.6",
     "framer-motion": "^12.4.3",
     "lodash": "^4.17.21",
     "lucide-react": "^0.475.0",
@@ -33,7 +34,8 @@
     "react-router-dom": "^7.1.5",
     "react-toastify": "^11.0.3",
     "react-window": "^1.8.11",
-    "shadcn-ui": "^0.9.4"
+    "shadcn-ui": "^0.9.4",
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
