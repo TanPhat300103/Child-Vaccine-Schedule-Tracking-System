@@ -12,6 +12,7 @@
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.1.6",
     "@tailwindcss/vite": "^4.0.6",
+    "@tanstack/react-query": "^5.66.9",
     "axios": "^1.7.9",
     "cors": "^2.8.5",
     "date-fns": "^4.1.0",
@@ -27,8 +28,13 @@
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.1.5",
     "react-toastify": "^11.0.3",
+<<<<<<< HEAD
     "shadcn-ui": "^0.9.4",
     "yup": "^1.6.1"
+=======
+    "react-window": "^1.8.11",
+    "shadcn-ui": "^0.9.4"
+>>>>>>> f6c9b197bcd42eab3719c50404c2a079dfc18ecb
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",

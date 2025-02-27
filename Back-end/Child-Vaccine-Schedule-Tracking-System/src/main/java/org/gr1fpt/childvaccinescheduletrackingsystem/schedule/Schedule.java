@@ -70,20 +70,23 @@ public class Schedule {
             if(detail.getVaccineCombo()!=null){
                 vaccineName = detail.getVaccineCombo().getName();
             }
-            if(detail.getScheduledDate().before(Date.valueOf(LocalDate.now())) &&  detail.getStatus()==1){
-                emailService.sendReminderLaterEmail(detail.getBooking().getCustomer().getEmail(),detail.getChild().getLastName()+" "+detail.getChild().getFirstName(),detail.getBooking().getCustomer().getLastName()+" "+detail.getBooking().getCustomer().getFirstName(),vaccineName);
-            }
             List<VaccineDetail> list = vaccineDetailRepo.findByVaccine_VaccineIdAndQuantityGreaterThanOrderByExpiredDateAsc(detail.getVaccine().getVaccineId(),0);
             VaccineDetail vaccineDetail = list.getFirst();
 
             LocalDate scheduledDate = detail.getScheduledDate().toLocalDate();
             LocalDate toleranceDate = scheduledDate.plusDays(vaccineDetail.getTolerance());
 
+            //HỦY LỊCH NẾU VƯỢT QUÁ TOLERANT
             // So sánh nếu hôm nay đã vượt quá hạn chót
             if (LocalDate.now().isAfter(toleranceDate) && detail.getStatus()==1) {
                 detail.setStatus(3);
                 bookingDetailRepo.save(detail);
                 emailService.sendCancelEmail(detail.getBooking().getCustomer().getEmail(),detail.getChild().getLastName()+" "+detail.getChild().getFirstName(),detail.getBooking().getCustomer().getLastName()+" "+detail.getBooking().getCustomer().getFirstName(), detail.getScheduledDate(),vaccineName);
+            }
+
+            //SEND MAIL KHI BỊ TRỄ LỊCH
+            else if(detail.getScheduledDate().before(Date.valueOf(LocalDate.now())) &&  detail.getStatus()==1){
+                emailService.sendReminderLaterEmail(detail.getBooking().getCustomer().getEmail(),detail.getChild().getLastName()+" "+detail.getChild().getFirstName(),detail.getBooking().getCustomer().getLastName()+" "+detail.getBooking().getCustomer().getFirstName(),vaccineName);
             }
         }
     }
