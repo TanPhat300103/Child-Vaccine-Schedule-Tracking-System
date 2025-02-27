@@ -14,26 +14,27 @@
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/react-query": "^5.66.9",
     "axios": "^1.7.9",
-    "chart.js": "^4.4.8",
     "cors": "^2.8.5",
     "date-fns": "^4.1.0",
-    "dayjs": "^1.11.13",
     "firebase": "^11.3.0",
+    "formik": "^2.4.6",
     "framer-motion": "^12.4.3",
     "lodash": "^4.17.21",
     "lucide-react": "^0.475.0",
     "qrcode.react": "^4.2.0",
     "react": "^19.0.0",
-    "react-calendar-timeline": "^0.30.0-beta.3",
-    "react-chartjs-2": "^5.3.0",
     "react-datepicker": "^8.1.0",
     "react-dom": "^19.0.0",
-    "react-icons": "^5.4.0",
-    "react-input-mask": "^2.0.4",
+    "react-icons": "^5.5.0",
     "react-router-dom": "^7.1.5",
     "react-toastify": "^11.0.3",
+<<<<<<< HEAD
+    "shadcn-ui": "^0.9.4",
+    "yup": "^1.6.1"
+=======
     "react-window": "^1.8.11",
     "shadcn-ui": "^0.9.4"
+>>>>>>> f6c9b197bcd42eab3719c50404c2a079dfc18ecb
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",

@@ -1,34 +1,49 @@
-// src/components/ErrorBoundary.js
 import React, { Component } from "react";
 
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, error: null, errorInfo: null };
+    this.state = { hasError: false, errorInfo: null };
   }
 
   static getDerivedStateFromError(error) {
-    // Cập nhật state khi có lỗi
+    // Update state to indicate an error has occurred
     return { hasError: true };
   }
 
   componentDidCatch(error, errorInfo) {
-    // Ghi lại lỗi
-    this.setState({ error, errorInfo });
-    console.log("Lỗi đã xảy ra:", error, errorInfo);
+    // Store error information for logging purposes
+    this.setState({ errorInfo });
+    console.error("Error caught in ErrorBoundary:", error, errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
-      // Hiển thị giao diện lỗi thay thế
       return (
-        <div>
-          <h1>Đã có lỗi xảy ra. Vui lòng thử lại sau!</h1>
+        <div
+          style={{
+            padding: "20px",
+            textAlign: "center",
+            backgroundColor: "#ffdddd",
+            borderRadius: "8px",
+          }}
+        >
+          <h2 style={{ color: "#d9534f", fontWeight: "bold" }}>
+            Something went wrong. Please try again later.
+          </h2>
+          <p>
+            We apologize for the inconvenience. Please refresh the page or
+            contact support.
+          </p>
+          <details style={{ marginTop: "10px" }}>
+            <summary>Click for more details</summary>
+            <pre>{this.state.errorInfo?.componentStack}</pre>
+          </details>
         </div>
       );
     }
 
-    return this.props.children; // Nếu không có lỗi, render component con
+    return this.props.children;
   }
 }
 

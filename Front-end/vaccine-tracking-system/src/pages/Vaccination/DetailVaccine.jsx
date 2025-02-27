@@ -9,25 +9,16 @@ const DetailVaccine = () => {
   const [bookingData, setBookingData] = useState([]);
 
   // Sử dụng bookingId mặc định nếu không có từ state
-  const bookingId = state?.bookingId || "C001-B25"; // Đặt giá trị mặc định ở đây
 
   useEffect(() => {
     const fetchBookingDetails = async () => {
       try {
         const data = await getBookingDetailsByBookID(bookingId);
-        console.log("Dữ liệu trả về từ API:", data);
-        if (data && data.length > 0) {
-          setBookingData(data); // Lưu thông tin booking vào state
-        } else {
-          console.error("Không tìm thấy thông tin booking.");
-          navigate("/error"); // Điều hướng nếu không có thông tin
-        }
+        setBookingData(data);
       } catch (error) {
         console.error("Lỗi khi lấy chi tiết booking:", error);
-        navigate("/error"); // Điều hướng về trang lỗi nếu có lỗi
       }
     };
-
     fetchBookingDetails();
   }, [bookingId, navigate]);
 

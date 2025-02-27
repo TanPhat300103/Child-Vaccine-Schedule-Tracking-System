@@ -53,7 +53,6 @@ const Login = () => {
         );
 
         if (user) {
-          console.log("User data:", user);
           localStorage.setItem("userId", user.customerId);
           console.log(
             "UserId đã được lưu vào localStorage:",
@@ -63,7 +62,6 @@ const Login = () => {
           toast.success("Đăng nhập thành công");
           navigate("/home");
         } else {
-          setErrors({ phoneNumber: "Số điện thoại hoặc Mật khẩu không đúng" });
           toast.error("Số điện thoại hoặc mật khẩu không đúng");
         }
       } catch (error) {

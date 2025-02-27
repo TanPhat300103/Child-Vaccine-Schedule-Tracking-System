@@ -82,17 +82,14 @@ export const getChilds = async () => {
 //Customers
 export const getCustomerId = async (customerId) => {
   try {
-    // Hardcode customerId (thay "C001" bằng giá trị bạn muốn)
-    const hardcodedCustomerId = "C001"; // Hardcode giá trị customerId
     const response = await axios.get(`${API_BASE_URL}/customer/findid`, {
-      params: { id: hardcodedCustomerId }, // Sử dụng customerId hardcoded
+      params: { id: customerId },
     });
-
-    console.log("📡 API Response (getCustomerId):", response.data);
-    return response.data; // Trả về dữ liệu customer
+    console.log("📡 API Response (getCustomer by Id):", response.data);
+    return response.data;
   } catch (error) {
     console.error("Lỗi khi lấy thông tin khách hàng:", error);
-    return null; // Trả về null nếu có lỗi
+    return null;
   }
 };
 
@@ -110,7 +107,8 @@ export const getVaccines = async () => {
 export const getVaccineDetail = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/vaccinedetail`);
-    console.log("API Response (Get Vaccines):", response.data);
+    console.log("day la get vaccinedetail");
+    console.log("API Response (Get VaccineDetails):", response.data);
     return response.data;
   } catch (error) {
     throw new Error("Không thể lấy dữ liệu người dùng");
@@ -125,7 +123,6 @@ export const getVaccinesByAge = async (ageMin, ageMax) => {
         ageMax,
       },
     });
-
     console.log("API Response (Get Vaccines by Age):", response.data);
     return response.data;
   } catch (error) {
@@ -138,6 +135,24 @@ export const getVaccineCombos = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/vaccinecombo`);
     console.log("API Response (Get VaccineCombos):", response.data);
+    return response.data;
+  } catch (error) {
+    throw new Error("Không thể lấy dữ liệu người dùng");
+  }
+};
+
+export const getVaccineDetailByVaccineId = async (vaccineId) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/vaccinedetail/findbyvaccine`,
+      {
+        params: { id: vaccineId },
+      }
+    );
+    console.log(
+      "API Response (Get VaccneDetail by Vaccine Id):",
+      response.data
+    );
     return response.data;
   } catch (error) {
     throw new Error("Không thể lấy dữ liệu người dùng");
@@ -163,7 +178,10 @@ export const getBookingDetailsByBookID = async (bookingId) => {
       }
     );
 
-    console.log("📡 API Response (getCustomerID):", response.data);
+    console.log(
+      "📡 API Response (get Booking Details by BookingId):",
+      response.data
+    );
     return response.data; // Trả về dữ liệu customerID
   } catch (error) {
     console.error(" Lỗi khi lấy customer ID:", error);
@@ -186,31 +204,17 @@ export const getBookingByCustomerId = async (customerId) => {
 };
 
 export const postSchedules = async (formData) => {
-  // 🚀 Log dữ liệu để kiểm tra trước khi gửi
-  console.log(
-    "🚀 Form data being sent to API:",
-    JSON.stringify(formData, null, 2)
-  );
-
   try {
-    // ✅ Gửi đúng format theo yêu cầu của Backend
     const response = await axios.post(
       `${API_BASE_URL}/booking/create`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      }
+      formData
     );
 
-    // ✅ Log phản hồi từ Backend
     console.log("✅ API Response Status:", response.status);
-    console.log("✅ API Response Data:", response.data);
+    console.log("✅ API Response Data: Booking post schedule:", response.data);
 
     // Generalized success check for any 2xx status codes
-    if (response.status >= 200 && response.status < 300) {
+    if (response.status >= 200 && response.status < 250) {
       return { success: true, message: "Đặt lịch thành công" };
     } else {
       return { success: false, message: "Đặt lịch thất bại" };
@@ -224,7 +228,6 @@ export const postSchedules = async (formData) => {
       console.error("❌ Error response data:", error.response.data);
       console.error("❌ Error response headers:", error.response.headers);
 
-      // Ensure that error message is properly handled
       return {
         success: false,
         message:
@@ -240,6 +243,19 @@ export const postSchedules = async (formData) => {
     };
   }
 };
+
+// export const postSchedules = async (formData) => {
+//   const response = await axios.post(`${API_BASE_URL}/booking/create`, formData);
+
+//   console.log("✅ API Response Status:", response.status);
+//   console.log("✅ API Response Data: Booking post schedule:", response.data);
+
+//   if (response.status >= 200 && response.status < 250) {
+//     return { success: true, message: "Đặt lịch thành công" };
+//   } else {
+//     return { success: false, message: "Đặt lịch thất bại" };
+//   }
+// };
 
 export const getMedicalHistory = async () => {
   try {
@@ -449,9 +465,9 @@ export const updateStaff = async (formData) => {
 // Xóa nhân viên (Staff)
 export const deleteStaff = async (staffId) => {
   try {
-    const response = await axios.post(
-      `${API_BASE_URL}/staff/inactive?id=${staffId}`
-    );
+    const response = await axios.delete(`${API_BASE_URL}/staff/delete`, {
+      params: { id: staffId },
+    });
     console.log("API Response Status (deleteStaff):", response.status);
     console.log("API Response Data (deleteStaff):", response.data);
     if (response.status === 200 || response.status === 204) {
@@ -474,10 +490,20 @@ export const deleteStaff = async (staffId) => {
 export const createChild = async (formData) => {
   try {
     console.log("Form data being sent to API (createChild):", formData);
-    const response = await axios.post(`${API_BASE_URL}/child/create`, formData);
+    const response = await axios.post(`${API_BASE_URL}/child/create`, {
+      customer: {
+        customerId: formData.customerId, // Đảm bảo gửi customerId bên trong customer object
+      },
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      dob: new Date(formData.dob).toISOString().split("T")[0],
+      gender: formData.gender,
+      contraindications: formData.contraindications,
+      active: formData.active,
+    });
     console.log("API Response Status:", response.status); // Status code
     console.log("API Response Data:", response); // Dữ liệu trả về
-    if (response.status === 200) {
+    if (response.status === 201) {
       return { success: true, message: "Tạo trẻ em thành công" };
     } else {
       return {
@@ -507,9 +533,9 @@ export const createChild = async (formData) => {
 };
 export const deleteUser = async (id) => {
   try {
-    const response = await axios.post(
-      `${API_BASE_URL}/customer/inactive?id=${id}`
-    );
+    const response = await axios.delete(`${API_BASE_URL}/customer/delete`, {
+      params: { id }, // Truyền tham số id dưới dạng query parameter
+    });
 
     console.log("API Response Status:", response.status);
     console.log("API Response Data:", response.data);
@@ -567,9 +593,9 @@ export const updateChild = async (formData) => {
 // Xóa hồ sơ trẻ em
 export const deleteChild = async (childId) => {
   try {
-    const response = await axios.post(
-      `${API_BASE_URL}/child/inactive?id=${childId}`
-    );
+    const response = await axios.delete(`${API_BASE_URL}/child/delete`, {
+      params: { id: childId },
+    });
     console.log("API Response Status (deleteChild):", response.status);
     console.log("API Response Data (deleteChild):", response.data);
     if (response.status === 200 || response.status === 204) {

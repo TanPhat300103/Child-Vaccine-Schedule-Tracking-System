@@ -9,10 +9,7 @@ export const CartProvider = ({ children }) => {
     setCart((prevCart) => {
       const updatedCart = { ...prevCart };
       if (updatedCart[vaccine.vaccineId]) {
-        // Kiểm tra nếu doseNumber đã đúng thì không tăng thêm nữa
-        if (updatedCart[vaccine.vaccineId].doseNumber !== vaccine.doseNumber) {
-          updatedCart[vaccine.vaccineId].doseNumber += vaccine.doseNumber;
-        }
+        updatedCart[vaccine.vaccineId].doseNumber += vaccine.doseNumber;
       } else {
         updatedCart[vaccine.vaccineId] = { ...vaccine };
       }
