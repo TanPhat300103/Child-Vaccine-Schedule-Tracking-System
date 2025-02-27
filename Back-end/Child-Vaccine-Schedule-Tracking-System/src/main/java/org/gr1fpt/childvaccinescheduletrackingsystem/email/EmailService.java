@@ -112,4 +112,67 @@ public class EmailService {
         sendEmail(to,subject,body);
     }
 
+    public void sendReminderLaterEmail(String to, String child, String customerName, String vaccineName) throws MessagingException{
+        String subject = "Nhắc nhở lịch tiêm chủng đã qua";
+        String body = "<div style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>"
+                + "<div style='max-width: 600px; background: #ffffff; margin: 0 auto; padding: 20px; border-radius: 8px; "
+                + "box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);'>"
+                + "<div style='background: #3498db; color: #ffffff; text-align: center; padding: 15px; font-size: 22px; font-weight: bold; "
+                + "border-top-left-radius: 8px; border-top-right-radius: 8px;'>🏥 Nhắc nhở lịch tiêm chủng của Bé: <span style='text-transform: uppercase;'>" + child + "</span></div>"
+                + "<div style='padding: 20px; color: #333; line-height: 1.6;'>"
+                + "<p>Chào <b>" + customerName + "</b>,</p>"
+                + "<p>Đã qua lịch hẹn tiêm :<span style='color: #e74c3c; font-weight: bold;'></span>, bé <b>" + child + "</b> có lịch tiêm vaccine <b style='color: #3498db;'>" + vaccineName + "</b>.</p>"
+                + "<p>Phụ huynh vui lòng đến địa điểm đã đăng ký để tiêm cho bé tránh quá hạn.</p>"
+                +"<p>Nếu quá hạn nhiều ngày thì sẽ bị hủy lịch hẹn !!!</p>"
+                + "<p>Nếu có bất kỳ thắc mắc nào, vui lòng liên hệ với chúng tôi qua số hotline: <b style='color: #e74c3c;'>" + supportPhone + "</b>.</p>"
+                + "</div>"
+                + "<div style='text-align: center; background: #ecf0f1; padding: 15px; border-radius: 8px;'>"
+                + "<p style='margin: 5px 0;'><b>" + companyName + "</b></p>"
+                + "<p style='margin: 5px 0;'>" + companyAddress + "</p>"
+                + "<p style='margin: 5px 0;'>📧 Email: <a href='mailto:" + companyEmail + "' style='color: #3498db; text-decoration: none;'>" + companyEmail + "</a></p>"
+                + "<p style='margin: 5px 0;'>📞 Điện thoại: <b>" + companyPhone + "</b></p>"
+                + "</div>"
+                + "<div style='text-align: center; font-size: 14px; color: #666; padding-top: 15px;'>"
+                + "</div>"
+                + "</div>"
+                + "</div>";
+
+
+        sendEmail(to,subject,body);
+    }
+
+    public void sendCancelEmail(String to, String child, String customerName, Date date, String vaccineName) throws MessagingException{
+        String subject = "Nhắc nhở lịch tiêm chủng đã qua";
+        String body = "<div style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>"
+                + "<div style='max-width: 600px; background: #ffffff; margin: 0 auto; padding: 20px; border-radius: 8px; "
+                + "box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);'>"
+                + "<div style='background: #e74c3c; color: #ffffff; text-align: center; padding: 15px; font-size: 22px; font-weight: bold; "
+                + "border-top-left-radius: 8px; border-top-right-radius: 8px;'>⚠️ LỊCH TIÊM CHỦNG ĐÃ BỊ HỦY</div>"
+                + "<div style='padding: 20px; color: #333; line-height: 1.6;'>"
+                + "<p>Chào <b>" + customerName + "</b>,</p>"
+                + "<p>Chúng tôi xin thông báo rằng lịch tiêm chủng của bé <b>" + child + "</b> vào ngày "
+                + "<span style='color: #e74c3c; font-weight: bold;'>" + date + "</span> với vaccine "
+                + "<b style='color: #3498db;'>" + vaccineName + "</b> đã bị <b style='color: #e74c3c;'>HỦY</b> do trễ hẹn vượt quá khoảng thời gian cho phép.</p>"
+                + "<p>Để đảm bảo sức khỏe cho bé, quý khách vui lòng liên hệ với chúng tôi để đặt lại lịch tiêm mới trong thời gian sớm nhất.</p>"
+                + "<p>📌 <b>Lưu ý:</b> Việc tiêm chủng đúng hạn rất quan trọng để đảm bảo hiệu quả của vaccine.</p>"
+                + "<p>Nếu có bất kỳ thắc mắc nào, vui lòng liên hệ với chúng tôi qua số hotline: <b style='color: #e74c3c;'>" + supportPhone + "</b>.</p>"
+                + "<p>Xin lỗi vì sự bất tiện này và rất mong nhận được phản hồi sớm từ bạn!</p>"
+                + "</div>"
+                + "<div style='text-align: center; background: #ecf0f1; padding: 15px; border-radius: 8px;'>"
+                + "<p style='margin: 5px 0;'><b>" + companyName + "</b></p>"
+                + "<p style='margin: 5px 0;'>" + companyAddress + "</p>"
+                + "<p style='margin: 5px 0;'>📧 Email: <a href='mailto:" + companyEmail + "' style='color: #3498db; text-decoration: none;'>" + companyEmail + "</a></p>"
+                + "<p style='margin: 5px 0;'>📞 Điện thoại: <b>" + companyPhone + "</b></p>"
+                + "</div>"
+                + "<div style='text-align: center; font-size: 14px; color: #666; padding-top: 15px;'>"
+                + "<p><i>" + signature + "</i></p>"
+                + "</div>"
+                + "</div>"
+                + "</div>";
+
+
+
+        sendEmail(to,subject,body);
+    }
+
 }
