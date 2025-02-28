@@ -1,132 +1,123 @@
-import React, { useState, useEffect } from "react";
-import { useCart } from "../homepage/AddCart"; // Sửa lại đường dẫn import đúng CartContext
-import { getVaccinesByAge } from "../../apis/api";
-import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
+import React, { useEffect, useState } from "react";
+import { FaSyringe, FaRegCalendarCheck, FaInfoCircle } from "react-icons/fa";
+import { MdChildCare, MdClose } from "react-icons/md";
+import { useCart } from "./AddCart";
 import { useNavigate } from "react-router-dom";
+import { getVaccinesByAge } from "../../apis/api";
 
 const AgeVaccine = () => {
+  const [selectedAge, setSelectedAge] = useState("0-2");
+  const [showModal, setShowModal] = useState(false);
   const [agePackages, setAgePackages] = useState({
     "0-2": [],
     "2-9": [],
     "9-18": [],
   });
   const [selectedPackage, setSelectedPackage] = useState([]);
-  const { addToCart } = useCart(); // Sử dụng useCart để lấy addToCart từ CartContext
+  const { addToCart } = useCart();
   const navigate = useNavigate();
+
+  // take api vaccine by age
   useEffect(() => {
     const fetchVaccines = async () => {
       try {
-        const data0to2 = await getVaccinesByAge(0, 2); // API cho nhóm tuổi 0-2
-        const data2to9 = await getVaccinesByAge(2, 9); // API cho nhóm tuổi 2-9
-        const data9to18 = await getVaccinesByAge(9, 18); // API cho nhóm tuổi 9-18
+        const data0to2 = await getVaccinesByAge(0, 2);
+        const data2to9 = await getVaccinesByAge(2, 9);
+        const data9to18 = await getVaccinesByAge(9, 18);
 
         setAgePackages({ "0-2": data0to2, "2-9": data2to9, "9-18": data9to18 });
-        setSelectedPackage(data0to2); // Mặc định chọn nhóm tuổi 0-2
+        setSelectedPackage(data0to2);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu vắc xin:", error.message);
       }
     };
-
     fetchVaccines();
   }, []);
 
+  // Cập nhật gói vắc xin khi thay đổi độ tuổi
+  const vaccinesToDisplay = agePackages[selectedAge] || [];
+
   return (
-    <div className="min-h-screen bg-[#F0F4F8] p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-[#1A365D] text-3xl md:text-4xl font-bold mb-8 text-center">
-          Gói vắc xin theo độ tuổi
-        </h1>
+    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+      <h1 className="text-3xl md:text-4xl font-bold text-blue-900 text-center mb-8">
+        Gói Vắc Xin Theo Độ Tuổi Cho Trẻ
+      </h1>
 
-        <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-1">
-          {Object.keys(agePackages).map((ageRange) => (
-            <div
-              key={ageRange}
-              className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl"
-            >
-              <div
-                onClick={() => setSelectedPackage(agePackages[ageRange])}
-                className="cursor-pointer bg-[#2C5DA3] text-white p-6 flex items-center justify-between"
-              >
-                <div className="flex items-center space-x-4">
-                  <div>
-                    <h2 className="text-xl font-semibold">{ageRange} tuổi</h2>
-                  </div>
-                </div>
-                {selectedPackage === agePackages[ageRange] ? (
-                  <IoMdArrowDropup className="text-2xl" />
-                ) : (
-                  <IoMdArrowDropdown className="text-2xl" />
-                )}
-              </div>
+      <div className="flex flex-wrap justify-center gap-4 mb-8">
+        {Object.keys(agePackages).map((ageRange, index) => (
+          <button
+            key={ageRange}
+            onClick={() => setSelectedAge(ageRange)}
+            className={`flex items-center gap-2 px-6 py-3 rounded-full transition-all ${
+              selectedAge === ageRange
+                ? "bg-blue-500 text-white"
+                : "bg-white text-blue-900 hover:bg-blue-50"
+            } shadow-md`}
+          >
+            {<MdChildCare className="text-2xl" />}
+            {ageRange}
+          </button>
+        ))}
+      </div>
 
-              {selectedPackage === agePackages[ageRange] && (
-                <div className="p-6">
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b border-gray-200">
-                          <th className="text-left py-3 px-4 text-[#1A365D]">
-                            Tên
-                          </th>
-                          <th className="text-left py-3 px-4 text-[#1A365D]">
-                            Số lượng
-                          </th>
-                          <th className="text-left py-3 px-4 text-[#1A365D]">
-                            Mô tả
-                          </th>
-                          <th className="text-left py-3 px-4 text-[#1A365D]">
-                            Quốc gia
-                          </th>
-                          <th className="text-left py-3 px-4 text-[#1A365D]">
-                            Giá
-                          </th>
-                          <th className="text-left py-3 px-4 text-[#1A365D]">
-                            Action
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {agePackages[ageRange].map((vaccine) => (
-                          <tr
-                            key={vaccine.id}
-                            className="border-b border-gray-100 hover:bg-gray-50"
-                          >
-                            <td className="py-4 px-4">{vaccine.name}</td>
-                            <td className="py-4 px-4">{vaccine.doseNumber}</td>
-                            <td className="py-4 px-4">{vaccine.description}</td>
-                            <td className="py-4 px-4">{vaccine.country}</td>
-                            <td className="py-4 px-4">{vaccine.price}</td>
-
-                            <td className="py-4 px-4">
-                              <button
-                                onClick={() => addToCart(vaccine)}
-                                className={`px-4 py-2 rounded-lg transition-colors ${
-                                  selectedPackage.includes(vaccine.id)
-                                    ? "bg-[#5D90D4] text-white"
-                                    : "bg-gray-100 text-[#1A365D] hover:bg-[#2C5DA3] hover:text-white"
-                                }`}
-                              >
-                                {selectedPackage.includes(vaccine.id)
-                                  ? "Selected"
-                                  : "Select"}
-                              </button>
-                              <button
-                                onClick={() => navigate("/specific-vaccine")}
-                                className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-700"
-                              >
-                                View Details
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {vaccinesToDisplay.map((vaccine) => (
+          <div
+            key={vaccine.id}
+            className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+          >
+            <div className="h-48 overflow-hidden">
+              <img
+                src={1}
+                alt={1}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.src =
+                    "https://images.unsplash.com/photo-1584362917165-526a968579e8";
+                }}
+              />
             </div>
-          ))}
-        </div>
+            <div className="p-6">
+              <h3 className="text-xl font-semibold text-blue-900 mb-2">
+                {vaccine.name}
+              </h3>
+              <div className="flex items-center gap-2 text-gray-600 mb-2">
+                <FaSyringe />
+                <span>Số lượng: {vaccine.doseNumber}</span>
+              </div>
+              <p className="text-gray-600 mb-4">
+                Phòng bệnh {vaccine.description}
+              </p>
+              <div className="flex justify-between items-center">
+                <span className="text-green-600 font-semibold">
+                  {vaccine.price} VND
+                </span>
+                <button
+                  onClick={() =>
+                    navigate("/specific-vaccine", {
+                      state: { vaccineId: vaccine.vaccineId },
+                    })
+                  }
+                  className="px-4 py-1 rounded-lg bg-blue-500 text-white hover:bg-blue-700"
+                >
+                  Xem chi tiết
+                </button>
+                <button
+                  onClick={() => {
+                    addToCart(vaccine); // Thêm vắc xin vào giỏ
+                  }}
+                  className={`px-4 py-2 rounded-lg transition-colors ${
+                    selectedPackage.includes(vaccine.id)
+                      ? "bg-[#5D90D4] text-white"
+                      : "bg-gray-100 text-[#1A365D] hover:bg-[#2C5DA3] hover:text-white"
+                  }`}
+                >
+                  {selectedPackage.includes(vaccine.id) ? "Selected" : "Select"}
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -66,10 +66,10 @@ const App = () => {
                 key={item}
                 onClick={() => {
                   if (item === "Gói tiêm") {
-                    scrollVaccinePricing(); // Cuộn đến phần VaccinePricingTable
+                    scrollVaccinePricing();
                   }
                   if (item === "Liên lạc") {
-                    scrollToFooter(); // Cuộn đến Footer
+                    scrollToFooter();
                   }
                   if (item === "Đặt lịch") {
                     navigate("/login");
@@ -103,21 +103,6 @@ const App = () => {
             >
               Đăng ký
             </motion.button>
-            {/* Icon Cart */}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="relative cursor-pointer ml-4"
-              onClick={() => navigate("/cart")} // Di chuyển đến giỏ hàng
-            >
-              <FaShoppingCart
-                size={24}
-                className="text-blue-600 hover:text-blue-700"
-              />
-              {/* Thêm số lượng sản phẩm vào giỏ hàng nếu cần */}
-              <span className="absolute top-0 right-0 text-xs bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center">
-                3 {/* Số sản phẩm trong giỏ */}
-              </span>
-            </motion.div>
           </nav>
         </div>
       </motion.header>

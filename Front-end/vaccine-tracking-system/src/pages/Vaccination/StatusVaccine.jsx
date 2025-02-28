@@ -92,7 +92,7 @@ const StatusVaccine = () => {
 
   // Xem chi tiết lịch tiêm
   const handleViewDetail = (booking) => {
-    navigate("/react-vaccine", { state: booking });
+    navigate("/react-vaccine2", { state: booking });
   };
 
   return (
@@ -141,7 +141,7 @@ const StatusVaccine = () => {
                   ? "Đã tiêm"
                   : tab === "pending"
                   ? "Chờ xác nhận"
-                  : "Sắp tiêm"}
+                  : "Hủy tiêm"}
               </button>
             ))}
           </div>
