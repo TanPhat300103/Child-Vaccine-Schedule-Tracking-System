@@ -20,6 +20,7 @@ import CustomerPage from "../pages/CustomerPage/CustomerPage.jsx";
 import AddChild from "../pages/CustomerPage/AddChild.jsx";
 import Child from "../pages/CustomerPage/Child.jsx";
 import BookingCustomer from "../pages/CustomerPage/BookingCustomer.jsx";
+import PaymentCustomer from "../pages/CustomerPage/PaymentCustomer.jsx";
 import StaffPage from "../pages/StaffPage/StaffPage.jsx";
 
 import Customers from "../pages/Manager/Customers.jsx";
@@ -91,6 +92,7 @@ const Main = () => {
               <Route path="child/:childId" element={<Child />} />
               <Route path="add-child" element={<AddChild />} />
               <Route path="booking" element={<BookingCustomer />} />
+              <Route path="payment" element={<PaymentCustomer />} />
             </Route>
 
             {/* Route /staff: giữ đầy đủ child route theo HEAD */}

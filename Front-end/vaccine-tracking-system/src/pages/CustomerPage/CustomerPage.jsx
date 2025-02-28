@@ -294,6 +294,20 @@ const CustomerPage = () => {
             >
               🗓 Xem đặt lịch
             </NavLink>
+
+            <NavLink
+              to="/customer/payment"
+              state={{ customerId }}
+              className={({ isActive }) =>
+                `flex items-center justify-center px-4 py-3 mt-3 rounded-md font-bold text-xl transition-colors ${
+                  isActive
+                    ? "bg-blue-600 text-white"
+                    : "bg-blue-500 text-white hover:bg-blue-600"
+                }`
+              }
+            >
+              🗓 Lịch Sử Thanh Toán
+            </NavLink>
           </nav>
 
           {/* Nút Đăng xuất */}

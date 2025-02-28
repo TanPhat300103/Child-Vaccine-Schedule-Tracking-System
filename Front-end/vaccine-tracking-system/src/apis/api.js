@@ -589,19 +589,6 @@ export const deleteChild = async (childId) => {
   }
 };
 
-export const getBookingByCustomer = async (customerId) => {
-  try {
-    const response = await axios.get(`${API_BASE_URL}/booking/findbycustomer`, {
-      params: { customerId: customerId },
-    });
-    console.log("API Response (Get Booking By Customer):", response.data);
-    return response.data; // Trả về mảng booking
-  } catch (error) {
-    console.error("Error fetching bookings:", error);
-    throw new Error("Không thể lấy thông tin đặt lịch");
-  }
-};
-
 export const getChild = async (childId) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/child/findid`, {
@@ -612,5 +599,64 @@ export const getChild = async (childId) => {
   } catch (error) {
     console.error("Error fetching child:", error);
     throw new Error("Không thể lấy thông tin trẻ em"); // Đảm bảo trả về thông báo lỗi
+  }
+};
+
+// Lấy danh sách BookingDetail theo bookingId
+export const getBookingDetailByBooking = async (bookingId) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/bookingdetail/findbybooking?id=${bookingId}`
+    );
+    console.log("API Response (Booking Details):", response.data);
+    console.log("Lấy chi tiết booking thành công!");
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy chi tiết booking:", error);
+    throw error;
+  }
+};
+
+// Huỷ đặt lịch
+export const cancelBooking = async (bookingId) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/booking/cancel?bookingId=${bookingId}`
+    );
+    console.log("API Response (cancelBooking):", response.data);
+    console.log("Huỷ booking thành công.");
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi huỷ booking:", error);
+    throw error;
+  }
+};
+
+// Đặt lại đặt lịch (Reschedule - cập nhật trạng thái về 1)
+export const rescheduleBooking = async (bookingId) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/booking/setstatus?bookingId=${bookingId}&status=1`
+    );
+    console.log("API Response (rescheduleBooking):", response.data);
+    console.log("Đặt lại booking thành công.");
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi đặt lại booking:", error);
+    throw error;
+  }
+};
+
+// Lấy thông tin payment theo bookingId
+export const getPaymentByBookingID = async (bookingId) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/payment/findbybooking?bookingId=${bookingId}`
+    );
+    console.log("API Response (Payment):", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching payment by booking ID:", error);
+    throw error;
   }
 };
