@@ -202,7 +202,7 @@ const CustomerPage = () => {
 
       <div className="container mx-auto px-6 py-8 flex flex-col md:flex-row gap-6">
         {/* Sidebar */}
-        <aside className="w-full md:w-1/4 bg-white text-blue-700 border border-blue-300 rounded-lg shadow p-6 flex flex-col justify-between">
+        <aside className="w-full md:w-1/4 bg-white text-blue-700 border border-blue-300 rounded-lg shadow p-6 flex flex-col ">
           <nav className="space-y-3 text-base">
             {/* Mục “Hồ sơ của tôi” với icon nhà */}
             <NavLink
@@ -297,7 +297,7 @@ const CustomerPage = () => {
           </nav>
 
           {/* Nút Đăng xuất */}
-          <div className="mt-6 flex justify-center">
+          <div className="mt-6 flex justify-center ">
             <button
               onClick={() => {
                 localStorage.removeItem("customerId");

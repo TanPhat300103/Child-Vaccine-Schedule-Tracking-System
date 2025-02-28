@@ -1,3 +1,4 @@
+// src/pages/Customer/Child.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation, Outlet } from "react-router-dom";
 import { format } from "date-fns";
@@ -12,6 +13,10 @@ const Child = () => {
   const [child, setChild] = useState(null);
   const [editing, setEditing] = useState(false);
   const [editData, setEditData] = useState({});
+
+  useEffect(() => {
+    console.log("Received customerId in Child:", customerId);
+  }, [customerId]);
 
   const fetchChild = async () => {
     try {
@@ -77,14 +82,13 @@ const Child = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      {/* Tiêu đề */}
       <h2 className="text-2xl font-bold text-center mb-6">
         Hồ Sơ Tiêm Chủng Trẻ Em
       </h2>
 
-      {/* Thông tin trẻ */}
+      {/* Thông tin trẻ được đặt trong khung card */}
       <div className="bg-white rounded-lg shadow p-6 mb-8">
-        <table className="min-w-full">
+        <table className="w-full bg-white border mb-4">
           <tbody className="text-gray-600 text-base font-medium">
             <tr className="border-b border-gray-200 hover:bg-gray-100">
               <td className="py-3 px-6 text-left">Họ và tên</td>
@@ -237,13 +241,13 @@ const Child = () => {
       </div>
 
       {/* Bảng Vaccine Đã Tiêm */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="overflow-x-auto">
         <h3 className="text-xl font-bold text-center mb-4">Vaccine Đã Tiêm</h3>
-        <table className="min-w-full">
+        <table className="w-full bg-white border">
           <thead>
             <tr className="bg-blue-50 text-blue-700 uppercase text-base leading-normal">
               <th className="py-3 px-6 text-left">STT</th>
-              <th className="py-3 px-6 text-left">Vaccine</th>
+              <th className="py-3 px-6 text-left">Vaccine Đã Tiêm</th>
               <th className="py-3 px-6 text-left">Ngày tiêm</th>
             </tr>
           </thead>
