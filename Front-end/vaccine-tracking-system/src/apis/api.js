@@ -592,7 +592,7 @@ export const deleteChild = async (childId) => {
 export const getBookingByCustomer = async (customerId) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/booking/findbycustomer`, {
-      params: { id: customerId },
+      params: { customerId: customerId },
     });
     console.log("API Response (Get Booking By Customer):", response.data);
     return response.data; // Trả về mảng booking
