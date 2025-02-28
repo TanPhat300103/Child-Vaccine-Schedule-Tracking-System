@@ -20,11 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class BookingDetailService {
@@ -125,7 +123,9 @@ public class BookingDetailService {
         //Đồng thời tạo 1 medicalhistory
         vaccineDetailService.useNearestVaccineDetail(bookingDetail.getVaccine().getVaccineId());
         createMedicalHistory(bookingDetail.getBooking().getBookingId(), bookingDetail.getVaccine().getVaccineId(),bookingDetail);
-
+        bookingDetail.setStatus(3);
+        //NẾU VACCINE CÓ NHIỀU DOSE THÌ TỰ ĐỘNG CẬP NHẬT ADMINDATE CỦA DOSE KHÁC
+        eventPublisher.publishEvent(bookingDetail);
         return bookingDetailRepository.save(bookingDetail);
     }
 
