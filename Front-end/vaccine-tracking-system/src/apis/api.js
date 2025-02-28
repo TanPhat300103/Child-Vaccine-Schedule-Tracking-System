@@ -78,21 +78,31 @@ export const getChilds = async () => {
     throw new Error("Không thể lấy dữ liệu người dùng");
   }
 };
+export const getChildByCustomerId = async (customerId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/child/findbycustomer`, {
+      params: { id: customerId },
+    });
 
+    console.log("📡 API Response (get child by CustomerId):", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy thông tin khách hàng:", error);
+    return null;
+  }
+};
 //Customers
 export const getCustomerId = async (customerId) => {
   try {
-    // Hardcode customerId (thay "C001" bằng giá trị bạn muốn)
-    const hardcodedCustomerId = "C001"; // Hardcode giá trị customerId
     const response = await axios.get(`${API_BASE_URL}/customer/findid`, {
-      params: { id: hardcodedCustomerId }, // Sử dụng customerId hardcoded
+      params: { id: customerId },
     });
 
     console.log("📡 API Response (getCustomerId):", response.data);
-    return response.data; // Trả về dữ liệu customer
+    return response.data;
   } catch (error) {
     console.error("Lỗi khi lấy thông tin khách hàng:", error);
-    return null; // Trả về null nếu có lỗi
+    return null;
   }
 };
 
@@ -110,13 +120,28 @@ export const getVaccines = async () => {
 export const getVaccineDetail = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/vaccinedetail`);
-    console.log("API Response (Get Vaccines):", response.data);
+    console.log("API Response (Get Vaccines Detail):", response.data);
     return response.data;
   } catch (error) {
     throw new Error("Không thể lấy dữ liệu người dùng");
   }
 };
-
+export const getVaccineDetailByVaccineId = async (vaccineId) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/vaccinedetail/findbyvaccine`,
+      {
+        params: {
+          id: vaccineId,
+        },
+      }
+    );
+    console.log("API Response (Get Vaccines Detail):", response.data);
+    return response.data;
+  } catch (error) {
+    throw new Error("Không thể lấy dữ liệu người dùng");
+  }
+};
 export const getVaccinesByAge = async (ageMin, ageMax) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/vaccine/findbyage`, {

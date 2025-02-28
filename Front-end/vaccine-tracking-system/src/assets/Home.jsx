@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   FaBell,
   FaShoppingCart,
@@ -13,6 +13,8 @@ import PriceVaccine from "../components/homepage/PriceVaccine.jsx";
 import AgeVaccine from "../components/homepage/AgeVaccine.jsx";
 import Footer from "../components/common/Footer";
 import { useCart } from "../components/homepage/AddCart.jsx"; // Đảm bảo đúng đường dẫn đến CartContext
+import ComboVaccine from "../components/homepage/ComboVaccine.jsx";
+import { getChildByCustomerId, getCustomerId } from "../apis/api.js";
 
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -20,13 +22,39 @@ const Home = () => {
   const vaccinePricingRef = useRef(null);
   const footerRef = useRef(null);
   const navigate = useNavigate();
-  const { cart, addToCart, removeFromCart } = useCart(); // Sử dụng useCart để lấy giá trị từ CartContext
-  const cartItemCount = Object.values(cart).reduce(
-    (total, vaccine) => total + (vaccine.doseNumber || 0), // Đảm bảo sử dụng doseNumber
-    0
-  );
-  console.log(cartItemCount); // Kiểm tra lại số lượng
+  const { cart, addToCart, removeFromCart } = useCart();
+  const cartItemCount = useMemo(() => {
+    return Object.values(cart).reduce((total, vaccine) => total + 1, 0);
+  }, [cart]);
+  console.log(cartItemCount);
+  const [customerData, setCustomerData] = useState(null);
+  const [childData, setChildData] = useState(null);
+  const UserId = localStorage.getItem("userId");
 
+  useEffect(() => {
+    const fetchCustomer = async () => {
+      try {
+        const data = await getCustomerId(UserId);
+        setCustomerData(data);
+        console.log("customer data: ", customerData);
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu vắc xin:", error.message);
+      }
+    };
+    fetchCustomer();
+  }, []);
+  useEffect(() => {
+    const fetchChild = async () => {
+      try {
+        const data = await getChildByCustomerId(UserId);
+        setChildData(data);
+        console.log("child data: ", childData);
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu vắc xin:", error.message);
+      }
+    };
+    fetchChild();
+  }, []);
   //move slides
   useEffect(() => {
     const timer = setInterval(() => {
@@ -106,21 +134,45 @@ const Home = () => {
             <div className="relative">
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors"
+                className="p-3 bg-blue-600 rounded-full hover:bg-blue-700 transition-all duration-200"
               >
-                <FaUser className="text-gray-700" />
+                <FaUser className="text-white" size={20} />
               </button>
               {isOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg">
+                <div className="absolute right-0 mt-2 w-68 bg-white border rounded-lg shadow-xl border-gray-200">
                   <button
-                    onClick={() => navigate("/manage-account")}
-                    className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                    onClick={() => navigate("/customer")}
+                    className="block w-full px-4 py-3 text-gray-700 font-medium text-left rounded-t-lg hover:bg-gray-100 focus:outline-none"
                   >
-                    Quản lý tài khoản
+                    {customerData.firstName} {customerData.lastName}
+                  </button>
+                  <button
+                    onClick={() => navigate("/customer")}
+                    className="block w-full px-4 py-3 text-gray-700 font-medium text-left rounded-t-lg hover:bg-gray-100 focus:outline-none"
+                  >
+                    Hồ sơ của tôi
+                  </button>
+
+                  {/* Loop through children from the API and display their profiles */}
+                  {childData.map((child) => (
+                    <button
+                      key={child.childId}
+                      onClick={() => navigate(`/child/${child.childId}`)}
+                      className="block w-full px-4 py-3 text-gray-700 font-medium text-left rounded-t-lg hover:bg-gray-100 focus:outline-none"
+                    >
+                      Hồ sơ của {child.firstName} {child.lastName}
+                    </button>
+                  ))}
+
+                  <button
+                    onClick={() => navigate("/child")}
+                    className="block w-full px-4 py-3 text-gray-700 font-medium text-left rounded-t-lg hover:bg-gray-100 focus:outline-none"
+                  >
+                    Thêm hồ sơ mới cho con
                   </button>
                   <button
                     onClick={() => navigate("/")}
-                    className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                    className="block w-full px-4 py-3 text-gray-700 font-medium text-left rounded-b-lg hover:bg-gray-100 focus:outline-none"
                   >
                     Đăng xuất
                   </button>
@@ -287,6 +339,9 @@ const Home = () => {
 
       {/* Age Vaccine */}
       <AgeVaccine></AgeVaccine>
+
+      {/* Combo Vaccine */}
+      {/* <ComboVaccine></ComboVaccine> */}
 
       {/* Price Vaccine */}
       <motion.section className="py-20 bg-white" ref={vaccinePricingRef}>

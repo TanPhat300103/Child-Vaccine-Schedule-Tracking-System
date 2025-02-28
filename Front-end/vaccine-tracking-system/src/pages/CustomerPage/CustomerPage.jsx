@@ -31,7 +31,7 @@ const isFormChanged = (formData, originalData) => {
 };
 
 const CustomerPage = () => {
-  const customerId = "C002";
+  const customerId = localStorage.getItem("userId");
   const [customer, setCustomer] = useState(null);
   const [children, setChildren] = useState([]);
   const [showAllChildren, setShowAllChildren] = useState(false);
@@ -47,7 +47,13 @@ const CustomerPage = () => {
   // Lưu dữ liệu gốc để kiểm tra khi thay đổi
   const [originalData, setOriginalData] = useState(null);
   const [isChanged, setIsChanged] = useState(false);
+  const { state } = useLocation();
+  const { vaccineIds, vaccineComboIds, childId, bookingDate } = state || {};
 
+  console.log("Vaccine IDs:", vaccineIds);
+  console.log("Vaccine Combo IDs:", vaccineComboIds);
+  console.log("Child ID:", childId);
+  console.log("Booking Date:", bookingDate);
   // Form data
   const [formData, setFormData] = useState({
     firstName: "",

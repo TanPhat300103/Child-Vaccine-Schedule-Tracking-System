@@ -14,8 +14,6 @@ import Policy from "../pages/Register/Policy.jsx";
 import PaymentGatewayOnline from "../pages/Payment/PaymentOnline.jsx";
 import { ToastContainer } from "react-toastify";
 
-import BookVaccine from "../pages/Vaccination/BookVaccine.jsx";
-
 import CustomerPage from "../pages/CustomerPage/CustomerPage.jsx";
 import AddChild from "../pages/CustomerPage/AddChild.jsx";
 import Child from "../pages/CustomerPage/Child.jsx";
@@ -45,10 +43,14 @@ import Error from "../components/common/Error.jsx";
 import SpecificVaccine from "../pages/Vaccination/SpecificVaccine.jsx";
 import SpecificCombo from "../pages/Vaccination/SpecificCombo.jsx";
 import ErrorBoundary from "../components/common/ErrorBoundary.jsx";
-import BookVaccine2 from "../pages/Vaccination/BookVaccine2.jsx";
+
 import DetailVaccine2 from "../pages/Vaccination/DetailVaccine2.jsx";
 import ReactVaccine2 from "../pages/Vaccination/ReactVaccine2.jsx";
 import Feedback from "../pages/Feedback/Feedback.jsx";
+import PriceVaccine from "../components/homepage/PriceVaccine.jsx";
+import BookVaccine3 from "../pages/Vaccination/BookVaccine3.jsx";
+import Header from "../components/common/Header.jsx";
+import Footer from "../components/common/Footer.jsx";
 
 const Main = () => {
   return (
@@ -71,8 +73,8 @@ const Main = () => {
             <Route path="/privacy-policy" element={<Policy />} />
             <Route path="/payment" element={<Payment />} />
             <Route path="/payment-online" element={<PaymentGatewayOnline />} />
-            <Route path="/book-vaccine" element={<BookVaccine />} />
-            <Route path="/book-vaccine2" element={<BookVaccine2 />} />
+
+            <Route path="/book-vaccine3" element={<BookVaccine3 />} />
             <Route path="/detail-vaccine" element={<DetailVaccine />} />
             <Route path="/detail-vaccine2" element={<DetailVaccine2 />} />
             <Route path="/status-vaccine" element={<StatusVaccine />} />
@@ -85,6 +87,9 @@ const Main = () => {
             <Route path="/cart" element={<Cart />} />
             <Route path="/error" element={<Error />} />
             <Route path="/feedback" element={<Feedback />} />
+            <Route path="/price-vaccine" element={<PriceVaccine />} />
+            <Route path="/header" element={<Header />} />
+            <Route path="/footer" element={<Footer />} />
 
             {/* Route /customer */}
             <Route path="/customer" element={<CustomerPage />}>

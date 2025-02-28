@@ -8,14 +8,15 @@ export const CartProvider = ({ children }) => {
   const addToCart = (vaccine) => {
     setCart((prevCart) => {
       const updatedCart = { ...prevCart };
+
+      // Check if the vaccine already exists in the cart
       if (updatedCart[vaccine.vaccineId]) {
-        // Kiểm tra nếu doseNumber đã đúng thì không tăng thêm nữa
-        if (updatedCart[vaccine.vaccineId].doseNumber !== vaccine.doseNumber) {
-          updatedCart[vaccine.vaccineId].doseNumber += vaccine.doseNumber;
-        }
+        // Add doses only if vaccine is already in the cart
+        updatedCart[vaccine.vaccineId].doseNumber += vaccine.doseNumber;
       } else {
         updatedCart[vaccine.vaccineId] = { ...vaccine };
       }
+
       return updatedCart;
     });
   };
@@ -23,7 +24,7 @@ export const CartProvider = ({ children }) => {
   const removeFromCart = (vaccineId) => {
     setCart((prevCart) => {
       const updatedCart = { ...prevCart };
-      delete updatedCart[vaccineId];
+      delete updatedCart[vaccineId]; // Remove the item from the cart
       return updatedCart;
     });
   };

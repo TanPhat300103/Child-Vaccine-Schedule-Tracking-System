@@ -9,7 +9,7 @@ const DetailVaccine = () => {
   const [bookingData, setBookingData] = useState([]);
 
   // Sử dụng bookingId mặc định nếu không có từ state
-  const bookingId = state?.bookingId || "C001-B25"; // Đặt giá trị mặc định ở đây
+  const bookingId = state?.bookingId || "C001-B1"; // Đặt giá trị mặc định ở đây
 
   useEffect(() => {
     const fetchBookingDetails = async () => {
