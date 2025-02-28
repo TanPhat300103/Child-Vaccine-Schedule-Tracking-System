@@ -1,6 +1,6 @@
 // src/pages/Customer/BookingList.jsx
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, NavLink } from "react-router-dom";
 import {
   getBookingByCustomerId,
   getBookingDetailByBooking,
@@ -132,15 +132,13 @@ const BookingCustomer = () => {
       {/* Nút hành động theo trạng thái */}
       {booking.status === 1 && (
         <div className="flex space-x-2 mt-2">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleCardClick(booking);
-            }}
+          <NavLink
+            to="/payment"
+            state={{ bookingId: booking.bookingId }}
             className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded"
           >
             Thanh Toán
-          </button>
+          </NavLink>
           <button
             onClick={(e) => handleCancelBooking(booking.bookingId, e)}
             className="px-3 py-1 bg-gray-500 hover:bg-gray-600 text-white rounded"
@@ -150,17 +148,19 @@ const BookingCustomer = () => {
         </div>
       )}
       {booking.status === 2 && (
-        <div className="mt-2">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleCardClick(booking);
-            }}
-            className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded"
-          >
-            Feedback
-          </button>
-        </div>
+        <NavLink
+          to="/feedback"
+          state={{ customerId }}
+          className={({ isActive }) =>
+            `flex items-center justify-center px-3 py-2 mt-2 rounded-md font-bold text-1xl transition-colors ${
+              isActive
+                ? "bg-blue-600 text-white"
+                : "bg-blue-500 text-white hover:bg-blue-600"
+            }`
+          }
+        >
+          Feedback
+        </NavLink>
       )}
       {booking.status === 3 && (
         <div className="mt-2">

@@ -18,6 +18,7 @@ import {
   FiLogOut,
 } from "react-icons/fi";
 import { FaMars, FaVenus, FaChild } from "react-icons/fa";
+import { AiOutlineHistory } from "react-icons/ai";
 
 // Hàm so sánh dữ liệu form và dữ liệu gốc
 const isFormChanged = (formData, originalData) => {
@@ -306,7 +307,7 @@ const CustomerPage = () => {
                 }`
               }
             >
-              🗓 Lịch Sử Thanh Toán
+              <AiOutlineHistory className="mr-2 text-2xl" /> Lịch Sử Thanh Toán
             </NavLink>
           </nav>
 
