@@ -28,7 +28,7 @@ import VaccineDetail from "../pages/Manager/VaccineDetail.jsx";
 import MarketingCampains from "../pages/Manager/MarketingCampains.jsx";
 import VaccineCombos from "../pages/Manager/VaccineCombos.jsx";
 import ComboDetail from "../pages/Manager/ComboDetail.jsx";
-import Booking from "../pages/Manager/Booking.jsx";
+import Bookings from "../pages/Manager/Bookings.jsx";
 
 import AdminPage from "../pages/AdminPage/AdminPage.jsx";
 import Staffs from "../pages/AdminPage/Staffs.jsx";
@@ -119,7 +119,7 @@ const Main = () => {
                 path="combo-detail/:vaccineComboId"
                 element={<ComboDetail />}
               />
-              <Route path="booking" element={<Booking />} />
+              <Route path="bookings" element={<Bookings />} />
             </Route>
 
             {/* Route /admin: giữ đầy đủ child route theo HEAD */}
@@ -142,7 +142,7 @@ const Main = () => {
                 element={<ComboDetail />}
               />
               <Route path="dashboard" element={<Dashboard />} />
-              <Route path="booking" element={<Booking />} />
+              <Route path="bookings" element={<Bookings />} />
             </Route>
           </Routes>
         </CartProvider>
