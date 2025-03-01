@@ -57,18 +57,18 @@ const Child = () => {
   };
 
   const handleDelete = async () => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa hồ sơ trẻ này không?")) {
+    if (window.confirm("Bạn có chắc chắn muốn tắt hồ sơ trẻ này không?")) {
       try {
         const response = await deleteChild(child.childId);
         if (response.success) {
-          alert("Xóa thành công!");
+          alert("Tắt thành công!");
           navigate("/customer");
         } else {
           alert(response.message);
         }
       } catch (err) {
-        console.error("Lỗi xóa trẻ:", err);
-        alert("Lỗi xóa trẻ");
+        console.error("Lỗi tắt trẻ:", err);
+        alert("Lỗi tắt trẻ");
       }
     }
   };
@@ -234,7 +234,7 @@ const Child = () => {
               onClick={handleDelete}
               className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded font-bold text-xl transition-colors"
             >
-              Xóa
+              Tắt
             </button>
           </>
         )}
