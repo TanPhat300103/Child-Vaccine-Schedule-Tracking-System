@@ -168,6 +168,19 @@ export const getVaccineCombos = async () => {
     throw new Error("Không thể lấy dữ liệu người dùng");
   }
 };
+
+export const getVaccineCombosByComboId = async (comboId) => {
+  try {
+    const response = await axios.get(
+      `http://localhost:8080/combodetail/findcomboid?id=${comboId}`
+    );
+    return response.data; // Trả về dữ liệu từ API
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return null;
+  }
+};
+
 // Bookings
 export const getBookingDetails = async () => {
   try {
@@ -211,14 +224,12 @@ export const getBookingByCustomerId = async (customerId) => {
 };
 
 export const postSchedules = async (formData) => {
-  // 🚀 Log dữ liệu để kiểm tra trước khi gửi
   console.log(
     "🚀 Form data being sent to API:",
     JSON.stringify(formData, null, 2)
   );
 
   try {
-    // ✅ Gửi đúng format theo yêu cầu của Backend
     const response = await axios.post(
       `${API_BASE_URL}/booking/create`,
       formData,

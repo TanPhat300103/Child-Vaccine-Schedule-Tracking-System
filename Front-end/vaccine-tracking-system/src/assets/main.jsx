@@ -48,7 +48,7 @@ import DetailVaccine2 from "../pages/Vaccination/DetailVaccine2.jsx";
 import ReactVaccine2 from "../pages/Vaccination/ReactVaccine2.jsx";
 import Feedback from "../pages/Feedback/Feedback.jsx";
 import PriceVaccine from "../components/homepage/PriceVaccine.jsx";
-import BookVaccine3 from "../pages/Vaccination/BookVaccine3.jsx";
+import BookVaccine from "../pages/Vaccination/BookVaccine.jsx";
 import Header from "../components/common/Header.jsx";
 import Footer from "../components/common/Footer.jsx";
 
@@ -74,7 +74,7 @@ const Main = () => {
             <Route path="/payment" element={<Payment />} />
             <Route path="/payment-online" element={<PaymentGatewayOnline />} />
 
-            <Route path="/book-vaccine3" element={<BookVaccine3 />} />
+            <Route path="/book-vaccine" element={<BookVaccine />} />
             <Route path="/detail-vaccine" element={<DetailVaccine />} />
             <Route path="/detail-vaccine2" element={<DetailVaccine2 />} />
             <Route path="/status-vaccine" element={<StatusVaccine />} />

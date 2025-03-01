@@ -1,22 +1,14 @@
 import Modal from "react-modal";
 import React, { useState, useEffect } from "react";
-import { useCart } from "../homepage/AddCart"; // Sử dụng useCart để lấy addToCart từ CartContext
-import {
-  getVaccineDetail,
-  getVaccineDetailByVaccineId,
-  getVaccines,
-} from "../../apis/api"; // API lấy thông tin vắc xin
+import { useCart } from "../homepage/AddCart";
+import { getVaccineDetailByVaccineId, getVaccines } from "../../apis/api";
 import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
 import {
   FaSyringe,
-  FaCalendarAlt,
   FaFlask,
   FaGlobe,
   FaUserClock,
   FaDollarSign,
-  FaBoxOpen,
-  FaCalendarTimes,
-  FaChartLine,
 } from "react-icons/fa";
 
 const PriceVaccine = () => {
@@ -45,7 +37,7 @@ const PriceVaccine = () => {
   });
 
   const [selectedPackage, setSelectedPackage] = useState([]);
-  const { addToCart } = useCart(); // Lấy addToCart từ CartContext
+  const { addToCart } = useCart();
   const [searchQuery, setSearchQuery] = useState("");
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(1000000);
@@ -67,7 +59,7 @@ const PriceVaccine = () => {
   );
 
   useEffect(() => {
-    if (!selectedVaccine?.vaccineId) return; // Kiểm tra nếu vaccineId tồn tại
+    if (!selectedVaccine?.vaccineId) return;
 
     const fetchVaccineData = async () => {
       try {
@@ -76,11 +68,10 @@ const PriceVaccine = () => {
           selectedVaccine.vaccineId
         );
         if (data?.length > 0) {
-          setVaccineData(data[0]); // Cập nhật vaccineData khi có dữ liệu
+          setVaccineData(data[0]);
           console.log("data vacccine: ", vaccineData);
         }
       } catch (error) {
-        setError("Error fetching vaccine data");
         console.error("Error fetching vaccine data:", error);
       } finally {
         setLoading(false);
@@ -88,14 +79,14 @@ const PriceVaccine = () => {
     };
 
     fetchVaccineData();
-  }, [selectedVaccine]); // Chỉ gọi API khi selectedVaccine thay đổi
+  }, [selectedVaccine]);
 
   useEffect(() => {
     const fetchPriceData = async () => {
       try {
         const data = await getVaccines();
         setPricePackages(data);
-        setSelectedPackage(data); // Mặc định chọn tất cả các vắc xin
+        setSelectedPackage(data);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu bảng giá vắc xin:", error.message);
       }
@@ -105,64 +96,109 @@ const PriceVaccine = () => {
   }, []);
 
   const openModal = (vaccine) => {
-    setSelectedVaccine(vaccine); // Cập nhật thông tin vắc xin được chọn
-    setModalIsOpen(true); // Mở modal
+    setSelectedVaccine(vaccine);
+    setModalIsOpen(true);
   };
 
   const closeModal = () => {
-    setModalIsOpen(false); // Đóng modal
-    setSelectedVaccine(null); // Xóa thông tin vắc xin trong modal
+    setModalIsOpen(false);
+    setSelectedVaccine(null);
   };
 
   return (
     <div className="min-h-screen bg-[#F0F4F8] p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-4">
+        {/* Phần nhập giá và tìm kiếm */}
+        <div className="relative mb-4">
           <input
             type="text"
-            className="w-full p-3 rounded-lg border border-gray-300"
-            placeholder="Tìm kiếm vắc xin theo tên hoặc mô tả"
+            className="w-full p-4 pl-10 pr-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 shadow-md transition duration-300 ease-in-out"
+            placeholder="🔍 Tìm kiếm vắc xin theo tên hoặc mô tả"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-        </div>
-        <div className="mb-4">
-          <input
-            type="number"
-            className="w-1/2 p-3 rounded-lg border border-gray-300"
-            placeholder="Giá tối thiểu"
-            value={minPrice}
-            onChange={(e) =>
-              setMinPrice(Math.floor(Number(e.target.value) / 100000) * 100000)
-            } // Chỉ làm tròn theo bội số của 100000
-            step="100000" // Điều này sẽ cho phép tăng giảm từng 100000
-          />
-          <input
-            type="number"
-            className="w-1/2 p-3 rounded-lg border border-gray-300 ml-4"
-            placeholder="Giá tối đa"
-            value={maxPrice}
-            onChange={(e) =>
-              setMaxPrice(Math.floor(Number(e.target.value) / 100000) * 100000)
-            } // Chỉ làm tròn theo bội số của 100000
-            step="100000" // Điều này sẽ cho phép tăng giảm từng 100000
-          />
+          <div className="absolute left-3 top-3 text-gray-500">
+            <i className="fas fa-search"></i>
+          </div>
+          <div className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500">
+            <i className="fas fa-microphone"></i>
+          </div>
         </div>
 
-        <div className="mb-4">
-          <select
-            className="w-full p-3 rounded-lg border border-gray-300"
-            value={selectedCountry}
-            onChange={(e) => setSelectedCountry(e.target.value)}
-          >
-            <option value="">Chọn quốc gia</option>
-            <option value="USA">USA</option>
-            <option value="Vietnam">Vietnam</option>
-            <option value="Japan">Japan</option>
-            <option value="Germany">Germany</option>
-            <option value="UK">UK</option>
-            <option value="France">France</option>
-          </select>
+        {/* Phần bảng giá vắc xin */}
+        <div className="bg-white p-6 rounded-lg shadow-xl border border-gray-200 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+            <div className="relative">
+              <input
+                type="number"
+                className="w-full p-4 pl-12 pr-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300"
+                placeholder="Giá tối thiểu"
+                value={minPrice}
+                onChange={(e) =>
+                  setMinPrice(
+                    Math.floor(Number(e.target.value) / 100000) * 100000
+                  )
+                }
+                step="100000"
+              />
+              <div className="absolute left-4 top-4 text-gray-500">
+                <i className="fas fa-dollar-sign"></i>
+              </div>
+            </div>
+
+            <div className="relative">
+              <input
+                type="number"
+                className="w-full p-4 pl-12 pr-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300"
+                placeholder="Giá tối đa"
+                value={maxPrice}
+                onChange={(e) =>
+                  setMaxPrice(
+                    Math.floor(Number(e.target.value) / 100000) * 100000
+                  )
+                }
+                step="100000"
+              />
+              <div className="absolute left-4 top-4 text-gray-500">
+                <i className="fas fa-dollar-sign"></i>
+              </div>
+            </div>
+          </div>
+
+          {/* Phần chọn quốc gia */}
+          <div className="mb-6">
+            <label className="text-gray-700 font-semibold">
+              Chọn quốc gia:
+            </label>
+            <div className="relative">
+              <select
+                className="w-full p-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                value={selectedCountry}
+                onChange={(e) => setSelectedCountry(e.target.value)}
+              >
+                <option value="">Chọn quốc gia</option>
+                <option value="USA">USA</option>
+                <option value="Vietnam">Vietnam</option>
+                <option value="Japan">Japan</option>
+                <option value="Germany">Germany</option>
+                <option value="UK">UK</option>
+                <option value="France">France</option>
+              </select>
+              <div className="absolute right-4 top-4 text-gray-500">
+                <i className="fas fa-globe"></i>
+              </div>
+            </div>
+          </div>
+
+          {/* Phần nút tìm kiếm hoặc áp dụng */}
+          <div className="flex justify-center">
+            <button
+              className="px-6 py-3 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300"
+              onClick={() => console.log("Applied filters")}
+            >
+              Áp dụng bộ lọc
+            </button>
+          </div>
         </div>
 
         <h1 className="text-[#1A365D] text-3xl md:text-4xl font-bold mb-8 text-center">
@@ -275,7 +311,6 @@ const PriceVaccine = () => {
           <div className="bg-white p-6 rounded-lg w-96">
             {selectedVaccine ? (
               <>
-                {/* Header Section */}
                 <div className="flex items-center justify-between mb-8">
                   <h1 className="text-3xl font-bold text-[#333333] flex items-center gap-3">
                     <FaSyringe className="text-[#4A90E2]" />
@@ -288,31 +323,60 @@ const PriceVaccine = () => {
                 </h2>
 
                 <div className="space-y-4">
-                  <DetailRow
-                    icon={<FaSyringe />}
-                    label="Số liều"
-                    value={vaccineData?.vaccine.doseNumber || "n"}
-                  />
-                  <DetailRow
-                    icon={<FaFlask />}
-                    label="Mô tả"
-                    value={vaccineData?.vaccine.description || "n"}
-                  />
-                  <DetailRow
-                    icon={<FaGlobe />}
-                    label="Quốc gia sản xuất"
-                    value={vaccineData?.vaccine.country || "n"}
-                  />
-                  <DetailRow
-                    icon={<FaUserClock />}
-                    label="Độ tuổi khuyến nghị"
-                    value={`${vaccineData?.vaccine.ageMin} - ${vaccineData?.vaccine.ageMax} tuổi`}
-                  />
-                  <DetailRow
-                    icon={<FaDollarSign />}
-                    label="Giá vaccine"
-                    value={vaccineData?.vaccine.price || "n"}
-                  />
+                  <div className="flex items-center gap-4">
+                    <span className="text-[#4A90E2] text-xl">
+                      <FaSyringe />
+                    </span>
+                    <span className="text-[#333333] min-w-[150px]">
+                      Số liều:
+                    </span>
+                    <span className="text-[#333333] font-medium">
+                      {vaccineData?.vaccine.doseNumber || "n"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <span className="text-[#4A90E2] text-xl">
+                      <FaFlask />
+                    </span>
+                    <span className="text-[#333333] min-w-[150px]">Mô tả:</span>
+                    <span className="text-[#333333] font-medium">
+                      {vaccineData?.vaccine.description || "n"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <span className="text-[#4A90E2] text-xl">
+                      <FaGlobe />
+                    </span>
+                    <span className="text-[#333333] min-w-[150px]">
+                      Quốc gia sản xuất:
+                    </span>
+                    <span className="text-[#333333] font-medium">
+                      {vaccineData?.vaccine.country || "n"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <span className="text-[#4A90E2] text-xl">
+                      <FaUserClock />
+                    </span>
+                    <span className="text-[#333333] min-w-[150px]">
+                      Độ tuổi khuyến nghị:
+                    </span>
+                    <span className="text-[#333333] font-medium">
+                      {vaccineData?.vaccine.ageMin} -{" "}
+                      {vaccineData?.vaccine.ageMax} tuổi
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <span className="text-[#4A90E2] text-xl">
+                      <FaDollarSign />
+                    </span>
+                    <span className="text-[#333333] min-w-[150px]">
+                      Giá vaccine:
+                    </span>
+                    <span className="text-[#333333] font-medium">
+                      {vaccineData?.vaccine.price || "n"}
+                    </span>
+                  </div>
                 </div>
               </>
             ) : (
@@ -334,11 +398,4 @@ const PriceVaccine = () => {
   );
 };
 
-const DetailRow = ({ icon, label, value }) => (
-  <div className="flex items-center gap-4">
-    <span className="text-[#4A90E2] text-xl">{icon}</span>
-    <span className="text-[#333333] min-w-[150px]">{label}:</span>
-    <span className="text-[#333333] font-medium">{value}</span>
-  </div>
-);
 export default PriceVaccine;
