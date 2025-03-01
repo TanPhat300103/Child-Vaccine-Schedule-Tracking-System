@@ -14,6 +14,7 @@ import {
   getChildByCustomerId,
   getCustomerId,
   getVaccineCombos,
+  getVaccineCombosByComboId,
   getVaccines,
   postSchedules,
 } from "../../apis/api";
@@ -21,7 +22,7 @@ import { toast } from "react-toastify";
 import Header from "../../components/common/Header";
 import Footer from "../../components/common/Footer";
 
-const BookVaccine3 = () => {
+const BookVaccine = () => {
   const [selectedVaccines, setSelectedVaccines] = useState([]);
   const [selectedCombos, setSelectedCombos] = useState([]);
   const [selectedChild, setSelectedChild] = useState([]);
@@ -30,8 +31,9 @@ const BookVaccine3 = () => {
 
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [vaccineComboId, setVaccineComboId] = useState([]);
+  const [dataComboById, setDataComboById] = useState([]);
 
-  const [customerData, setCustomerData] = useState(null);
   const [vaccineData, setVaccineData] = useState([]);
   const [vaccineCombos, setVaccineCombos] = useState([]);
   const navigate = useNavigate();
@@ -40,6 +42,7 @@ const BookVaccine3 = () => {
     useState(false);
   const userId = localStorage.getItem("userId");
   console.log(localStorage.getItem("userId"));
+
   // form data
   const [formData, setFormData] = useState({
     bookingDate: "",
@@ -57,22 +60,6 @@ const BookVaccine3 = () => {
     }));
     console.log("Selected Child ID:", child.childId); // In ra childId khi chọn
   };
-
-  // take api 1 customerId
-  useEffect(() => {
-    const fetchCustomerId = async () => {
-      try {
-        const customer = await getCustomerId(userId);
-        setCustomerData(customer);
-        console.log("✅ Customer ID lấy được:", customer);
-      } catch (error) {
-        console.error("Lỗi khi lấy thông tin khách hàng:", error);
-        toast.error(`Lỗi khi lấy thông tin khách hàng: ${error.message}`);
-      }
-    };
-
-    fetchCustomerId();
-  }, []);
 
   // take child
   useEffect(() => {
@@ -107,7 +94,7 @@ const BookVaccine3 = () => {
     const fetchVaccineCombos = async () => {
       try {
         const data = await getVaccineCombos();
-        console.log("📡 API Response (Get Vaccine Combos):", data);
+        console.log("📡 API Response (Get Vaccine Combos by api):", data);
         setVaccineCombos(data);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu combo vắc-xin:", error);
@@ -115,6 +102,19 @@ const BookVaccine3 = () => {
     };
     fetchVaccineCombos();
   }, []);
+
+  // useEffect(() => {
+  //   const fetchVaccineComboId = async () => {
+  //     try {
+  //       const data = await getVaccineCombosByComboId(comboId);
+  //       console.log("📡 API Response (Get Vaccine Combos by api):", data);
+  //       setVaccineComboId(data);
+  //     } catch (error) {
+  //       console.error("Lỗi khi lấy dữ liệu combo vắc-xin:", error);
+  //     }
+  //   };
+  //   fetchVaccineComboId();
+  // }, []);
 
   //handle form field
   const handleChange = (e) => {
@@ -198,8 +198,8 @@ const BookVaccine3 = () => {
           // Chuyển vaccineComboId và childId qua trang tiếp theo
           navigate("/customer", {
             state: {
-              vaccineIds: selectedVaccines.map((v) => v.vaccineComboId),
-              vaccineComboIds: selectedCombos.map((c) => c.vaccineComboId),
+              vaccineId: selectedVaccines.map((v) => v.vaccineComboId),
+              vaccineComboId: selectedCombos.map((c) => c.vaccineComboId),
               childId: selectedChild.childId, // Truyền childId đã chọn
               bookingDate: formData.bookingDate,
             },
@@ -227,42 +227,114 @@ const BookVaccine3 = () => {
   };
 
   const handleVaccineSelect = (vaccine) => {
+    console.log("Selected Vaccine ID:", vaccine.vaccineId); // In vaccineId ra console
+
+    // Kiểm tra vaccine đã có trong mảng selectedVaccines chưa
+    const isVaccineSelected = selectedVaccines.some(
+      (v) => v.vaccineId === vaccine.vaccineId
+    );
+
+    // Kiểm tra nếu vaccine đã có trong combo (isVaccineInCombo)
+    const isVaccineInCombo = dataComboById.includes(vaccine.vaccineId);
+
+    if (isVaccineInCombo) {
+      // Nếu vaccine có trong combo, không cho phép chọn vaccine và hiển thị thông báo lỗi
+      toast.error("Vaccine này đã có trong combo. Không thể chọn lại.");
+      return; // Không cho phép chọn vaccine đã có trong combo
+    }
+
     setSelectedVaccines((prev) => {
-      // Nếu vaccine chưa có trong mảng, thêm vào mảng
-      if (!prev.some((v) => v.vaccineId === vaccine.vaccineId)) {
-        return [...prev, vaccine]; // Thêm vaccine vào mảng
+      if (isVaccineSelected) {
+        // Nếu vaccine đã có trong mảng, bỏ vaccine khỏi selectedVaccines
+        setFormData((prevData) => ({
+          ...prevData,
+          vaccineId: prevData.vaccineId.filter(
+            (id) => id !== vaccine.vaccineId // Loại bỏ vaccineId khỏi mảng
+          ),
+        }));
+        return prev.filter((v) => v.vaccineId !== vaccine.vaccineId); // Loại bỏ vaccine khỏi selectedVaccines
       } else {
-        // Nếu vaccine đã có trong mảng, bỏ vaccine khỏi mảng
-        return prev.filter((v) => v.vaccineId !== vaccine.vaccineId); // Loại bỏ vaccine khỏi mảng
+        // Nếu vaccine chưa có trong mảng, thêm vào selectedVaccines
+        setFormData((prevData) => ({
+          ...prevData,
+          vaccineId: [...prevData.vaccineId, vaccine.vaccineId], // Thêm vaccineId vào mảng vaccineId
+        }));
+        return [...prev, vaccine]; // Thêm vaccine vào selectedVaccines
       }
     });
-
-    // In vaccine ID ra console khi chọn
-    console.log(
-      "Selected Vaccine IDs:",
-      selectedVaccines.map((v) => v.vaccineId)
-    );
   };
 
-  const handleComboSelect = (combo) => {
-    setSelectedCombos((prev) => {
-      const isSelected = prev.some(
-        (c) => c.vaccineComboId === combo.vaccineComboId
-      );
-      if (isSelected) {
-        // Nếu đã chọn thì bỏ combo khỏi mảng
-        return prev.filter((c) => c.vaccineComboId !== combo.vaccineComboId);
-      } else {
-        // Nếu chưa chọn thì thêm combo vào mảng
-        return [...prev, combo];
-      }
-    });
+  const handleComboSelect = async (combo) => {
+    console.log("Selected Comboid:", combo.vaccineComboId);
 
-    // In vaccineComboId ra console khi chọn
-    console.log(
-      "Selected Combo IDs:",
-      selectedCombos.map((c) => c.vaccineComboId)
+    // Kiểm tra nếu vaccineComboId có hợp lệ không trước khi gọi API
+    if (!combo.vaccineComboId) {
+      console.error("VaccineComboId is invalid");
+      return;
+    }
+
+    // Kiểm tra nếu combo đã có trong selectedCombos
+    const existingCombo = selectedCombos.find(
+      (c) => c.vaccineComboId === combo.vaccineComboId
     );
+    const dataComboId = await getVaccineCombosByComboId(combo.vaccineComboId);
+    console.log("API response vaccineiddata:", dataComboId);
+
+    // Truy xuất vaccineId từ từng phần tử trong mảng API response
+    const vaccineIdsInCombo = dataComboId.map((item) => item.vaccine.vaccineId);
+    console.log("Vaccine IDs in selected combo:", vaccineIdsInCombo);
+    setDataComboById(vaccineIdsInCombo);
+    console.log("datacombobyid: ", dataComboById);
+    if (existingCombo) {
+      // Nếu combo đã được chọn, bỏ chọn combo
+      setFormData((prevData) => ({
+        ...prevData,
+        vaccineComboId: prevData.vaccineComboId.filter(
+          (id) => id !== combo.vaccineComboId
+        ),
+        vaccineId: prevData.vaccineId.filter(
+          (id) => id !== existingCombo.vaccineId // Loại bỏ vaccineId duy nhất khi bỏ chọn combo
+        ),
+      }));
+
+      setSelectedCombos(
+        (prev) => prev.filter((c) => c.vaccineComboId !== combo.vaccineComboId) // Loại bỏ combo khỏi selectedCombos
+      );
+
+      console.log(`Combo ${combo.vaccineComboId} removed from selection.`);
+    } else {
+      // Nếu combo chưa được chọn, gọi API để lấy dữ liệu
+      try {
+        const dataComboId = await getVaccineCombosByComboId(
+          combo.vaccineComboId
+        );
+        console.log("API response vaccineiddata:", dataComboId.vaccineId);
+        console.log("API response vaccineiddata:", dataComboId);
+
+        if (dataComboId) {
+          // Kiểm tra vaccineId trong combo (vì vaccineId là chuỗi, không phải mảng)
+          const vaccineIdsInCombo = dataComboId.vaccineId
+            ? [dataComboId.vaccineId]
+            : [];
+          console.log("Vaccine ID in selected combo:", vaccineIdsInCombo);
+
+          // Cập nhật lại selectedCombos và formData khi chọn combo
+          setSelectedCombos((prev) => [...prev, combo]);
+
+          setFormData((prevData) => ({
+            ...prevData,
+            vaccineComboId: [...prevData.vaccineComboId, combo.vaccineComboId],
+            vaccineId: [...prevData.vaccineId, ...vaccineIdsInCombo],
+          }));
+
+          console.log(`Combo ${combo.vaccineComboId} added to selection.`);
+        } else {
+          console.error("Data for this vaccine combo is not found.");
+        }
+      } catch (error) {
+        console.error("Error fetching vaccine combo data:", error);
+      }
+    }
   };
 
   const addChild = () => {
@@ -543,4 +615,4 @@ const BookVaccine3 = () => {
   );
 };
 
-export default BookVaccine3;
+export default BookVaccine;
