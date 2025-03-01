@@ -51,7 +51,7 @@ const StaffPage = () => {
             {/* Lịch Đăng Ký Tiêm */}
             <li>
               <Link
-                to="/staff/schedule"
+                to="/staff/bookings"
                 className="flex items-center p-3 text-lg font-medium rounded hover:bg-gray-700 transition-colors"
               >
                 <FiCalendar className="w-6 h-6" />
