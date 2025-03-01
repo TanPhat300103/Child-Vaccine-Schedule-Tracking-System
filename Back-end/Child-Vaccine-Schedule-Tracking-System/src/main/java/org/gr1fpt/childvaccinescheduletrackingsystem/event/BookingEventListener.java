@@ -12,6 +12,8 @@ import org.gr1fpt.childvaccinescheduletrackingsystem.child.ChildRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.customer.Customer;
 import org.gr1fpt.childvaccinescheduletrackingsystem.customer.CustomerRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.email.EmailService;
+import org.gr1fpt.childvaccinescheduletrackingsystem.vaccinedetail.VaccineDetail;
+import org.gr1fpt.childvaccinescheduletrackingsystem.vaccinedetail.VaccineDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -34,6 +36,8 @@ public class BookingEventListener {
     BookingDetailService bookingDetailService;
     @Autowired
     BookingDetailRepository bookingDetailRepository;
+    @Autowired
+    private VaccineDetailRepository vaccineDetailRepository;
 
     @EventListener
     public void handleBookingCreated(BookingDTO bookingDTO) throws MessagingException {
@@ -60,8 +64,8 @@ public class BookingEventListener {
         Date date_temp = bookingDetail.getAdministeredDate();;
         for(BookingDetail bd : list){
             if(bd.getVaccine().getVaccineId().equals(vaccine) && !bd.getBookingDetailId().equals(bookingDetail.getBookingDetailId()) && bd.getStatus()==1){
-
-                int day = bd.getBooking().getBookingDate().getDay();
+                List<VaccineDetail> vaccineDetail = vaccineDetailRepository.findByVaccine_VaccineId(bd.getVaccine().getVaccineId());
+                int day = vaccineDetail.get(0).getDay();
                 LocalDate newScheduleDate = date_temp.toLocalDate().plusDays(day);
                 bd.setScheduledDate(Date.valueOf(newScheduleDate));
                 date_temp = bd.getScheduledDate();

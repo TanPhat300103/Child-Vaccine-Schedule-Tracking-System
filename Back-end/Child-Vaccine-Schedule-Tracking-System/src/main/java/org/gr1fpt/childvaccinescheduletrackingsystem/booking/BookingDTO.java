@@ -16,6 +16,4 @@ public class BookingDTO {
     private List<String> vaccineId;
     private Child child;
     private List<String> vaccineComboId;
-
-
 }
