@@ -696,3 +696,29 @@ export const getPaymentByBookingID = async (bookingId) => {
     throw error;
   }
 };
+
+// Xác nhận booking: Sử dụng endpoint confirmdate của BookingDetailController
+export const confirmBooking = async (bookingId) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/bookingdetail/confirmdate?id=${bookingId}`
+    );
+    console.log("API Response (confirmBooking):", response.data);
+    console.log("Xác nhận booking thành công.");
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi xác nhận booking:", error);
+    throw error;
+  }
+};
+
+export const getAllBookings = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/booking`);
+    console.log("API Response (getAllBookings):", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách booking:", error);
+    throw error;
+  }
+};
