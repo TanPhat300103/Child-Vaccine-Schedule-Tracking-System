@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FaShoppingCart, FaSyringe, FaUserMd } from "react-icons/fa";
+import { FaSyringe, FaUserMd } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { slides, benefits, process } from "../stores/homedata.jsx";

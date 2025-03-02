@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { FaSyringe, FaRegCalendarCheck, FaInfoCircle } from "react-icons/fa";
-import { MdChildCare, MdClose } from "react-icons/md";
+import { FaSyringe } from "react-icons/fa";
+import { MdChildCare } from "react-icons/md";
 import { useCart } from "./AddCart";
 import { useNavigate } from "react-router-dom";
 import { getVaccinesByAge } from "../../apis/api";
 
 const AgeVaccine = () => {
   const [selectedAge, setSelectedAge] = useState("0-2");
-  const [showModal, setShowModal] = useState(false);
   const [agePackages, setAgePackages] = useState({
     "0-2": [],
     "2-9": [],
