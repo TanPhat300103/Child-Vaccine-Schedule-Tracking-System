@@ -41,7 +41,7 @@ import ReactVaccine from "../pages/Vaccination/ReactVaccine.jsx";
 import Payment from "../pages/Payment/Payment.jsx";
 import { CartProvider } from "../components/homepage/AddCart";
 import Cart from "../pages/CartPage/Carts.jsx";
-import Error from "../components/common/Error.jsx";
+
 import SpecificVaccine from "../pages/Vaccination/SpecificVaccine.jsx";
 import SpecificCombo from "../pages/Vaccination/SpecificCombo.jsx";
 import ErrorBoundary from "../components/common/ErrorBoundary.jsx";
@@ -87,7 +87,7 @@ const Main = () => {
 
             {/* Các route mới từ main */}
             <Route path="/cart" element={<Cart />} />
-            <Route path="/error" element={<Error />} />
+
             <Route path="/feedback" element={<Feedback />} />
             <Route path="/price-vaccine" element={<PriceVaccine />} />
             <Route path="/header" element={<Header />} />
