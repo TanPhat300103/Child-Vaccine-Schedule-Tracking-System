@@ -1,8 +1,13 @@
 // src/pages/Customer/Child.jsx
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, useLocation, Outlet } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { format } from "date-fns";
-import { getChild, updateChild, deleteChild } from "../../apis/api";
+import {
+  getChild,
+  updateChild,
+  deleteChild,
+  getMedicalHistoryByChildId,
+} from "../../apis/api";
 
 const Child = () => {
   const { childId } = useParams();
@@ -13,6 +18,7 @@ const Child = () => {
   const [child, setChild] = useState(null);
   const [editing, setEditing] = useState(false);
   const [editData, setEditData] = useState({});
+  const [medicalHistories, setMedicalHistories] = useState([]);
 
   useEffect(() => {
     console.log("Received customerId in Child:", customerId);
@@ -27,8 +33,19 @@ const Child = () => {
     }
   };
 
+  // Hàm lấy lịch sử tiêm chủng của trẻ
+  const fetchMedicalHistory = async () => {
+    try {
+      const historyData = await getMedicalHistoryByChildId(childId);
+      setMedicalHistories(historyData);
+    } catch (err) {
+      console.error("Lỗi khi lấy lịch sử tiêm chủng:", err);
+    }
+  };
+
   useEffect(() => {
     fetchChild();
+    fetchMedicalHistory();
   }, [childId]);
 
   const handleEditChange = (e) => {
@@ -86,7 +103,7 @@ const Child = () => {
         Hồ Sơ Tiêm Chủng Trẻ Em
       </h2>
 
-      {/* Thông tin trẻ được đặt trong khung card */}
+      {/* Thông tin trẻ */}
       <div className="bg-white rounded-lg shadow p-6 mb-8">
         <table className="w-full bg-white border mb-4">
           <tbody className="text-gray-600 text-base font-medium">
@@ -240,20 +257,20 @@ const Child = () => {
         )}
       </div>
 
-      {/* Bảng Vaccine Đã Tiêm */}
+      {/* Bảng Vaccine Đã Tiêm (nếu có) */}
       <div className="overflow-x-auto">
         <h3 className="text-xl font-bold text-center mb-4">Vaccine Đã Tiêm</h3>
-        <table className="w-full bg-white border">
-          <thead>
-            <tr className="bg-blue-50 text-blue-700 uppercase text-base leading-normal">
-              <th className="py-3 px-6 text-left">STT</th>
-              <th className="py-3 px-6 text-left">Vaccine Đã Tiêm</th>
-              <th className="py-3 px-6 text-left">Ngày tiêm</th>
-            </tr>
-          </thead>
-          <tbody className="text-blue-700 text-base font-medium">
-            {child.vaccinations &&
-              child.vaccinations.map((vac, index) => (
+        {child.vaccinations && child.vaccinations.length > 0 ? (
+          <table className="w-full bg-white border mb-8">
+            <thead>
+              <tr className="bg-blue-50 text-blue-700 uppercase text-base leading-normal">
+                <th className="py-3 px-6 text-left">STT</th>
+                <th className="py-3 px-6 text-left">Vaccine Đã Tiêm</th>
+                <th className="py-3 px-6 text-left">Ngày tiêm</th>
+              </tr>
+            </thead>
+            <tbody className="text-blue-700 text-base font-medium">
+              {child.vaccinations.map((vac, index) => (
                 <tr
                   key={vac.id}
                   className="border-b border-gray-200 hover:bg-blue-50 transition-colors"
@@ -265,6 +282,53 @@ const Child = () => {
                   </td>
                 </tr>
               ))}
+            </tbody>
+          </table>
+        ) : (
+          <p className="text-center">Không có vaccine nào đã tiêm.</p>
+        )}
+      </div>
+
+      {/* Bảng Lịch Sử Tiêm Chủng (Medical History) */}
+      <div className="overflow-x-auto mt-8">
+        <h3 className="text-xl font-bold text-center mb-4">
+          Lịch Sử Tiêm Chủng
+        </h3>
+        <table className="w-full bg-white border">
+          <thead>
+            <tr className="bg-blue-50 text-blue-700 uppercase text-base leading-normal">
+              <th className="py-3 px-6 text-left">STT</th>
+              <th className="py-3 px-6 text-left">Vaccine</th>
+              <th className="py-3 px-6 text-left">Ngày tiêm</th>
+              <th className="py-3 px-6 text-left">Dose</th>
+              <th className="py-3 px-6 text-left">Phản ứng</th>
+            </tr>
+          </thead>
+          <tbody className="text-blue-700 text-base font-medium">
+            {medicalHistories && medicalHistories.length > 0 ? (
+              medicalHistories.map((history, index) => (
+                <tr
+                  key={history.medicalHistoryId}
+                  className="border-b border-gray-200 hover:bg-blue-50 transition-colors"
+                >
+                  <td className="py-3 px-6 text-center">{index + 1}</td>
+                  <td className="py-3 px-6">{history.vaccine.name}</td>
+                  <td className="py-3 px-6">
+                    {format(new Date(history.date), "dd/MM/yyyy")}
+                  </td>
+                  <td className="py-3 px-6">{history.dose}</td>
+                  <td className="py-3 px-6">
+                    {history.reaction ? history.reaction : "Không có"}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5" className="py-3 px-6 text-center">
+                  Không có lịch sử tiêm chủng nào.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
