@@ -32,7 +32,8 @@ const isFormChanged = (formData, originalData) => {
 };
 
 const CustomerPage = () => {
-  const customerId = localStorage.getItem("userId");
+  // const customerId = localStorage.getItem("userId");
+  const customerId = "C002";
   const [customer, setCustomer] = useState(null);
   const [children, setChildren] = useState([]);
   const [showAllChildren, setShowAllChildren] = useState(false);
