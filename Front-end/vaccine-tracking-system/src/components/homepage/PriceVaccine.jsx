@@ -45,12 +45,14 @@ const PriceVaccine = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedVaccine, setSelectedVaccine] = useState(null);
 
+  // filter vaccine name
   const filteredVaccines = pricePackages.filter(
     (vaccine) =>
       vaccine.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       vaccine.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // filter vaccine price and country
   const filteredVaccinesByPriceAndCountry = filteredVaccines.filter(
     (vaccine) =>
       vaccine.price >= minPrice &&
@@ -58,6 +60,7 @@ const PriceVaccine = () => {
       (selectedCountry ? vaccine.country === selectedCountry : true)
   );
 
+  // take api vaccineDetail
   useEffect(() => {
     if (!selectedVaccine?.vaccineId) return;
 
@@ -81,6 +84,7 @@ const PriceVaccine = () => {
     fetchVaccineData();
   }, [selectedVaccine]);
 
+  // take api vaccines
   useEffect(() => {
     const fetchPriceData = async () => {
       try {
@@ -95,6 +99,7 @@ const PriceVaccine = () => {
     fetchPriceData();
   }, []);
 
+  // modal
   const openModal = (vaccine) => {
     setSelectedVaccine(vaccine);
     setModalIsOpen(true);

@@ -13,7 +13,6 @@ import PriceVaccine from "../components/homepage/PriceVaccine.jsx";
 import AgeVaccine from "../components/homepage/AgeVaccine.jsx";
 import Footer from "../components/common/Footer";
 import { useCart } from "../components/homepage/AddCart.jsx"; // Đảm bảo đúng đường dẫn đến CartContext
-import ComboVaccine from "../components/homepage/ComboVaccine.jsx";
 import { getChildByCustomerId, getCustomerId } from "../apis/api.js";
 
 const Home = () => {
@@ -23,14 +22,17 @@ const Home = () => {
   const footerRef = useRef(null);
   const navigate = useNavigate();
   const { cart, addToCart, removeFromCart } = useCart();
+  const [customerData, setCustomerData] = useState(null);
+  const [childData, setChildData] = useState(null);
+
+  // take data
+  const UserId = localStorage.getItem("userId");
   const cartItemCount = useMemo(() => {
     return Object.values(cart).reduce((total, vaccine) => total + 1, 0);
   }, [cart]);
   console.log(cartItemCount);
-  const [customerData, setCustomerData] = useState(null);
-  const [childData, setChildData] = useState(null);
-  const UserId = localStorage.getItem("userId");
 
+  // take api customerByid
   useEffect(() => {
     const fetchCustomer = async () => {
       try {
@@ -43,6 +45,8 @@ const Home = () => {
     };
     fetchCustomer();
   }, []);
+
+  // take api childByCustomerId
   useEffect(() => {
     const fetchChild = async () => {
       try {
@@ -55,6 +59,7 @@ const Home = () => {
     };
     fetchChild();
   }, []);
+
   //move slides
   useEffect(() => {
     const timer = setInterval(() => {
