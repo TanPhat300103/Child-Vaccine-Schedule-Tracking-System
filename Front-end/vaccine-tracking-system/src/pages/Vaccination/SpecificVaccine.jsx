@@ -7,23 +7,24 @@ import {
   FaUserClock,
   FaDollarSign,
   FaBoxOpen,
-  FaCalendarTimes,
   FaChartLine,
 } from "react-icons/fa";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { getVaccineDetailByVaccineId } from "../../apis/api";
 
 const VaccineDetailPage = () => {
   const [showZoom, setShowZoom] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [vaccineData, setVaccineData] = useState([]);
-  const { state } = useLocation();
 
+  // take data
+  const { state } = useLocation();
   const vaccineId = state?.vaccineId;
   console.log("vaccine Id : ", vaccineId);
 
+  // tolerance
   const ToleranceIndicator = ({ value }) => (
     <div className="w-full bg-gray-200 rounded-full h-4">
       <div
@@ -33,11 +34,13 @@ const VaccineDetailPage = () => {
     </div>
   );
 
+  // take api vaccineDetailByVaccineId
   useEffect(() => {
     const fetchVaccines = async () => {
       try {
         const data = await getVaccineDetailByVaccineId(vaccineId);
         setVaccineData(data[0]);
+        console.log("vaccine data: ", vaccineData);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu vắc-xin:", error);
       } finally {

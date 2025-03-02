@@ -9,7 +9,11 @@ const Header = () => {
   const navigate = useNavigate();
   const [customerData, setCustomerData] = useState(null);
   const [childData, setChildData] = useState(null);
+
+  // take data
   const UserId = localStorage.getItem("userId");
+
+  // take api customerByid
   useEffect(() => {
     const fetchCustomer = async () => {
       try {
@@ -22,6 +26,8 @@ const Header = () => {
     };
     fetchCustomer();
   }, []);
+
+  // take api childByCustomerId
   useEffect(() => {
     const fetchChild = async () => {
       try {
@@ -54,6 +60,7 @@ const Header = () => {
       });
     }
   };
+
   return (
     <motion.header
       initial={{ opacity: 0 }}

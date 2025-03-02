@@ -1,8 +1,6 @@
 import React, { useRef } from "react";
 import { motion } from "framer-motion";
-import { FaCcVisa, FaCcMastercard } from "react-icons/fa";
-import { FaFacebook, FaInstagram, FaPhone } from "react-icons/fa"; // Facebook, Instagram
-import { SiZalo } from "react-icons/si"; // Zalo
+import { FaCcVisa } from "react-icons/fa";
 
 const Footer = React.forwardRef((props, ref) => {
   return (
