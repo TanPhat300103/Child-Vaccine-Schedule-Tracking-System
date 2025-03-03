@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, NavLink, useLocation, Outlet } from "react-router-dom";
-import axios from "axios";
-import AddChild from "./AddChild";
 import Footer from "../../components/common/Footer";
 import { toast } from "react-toastify";
 import { updateUser, fetchChildren, fetchCustomer } from "../../apis/api";
+import { format } from "date-fns";
+import Header from "../../components/common/Header";
 
 import {
   FiCalendar,
@@ -202,12 +202,8 @@ const CustomerPage = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Top Bar */}
-      <div className="bg-white shadow-sm py-3 px-6 flex items-center justify-between">
-        <div className="text-xl font-bold">CRM</div>
-        <div className="text-sm text-gray-500">Xin chào, Customer!</div>
-      </div>
-
-      <div className="container mx-auto px-6 py-8 flex flex-col md:flex-row gap-6">
+      <Header />
+      <div className="container mx-auto px-1 py-30 flex flex-col md:flex-row gap-6">
         {/* Sidebar */}
         <aside className="w-full md:w-1/4 bg-white text-blue-700 border border-blue-300 rounded-lg shadow p-6 flex flex-col ">
           <nav className="space-y-3 text-base">
