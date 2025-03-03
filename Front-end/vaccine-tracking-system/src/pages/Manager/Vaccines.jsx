@@ -186,9 +186,17 @@ const Vaccines = () => {
                 : "bg-green-500 hover:bg-green-600"
             }`}
           >
-            <FaPowerOff className="mr-1" />
+            <FaPowerOff className="" />
             {vaccine.active ? "Ngưng" : "Kích hoạt"}
           </button>
+          <div className="absolute right-4 top-4">
+            <NavLink
+              to={`../vaccine-detail/${vaccine.vaccineId}`}
+              className="w-full block text-center bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition-all text-sm"
+            >
+              Chi tiết
+            </NavLink>
+          </div>
         </div>
 
         {/* Modal chỉnh sửa Vaccine */}

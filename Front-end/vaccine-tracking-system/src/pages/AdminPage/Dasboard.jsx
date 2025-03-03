@@ -1,5 +1,5 @@
 // src/pages/Dashboard.jsx
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import axios from "axios";
 import { Line, Bar } from "react-chartjs-2";
 import {
@@ -7,13 +7,13 @@ import {
   parseISO,
   addDays,
   differenceInCalendarDays,
-  startOfMonth,
-  endOfMonth,
-  startOfYear,
-  endOfYear,
+  subDays,
+  subWeeks,
+  subMonths,
+  subYears,
 } from "date-fns";
 
-// Import và đăng ký các thành phần cần thiết của Chart.js
+// Import và đăng ký các thành phần của Chart.js
 import {
   Chart,
   CategoryScale,
@@ -40,44 +40,22 @@ const formatPrice = (price) =>
   price?.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) ||
   "0 VND";
 
-// Hàm aggregatePayments: nhóm dữ liệu payments theo ngày (hoặc theo tháng nếu cần)
-const aggregatePayments = (payments, fromDate, toDate, groupBy = "day") => {
-  let labels = [];
-  if (groupBy === "day") {
-    const totalDays = differenceInCalendarDays(toDate, fromDate) + 1;
-    for (let i = 0; i < totalDays; i++) {
-      labels.push(format(addDays(fromDate, i), "dd-MM"));
-    }
-  } else if (groupBy === "month") {
-    labels = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
+// Hàm aggregatePayments: nhóm payment theo ngày và chỉ lấy payment có status = true
+const aggregatePayments = (payments, fromDate, toDate) => {
+  const totalDays = differenceInCalendarDays(toDate, fromDate) + 1;
+  const labels = [];
+  for (let i = 0; i < totalDays; i++) {
+    labels.push(format(addDays(fromDate, i), "dd-MM"));
   }
   const incomeMap = {};
   labels.forEach((label) => {
     incomeMap[label] = 0;
   });
   payments.forEach((payment) => {
-    const pDate = parseISO(payment.date);
-    if (pDate >= fromDate && pDate <= toDate) {
-      if (groupBy === "day") {
+    if (payment.status === true) {
+      const pDate = parseISO(payment.date);
+      if (pDate >= fromDate && pDate <= toDate) {
         const label = format(pDate, "dd-MM");
-        if (incomeMap[label] !== undefined) {
-          incomeMap[label] += payment.total;
-        }
-      } else if (groupBy === "month") {
-        const label = format(pDate, "MMM");
         if (incomeMap[label] !== undefined) {
           incomeMap[label] += payment.total;
         }
@@ -89,38 +67,49 @@ const aggregatePayments = (payments, fromDate, toDate, groupBy = "day") => {
 };
 
 const Dashboard = () => {
-  // Stats
+  // Stats hiện tại
   const [incomeToday, setIncomeToday] = useState(0);
   const [incomeWeek, setIncomeWeek] = useState(0);
   const [incomeMonth, setIncomeMonth] = useState(0);
   const [incomeYear, setIncomeYear] = useState(0);
 
-  // Payment data (danh sách payment)
+  // Stats kỳ trước để so sánh
+  const [incomeYesterday, setIncomeYesterday] = useState(0);
+  const [incomeLastWeek, setIncomeLastWeek] = useState(0);
+  const [incomeLastMonth, setIncomeLastMonth] = useState(0);
+  const [incomeLastYear, setIncomeLastYear] = useState(0);
+
+  // Payment data
   const [payments, setPayments] = useState([]);
 
-  // Aggregated data cho biểu đồ
+  // Aggregated data cho Line Chart
   const [aggregatedData, setAggregatedData] = useState(null);
   const [loadingLineChart, setLoadingLineChart] = useState(false);
 
-  // Thời gian cho biểu đồ: mặc định là 30 ngày trước đến hôm nay
+  // Custom date range (mặc định: 30 ngày trước đến hôm nay)
   const [customRange, setCustomRange] = useState({
     from: format(addDays(new Date(), -29), "yyyy-MM-dd"),
     to: format(new Date(), "yyyy-MM-dd"),
   });
 
-  // Dữ liệu khác
+  // State tạm thời cho input
+  const [tempRange, setTempRange] = useState({
+    from: format(addDays(new Date(), -29), "yyyy-MM-dd"),
+    to: format(new Date(), "yyyy-MM-dd"),
+  });
+
+  // Theo dõi giá trị customRange trước đó bằng useRef
+  const prevCustomRange = useRef(customRange);
+
+  // Các dữ liệu khác
   const [bookingsToday, setBookingsToday] = useState([]);
   const [bestsellerVaccines, setBestsellerVaccines] = useState({});
   const [outOfStockVaccines, setOutOfStockVaccines] = useState([]);
   const [expiredVaccines, setExpiredVaccines] = useState([]);
 
-  // Modal dùng chung
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState("");
-
-  // Modal cho biểu đồ phóng to & custom range
-  const [isChartModalOpen, setIsChartModalOpen] = useState(false);
-  const [customRangeTemp, setCustomRangeTemp] = useState({ from: "", to: "" });
+  // States cho modal
+  const [bookingsModalOpen, setBookingsModalOpen] = useState(false);
+  const [topVaccineModalOpen, setTopVaccineModalOpen] = useState(false);
 
   // Fetch dữ liệu khi component mount
   useEffect(() => {
@@ -129,7 +118,20 @@ const Dashboard = () => {
     fetchBookingsToday();
     fetchOutOfStockAndExpired();
     fetchBestsellerVaccines();
+    fetchComparisonStats();
   }, []);
+
+  // Aggregate payments khi customRange hoặc payments thay đổi
+  useEffect(() => {
+    if (payments.length > 0) {
+      setLoadingLineChart(true);
+      const fromDate = new Date(customRange.from);
+      const toDate = new Date(customRange.to);
+      const agg = aggregatePayments(payments, fromDate, toDate);
+      setAggregatedData(agg);
+      setLoadingLineChart(false);
+    }
+  }, [payments, customRange]);
 
   const fetchAllPayments = async () => {
     try {
@@ -171,6 +173,39 @@ const Dashboard = () => {
     }
   };
 
+  const fetchComparisonStats = async () => {
+    try {
+      const yesterdayStr = format(subDays(new Date(), 1), "yyyy-MM-dd");
+      const lastWeekStr = format(subWeeks(new Date(), 1), "yyyy-MM-dd");
+      const lastMonth = subMonths(new Date(), 1);
+      const lastYear = subYears(new Date(), 1);
+
+      const resYesterday = await axios.get(
+        `http://localhost:8080/admin/incomebydate?date=${yesterdayStr}`
+      );
+      setIncomeYesterday(resYesterday.data);
+
+      const resLastWeek = await axios.get(
+        `http://localhost:8080/admin/incomebyweek?date=${lastWeekStr}`
+      );
+      setIncomeLastWeek(resLastWeek.data);
+
+      const resLastMonth = await axios.get(
+        `http://localhost:8080/admin/incomebymonth?month=${
+          lastMonth.getMonth() + 1
+        }&year=${lastMonth.getFullYear()}`
+      );
+      setIncomeLastMonth(resLastMonth.data);
+
+      const resLastYear = await axios.get(
+        `http://localhost:8080/admin/incomebyyear?year=${lastYear.getFullYear()}`
+      );
+      setIncomeLastYear(resLastYear.data);
+    } catch (err) {
+      console.error("Error fetching comparison stats:", err);
+    }
+  };
+
   const fetchBookingsToday = async () => {
     try {
       const res = await axios.get("http://localhost:8080/admin/bookingtoday");
@@ -204,17 +239,11 @@ const Dashboard = () => {
     }
   };
 
-  // Aggregate payments dựa theo customRange (mặc định là 30 ngày trước đến hôm nay)
-  useEffect(() => {
-    if (payments.length === 0) return;
-    setLoadingLineChart(true);
-    const fromDate = new Date(customRange.from);
-    const toDate = new Date(customRange.to);
-    // Với custom range, nhóm theo ngày
-    const agg = aggregatePayments(payments, fromDate, toDate, "day");
-    setAggregatedData(agg);
-    setLoadingLineChart(false);
-  }, [customRange, payments]);
+  // Hàm tính phần trăm thay đổi
+  const calculatePercentageChange = (current, previous) => {
+    if (previous === 0) return current > 0 ? 100 : 0;
+    return ((current - previous) / previous) * 100;
+  };
 
   const lineChartData = useMemo(() => {
     if (!aggregatedData) return null;
@@ -241,41 +270,31 @@ const Dashboard = () => {
     },
   };
 
-  // Best Seller Vaccine: Top 3 (sắp xếp theo số lượt giảm dần)
-  const bestSellerList = useMemo(() => {
+  // Xử lý Best Seller Vaccine
+  const sortedVaccineEntries = useMemo(() => {
     const entries = Object.entries(bestsellerVaccines);
-    if (!entries.length) return [];
     entries.sort((a, b) => b[1] - a[1]);
-    return entries.slice(0, 3);
+    return entries;
   }, [bestsellerVaccines]);
+  const top3Vaccine = sortedVaccineEntries.slice(0, 3);
+  const top10Vaccine = sortedVaccineEntries.slice(0, 10);
 
-  // Modal dùng chung
-  const openModal = (content) => {
-    setModalContent(content);
-    setIsModalOpen(true);
-  };
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setModalContent("");
-  };
+  const generateBarChartData = (dataArray) => ({
+    labels: dataArray.map(([name]) => name),
+    datasets: [
+      {
+        label: "Số lượt",
+        data: dataArray.map(([, count]) => count),
+        backgroundColor: "rgba(54, 162, 235, 0.6)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        borderWidth: 1,
+      },
+    ],
+  });
 
-  // Modal cho biểu đồ phóng to & custom range
-  const openChartModal = () => {
-    setCustomRangeTemp({ from: "", to: "" });
-    setIsChartModalOpen(true);
-  };
-  const closeChartModal = () => {
-    setIsChartModalOpen(false);
-  };
-  const applyCustomRange = () => {
-    if (customRangeTemp.from && customRangeTemp.to) {
-      setCustomRange(customRangeTemp);
-      setIsChartModalOpen(false);
-      // Hiển thị thông tin khoảng thời gian đã chọn trong modal (nếu cần)
-      openModal(
-        `Biểu đồ được cập nhật từ ngày ${customRangeTemp.from} đến ${customRangeTemp.to}`
-      );
-    }
+  // Hàm xử lý khi nhấn nút "Áp dụng"
+  const handleApply = () => {
+    setCustomRange({ ...tempRange });
   };
 
   return (
@@ -287,54 +306,108 @@ const Dashboard = () => {
           <p className="mt-2">Chào mừng bạn trở lại!</p>
         </div>
 
-        {/* Stats Cards */}
+        {/* Stats Cards với mũi tên và phần trăm thay đổi */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           {[
-            { label: "Hôm nay", value: incomeToday },
-            { label: "Tuần này", value: incomeWeek },
-            { label: "Tháng này", value: incomeMonth },
-            { label: "Năm nay", value: incomeYear },
-          ].map((item, idx) => (
-            <div
-              key={idx}
-              className="bg-white rounded-lg shadow p-4 flex flex-col hover:shadow-xl hover:scale-105 transition-transform duration-300"
-            >
-              <h4 className="text-gray-500 font-semibold">{item.label}</h4>
-              <span className="text-2xl font-bold text-gray-700 mt-2">
-                {formatPrice(item.value)}
-              </span>
-            </div>
-          ))}
+            { label: "Hôm nay", value: incomeToday, prev: incomeYesterday },
+            { label: "Tuần này", value: incomeWeek, prev: incomeLastWeek },
+            { label: "Tháng này", value: incomeMonth, prev: incomeLastMonth },
+            { label: "Năm nay", value: incomeYear, prev: incomeLastYear },
+          ].map((item, idx) => {
+            const percentageChange = calculatePercentageChange(
+              item.value,
+              item.prev
+            );
+            const isIncrease = percentageChange >= 0;
+            return (
+              <div
+                key={idx}
+                className="bg-white rounded-lg shadow p-4 flex flex-col hover:shadow-xl hover:scale-105 transition-transform duration-300"
+              >
+                <h4 className="text-gray-500 font-semibold">{item.label}</h4>
+                <span className="text-2xl font-bold text-gray-700 mt-2">
+                  {formatPrice(item.value)}
+                </span>
+                <div className="flex items-center mt-2">
+                  {isIncrease ? (
+                    <span className="text-green-500">▲</span>
+                  ) : (
+                    <span className="text-red-500">▼</span>
+                  )}
+                  <span
+                    className={`ml-1 ${
+                      isIncrease ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
+                    {Math.abs(percentageChange).toFixed(2)}%
+                  </span>
+                </div>
+              </div>
+            );
+          })}
         </div>
 
-        {/* Main Content: Grid 4 cột */}
+        {/* Main Content: Line Chart (3/4) và Right Column (1/4) */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-          {/* Left Column (3/4 width): Line Chart 30 ngày */}
-          <div
-            className="md:col-span-3 bg-white rounded-xl shadow p-4 hover:shadow-xl hover:scale-105 transition-transform duration-300 cursor-pointer"
-            onClick={openChartModal}
-          >
+          {/* Line Chart với custom range inputs */}
+          <div className="md:col-span-3 bg-white rounded-xl shadow p-4">
+            <div className="flex flex-col md:flex-row items-center gap-4 mb-4">
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700">
+                  Từ ngày
+                </label>
+                <input
+                  type="date"
+                  value={tempRange.from}
+                  onChange={(e) =>
+                    setTempRange((prev) => ({ ...prev, from: e.target.value }))
+                  }
+                  className="border rounded w-full p-2"
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700">
+                  Đến ngày
+                </label>
+                <input
+                  type="date"
+                  value={tempRange.to}
+                  onChange={(e) =>
+                    setTempRange((prev) => ({ ...prev, to: e.target.value }))
+                  }
+                  className="border rounded w-full p-2"
+                />
+              </div>
+              <button
+                onClick={handleApply}
+                className="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600"
+              >
+                Áp dụng
+              </button>
+            </div>
             <h3 className="text-lg font-semibold text-blue-700 mb-4">
-              Thu nhập 30 ngày
+              Thu nhập từ {customRange.from} đến {customRange.to}
             </h3>
             {loadingLineChart && <p>Đang tải dữ liệu biểu đồ...</p>}
-            {!loadingLineChart && lineChartData ? (
+            {!loadingLineChart && aggregatedData ? (
               <Line data={lineChartData} options={lineChartOptions} redraw />
             ) : (
-              <p className="text-gray-500">Chưa có dữ liệu</p>
+              !loadingLineChart && <p>Chưa có dữ liệu để hiển thị</p>
             )}
           </div>
 
-          {/* Right Column (1/4 width): Bookings Today & Top Vaccine Bán Chạy */}
+          {/* Right Column: Đặt Lịch Hôm Nay & Top Vaccine */}
           <div className="md:col-span-1 space-y-6">
-            {/* Bookings Today */}
-            <div className="bg-white rounded-xl shadow p-4 hover:shadow-xl hover:scale-105 transition-transform duration-300">
+            <div
+              onClick={() => setBookingsModalOpen(true)}
+              className="bg-white rounded-xl shadow p-4 hover:shadow-xl hover:scale-105 transition-transform duration-300 cursor-pointer"
+            >
               <h3 className="text-lg font-semibold text-blue-700 mb-4">
                 Đặt Lịch Hôm Nay
               </h3>
               {bookingsToday.length > 0 ? (
                 <ul className="space-y-2 text-sm">
-                  {bookingsToday.map((b) => (
+                  {bookingsToday.slice(0, 5).map((b) => (
                     <li key={b.bookingId} className="flex justify-between">
                       <span>
                         {b.bookingId} - {b.customer?.firstName}{" "}
@@ -352,34 +425,18 @@ const Dashboard = () => {
                 </p>
               )}
             </div>
-
-            {/* Top Vaccine Bán Chạy */}
-            <div className="bg-white rounded-xl shadow p-4 hover:shadow-xl hover:scale-105 transition-transform duration-300">
+            <div
+              onClick={() => setTopVaccineModalOpen(true)}
+              className="bg-white rounded-xl shadow p-4 hover:shadow-xl hover:scale-105 transition-transform duration-300 cursor-pointer"
+            >
               <h3 className="text-lg font-semibold text-blue-700 mb-4">
                 Top Vaccine Bán Chạy
               </h3>
-              {bestSellerList.length > 0 ? (
+              {top3Vaccine && top3Vaccine.length > 0 ? (
                 <ul className="space-y-2 text-sm">
-                  {bestSellerList.map(([name, count], idx) => (
-                    <li
-                      key={idx}
-                      className="p-2 bg-blue-50 rounded cursor-pointer hover:bg-blue-100"
-                      onClick={() =>
-                        openModal(
-                          "Danh sách top 10 Vaccine bán chạy:\n" +
-                            Object.entries(bestsellerVaccines)
-                              .sort((a, b) => b[1] - a[1])
-                              .slice(0, 10)
-                              .map(
-                                ([vName, vCount], index) =>
-                                  `${index + 1}. ${vName} - ${vCount}`
-                              )
-                              .join("\n")
-                        )
-                      }
-                    >
-                      <span className="font-bold">{name}</span> -{" "}
-                      <span>{count} lượt</span>
+                  {top3Vaccine.map(([name, count], idx) => (
+                    <li key={idx} className="p-2 bg-blue-50 rounded">
+                      <span className="font-bold">{name}</span> - {count} lượt
                     </li>
                   ))}
                 </ul>
@@ -399,14 +456,9 @@ const Dashboard = () => {
             <p className="text-gray-600 mb-2">
               Số lượng: {outOfStockVaccines.length}
             </p>
-            <button
-              onClick={() =>
-                openModal(outOfStockVaccines.map((v) => v.name).join(", "))
-              }
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-all"
-            >
-              Xem chi tiết
-            </button>
+            <p className="text-gray-700 text-sm">
+              {outOfStockVaccines.map((v) => v.name).join(", ")}
+            </p>
           </div>
           <div className="bg-white rounded-xl shadow p-4 hover:shadow-xl hover:scale-105 transition-transform duration-300">
             <h3 className="text-lg font-semibold text-blue-700 mb-4">
@@ -415,91 +467,80 @@ const Dashboard = () => {
             <p className="text-gray-600 mb-2">
               Số lượng: {expiredVaccines.length}
             </p>
-            <button
-              onClick={() =>
-                openModal(expiredVaccines.map((v) => v.name).join(", "))
-              }
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-all"
-            >
-              Xem chi tiết
-            </button>
+            <p className="text-gray-700 text-sm">
+              {expiredVaccines.map((v) => v.name).join(", ")}
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Modal cho biểu đồ phóng to & custom range */}
-      {isChartModalOpen && (
+      {/* Modal cho Bookings Today */}
+      {bookingsModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-md z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl w-11/12 max-w-2xl relative">
+          <div className="bg-white p-6 rounded-lg shadow-xl w-11/12 max-w-md relative">
             <button
-              onClick={() => setIsChartModalOpen(false)}
+              onClick={() => setBookingsModalOpen(false)}
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl"
             >
-              &times;
+              ×
             </button>
-            <h2 className="text-2xl font-bold mb-4 text-center">
-              Phóng to biểu đồ
+            <h2 className="text-xl font-semibold mb-4 text-center">
+              Đặt Lịch Hôm Nay
             </h2>
-            <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Từ ngày</label>
-              <input
-                type="date"
-                value={customRangeTemp.from}
-                onChange={(e) =>
-                  setCustomRangeTemp((prev) => ({
-                    ...prev,
-                    from: e.target.value,
-                  }))
-                }
-                className="border rounded w-full p-2"
-              />
+            <pre className="text-gray-700 whitespace-pre-line">
+              {bookingsToday
+                .map(
+                  (b) =>
+                    `${b.bookingId} - ${b.customer?.firstName} ${
+                      b.customer?.lastName
+                    } (${b.status === 1 ? "Đang Xử Lý" : "Đã Thanh Toán"})`
+                )
+                .join("\n")}
+            </pre>
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={() => setBookingsModalOpen(false)}
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all"
+              >
+                Đóng
+              </button>
             </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Đến ngày</label>
-              <input
-                type="date"
-                value={customRangeTemp.to}
-                onChange={(e) =>
-                  setCustomRangeTemp((prev) => ({
-                    ...prev,
-                    to: e.target.value,
-                  }))
-                }
-                className="border rounded w-full p-2"
-              />
-            </div>
-            <button
-              onClick={applyCustomRange}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-all"
-            >
-              Áp dụng
-            </button>
-            {lineChartData && (
-              <div className="mt-6">
-                <Line data={lineChartData} options={lineChartOptions} redraw />
-              </div>
-            )}
           </div>
         </div>
       )}
 
-      {/* Modal dùng chung */}
-      {isModalOpen && (
+      {/* Modal cho Top Vaccine */}
+      {topVaccineModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-md z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl w-11/12 max-w-md relative">
+          <div className="bg-white p-6 rounded-lg shadow-xl w-11/12 max-w-2xl relative">
             <button
-              onClick={closeModal}
+              onClick={() => setTopVaccineModalOpen(false)}
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl"
             >
-              &times;
+              ×
             </button>
-            <h2 className="text-xl font-semibold mb-4 text-center">Chi tiết</h2>
-            <pre className="text-gray-700 whitespace-pre-line">
-              {modalContent}
-            </pre>
+            <h2 className="text-2xl font-bold mb-4 text-center">
+              Top 10 Vaccine Bán Chạy
+            </h2>
+            {top10Vaccine && top10Vaccine.length > 0 ? (
+              <Bar
+                data={generateBarChartData(top10Vaccine)}
+                options={{
+                  indexAxis: "y",
+                  responsive: true,
+                  scales: {
+                    x: { grid: { display: false } },
+                    y: { grid: { display: false } },
+                  },
+                }}
+                redraw
+              />
+            ) : (
+              <p className="text-gray-500">Chưa có dữ liệu</p>
+            )}
             <div className="flex justify-end mt-4">
               <button
-                onClick={closeModal}
+                onClick={() => setTopVaccineModalOpen(false)}
                 className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all"
               >
                 Đóng

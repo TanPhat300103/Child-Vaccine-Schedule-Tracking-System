@@ -6,11 +6,13 @@ import {
   cancelBooking,
   confirmBooking,
   getBookingDetailByBooking,
+  getPaymentByBookingID, // API mới để lấy payment dựa trên bookingId
 } from "../../apis/api";
 
 const Bookings = () => {
   const [bookings, setBookings] = useState([]);
   const [filteredBookings, setFilteredBookings] = useState([]);
+  const [payments, setPayments] = useState({}); // Lưu thông tin payment theo bookingId
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -21,7 +23,8 @@ const Bookings = () => {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
 
-  // Chỉ 2 trạng thái: "daHoanThanh" (booking.status === 2) và "daHuy" (booking.status === 3)
+  // Các trạng thái: "daHoanThanh" (status === 1), "daHuy" (status === 2),
+  // và "thanhToanTaiQuan" (status === 0 và payment.method === 0)
   const [selectedStatus, setSelectedStatus] = useState("daHoanThanh");
 
   // Modal để hiển thị chi tiết booking
@@ -29,12 +32,30 @@ const Bookings = () => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [bookingDetails, setBookingDetails] = useState([]);
 
-  // Lấy danh sách booking từ backend
+  // Lấy danh sách booking và payment từ backend
   const fetchBookings = async () => {
     try {
+      console.log("Gọi API getAllBookings...");
       const data = await getAllBookings();
+      console.log("API getAllBookings trả về:", data);
       setBookings(data);
       setFilteredBookings(data);
+
+      // Lấy thông tin payment cho từng booking bằng bookingId
+      const paymentPromises = data.map((booking) => {
+        console.log(
+          `Gọi API getPaymentByBookingID cho bookingId: ${booking.bookingId}`
+        );
+        return getPaymentByBookingID(booking.bookingId);
+      });
+      console.log("Danh sách promise của payment:", paymentPromises);
+      const paymentResults = await Promise.all(paymentPromises);
+      console.log("API getPaymentByBookingID trả về:", paymentResults);
+      const paymentsMap = {};
+      data.forEach((booking, idx) => {
+        paymentsMap[booking.bookingId] = paymentResults[idx];
+      });
+      setPayments(paymentsMap);
     } catch (err) {
       console.error("Error fetching bookings:", err);
       setError("Không thể lấy thông tin đặt lịch");
@@ -47,7 +68,7 @@ const Bookings = () => {
     fetchBookings();
   }, []);
 
-  // Áp dụng bộ lọc tìm kiếm và trạng thái
+  // Áp dụng bộ lọc tìm kiếm và trạng thái (thêm payments vào dependency)
   useEffect(() => {
     let filtered = bookings;
     // Lọc theo mã đặt lịch
@@ -72,18 +93,27 @@ const Bookings = () => {
     if (maxPrice) {
       filtered = filtered.filter((b) => b.totalAmount <= Number(maxPrice));
     }
-    // Lọc theo trạng thái đã chọn: "daHoanThanh" => status === 2, "daHuy" => status === 3
+    // Lọc theo trạng thái đã chọn:
     filtered = filtered.filter((b) => {
       if (selectedStatus === "daHoanThanh") {
-        return b.status === 2;
+        return b.status === 1;
       } else if (selectedStatus === "daHuy") {
-        return b.status === 3;
+        return b.status === 2;
+      } else if (selectedStatus === "thanhToanTaiQuan") {
+        // Kiểm tra payment đã được load và method === 0
+        return (
+          b.status === 0 &&
+          payments[b.bookingId] &&
+          payments[b.bookingId].method === 0
+        );
       }
       return true;
     });
+    console.log("Filtered bookings:", filtered);
     setFilteredBookings(filtered);
   }, [
     bookings,
+    payments,
     searchBookingId,
     startDate,
     endDate,
@@ -95,7 +125,9 @@ const Bookings = () => {
   // Xử lý hành động huỷ booking (nếu cần)
   const handleCancelBooking = async (bookingId) => {
     try {
+      console.log("Gọi API cancelBooking cho bookingId:", bookingId);
       await cancelBooking(bookingId);
+      console.log("Huỷ booking thành công cho bookingId:", bookingId);
       fetchBookings();
     } catch (error) {
       console.error("Error canceling booking:", error);
@@ -106,7 +138,12 @@ const Bookings = () => {
   const openBookingModal = async (booking) => {
     setSelectedBooking(booking);
     try {
+      console.log(
+        "Gọi API getBookingDetailByBooking cho bookingId:",
+        booking.bookingId
+      );
       const details = await getBookingDetailByBooking(booking.bookingId);
+      console.log("API getBookingDetailByBooking trả về:", details);
       setBookingDetails(details);
     } catch (err) {
       console.error("Error fetching booking details:", err);
@@ -116,6 +153,7 @@ const Bookings = () => {
   };
 
   const closeModal = () => {
+    console.log("Đóng modal chi tiết booking");
     setModalVisible(false);
     setSelectedBooking(null);
     setBookingDetails([]);
@@ -124,11 +162,20 @@ const Bookings = () => {
   // Xác nhận từng booking detail (xác nhận administeredDate)
   const handleConfirmDetail = async (bookingDetailId) => {
     try {
+      console.log(
+        "Gọi API confirmBooking cho bookingDetailId:",
+        bookingDetailId
+      );
       await confirmBooking(bookingDetailId);
+      console.log(
+        "Xác nhận booking detail thành công cho bookingDetailId:",
+        bookingDetailId
+      );
       // Sau khi xác nhận, làm mới lại chi tiết của booking đó
       const details = await getBookingDetailByBooking(
         selectedBooking.bookingId
       );
+      console.log("Làm mới booking details:", details);
       setBookingDetails(details);
     } catch (error) {
       console.error("Error confirming booking detail:", error);
@@ -143,7 +190,7 @@ const Bookings = () => {
       onClick={() => openBookingModal(booking)}
     >
       <p className="font-bold">Mã đặt lịch: {booking.bookingId}</p>
-      {/* Hiển thị tên của Customer (lấy từ booking.customer, tương đương với thông tin từ BookingDetail) */}
+      {/* Hiển thị tên của Customer (lấy từ booking.customer) */}
       {booking.customer && (
         <p className="text-lg text-indigo-600 font-bold">
           Customer: {booking.customer.firstName} {booking.customer.lastName}
@@ -169,7 +216,16 @@ const Bookings = () => {
       label: "Đã Hoàn Thành",
       style: "bg-green-500 hover:bg-green-600",
     },
-    { key: "daHuy", label: "Đã Hủy", style: "bg-red-500 hover:bg-red-600" },
+    {
+      key: "daHuy",
+      label: "Đã Hủy",
+      style: "bg-red-500 hover:bg-red-600",
+    },
+    {
+      key: "thanhToanTaiQuan",
+      label: "Thanh Toán Tại Quầy",
+      style: "bg-blue-500 hover:bg-blue-600",
+    },
   ];
 
   if (loading) return <p>Đang tải thông tin đặt lịch...</p>;
@@ -225,7 +281,10 @@ const Bookings = () => {
         {statusFilters.map((filter) => (
           <button
             key={filter.key}
-            onClick={() => setSelectedStatus(filter.key)}
+            onClick={() => {
+              console.log("Đã chọn filter:", filter.key);
+              setSelectedStatus(filter.key);
+            }}
             className={`px-4 py-2 rounded text-white ${filter.style} ${
               selectedStatus === filter.key
                 ? "ring-4 ring-offset-2 ring-gray-300"
@@ -300,8 +359,8 @@ const Bookings = () => {
                         Feedback: {detail.feedback}
                       </p>
                     )}
-                    {/* Nếu booking đang ở trạng thái "Đã Hoàn Thành" và booking detail chưa được xác nhận */}
-                    {selectedStatus === "daHoanThanh" &&
+                    {(selectedStatus === "daHoanThanh" ||
+                      selectedStatus === "thanhToanTaiQuan") &&
                       !detail.administeredDate && (
                         <button
                           onClick={() =>
