@@ -29,19 +29,20 @@ import MarketingCampains from "../pages/Manager/MarketingCampains.jsx";
 import VaccineCombos from "../pages/Manager/VaccineCombos.jsx";
 import ComboDetail from "../pages/Manager/ComboDetail.jsx";
 import Bookings from "../pages/Manager/Bookings.jsx";
+import Records from "../pages/Manager/Records.jsx";
+import Feedbacks from "../pages/Manager/Feedbacks.jsx";
 
 import AdminPage from "../pages/AdminPage/AdminPage.jsx";
 import Staffs from "../pages/AdminPage/Staffs.jsx";
 import Dashboard from "../pages/AdminPage/Dasboard.jsx";
 
-// Các import từ nhánh main
+// Các import từ nhánh phat
 import DetailVaccine from "../pages/Vaccination/DetailVaccine.jsx";
 import StatusVaccine from "../pages/Vaccination/StatusVaccine.jsx";
 import ReactVaccine from "../pages/Vaccination/ReactVaccine.jsx";
 import Payment from "../pages/Payment/Payment.jsx";
 import { CartProvider } from "../components/homepage/AddCart";
 import Cart from "../pages/CartPage/Carts.jsx";
-
 import SpecificVaccine from "../pages/Vaccination/SpecificVaccine.jsx";
 import SpecificCombo from "../pages/Vaccination/SpecificCombo.jsx";
 import ErrorBoundary from "../components/common/ErrorBoundary.jsx";
@@ -86,67 +87,12 @@ const Main = () => {
             <Route path="/react-vaccine2" element={<ReactVaccine2 />} />
             <Route path="/specific-vaccine" element={<SpecificVaccine />} />
             <Route path="/specific-combo" element={<SpecificCombo />} />
-
-            {/* Các route mới từ main */}
             <Route path="/cart" element={<Cart />} />
-
             <Route path="/feedback" element={<Feedback />} />
             <Route path="/update" element={<UpdateFeedback />} />
             <Route path="/price-vaccine" element={<PriceVaccine />} />
             <Route path="/header" element={<Header />} />
             <Route path="/footer" element={<Footer />} />
-
-            {/* Route /customer */}
-            <Route path="/customer" element={<CustomerPage />}>
-              <Route path="child/:childId" element={<Child />} />
-              <Route path="add-child" element={<AddChild />} />
-              <Route path="booking" element={<BookingCustomer />} />
-              <Route path="payment" element={<PaymentCustomer />} />
-            </Route>
-
-            {/* Route /staff: giữ đầy đủ child route theo HEAD */}
-            <Route path="/staff" element={<StaffPage />}>
-              <Route path="customers" element={<Customers />} />
-              <Route path="childs/:customerId" element={<Childs />} />
-              <Route path="vaccines" element={<Vaccines />} />
-              <Route
-                path="vaccine-detail/:vaccineId"
-                element={<VaccineDetail />}
-              />
-              <Route
-                path="marketing-campains"
-                element={<MarketingCampains />}
-              />
-              <Route path="vaccine-combos" element={<VaccineCombos />} />
-              <Route
-                path="combo-detail/:vaccineComboId"
-                element={<ComboDetail />}
-              />
-              <Route path="bookings" element={<Bookings />} />
-            </Route>
-
-            {/* Route /admin: giữ đầy đủ child route theo HEAD */}
-            <Route path="/admin" element={<AdminPage />}>
-              <Route path="customers" element={<Customers />} />
-              <Route path="childs/:customerId" element={<Childs />} />
-              <Route path="staffs" element={<Staffs />} />
-              <Route path="vaccines" element={<Vaccines />} />
-              <Route
-                path="vaccine-detail/:vaccineId"
-                element={<VaccineDetail />}
-              />
-              <Route
-                path="marketing-campains"
-                element={<MarketingCampains />}
-              />
-              <Route path="vaccine-combos" element={<VaccineCombos />} />
-              <Route
-                path="combo-detail/:vaccineComboId"
-                element={<ComboDetail />}
-              />
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="bookings" element={<Bookings />} />
-            </Route>
           </Routes>
         </CartProvider>
       </Router>

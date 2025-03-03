@@ -11,6 +11,8 @@ import {
   FiShield,
   FiBox,
   FiHome,
+  FiAlertTriangle,
+  FiMessageSquare,
 } from "react-icons/fi";
 
 const AdminPage = () => {
@@ -75,6 +77,27 @@ const AdminPage = () => {
               >
                 <FiCalendar className="w-6 h-6" />
                 <span className="ml-4">Bookings</span>
+              </Link>
+            </li>
+            {/* Báo Cáo Phản Ứng (chưa mở) */}
+            <li>
+              <Link
+                to="/staff/records"
+                className="flex items-center p-3 text-lg font-medium rounded hover:bg-gray-700 transition-colors"
+              >
+                <FiAlertTriangle className="w-6 h-6" />
+                <span className="ml-4">Báo Cáo Phản Ứng</span>
+              </Link>
+            </li>
+
+            {/* Phản Hồi (chưa mở) */}
+            <li>
+              <Link
+                to="/staff/feedbacks"
+                className="flex items-center p-3 text-lg font-medium rounded hover:bg-gray-700 transition-colors"
+              >
+                <FiMessageSquare className="w-6 h-6" />
+                <span className="ml-4">Phản Hồi</span>
               </Link>
             </li>
             {/* Marketing */}

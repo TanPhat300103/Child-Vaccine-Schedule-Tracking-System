@@ -830,3 +830,73 @@ export const getAllBookings = async () => {
     throw error;
   }
 };
+
+// Lấy lịch sử tiêm chủng của trẻ theo childId
+export const getMedicalHistoryByChildId = async (childId) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/medicalhistory/findbychildid?id=${childId}`
+    );
+    console.log("API Response (getMedicalHistoryByChildId):", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy lịch sử tiêm chủng:", error);
+    throw error;
+  }
+};
+
+// Lấy tất cả Medical History (báo cáo phản ứng)
+export const getAllMedicalHistories = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/medicalhistory`);
+    console.log("API Response (getAllMedicalHistories):", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy Medical History:", error);
+    throw error;
+  }
+};
+
+// Cập nhật phản ứng cho Medical History
+export const updateReaction = async (id, reaction) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/medicalhistory/updatereaction?id=${id}&reaction=${encodeURIComponent(
+        reaction
+      )}`
+    );
+    console.log("API Response (updateReaction):", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi cập nhật phản ứng:", error);
+    throw error;
+  }
+};
+
+// Lấy tất cả Feedback (GET /feedback)
+export const getAllFeedback = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/feedback`);
+    console.log("API Response (getAllFeedback):", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy feedback:", error);
+    throw error;
+  }
+};
+
+// Cập nhật Feedback (POST /feedback/update)
+// Hàm nhận vào một đối tượng feedback đã được cập nhật (bao gồm cả id) và gửi lên backend
+export const updateFeedback = async (feedback) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/feedback/update`,
+      feedback
+    );
+    console.log("API Response (updateFeedback):", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi cập nhật feedback:", error);
+    throw error;
+  }
+};

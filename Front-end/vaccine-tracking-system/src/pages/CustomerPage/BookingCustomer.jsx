@@ -108,8 +108,8 @@ const BookingCustomer = () => {
 
   // Top filter button labels và styles
   const statusLabels = {
-    1: "Đang Xử Lý",
-    2: "Đã Xác Nhận",
+    1: "Đã Đặt",
+    2: "Đã Hoàn Thành",
     3: "Đã Huỷ",
   };
 

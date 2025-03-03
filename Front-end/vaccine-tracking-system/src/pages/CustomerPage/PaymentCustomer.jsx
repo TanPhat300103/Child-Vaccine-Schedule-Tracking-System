@@ -51,12 +51,12 @@ const PaymentCustomer = () => {
 
   // Các nhãn và style cho các nút filter
   const paymentStatusLabels = {
-    false: "Đang Thanh Toán",
+    false: "Chưa Thanh Toán",
     true: "Đã Thanh Toán",
   };
 
   const paymentStatusButtonStyles = {
-    false: "bg-blue-500 hover:bg-blue-600",
+    false: "bg-red-500 hover:bg-red-600",
     true: "bg-green-500 hover:bg-green-600",
   };
 
