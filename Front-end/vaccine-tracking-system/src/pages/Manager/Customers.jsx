@@ -11,7 +11,9 @@ import {
 
 const Customers = () => {
   const [customers, setCustomers] = useState([]);
+  // Khi mở modal chỉnh sửa, lưu cả customer đang chỉnh sửa và dữ liệu ban đầu của nó để so sánh thay đổi
   const [editingCustomer, setEditingCustomer] = useState(null);
+  const [originalEditingCustomer, setOriginalEditingCustomer] = useState(null);
   const [updateError, setUpdateError] = useState(null);
 
   // Search state: chọn loại tìm kiếm và từ khóa
@@ -53,7 +55,7 @@ const Customers = () => {
       );
   }, []);
 
-  // Xử lý Active/Inactive: nút tích hợp trạng thái với icon và chữ
+  // Xử lý Active/Inactive
   const handleActive = (customerId, e) => {
     e.stopPropagation();
     console.log("Gửi API cập nhật trạng thái active cho:", customerId);
@@ -74,13 +76,23 @@ const Customers = () => {
       .catch((error) => console.error("API Active lỗi:", error));
   };
 
-  // Khi bấm vào card (ngoại trừ các nút riêng) sẽ mở modal chỉnh sửa
+  // Khi bấm vào dòng khách hàng mở modal chỉnh sửa
   const handleEdit = (customer, e) => {
     e.stopPropagation();
     console.log("Mở form cập nhật cho khách hàng:", customer);
-    setEditingCustomer(customer);
+    setEditingCustomer({ ...customer });
+    // Lưu một bản sao để so sánh thay đổi
+    setOriginalEditingCustomer({ ...customer });
     setUpdateError(null);
     setEditingPasswordVisible(false);
+  };
+
+  // Hàm kiểm tra có thay đổi không
+  const isChanged = () => {
+    return (
+      JSON.stringify(editingCustomer) !==
+      JSON.stringify(originalEditingCustomer)
+    );
   };
 
   // Gửi API cập nhật khách hàng
@@ -109,6 +121,7 @@ const Customers = () => {
           )
         );
         setEditingCustomer(null);
+        setOriginalEditingCustomer(null);
         setUpdateError(null);
       })
       .catch((error) => {
@@ -244,70 +257,21 @@ const Customers = () => {
         </div>
       </div>
 
-      {/* Danh sách khách hàng dạng Card */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {/* Danh sách khách hàng dạng danh sách theo hàng ngang */}
+      <div className="flex flex-col gap-2">
         {filteredCustomers.map((customer) => (
           <div
             key={customer.customerId}
             onClick={(e) => handleEdit(customer, e)}
-            className="relative bg-white rounded-lg shadow-lg p-4 hover:shadow-2xl transition transform hover:scale-105 cursor-pointer"
+            className="flex items-center justify-between bg-white rounded-lg shadow-lg p-4 hover:shadow-2xl transition transform hover:scale-105 cursor-pointer"
           >
-            {/* Icon giới tính to, hiển thị ở góc phải */}
-            <div className="absolute top-2 right-2">
-              {customer.gender ? (
-                <FaMars size={28} className="text-blue-600" />
-              ) : (
-                <FaVenus size={28} className="text-pink-500" />
-              )}
+            <div>
+              <h2 className="text-xl font-extrabold text-blue-600">
+                {customer.firstName} {customer.lastName}
+              </h2>
+              <p className="text-sm text-gray-600">Mã: {customer.customerId}</p>
             </div>
-            {/* Tên khách hàng nổi bật */}
-            <h2 className="text-xl font-extrabold text-blue-600 mb-2">
-              {customer.firstName} {customer.lastName}
-            </h2>
-            <p className="text-sm text-gray-800">
-              <span className="font-semibold uppercase text-gray-500">
-                Mã:{" "}
-              </span>
-              {customer.customerId}
-            </p>
-            <p className="text-sm text-gray-800">
-              <span className="font-semibold uppercase text-gray-500">
-                SĐT:{" "}
-              </span>
-              {customer.phoneNumber}
-            </p>
-            <p className="text-sm text-gray-800">
-              <span className="font-semibold uppercase text-gray-500">
-                Email:{" "}
-              </span>
-              {customer.email}
-            </p>
-            <p className="text-sm text-gray-800">
-              <span className="font-semibold uppercase text-gray-500">
-                Địa chỉ:{" "}
-              </span>
-              {customer.address}
-            </p>
-            <p className="text-sm text-gray-800">
-              <span className="font-semibold uppercase text-gray-500">
-                Ngày sinh:{" "}
-              </span>
-              {new Date(customer.dob).toLocaleDateString()}
-            </p>
-            <p className="text-sm text-gray-800">
-              <span className="font-semibold uppercase text-gray-500">
-                Tài khoản:{" "}
-              </span>
-              {customer.banking}
-            </p>
-            <p className="text-sm text-gray-800">
-              <span className="font-semibold uppercase text-gray-500">
-                Mật khẩu:{" "}
-              </span>
-              ••••••
-            </p>
-            {/* Nút Active tích hợp trạng thái */}
-            <div className="flex gap-2 mt-4">
+            <div className="flex gap-2">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -335,179 +299,7 @@ const Customers = () => {
         ))}
       </div>
 
-      {/* Modal Tạo Khách Hàng */}
-      {showAddForm && (
-        <div className="fixed inset-0 flex items-center justify-center bg-opacity-30 backdrop-blur-md z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-3xl ring-1 ring-gray-200">
-            <h3 className="text-2xl font-semibold mb-6">Thêm Khách Hàng Mới</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Họ
-                </label>
-                <input
-                  type="text"
-                  value={newCustomer.firstName}
-                  onChange={(e) =>
-                    setNewCustomer({
-                      ...newCustomer,
-                      firstName: e.target.value,
-                    })
-                  }
-                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Tên
-                </label>
-                <input
-                  type="text"
-                  value={newCustomer.lastName}
-                  onChange={(e) =>
-                    setNewCustomer({ ...newCustomer, lastName: e.target.value })
-                  }
-                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Số Điện Thoại
-                </label>
-                <input
-                  type="text"
-                  value={newCustomer.phoneNumber}
-                  onChange={(e) =>
-                    setNewCustomer({
-                      ...newCustomer,
-                      phoneNumber: e.target.value,
-                    })
-                  }
-                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Ngày Sinh
-                </label>
-                <input
-                  type="date"
-                  value={newCustomer.dob}
-                  onChange={(e) =>
-                    setNewCustomer({ ...newCustomer, dob: e.target.value })
-                  }
-                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Giới Tính
-                </label>
-                <select
-                  value={newCustomer.gender ? "true" : "false"}
-                  onChange={(e) =>
-                    setNewCustomer({
-                      ...newCustomer,
-                      gender: e.target.value === "true",
-                    })
-                  }
-                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                >
-                  <option value="true">Nam</option>
-                  <option value="false">Nữ</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Mật Khẩu
-                </label>
-                <div className="relative">
-                  <input
-                    type={newPasswordVisible ? "text" : "password"}
-                    value={newCustomer.password}
-                    onChange={(e) =>
-                      setNewCustomer({
-                        ...newCustomer,
-                        password: e.target.value,
-                      })
-                    }
-                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setNewPasswordVisible(!newPasswordVisible)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center focus:outline-none"
-                  >
-                    {newPasswordVisible ? (
-                      <FaEyeSlash size={20} />
-                    ) : (
-                      <FaEye size={20} />
-                    )}
-                  </button>
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Địa Chỉ
-                </label>
-                <input
-                  type="text"
-                  value={newCustomer.address}
-                  onChange={(e) =>
-                    setNewCustomer({ ...newCustomer, address: e.target.value })
-                  }
-                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Số Tài Khoản Ngân Hàng
-                </label>
-                <input
-                  type="text"
-                  value={newCustomer.banking}
-                  onChange={(e) =>
-                    setNewCustomer({ ...newCustomer, banking: e.target.value })
-                  }
-                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  value={newCustomer.email}
-                  onChange={(e) =>
-                    setNewCustomer({ ...newCustomer, email: e.target.value })
-                  }
-                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-              </div>
-            </div>
-            {newCustomerError && (
-              <p className="text-red-500 text-sm mt-4">{newCustomerError}</p>
-            )}
-            <div className="flex justify-end space-x-4 mt-6">
-              <button
-                onClick={handleCreate}
-                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg"
-              >
-                Tạo Mới
-              </button>
-              <button
-                onClick={() => setShowAddForm(false)}
-                className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg"
-              >
-                Hủy
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal Cập Nhật Khách Hàng */}
+      {/* Modal chỉnh sửa khách hàng */}
       {editingCustomer && (
         <div className="fixed inset-0 flex items-center justify-center bg-opacity-30 backdrop-blur-md z-50">
           <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-3xl ring-1 ring-gray-200">
@@ -526,7 +318,7 @@ const Customers = () => {
                       firstName: e.target.value,
                     })
                   }
-                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 pr-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
               </div>
               <div>
@@ -542,7 +334,7 @@ const Customers = () => {
                       lastName: e.target.value,
                     })
                   }
-                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 pr-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
               </div>
               <div>
@@ -558,7 +350,7 @@ const Customers = () => {
                       phoneNumber: e.target.value,
                     })
                   }
-                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 pr-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
               </div>
               <div>
@@ -574,7 +366,7 @@ const Customers = () => {
                       dob: e.target.value,
                     })
                   }
-                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 pr-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
               </div>
               <div>
@@ -589,7 +381,7 @@ const Customers = () => {
                       gender: e.target.value === "true",
                     })
                   }
-                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 pr-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 >
                   <option value="true">Nam</option>
                   <option value="false">Nữ</option>
@@ -639,7 +431,7 @@ const Customers = () => {
                       address: e.target.value,
                     })
                   }
-                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 pr-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
               </div>
               <div>
@@ -655,7 +447,7 @@ const Customers = () => {
                       banking: e.target.value,
                     })
                   }
-                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 pr-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
               </div>
               <div>
@@ -671,7 +463,7 @@ const Customers = () => {
                       email: e.target.value,
                     })
                   }
-                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 pr-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
               </div>
             </div>
@@ -681,7 +473,12 @@ const Customers = () => {
             <div className="flex justify-end space-x-4 mt-6">
               <button
                 onClick={handleSave}
-                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg"
+                disabled={!isChanged()}
+                className={`font-bold py-2 px-4 rounded-lg ${
+                  isChanged()
+                    ? "bg-green-500 hover:bg-green-700 text-white"
+                    : "bg-gray-400 text-gray-200 cursor-not-allowed"
+                }`}
               >
                 Lưu
               </button>
