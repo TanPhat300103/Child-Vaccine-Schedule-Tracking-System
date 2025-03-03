@@ -82,7 +82,7 @@ const AdminPage = () => {
             {/* Báo Cáo Phản Ứng (chưa mở) */}
             <li>
               <Link
-                to="/staff/records"
+                to="/admin/records"
                 className="flex items-center p-3 text-lg font-medium rounded hover:bg-gray-700 transition-colors"
               >
                 <FiAlertTriangle className="w-6 h-6" />
@@ -93,7 +93,7 @@ const AdminPage = () => {
             {/* Phản Hồi (chưa mở) */}
             <li>
               <Link
-                to="/staff/feedbacks"
+                to="/admin/feedbacks"
                 className="flex items-center p-3 text-lg font-medium rounded hover:bg-gray-700 transition-colors"
               >
                 <FiMessageSquare className="w-6 h-6" />
