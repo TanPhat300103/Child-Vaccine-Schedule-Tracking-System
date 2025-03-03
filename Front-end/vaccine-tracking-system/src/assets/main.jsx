@@ -48,11 +48,13 @@ import ErrorBoundary from "../components/common/ErrorBoundary.jsx";
 
 import DetailVaccine2 from "../pages/Vaccination/DetailVaccine2.jsx";
 import ReactVaccine2 from "../pages/Vaccination/ReactVaccine2.jsx";
-import Feedback from "../pages/Feedback/Feedback.jsx";
+
 import PriceVaccine from "../components/homepage/PriceVaccine.jsx";
 import BookVaccine from "../pages/Vaccination/BookVaccine.jsx";
 import Header from "../components/common/Header.jsx";
 import Footer from "../components/common/Footer.jsx";
+import Feedback from "../pages/Feedback/Feedback.jsx";
+import UpdateFeedback from "../pages/Feedback/UpdateFeedback.jsx";
 
 const Main = () => {
   return (
@@ -89,6 +91,7 @@ const Main = () => {
             <Route path="/cart" element={<Cart />} />
 
             <Route path="/feedback" element={<Feedback />} />
+            <Route path="/update" element={<UpdateFeedback />} />
             <Route path="/price-vaccine" element={<PriceVaccine />} />
             <Route path="/header" element={<Header />} />
             <Route path="/footer" element={<Footer />} />

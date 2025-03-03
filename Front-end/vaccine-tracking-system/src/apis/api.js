@@ -277,6 +277,114 @@ export const postSchedules = async (formData) => {
   }
 };
 
+export const postFeedback = async (formData) => {
+  console.log(
+    "🚀 Form data being sent to API:",
+    JSON.stringify(formData, null, 2)
+  );
+
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/feedback/create`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    );
+
+    // ✅ Log phản hồi từ Backend
+    console.log("✅ API Response Status:", response.status);
+    console.log("✅ API Response Data:", response.data);
+
+    // Generalized success check for any 2xx status codes
+    if (response.status >= 200 && response.status < 300) {
+      return { success: true, message: "Đặt lịch thành công" };
+    } else {
+      return { success: false, message: "Đặt lịch thất bại" };
+    }
+  } catch (error) {
+    console.error("❌ Error during registration:", error);
+
+    if (error.response) {
+      // Error response data logging
+      console.error("❌ Error response status:", error.response.status);
+      console.error("❌ Error response data:", error.response.data);
+      console.error("❌ Error response headers:", error.response.headers);
+
+      // Ensure that error message is properly handled
+      return {
+        success: false,
+        message:
+          error.response.data?.message ||
+          "Gửi biểu mẫu không thành công. Vui lòng thử lại.",
+      };
+    }
+
+    // If there is no response object
+    return {
+      success: false,
+      message: "Gửi biểu mẫu không thành công. Vui lòng thử lại.",
+    };
+  }
+};
+
+export const updateFeedback = async (formData) => {
+  console.log(
+    "🚀 Form data being sent to API:",
+    JSON.stringify(formData, null, 2)
+  );
+
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/feedback/update`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    );
+
+    // ✅ Log phản hồi từ Backend
+    console.log("✅ API Response Status:", response.status);
+    console.log("✅ API Response Data:", response.data);
+
+    // Generalized success check for any 2xx status codes
+    if (response.status >= 200 && response.status < 300) {
+      return { success: true, message: "Đặt lịch thành công" };
+    } else {
+      return { success: false, message: "Đặt lịch thất bại" };
+    }
+  } catch (error) {
+    console.error("❌ Error during registration:", error);
+
+    if (error.response) {
+      // Error response data logging
+      console.error("❌ Error response status:", error.response.status);
+      console.error("❌ Error response data:", error.response.data);
+      console.error("❌ Error response headers:", error.response.headers);
+
+      // Ensure that error message is properly handled
+      return {
+        success: false,
+        message:
+          error.response.data?.message ||
+          "Gửi biểu mẫu không thành công. Vui lòng thử lại.",
+      };
+    }
+
+    // If there is no response object
+    return {
+      success: false,
+      message: "Gửi biểu mẫu không thành công. Vui lòng thử lại.",
+    };
+  }
+};
+
 export const getMedicalHistory = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/medicalhistory`);
