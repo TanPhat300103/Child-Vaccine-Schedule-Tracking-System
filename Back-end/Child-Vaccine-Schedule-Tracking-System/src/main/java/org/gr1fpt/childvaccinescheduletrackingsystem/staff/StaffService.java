@@ -1,4 +1,4 @@
-package org.gr1fpt.childvaccinescheduletrackingsystem.satff;
+package org.gr1fpt.childvaccinescheduletrackingsystem.staff;
 
 import org.gr1fpt.childvaccinescheduletrackingsystem.exception.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
