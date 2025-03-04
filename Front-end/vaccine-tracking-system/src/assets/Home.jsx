@@ -26,13 +26,6 @@ const Home = () => {
   const [customerData, setCustomerData] = useState(null);
   const [childData, setChildData] = useState(null);
   const { userInfo } = useAuth();
-  // take data
-  const UserId = localStorage.getItem("userId");
-  const cartItemCount = useMemo(() => {
-    return Object.values(cart).reduce((total, vaccine) => total + 1, 0);
-  }, [cart]);
-  console.log(cartItemCount);
-  console.log("user id la: ", userInfo.userId);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [proFileData, setProFileData] = useState(null);
   useEffect(() => {
@@ -52,6 +45,13 @@ const Home = () => {
     setProFileData(data);
     console.log("my profile data: ", proFileData);
   }, []);
+  // take data
+  console.log("user id la: ", userInfo.userId);
+
+  const cartItemCount = useMemo(() => {
+    return Object.values(cart).reduce((total, vaccine) => total + 1, 0);
+  }, [cart]);
+  localStorage.setItem("userId", userInfo.userId);
 
   // take api customerByid
   useEffect(() => {

@@ -1,381 +1,492 @@
-import React, { useEffect, useState } from "react";
-import "./CustomerTable.css";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import "../style/PaymentProcess.css";
+import {
+  CreditCard,
+  Wallet,
+  ChevronRight,
+  Check,
+  AlertTriangle,
+} from "lucide-react";
+import Select from "react-select";
 
-function CustomerTable() {
-  const [customers, setCustomers] = useState([]);
+function PaymentProcessPage() {
+  const { paymentId } = useParams();
+  const [payment, setPayment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  const [paymentMethod, setPaymentMethod] = useState("cash");
+  const [coupon, setCoupon] = useState("");
+  const [couponApplied, setCouponApplied] = useState(false);
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [couponData, setCouponData] = useState(null);
+  const [banks] = useState([
+    "Vietcombank",
+    "Techcombank",
+    "Bidv",
+    "VPBank",
+    "MBBank",
+    "TPBank",
+    "NCB",
+    "Agribank",
+    "Eximbank",
+    "Scb",
+  ]);
+  const [selectedBank, setSelectedBank] = useState("");
+  const [confirmationMessage, setConfirmationMessage] = useState("");
+  const [confirmationStatus, setConfirmationStatus] = useState("");
+  const [couponMessage, setCouponMessage] = useState("");
+  const [couponStatus, setCouponStatus] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [showModal, setShowModal] = useState(false);
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const bankOptions = [
+    {
+      value: "Vietcombank",
+      label: "VCB",
+      icon: "https://hienlaptop.com/wp-content/uploads/2024/12/logo-vietcombank-vector-11.png",
+    },
+    {
+      value: "Techcombank",
+      label: "TCB",
+      icon: "https://plus.vtc.edu.vn/wp-content/uploads/2020/09/techcombank.png",
+    },
+    {
+      value: "Bidv",
+      label: "BIDV",
+      icon: "https://diadiembank.com/wp-content/uploads/2024/11/icon-bidv-smartbanking.svg",
+    },
+    {
+      value: "VPBank",
+      label: "VPBank",
+      icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd&AQ6RwsYuDPp1ZlmeUwSBcdMZFmNFgcDplEDxJcig&s",
+    },
+    {
+      value: "MBBank",
+      label: "MBBank",
+      icon: "https://www.mbbank.com.vn/images/logo.png",
+    },
+    {
+      value: "TPBank",
+      label: "TPBank",
+      icon: "https://cdn.haitrieu.com/wp-content/uploads/2022/02/Icon-TPBank.png",
+    },
+    {
+      value: "NCB",
+      label: "NCB",
+      icon: "https://uudai.ncb-bank.vn/images/common/logo_loading.png",
+    },
+    {
+      value: "Agribank",
+      label: "Agribank",
+      icon: "https://www.inlogo.vn/wp-content/uploads/2023/04/logo-agribank.png",
+    },
+    {
+      value: "Eximbank",
+      label: "Eximbank",
+      icon: "https://image.sggp.org.vn/w1000/Uploaded/2025/nkdkswkqoc/original/2012/01/images406537_1.jpg.webp",
+    },
+    {
+      value: "Scb",
+      label: "SCB",
+      icon: "https://cdn.haitrieu.com/wp-content/uploads/2022/02/Icon-SCB.png",
+    },
+  ];
 
-  const [formData, setFormData] = useState({
-    phoneNumber: "",
-    firstName: "",
-    lastName: "",
-    dob: "",
-    gender: false,
-    password: "",
-    address: "",
-    banking: "",
-    email: "",
-  });
-
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterKey, setFilterKey] = useState("id");
-  const [sortOrder, setSortOrder] = useState("asc");
-
-  const fetchCustomers = () => {
-    fetch("http://localhost:8080/customer")
-      .then((response) => {
-        if (!response.ok) throw new Error("Network response was not ok");
-        return response.json();
-      })
-      .then((data) => {
-        setCustomers(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err);
-        setLoading(false);
-      });
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      width: "auto",
+      minWidth: "200px",
+      border: "2px solid #e9ecef",
+      borderRadius: "10px",
+      backgroundColor: "#fcfcfc",
+      padding: "2px",
+      boxShadow: "none",
+      transition: "all 0.3s ease",
+      "&:hover": {
+        borderColor: "#ced4da",
+      },
+      "&:focus": {
+        borderColor: "#4361ee",
+        boxShadow: "0 0 0 3px rgba(67, 97, 238, 0.2)",
+      },
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      display: "flex",
+      alignItems: "center",
+      gap: "10px",
+      backgroundColor: state.isSelected ? "#eef1ff" : "#fff",
+      color: "#2b2d42",
+      "&:hover": {
+        backgroundColor: "#f8f9fa",
+      },
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      display: "flex",
+      alignItems: "center",
+      gap: "10px",
+    }),
   };
+
+  const formatOptionLabel = ({ label, icon }) => (
+    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+      <img
+        src={icon}
+        alt={`${label} logo`}
+        style={{ width: "20px", height: "20px" }}
+      />
+      <span>{label}</span>
+    </div>
+  );
 
   useEffect(() => {
-    fetchCustomers();
-  }, []);
+    const fetchPayment = async () => {
+      try {
+        setLoading(true);
+        setTimeout(async () => {
+          const response = await fetch(
+            `http://localhost:8080/payment/findbyid?id=${paymentId}`,
+            {
+              method: "GET",
+              credentials: "include",
+            }
+          );
+          if (!response.ok) throw new Error("Không tìm thấy thông tin hóa đơn");
+          const data = await response.json();
+          setPayment(data);
+          setLoading(false);
+        }, 1000);
+      } catch (err) {
+        setError("Lỗi khi lấy dữ liệu: " + err.message);
+        setLoading(false);
+      }
+    };
+    fetchPayment();
+  }, [paymentId]);
 
-  const toggleStatus = (customerId) => {
-    fetch(`http://localhost:8080/customer/inactive?id=${customerId}`, {
-      method: "POST",
-    })
-      .then((response) => {
-        if (!response.ok) throw new Error("Failed to update status");
-        return response.json();
-      })
-      .then(() => {
-        setCustomers((prevCustomers) =>
-          prevCustomers.map((customer) =>
-            customer.customerId === customerId
-              ? { ...customer, active: !customer.active }
-              : customer
-          )
-        );
-      })
-      .catch((err) => {
-        alert(`Error: ${err.message}`);
+  const handlePaymentMethodChange = (method) => {
+    setPaymentMethod(method);
+    setConfirmationMessage("");
+    setConfirmationStatus("");
+  };
+
+  const applyCoupon = async () => {
+    if (!coupon) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/marketing/findbycoupon?coupon=${coupon}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Mã giảm giá không hợp lệ!");
+      }
+
+      const data = await response.json();
+
+      if (!data.active) {
+        setCouponMessage("Mã giảm giá đã hết hiệu lực!");
+        setCouponStatus("pending-paymentprocess");
+        setCouponApplied(false);
+        setCouponDiscount(0);
+        setCouponData(null);
+        return;
+      }
+
+      const currentDate = new Date();
+      const startTime = new Date(data.startTime);
+      const endTime = new Date(data.endTime);
+
+      if (currentDate < startTime || currentDate > endTime) {
+        setCouponMessage("Mã giảm giá không nằm trong thời gian hiệu lực!");
+        setCouponStatus("pending-paymentprocess");
+        setCouponApplied(false);
+        setCouponDiscount(0);
+        setCouponData(null);
+        return;
+      }
+
+      const discountPercentage = data.discount;
+      const discount =
+        (payment?.booking?.totalAmount * discountPercentage) / 100 || 0;
+      setCouponDiscount(discount);
+      setCouponApplied(true);
+      setCouponData(data);
+      setCouponMessage(
+        `Mã giảm giá "${data.coupon}" đã được áp dụng! Giảm ${discountPercentage}%`
+      );
+      setCouponStatus("success-paymentprocess");
+    } catch (err) {
+      setCouponMessage(err.message);
+      setCouponStatus("pending-paymentprocess");
+      setCouponApplied(false);
+      setCouponDiscount(0);
+      setCouponData(null);
+    }
+  };
+
+  const getFinalAmount = () => {
+    if (!payment?.booking?.totalAmount) return 0;
+    return payment.booking.totalAmount - couponDiscount;
+  };
+
+  const formatCurrency = (amount) => {
+    return amount.toLocaleString("vi-VN");
+  };
+
+  const handleConfirm = async () => {
+    setIsSubmitting(true);
+
+    try {
+      const method = paymentMethod === "atm";
+      const params = new URLSearchParams({
+        paymentId: paymentId,
+        coupon: coupon || "",
+        method: method.toString(),
+        bank: selectedBank || "",
       });
+
+      const response = await fetch(
+        `http://localhost:8080/payment/update?${params.toString()}`,
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Không thể cập nhật thanh toán");
+      }
+
+      const data = await response.json();
+
+      if (method) {
+        const { VNPAYURL } = data;
+        if (VNPAYURL) {
+          setConfirmationMessage("Đang chuyển hướng đến VNPay...");
+          setConfirmationStatus("pending-paymentprocess");
+          setTimeout(() => {
+            window.location.href = VNPAYURL;
+          }, 1000);
+        } else {
+          throw new Error("Không thể tạo URL thanh toán VNPay");
+        }
+      } else {
+        setConfirmationMessage("Đang đợi staff xác nhận thanh toán tiền mặt");
+        setConfirmationStatus("pending-paymentprocess");
+        setIsSubmitting(false);
+      }
+    } catch (err) {
+      setConfirmationMessage("Lỗi: " + err.message);
+      setConfirmationStatus("pending-paymentprocess");
+      setIsSubmitting(false);
+    }
   };
 
-  const openUpdateModal = (customer) => {
-    setSelectedCustomer(customer);
-    setFormData({
-      phoneNumber: customer.phoneNumber || "",
-      firstName: customer.firstName || "",
-      lastName: customer.lastName || "",
-      dob: customer.dob || "",
-      gender: customer.gender || false,
-      password: customer.password || "",
-      address: customer.address || "",
-      banking: customer.banking || "",
-      email: customer.email || "",
-    });
-    setShowModal(true);
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-    setSelectedCustomer(null);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    fetch("http://localhost:8080/customer/update", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...selectedCustomer, ...formData }),
-    })
-      .then((response) => {
-        if (!response.ok) throw new Error("Failed to update customer");
-        return response.json();
-      })
-      .then(() => {
-        fetchCustomers();
-        closeModal();
-      })
-      .catch((err) => {
-        alert(`Error: ${err.message}`);
-      });
-  };
-
-  const filteredCustomers = customers.filter((customer) => {
-    const fullName = (
-      customer.firstName +
-      " " +
-      customer.lastName
-    ).toLowerCase();
-    const email = (customer.email || "").toLowerCase();
-    const phone = (customer.phoneNumber || "").toLowerCase();
+  if (loading)
     return (
-      fullName.includes(searchTerm.toLowerCase()) ||
-      email.includes(searchTerm.toLowerCase()) ||
-      phone.includes(searchTerm.toLowerCase())
+      <div className="loading-paymentprocess">
+        Đang tải thông tin hóa đơn...
+      </div>
     );
-  });
 
-  const compareDate = (a, b) => {
-    const dateA = a ? new Date(a).getTime() : 0;
-    const dateB = b ? new Date(b).getTime() : 0;
-    return dateA - dateB;
-  };
-
-  const sortedCustomers = [...filteredCustomers].sort((a, b) => {
-    if (filterKey === "id") {
-      return sortOrder === "asc"
-        ? a.customerId.localeCompare(b.customerId)
-        : b.customerId.localeCompare(a.customerId);
-    } else {
-      return sortOrder === "asc"
-        ? compareDate(a.dob, b.dob)
-        : compareDate(b.dob, a.dob);
-    }
-  });
-
-  const toggleSortOrder = () => {
-    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-  };
-
-  // Xử lý click trên customer-card, bỏ qua nếu click vào checkbox hoặc nút Update
-  const handleCardClick = (e, customerId) => {
-    const target = e.target;
-    // Kiểm tra xem click có phải vào checkbox hoặc nút Update không
-    if (target.closest(".switch") || target.closest(".btn-update")) {
-      return; // Không điều hướng nếu click vào switch hoặc btn-update
-    }
-    navigate(`/customer/detail/${customerId}`);
-  };
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (error)
+    return (
+      <div className="error-paymentprocess">
+        <AlertTriangle size={24} style={{ marginRight: "10px" }} />
+        {error}
+      </div>
+    );
 
   return (
-    <div className="page-container">
-      <div className="header">
-        <h1>Customer Management</h1>
-      </div>
+    <div className="payment-process-container-paymentprocess">
+      <div className="payment-content-paymentprocess">
+        <div className="payment-header-paymentprocess">
+          <h1>Thanh Toán Hóa Đơn #{payment?.paymentId}</h1>
+          <p>Vui lòng kiểm tra thông tin và chọn phương thức thanh toán</p>
+        </div>
 
-      <div className="filter-container">
-        <div className="filter-left">
-          <label htmlFor="sortKey">Sort By</label>
-          <select
-            id="sortKey"
-            value={filterKey}
-            onChange={(e) => setFilterKey(e.target.value)}
-          >
-            <option value="id">ID</option>
-            <option value="dob">DOB</option>
-          </select>
-        </div>
-        <div className="search-center">
-          <input
-            type="text"
-            placeholder="Search customer..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <div className="icon-right">
-          <button className="btn-sort" onClick={toggleSortOrder}>
-            {sortOrder === "asc" ? (
-              <i className="fa-solid fa-arrow-up"></i>
-            ) : (
-              <i className="fa-solid fa-arrow-down"></i>
-            )}
-          </button>
-        </div>
-      </div>
+        <div className="main-card-paymentprocess">
+          <div className="section-paymentprocess invoice-info-paymentprocess">
+            <h2>Thông Tin Hóa Đơn</h2>
+            <div className="info-grid-paymentprocess">
+              <div className="info-item-paymentprocess">
+                <span>Mã Booking:</span>
+                <span>{payment?.booking?.bookingId}</span>
+              </div>
+              <div className="info-item-paymentprocess">
+                <span>Ngày Booking:</span>
+                <span>
+                  {payment?.booking
+                    ? new Date(payment.booking.bookingDate).toLocaleDateString(
+                        "vi-VN"
+                      )
+                    : ""}
+                </span>
+              </div>
+              <div className="info-item-paymentprocess">
+                <span>Tên Khách Hàng:</span>
+                <span>
+                  {payment?.booking?.customer?.firstName}{" "}
+                  {payment?.booking?.customer?.lastName}
+                </span>
+              </div>
+              <div className="info-item-paymentprocess">
+                <span>Tổng Tiền:</span>
+                <span className="total-amount-paymentprocess">
+                  {formatCurrency(payment?.booking?.totalAmount || 0)} VNĐ
+                </span>
+              </div>
+            </div>
+          </div>
 
-      <div className="customer-grid">
-        {sortedCustomers.map((customer) => (
-          <div
-            key={customer.customerId}
-            className="customer-card"
-            onClick={(e) => handleCardClick(e, customer.customerId)} // Xử lý click thông minh
-          >
-            <div className="card-header">
-              <h3>
-                {customer.firstName} {customer.lastName}
-              </h3>
-              <span
-                className={`gender-icon ${customer.gender ? "male" : "female"}`}
+          <div className="section-paymentprocess payment-form-paymentprocess">
+            <h2>Phương Thức Thanh Toán</h2>
+            <div className="coupon-section-paymentprocess">
+              <label>Mã Coupon (nếu có):</label>
+              <div className="coupon-input-group-paymentprocess">
+                <input
+                  type="text"
+                  value={coupon}
+                  onChange={(e) => setCoupon(e.target.value)}
+                  placeholder="Nhập mã coupon"
+                />
+                <button onClick={applyCoupon} disabled={!coupon}>
+                  {couponApplied ? <Check size={16} /> : "Áp dụng"}
+                </button>
+              </div>
+              {couponMessage && (
+                <div
+                  className={`confirmation-message-paymentprocess ${couponStatus}`}
+                >
+                  {couponStatus === "success-paymentprocess" ? (
+                    <Check size={18} />
+                  ) : (
+                    <AlertTriangle size={18} />
+                  )}
+                  {couponMessage}
+                </div>
+              )}
+            </div>
+            <div className="method-section-paymentprocess">
+              <h3>Chọn Phương Thức Thanh Toán:</h3>
+              <div className="payment-methods-paymentprocess">
+                <label
+                  className={`method-card-paymentprocess ${
+                    paymentMethod === "cash" ? "selected-paymentprocess" : ""
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    value="cash"
+                    checked={paymentMethod === "cash"}
+                    onChange={() => handlePaymentMethodChange("cash")}
+                  />
+                  <Wallet size={20} /> Tiền Mặt
+                </label>
+                <div className="bank-method-wrapper-paymentprocess">
+                  <label
+                    className={`method-card-paymentprocess ${
+                      paymentMethod === "atm" ? "selected-paymentprocess" : ""
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      value="atm"
+                      checked={paymentMethod === "atm"}
+                      onChange={() => handlePaymentMethodChange("atm")}
+                    />
+                    <CreditCard size={20} /> Thanh Toán Qua Ngân Hàng
+                  </label>
+                  {paymentMethod === "atm" && (
+                    <Select
+                      options={bankOptions}
+                      value={bankOptions.find(
+                        (option) => option.value === selectedBank
+                      )}
+                      onChange={(selectedOption) =>
+                        setSelectedBank(selectedOption?.value || "")
+                      }
+                      styles={customStyles}
+                      formatOptionLabel={formatOptionLabel}
+                      placeholder="Chọn ngân hàng"
+                      className="bank-select-paymentprocess"
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+            <button
+              className="confirm-btn-paymentprocess"
+              onClick={handleConfirm}
+              disabled={
+                isSubmitting || (paymentMethod === "atm" && !selectedBank)
+              }
+            >
+              {isSubmitting ? "Đang xử lý..." : "Xác Nhận Thanh Toán"}{" "}
+              <ChevronRight size={18} />
+            </button>
+            {confirmationMessage && (
+              <div
+                className={`confirmation-message-paymentprocess ${confirmationStatus}`}
               >
-                {customer.gender ? (
-                  <i className="fa-solid fa-mars"></i>
+                {confirmationStatus === "success-paymentprocess" ? (
+                  <Check size={18} />
                 ) : (
-                  <i className="fa-solid fa-venus"></i>
+                  <AlertTriangle size={18} />
                 )}
+                {confirmationMessage}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="payment-summary-paymentprocess">
+          <h2>Tóm Tắt Thanh Toán</h2>
+          <div className="summary-grid-paymentprocess">
+            <div className="summary-item-paymentprocess">
+              <span>Tổng Hóa Đơn:</span>
+              <span>
+                {formatCurrency(payment?.booking?.totalAmount || 0)} VNĐ
               </span>
             </div>
-            <div className="card-body">
-              <p>
-                <i className="fa-solid fa-phone"></i> {customer.phoneNumber}
-              </p>
-              <p>
-                <i className="fa-solid fa-envelope"></i> {customer.email}
-              </p>
-              <p>
-                <i className="fa-solid fa-calendar"></i> {customer.dob}
-              </p>
+            {couponApplied && couponData && (
+              <>
+                <div className="summary-item-paymentprocess">
+                  <span>Phần Trăm Giảm:</span>
+                  <span>{couponData.discount}%</span>
+                </div>
+              </>
+            )}
+            <div className="summary-item-paymentprocess">
+              <span>Giảm Giá:</span>
+              <span>
+                {couponApplied
+                  ? `${formatCurrency(couponDiscount)} VNĐ`
+                  : "0 VNĐ"}
+              </span>
             </div>
-            <div className="card-footer">
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={customer.active}
-                  onChange={() => toggleStatus(customer.customerId)} // Chỉ thay đổi trạng thái
-                />
-                <span className="slider"></span>
-              </label>
-              <button
-                className="btn-update"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openUpdateModal(customer);
-                }}
-              >
-                Update
-              </button>
+            <div className="summary-item-paymentprocess">
+              <span>Thành Tiền:</span>
+              <span className="total-amount-paymentprocess">
+                {formatCurrency(getFinalAmount())} VNĐ
+              </span>
             </div>
           </div>
-        ))}
-      </div>
-
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-update">
-            <div className="modal-header">
-              <h3>Update Customer</h3>
-            </div>
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label>First Name</label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Last Name</label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Phone Number</label>
-                <input
-                  type="text"
-                  name="phoneNumber"
-                  value={formData.phoneNumber}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Date of Birth</label>
-                <input
-                  type="date"
-                  name="dob"
-                  value={formData.dob}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Gender</label>
-                <select
-                  name="gender"
-                  value={formData.gender ? "true" : "false"}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      gender: e.target.value === "true",
-                    }))
-                  }
-                >
-                  <option value="true">Male</option>
-                  <option value="false">Female</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label>Password</label>
-                <input
-                  type="text"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Address</label>
-                <input
-                  type="text"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="form-group">
-                <label>Banking</label>
-                <input
-                  type="text"
-                  name="banking"
-                  value={formData.banking}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="modal-actions">
-                <button
-                  type="button"
-                  className="btn-cancel"
-                  onClick={closeModal}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="btn-submit">
-                  Save changes
-                </button>
-              </div>
-            </form>
+          <div className="summary-note-paymentprocess">
+            <Check size={16} /> Vui lòng kiểm tra kỹ thông tin trước khi thanh
+            toán.
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
 
-export default CustomerTable;
+export default PaymentProcessPage;

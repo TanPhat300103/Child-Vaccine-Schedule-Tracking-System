@@ -34,6 +34,7 @@
     "react-input-mask": "^2.0.4",
     "react-modal": "^3.16.3",
     "react-router-dom": "^7.1.5",
+    "react-select": "^5.10.1",
     "react-toastify": "^11.0.3",
     "react-window": "^1.8.11",
     "shadcn-ui": "^0.9.4",
