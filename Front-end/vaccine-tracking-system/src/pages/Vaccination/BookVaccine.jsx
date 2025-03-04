@@ -220,7 +220,7 @@ const BookVaccine = () => {
           });
 
           // Chuyển vaccineComboId và childId qua trang tiếp theo
-          navigate("/customer", {
+          navigate("/customer/booking", {
             state: {
               vaccineId: selectedVaccines.map((v) => v.vaccineComboId),
               vaccineComboId: selectedCombos.map((c) => c.vaccineComboId),
@@ -591,6 +591,22 @@ const BookVaccine = () => {
               >
                 + Thêm trẻ
               </button>
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                Chọn ngày tiêm
+              </h2>
+              <input
+                type="date"
+                min={format(new Date(), "yyyy-MM-dd")}
+                value={formData.bookingDate} // Đảm bảo giá trị được lấy từ formData
+                onChange={(e) => {
+                  setSelectedDate(e.target.value); // Lưu giá trị vào selectedDate
+                  setFormData((prev) => ({
+                    ...prev,
+                    bookingDate: e.target.value, // Cập nhật bookingDate trong formData
+                  }));
+                }}
+                className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none mb-6 w-full md:w-auto"
+              />
             </div>
           </div>
         </div>

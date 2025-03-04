@@ -55,6 +55,9 @@ import BookVaccine from "../pages/Vaccination/BookVaccine.jsx";
 import Header from "../components/common/Header.jsx";
 import Footer from "../components/common/Footer.jsx";
 import { AuthProvider } from "../components/common/AuthContext.jsx";
+import PaymentProcessPage from "../pages/Payment/PaymentVNPay.jsx";
+import PaymentPay from "../pages/Payment/PaymentVNPay.jsx";
+import VNPAY from "../pages/Payment/VNPAY.jsx";
 
 const Main = () => {
   return (
@@ -98,6 +101,8 @@ const Main = () => {
               <Route path="/header" element={<Header />} />
               <Route path="/footer" element={<Footer />} />
               <Route path="/auth" element={<AuthProvider />} />
+              <Route path="/paymentVnpay" element={<PaymentPay />} />
+              <Route path="/vnpay" element={<VNPAY />} />
 
               {/* Route /customer */}
               <Route path="/customer" element={<CustomerPage />}>

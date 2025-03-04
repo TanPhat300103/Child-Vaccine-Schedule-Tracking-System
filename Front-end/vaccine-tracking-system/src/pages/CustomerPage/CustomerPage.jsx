@@ -19,6 +19,7 @@ import {
 } from "react-icons/fi";
 import { FaMars, FaVenus, FaChild } from "react-icons/fa";
 import { AiOutlineHistory } from "react-icons/ai";
+import { useAuth } from "../../components/common/AuthContext";
 
 // Hàm so sánh dữ liệu form và dữ liệu gốc
 const isFormChanged = (formData, originalData) => {
@@ -66,7 +67,8 @@ const CustomerPage = () => {
     address: "",
     password: "",
   });
-
+  const { userInfo } = useAuth();
+  console.log("userinfo: ", userInfo);
   // Khi customer thay đổi => set lại formData và originalData
   useEffect(() => {
     if (customer) {
@@ -84,7 +86,25 @@ const CustomerPage = () => {
       setOriginalData(newForm);
     }
   }, [customer]);
-
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [proFileData, setProFileData] = useState(null);
+  useEffect(() => {
+    // Kiểm tra xem người dùng đã đăng nhập chưa
+    const data = fetch("http://localhost:8080/auth/myprofile", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((response) => {
+        if (response.status === 401) {
+          setIsAuthenticated(false);
+        }
+      })
+      .catch((error) => {
+        setIsAuthenticated(false);
+      });
+    setProFileData(data);
+    console.log("my profile data: ", proFileData);
+  }, []);
   // Theo dõi thay đổi form để bật tắt nút lưu
   useEffect(() => {
     setIsChanged(isFormChanged(formData, originalData));

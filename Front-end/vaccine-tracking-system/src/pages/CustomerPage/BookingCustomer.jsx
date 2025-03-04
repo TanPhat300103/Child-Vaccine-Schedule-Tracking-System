@@ -1,4 +1,3 @@
-// src/pages/Customer/BookingList.jsx
 import React, { useEffect, useState } from "react";
 import { useLocation, NavLink } from "react-router-dom";
 import {
@@ -11,6 +10,7 @@ import { format } from "date-fns";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import isSameDay from "date-fns/isSameDay";
+import { useAuth } from "../../components/common/AuthContext";
 
 const BookingCustomer = () => {
   const [bookings, setBookings] = useState([]);
@@ -19,12 +19,37 @@ const BookingCustomer = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [bookingDetails, setBookingDetails] = useState([]);
   const [selectedBooking, setSelectedBooking] = useState(null);
-  const [selectedStatus, setSelectedStatus] = useState(1); // 1: Đang Xử Lý, 2: Đã Thanh Toán, 3: Đã Huỷ
+  const [selectedStatus, setSelectedStatus] = useState(0); // 0: Đã Đặt, 2: Đã Thanh Toán, 3: Đã Huỷ
   const [showCalendarModal, setShowCalendarModal] = useState(false);
+  const { userInfo } = useAuth();
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [proFileData, setProFileData] = useState(null);
+
+  // Kiểm tra xem người dùng đã đăng nhập chưa
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/auth/myprofile", {
+          method: "GET",
+          credentials: "include", // Gửi cookie/session
+        });
+        if (response.status === 401) {
+          setIsAuthenticated(false);
+        } else {
+          const data = await response.json();
+          setProFileData(data); // Cập nhật dữ liệu profile
+        }
+      } catch (error) {
+        setIsAuthenticated(false);
+        console.error("Error fetching profile data:", error);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
 
   const location = useLocation();
-  const customerId = location.state?.customerId;
-  console.log("Received customerId in Booking:", customerId);
+  const customerId = userInfo?.userId || "C001"; // Sử dụng customerId từ userInfo
 
   // Lấy danh sách booking theo customerId
   const fetchBookings = async () => {
@@ -50,7 +75,6 @@ const BookingCustomer = () => {
     setSelectedStatus(status);
   };
 
-  // Mở modal chi tiết booking
   const handleCardClick = async (booking) => {
     setSelectedBooking(booking);
     try {
@@ -71,7 +95,6 @@ const BookingCustomer = () => {
     console.log("Modal chi tiết booking đã đóng.");
   };
 
-  // Gọi API hủy booking
   const handleCancelBooking = async (bookingId, e) => {
     e.stopPropagation();
     try {
@@ -83,7 +106,6 @@ const BookingCustomer = () => {
     }
   };
 
-  // Gọi API đặt lại booking (đổi trạng thái về 1)
   const handleRescheduleBooking = async (bookingId, e) => {
     e.stopPropagation();
     try {
@@ -95,7 +117,6 @@ const BookingCustomer = () => {
     }
   };
 
-  // Xử lý modal lịch
   const openCalendarModal = () => setShowCalendarModal(true);
   const closeCalendarModal = () => setShowCalendarModal(false);
 
@@ -103,23 +124,20 @@ const BookingCustomer = () => {
   if (error) return <p className="text-red-500">{error}</p>;
   if (bookings.length === 0) return <p>Không có đặt lịch nào</p>;
 
-  // Lọc booking theo trạng thái được chọn
   const filteredBookings = bookings.filter((b) => b.status === selectedStatus);
 
-  // Top filter button labels và styles
   const statusLabels = {
-    1: "Đã Đặt",
+    0: "Đã Đặt",
     2: "Đã Hoàn Thành",
     3: "Đã Huỷ",
   };
 
   const statusButtonStyles = {
-    1: "bg-blue-500 hover:bg-blue-600",
+    0: "bg-blue-500 hover:bg-blue-600",
     2: "bg-green-500 hover:bg-green-600",
     3: "bg-red-500 hover:bg-red-600",
   };
 
-  // Render card booking với hiệu ứng hover và các nút hành động theo trạng thái
   const renderBookingCard = (booking) => (
     <div
       key={booking.bookingId}
@@ -129,11 +147,10 @@ const BookingCustomer = () => {
       <p className="font-bold">Mã đặt lịch: {booking.bookingId}</p>
       <p>Ngày đặt: {format(new Date(booking.bookingDate), "dd/MM/yyyy")}</p>
       <p>Tổng tiền: {booking.totalAmount.toLocaleString()} VNĐ</p>
-      {/* Nút hành động theo trạng thái */}
-      {booking.status === 1 && (
+      {booking.status === 0 && (
         <div className="flex space-x-2 mt-2">
           <NavLink
-            to="/payment"
+            to="/paymentVnpay"
             state={{ bookingId: booking.bookingId }}
             className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded"
           >
@@ -175,10 +192,8 @@ const BookingCustomer = () => {
     </div>
   );
 
-  // Tập hợp các ngày đặt lịch để highlight trên calendar
   const bookingDates = bookings.map((b) => new Date(b.bookingDate));
 
-  // Hàm để thêm class cho các ngày có booking
   const tileClassName = ({ date, view }) => {
     if (view === "month" && bookingDates.some((d) => isSameDay(d, date))) {
       return "highlight";
@@ -188,9 +203,8 @@ const BookingCustomer = () => {
 
   return (
     <div className="p-4">
-      {/* Top filter buttons */}
       <div className="flex space-x-4 mb-6">
-        {[1, 2, 3].map((status) => (
+        {[0, 2, 3].map((status) => (
           <button
             key={status}
             onClick={() => handleStatusClick(status)}
@@ -207,7 +221,6 @@ const BookingCustomer = () => {
         ))}
       </div>
 
-      {/* Booking cards hiển thị theo hàng ngang */}
       {filteredBookings.length > 0 ? (
         <div className="flex space-x-4 overflow-x-auto">
           {filteredBookings.map((booking) => renderBookingCard(booking))}
@@ -218,7 +231,6 @@ const BookingCustomer = () => {
         </p>
       )}
 
-      {/* Nút ở cuối trang để mở modal lịch */}
       <div className="mt-8 text-center">
         <button
           onClick={openCalendarModal}
@@ -228,7 +240,6 @@ const BookingCustomer = () => {
         </button>
       </div>
 
-      {/* Modal lịch đặt */}
       {showCalendarModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-opacity-30 backdrop-blur-md z-50">
           <div className="bg-white rounded-lg p-8 shadow-2xl max-w-lg w-full relative">
@@ -249,7 +260,6 @@ const BookingCustomer = () => {
         </div>
       )}
 
-      {/* Modal chi tiết booking */}
       {modalVisible && (
         <div className="fixed inset-0 flex items-center justify-center bg-opacity-30 backdrop-blur-md z-50">
           <div className="bg-white rounded-lg p-8 shadow-2xl max-w-lg w-full relative">
@@ -285,7 +295,6 @@ const BookingCustomer = () => {
                     key={detail.bookingDetailId}
                     className="mb-6 p-4 border rounded-lg shadow-sm"
                   >
-                    {/* Tên trẻ em nổi bật */}
                     <p className="text-2xl font-extrabold mb-2">
                       {detail.child.firstName} {detail.child.lastName}
                     </p>
@@ -314,7 +323,6 @@ const BookingCustomer = () => {
                           )
                         : "Chưa tiêm"}
                     </p>
-                    {/* Phản ứng nổi bật */}
                     <p className="mt-4 text-lg font-bold text-red-600">
                       Phản ứng: {detail.reactionNote}
                     </p>
