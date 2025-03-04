@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
-import { FaPlus, FaSearch, FaFilter, FaEdit, FaPowerOff } from "react-icons/fa";
+import { FaPlus, FaSearch, FaFilter, FaPowerOff } from "react-icons/fa";
 
-// Hàm parse/format thời gian (chỉ ngày)
+/* --- Các hàm hỗ trợ định dạng ngày --- */
 function parseLocalDateString(str) {
   if (!str) return "";
   return dayjs(str).format("YYYY-MM-DD");
@@ -13,7 +13,7 @@ function formatLocalDateString(date) {
   return dayjs(date).format("YYYY-MM-DD");
 }
 
-// --- Component ModalForm (cập nhật) ---
+/* --- Component ModalForm (dùng cho tạo mới) --- */
 const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
   const [formData, setFormData] = useState(
     initialData
@@ -75,6 +75,7 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
           {isEditMode ? "Chỉnh sửa sự kiện" : "Tạo sự kiện mới"}
         </h3>
         <form onSubmit={handleFormSubmit} className="space-y-4">
+          {/* Các trường tạo mới */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Tên sự kiện
@@ -189,11 +190,11 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
   );
 };
 
-// --- Component CampaignItem ---
-const CampaignItem = ({ campaign, onCampaignUpdated }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleToggleActive = async () => {
+/* --- Component hiển thị từng dòng sự kiện marketing dưới dạng danh sách --- */
+const CampaignItem = ({ campaign, onCampaignSelected, onCampaignUpdated }) => {
+  // Hàm chuyển trạng thái active/inactive
+  const handleToggleActive = async (e) => {
+    e.stopPropagation();
     const toggled = { ...campaign, active: !campaign.active };
     try {
       const res = await fetch("http://localhost:8080/marketing/update", {
@@ -209,91 +210,51 @@ const CampaignItem = ({ campaign, onCampaignUpdated }) => {
     }
   };
 
-  const handleUpdate = async (updatedData) => {
-    try {
-      const response = await fetch("http://localhost:8080/marketing/update", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedData),
-      });
-      if (!response.ok) throw new Error("Lỗi khi cập nhật");
-      const updated = await response.json();
-      onCampaignUpdated(updated);
-    } catch (error) {
-      console.error("Lỗi:", error);
-    }
-  };
-
   return (
-    <>
-      <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-md p-4 transition-all hover:scale-105 hover:shadow-xl border border-gray-100 flex flex-col h-full">
-        <h3 className="text-lg font-semibold text-blue-700 mb-2 truncate">
+    <div
+      onClick={(e) => onCampaignSelected(campaign, e)}
+      className="flex items-center justify-between bg-white rounded-lg shadow-lg p-4 hover:shadow-2xl transition transform hover:scale-105 cursor-pointer border border-gray-100"
+    >
+      <div>
+        <h2 className="text-xl font-extrabold text-blue-600 truncate">
           {campaign.name}
-        </h3>
-        <div className="text-sm text-gray-600 space-y-1 flex-1">
-          <p>
-            <span className="font-medium">Bắt đầu:</span>{" "}
-            {campaign.startTime || "Chưa có"}
-          </p>
-          <p>
-            <span className="font-medium">Kết thúc:</span>{" "}
-            {campaign.endTime || "Chưa có"}
-          </p>
-          <p>
-            <span className="font-medium">Coupon:</span> {campaign.coupon}
-          </p>
-          <p>
-            <span className="font-medium">Giảm giá:</span> {campaign.discount}%
-          </p>
-          <p className="truncate">
-            <span className="font-medium">Mô tả:</span> {campaign.description}
-          </p>
-          <p>
-            <span className="font-medium">Trạng thái:</span>{" "}
-            <span
-              className={campaign.active ? "text-green-500" : "text-red-500"}
-            >
-              {campaign.active ? "Hoạt động" : "Ngưng"}
-            </span>
-          </p>
-        </div>
-        <div className="flex justify-between mt-3">
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition-all text-sm"
-          >
-            <FaEdit className="mr-1" /> Sửa
-          </button>
-          <button
-            onClick={handleToggleActive}
-            className={`flex items-center px-3 py-1 rounded-lg text-white transition-all text-sm ${
-              campaign.active
-                ? "bg-red-500 hover:bg-red-600"
-                : "bg-green-500 hover:bg-green-600"
-            }`}
-          >
-            <FaPowerOff className="mr-1" />
-            {campaign.active ? "Ngưng" : "Kích hoạt"}
-          </button>
-        </div>
+        </h2>
+        <p className="text-sm text-gray-600">
+          Bắt đầu: {campaign.startTime || "Chưa có"}
+        </p>
+        <p className="text-sm text-gray-600">
+          Kết thúc: {campaign.endTime || "Chưa có"}
+        </p>
+        <p className="text-sm text-gray-600">Coupon: {campaign.coupon}</p>
       </div>
-      <ModalForm
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleUpdate}
-        initialData={campaign}
-        isEditMode={true}
-      />
-    </>
+      <div>
+        <button
+          onClick={handleToggleActive}
+          className={`text-white font-bold py-1 px-3 rounded flex items-center justify-center ${
+            campaign.active
+              ? "bg-green-500 hover:bg-green-700"
+              : "bg-red-500 hover:bg-red-700"
+          }`}
+        >
+          <FaPowerOff size={18} className="mr-1" />
+          {campaign.active ? "Active" : "Inactive"}
+        </button>
+      </div>
+    </div>
   );
 };
 
-// --- Component chính MarketingCampaigns ---
+/* --- Component chính MarketingCampaigns --- */
 const MarketingCampaigns = () => {
   const [campaigns, setCampaigns] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showOnlyActive, setShowOnlyActive] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+
+  // State cho modal chỉnh sửa sự kiện (theo kiểu Customers.jsx)
+  const [editingCampaign, setEditingCampaign] = useState(null);
+  const [originalEditingCampaign, setOriginalEditingCampaign] = useState(null);
+  const [updateError, setUpdateError] = useState(null);
 
   const fetchCampaigns = async () => {
     try {
@@ -305,6 +266,10 @@ const MarketingCampaigns = () => {
       console.error("Lỗi:", error);
     }
   };
+
+  useEffect(() => {
+    fetchCampaigns();
+  }, []);
 
   const handleCampaignUpdated = (updated) => {
     setCampaigns((prev) =>
@@ -324,14 +289,59 @@ const MarketingCampaigns = () => {
       if (!response.ok) throw new Error("Lỗi khi tạo");
       const created = await response.json();
       setCampaigns((prev) => [created, ...prev]);
+      setShowCreateModal(false);
     } catch (error) {
       console.error("Lỗi:", error);
     }
   };
 
-  useEffect(() => {
-    fetchCampaigns();
-  }, []);
+  // Khi nhấn vào 1 dòng, mở modal chỉnh sửa (theo kiểu Customers.jsx)
+  const handleCampaignSelected = (campaign, e) => {
+    e.stopPropagation();
+    setEditingCampaign({ ...campaign });
+    setOriginalEditingCampaign({ ...campaign });
+    setUpdateError(null);
+  };
+
+  const isCampaignChanged = () => {
+    return (
+      JSON.stringify(editingCampaign) !==
+      JSON.stringify(originalEditingCampaign)
+    );
+  };
+
+  const handleSaveCampaign = async () => {
+    try {
+      const payload = {
+        ...editingCampaign,
+        startTime: formatLocalDateString(editingCampaign.startTime),
+        endTime: formatLocalDateString(editingCampaign.endTime),
+      };
+      const response = await fetch("http://localhost:8080/marketing/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Lỗi không xác định khi cập nhật.");
+      }
+      const updatedCampaign = await response.json();
+      setCampaigns((prev) =>
+        prev.map((c) =>
+          c.marketingCampaignId === updatedCampaign.marketingCampaignId
+            ? updatedCampaign
+            : c
+        )
+      );
+      setEditingCampaign(null);
+      setOriginalEditingCampaign(null);
+      setUpdateError(null);
+    } catch (error) {
+      console.error("Cập nhật lỗi:", error);
+      setUpdateError(error.message);
+    }
+  };
 
   const filteredCampaigns = campaigns.filter((c) => {
     const matchName = c.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -345,7 +355,6 @@ const MarketingCampaigns = () => {
         <h2 className="text-4xl font-bold text-blue-700 mb-8 text-center">
           Quản Lý Sự Kiện Marketing
         </h2>
-
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
           <div className="relative w-full sm:w-1/2">
             <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -374,27 +383,165 @@ const MarketingCampaigns = () => {
           </div>
         </div>
 
-        <ModalForm
-          isOpen={showCreateModal}
-          onClose={() => setShowCreateModal(false)}
-          onSubmit={handleCampaignCreated}
-          initialData={null}
-          isEditMode={false}
-        />
+        {/* Modal tạo mới sử dụng ModalForm */}
+        {showCreateModal && (
+          <ModalForm
+            isOpen={showCreateModal}
+            onClose={() => setShowCreateModal(false)}
+            onSubmit={handleCampaignCreated}
+            initialData={null}
+            isEditMode={false}
+          />
+        )}
 
         {filteredCampaigns.length === 0 ? (
           <p className="text-center text-gray-500 text-lg">
             Không tìm thấy sự kiện nào
           </p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="flex flex-col gap-2">
             {filteredCampaigns.map((item) => (
               <CampaignItem
                 key={item.marketingCampaignId}
                 campaign={item}
+                onCampaignSelected={handleCampaignSelected}
                 onCampaignUpdated={handleCampaignUpdated}
               />
             ))}
+          </div>
+        )}
+
+        {/* Modal chỉnh sửa sự kiện marketing theo style Customers.jsx */}
+        {editingCampaign && (
+          <div className="fixed inset-0 flex items-center justify-center bg-opacity-30 backdrop-blur-md z-50">
+            <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-3xl ring-1 ring-gray-200">
+              <h3 className="text-2xl font-semibold mb-6">
+                Cập Nhật Sự Kiện Marketing
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Tên sự kiện
+                  </label>
+                  <input
+                    type="text"
+                    value={editingCampaign.name}
+                    onChange={(e) =>
+                      setEditingCampaign({
+                        ...editingCampaign,
+                        name: e.target.value,
+                      })
+                    }
+                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Mã coupon
+                  </label>
+                  <input
+                    type="text"
+                    value={editingCampaign.coupon}
+                    onChange={(e) =>
+                      setEditingCampaign({
+                        ...editingCampaign,
+                        coupon: e.target.value,
+                      })
+                    }
+                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Bắt đầu
+                  </label>
+                  <input
+                    type="date"
+                    value={editingCampaign.startTime}
+                    onChange={(e) =>
+                      setEditingCampaign({
+                        ...editingCampaign,
+                        startTime: e.target.value,
+                      })
+                    }
+                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Kết thúc
+                  </label>
+                  <input
+                    type="date"
+                    value={editingCampaign.endTime}
+                    onChange={(e) =>
+                      setEditingCampaign({
+                        ...editingCampaign,
+                        endTime: e.target.value,
+                      })
+                    }
+                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                </div>
+              </div>
+              {/* Thêm trường Giảm giá và Mô tả */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Giảm giá (%)
+                  </label>
+                  <input
+                    type="number"
+                    value={editingCampaign.discount}
+                    onChange={(e) =>
+                      setEditingCampaign({
+                        ...editingCampaign,
+                        discount: e.target.value,
+                      })
+                    }
+                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Mô tả
+                  </label>
+                  <textarea
+                    value={editingCampaign.description}
+                    onChange={(e) =>
+                      setEditingCampaign({
+                        ...editingCampaign,
+                        description: e.target.value,
+                      })
+                    }
+                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    rows={3}
+                  ></textarea>
+                </div>
+              </div>
+              {updateError && (
+                <p className="text-red-500 text-sm mt-4">{updateError}</p>
+              )}
+              <div className="flex justify-end space-x-4 mt-6">
+                <button
+                  onClick={handleSaveCampaign}
+                  disabled={!isCampaignChanged()}
+                  className={`font-bold py-2 px-4 rounded-lg ${
+                    isCampaignChanged()
+                      ? "bg-green-500 hover:bg-green-700 text-white"
+                      : "bg-gray-400 text-gray-200 cursor-not-allowed"
+                  }`}
+                >
+                  Lưu
+                </button>
+                <button
+                  onClick={() => setEditingCampaign(null)}
+                  className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg"
+                >
+                  Hủy
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>

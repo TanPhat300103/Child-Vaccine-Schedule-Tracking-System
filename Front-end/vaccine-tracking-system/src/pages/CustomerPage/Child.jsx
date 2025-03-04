@@ -257,38 +257,6 @@ const Child = () => {
         )}
       </div>
 
-      {/* Bảng Vaccine Đã Tiêm (nếu có) */}
-      <div className="overflow-x-auto">
-        <h3 className="text-xl font-bold text-center mb-4">Vaccine Đã Tiêm</h3>
-        {child.vaccinations && child.vaccinations.length > 0 ? (
-          <table className="w-full bg-white border mb-8">
-            <thead>
-              <tr className="bg-blue-50 text-blue-700 uppercase text-base leading-normal">
-                <th className="py-3 px-6 text-left">STT</th>
-                <th className="py-3 px-6 text-left">Vaccine Đã Tiêm</th>
-                <th className="py-3 px-6 text-left">Ngày tiêm</th>
-              </tr>
-            </thead>
-            <tbody className="text-blue-700 text-base font-medium">
-              {child.vaccinations.map((vac, index) => (
-                <tr
-                  key={vac.id}
-                  className="border-b border-gray-200 hover:bg-blue-50 transition-colors"
-                >
-                  <td className="py-3 px-6 text-center">{index + 1}</td>
-                  <td className="py-3 px-6">{vac.vaccine}</td>
-                  <td className="py-3 px-6">
-                    {format(new Date(vac.date), "dd/MM/yyyy")}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p className="text-center">Không có vaccine nào đã tiêm.</p>
-        )}
-      </div>
-
       {/* Bảng Lịch Sử Tiêm Chủng (Medical History) */}
       <div className="overflow-x-auto mt-8">
         <h3 className="text-xl font-bold text-center mb-4">
