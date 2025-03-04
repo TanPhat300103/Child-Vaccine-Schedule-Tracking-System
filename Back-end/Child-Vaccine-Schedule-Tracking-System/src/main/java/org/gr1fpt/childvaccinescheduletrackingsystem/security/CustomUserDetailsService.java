@@ -5,12 +5,11 @@ import org.gr1fpt.childvaccinescheduletrackingsystem.admin.AdminRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.customer.Customer;
 import org.gr1fpt.childvaccinescheduletrackingsystem.customer.CustomerRepository;
 
-import org.gr1fpt.childvaccinescheduletrackingsystem.satff.Staff;
-import org.gr1fpt.childvaccinescheduletrackingsystem.satff.StaffRepository;
+import org.gr1fpt.childvaccinescheduletrackingsystem.staff.Staff;
+import org.gr1fpt.childvaccinescheduletrackingsystem.staff.StaffRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

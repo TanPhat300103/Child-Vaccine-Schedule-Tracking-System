@@ -37,4 +37,5 @@ public class Notification {
     @Column(name = "Date")
     private Date date;
 
+
 }

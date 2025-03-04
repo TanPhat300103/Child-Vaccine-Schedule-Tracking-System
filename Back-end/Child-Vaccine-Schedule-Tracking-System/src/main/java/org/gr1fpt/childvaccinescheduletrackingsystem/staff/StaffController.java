@@ -1,4 +1,4 @@
-package org.gr1fpt.childvaccinescheduletrackingsystem.satff;
+package org.gr1fpt.childvaccinescheduletrackingsystem.staff;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

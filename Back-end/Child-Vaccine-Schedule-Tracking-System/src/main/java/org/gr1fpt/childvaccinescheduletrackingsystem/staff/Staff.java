@@ -1,11 +1,10 @@
-package org.gr1fpt.childvaccinescheduletrackingsystem.satff;
+package org.gr1fpt.childvaccinescheduletrackingsystem.staff;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Nationalized;
 
 import java.sql.Date;
 
