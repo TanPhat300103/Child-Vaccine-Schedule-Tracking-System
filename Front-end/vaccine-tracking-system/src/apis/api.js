@@ -917,20 +917,6 @@ export const getMedicalHistoryByChildId = async (childId) => {
   }
 };
 
-// Lấy tất cả Medical History (báo cáo phản ứng)
-export const getAllMedicalHistories = async () => {
-  try {
-    const response = await axios.get(`${API_BASE_URL}/medicalhistory`, {
-      withCredentials: true, // Added here
-    });
-    console.log("API Response (getAllMedicalHistories):", response.data);
-    return response.data;
-  } catch (error) {
-    console.error("Lỗi khi lấy Medical History:", error);
-    throw error;
-  }
-};
-
 // Cập nhật phản ứng cho Medical History
 export const updateReaction = async (id, reaction) => {
   try {
@@ -973,4 +959,3 @@ export const setBookingDetailStatus = async (bookingId, status) => {
     throw error;
   }
 };
-

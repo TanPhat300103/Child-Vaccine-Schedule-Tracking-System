@@ -75,7 +75,7 @@ const Staffs = () => {
   const handleActive = (staffId, e) => {
     e.stopPropagation();
     console.log("Gửi API cập nhật trạng thái active cho:", staffId);
-    fetch(`http://localhost:8080/customer/inactive?id=${staffId}`, {
+    fetch(`http://localhost:8080/staff/active?id=${staffId}`, {
       method: "POST",
     })
       .then((response) => response.json())
