@@ -8,6 +8,7 @@ import org.gr1fpt.childvaccinescheduletrackingsystem.marketingcampaign.Marketing
 import org.gr1fpt.childvaccinescheduletrackingsystem.notification.Notification;
 import org.gr1fpt.childvaccinescheduletrackingsystem.notification.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,9 @@ public class PaymentService {
 
     @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
     //CHO MỤC ĐÍCH KIỂM THỬ
 
@@ -139,7 +143,8 @@ public class PaymentService {
         notification.setCustomer(payment.getBooking().getCustomer());
         notification.setMessage("Đã thanh toán xong. Bạn có góp ý gì cho chúng tôi không? ");
         notificationService.createNotificationAfterPayment(notification);
-
+        //Ném sự kiện gửi mail xác nhận thanh toán
+        applicationEventPublisher.publishEvent(payment);
         return  paymentRepository.save(payment);
     }
 
