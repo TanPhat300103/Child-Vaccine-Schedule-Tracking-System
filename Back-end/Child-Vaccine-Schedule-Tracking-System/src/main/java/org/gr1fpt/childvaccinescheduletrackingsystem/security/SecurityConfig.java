@@ -33,11 +33,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/customer/create","/customer/findid", "/customer/update","/vaccine/findid","/vaccine/findbyage","/vaccine/findbycountry","/vaccine/findbyprice","/vaccine/findbyname","/vaccinecombo","/vaccine","/vaccinecombo/findid","/vaccinecombo/findname","/vaccinedetail","/vaccinedetail/findbyvaccine","/combodetail","/combodetail/findid","/combodetail/findcomboid","/combodetail/findvaccineid","/feedback/**")
                         .permitAll()
-                        
 
                         .requestMatchers("/customer/findid","/booking/create","/booking/findbycustomer","/bookingdetail/findbybooking","/bookingdetail/updatereaction","/booking/cancel","/child/create","/child/findbycustomer","/child/update","/customer/update","/marketing","/medicalhistory/updatereaction","/medicalhistory/findbychildid","/payment/findbybooking","/payment/update")
                         .hasAnyRole("CUSTOMER", "STAFF", "ADMIN")
-
 
                         .requestMatchers("/staff/create","/vaccine/**","/booking/**","/bookingdetail/**","/child/**","/combodetail/**","/email/**","/marketing/**","/medicalhistory/**","/payment/**","/vaccinecombo/**","/vaccinedetail/**","/customer/**")
                         .hasAnyRole("STAFF", "ADMIN")
@@ -51,12 +49,10 @@ public class SecurityConfig {
                         )
                         .defaultSuccessUrl("/auth/user", true)
                 )
-
                 .formLogin(form -> form
                         .loginProcessingUrl("/login")  // URL xử lý đăng nhập là /login
                         .defaultSuccessUrl("/customer", true)
                         .permitAll()
-
                 )
                 .httpBasic(Customizer.withDefaults())  // Test trên postman
                 .logout(logout -> logout

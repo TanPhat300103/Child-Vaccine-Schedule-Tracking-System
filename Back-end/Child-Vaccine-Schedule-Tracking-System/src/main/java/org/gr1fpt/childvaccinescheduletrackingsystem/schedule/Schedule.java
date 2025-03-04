@@ -33,8 +33,7 @@ public class Schedule {
     @Autowired
     BookingDetailRepository bookingDetailRepo;
 
-    @Autowired
-    VaccineRepository vaccineRepo;
+
     //check quantity neu ve 0 thi set status = 0
     @Scheduled(fixedRate = 60000)
     public void checkQuantity() {
