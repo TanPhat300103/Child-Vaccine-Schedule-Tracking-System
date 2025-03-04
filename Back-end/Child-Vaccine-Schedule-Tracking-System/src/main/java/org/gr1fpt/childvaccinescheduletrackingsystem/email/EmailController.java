@@ -51,5 +51,15 @@ public class EmailController {
             return "Error sending email: " + e.getMessage();
         }
     }
+    //TEST
+    @GetMapping("otp")
+    public String otp(){
+        try {
+            emailService.sendOtpEmail("nha3697@gmail.com","123456");
+            return "Email sent successfully to " ;
+        } catch (MessagingException e) {
+            return "Error sending email: " + e.getMessage();
+        }
+    }
 
 }

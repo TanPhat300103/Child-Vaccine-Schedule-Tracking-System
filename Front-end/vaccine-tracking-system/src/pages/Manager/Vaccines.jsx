@@ -178,21 +178,21 @@ const Vaccines = () => {
           onClick={handleOpenModal}
         >
           <h3 className="text-xl font-bold text-blue-700">{vaccine.name}</h3>
-          <button
-            onClick={handleToggleActiveLocal}
-            className={`flex items-center px-3 py-1 rounded-lg text-white transition-all text-sm ${
-              vaccine.active
-                ? "bg-red-500 hover:bg-red-600"
-                : "bg-green-500 hover:bg-green-600"
-            }`}
-          >
-            <FaPowerOff className="" />
-            {vaccine.active ? "Ngưng" : "Kích hoạt"}
-          </button>
-          <div className="absolute right-4 top-4">
+          <div className="flex space-x-2">
+            <button
+              onClick={handleToggleActiveLocal}
+              className={`flex items-center px-3 py-1 rounded-lg text-white transition-all text-sm ${
+                vaccine.active
+                  ? "bg-red-500 hover:bg-red-600"
+                  : "bg-green-500 hover:bg-green-600"
+              }`}
+            >
+              <FaPowerOff size={18} className="mr-1" />
+              {vaccine.active ? "Ngưng" : "Kích hoạt"}
+            </button>
             <NavLink
               to={`../vaccine-detail/${vaccine.vaccineId}`}
-              className="w-full block text-center bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition-all text-sm"
+              className="block text-center bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition-all text-sm"
             >
               Chi tiết
             </NavLink>
