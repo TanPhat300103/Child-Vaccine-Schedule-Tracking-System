@@ -62,4 +62,8 @@ public class MarketingCampaignService {
         else throw new CustomException("Campain is not found", HttpStatus.NOT_FOUND);
     }
 
+    public MarketingCampaign findByCoupon(String coupon){
+        return marketingCampaignRepository.findByCoupon(coupon);
+    }
+
 }

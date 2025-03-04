@@ -46,39 +46,51 @@ public class EmailService {
     }
 
 
-    public void sendBookingConfirmationEmail(String to, String child, String bookingDate,String customerName) throws MessagingException {
+    public void sendBookingConfirmationEmail(String to, String child, String bookingDate, String customerName) throws MessagingException {
 
         String currentTime = LocalDateTime.now().format(dateTimeFormatter);
 
         String subject = "Xác nhận đặt lịch thành công - Dịch vụ của " + companyName;
 
-
         String body = "<html>" +
-                "<body style='font-family: Arial, sans-serif; color: #333333; margin:0; padding:0;'>" +
-                "  <table align='center' style='width:600px; border:1px solid #dddddd; padding:20px;'>" +
+                "<body style='font-family: Arial, sans-serif; color: #333333; margin: 0; padding: 0; background-color: #f4f4f4;'>" +
+                "  <table align='center' style='width: 600px; max-width: 600px; border-collapse: collapse; margin: 20px auto; background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden;'>" +
                 "    <tr>" +
-                "      <td style='text-align: center;'>" +
-                "         <h2 style='color: #4CAF50;'>Xác Nhận Đặt Lịch Thành Công</h2>" +
+                "      <td style='background: linear-gradient(to right, #4CAF50, #45a049); padding: 20px; text-align: center;'>" +
+                "        <h2 style='color: #ffffff; margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 1px; animation: fadeIn 1s ease-in;'>" +
+                "          Xác Nhận Đặt Lịch Thành Công" +
+                "        </h2>" +
                 "      </td>" +
                 "    </tr>" +
                 "    <tr>" +
-                "      <td>" +
-                "          <p>Chào " + customerName + ",</p>" +
-                "         <p>Chúng tôi xin trân trọng thông báo rằng Quý khách đã đặt lịch thành công cho dịch vụ của <strong>" + companyName + "</strong>." +
-                "         <br><strong>Ngày đặt lịch:</strong> " + currentTime + "</p>" +
-                "         <p><strong>Thông tin trẻ:</strong> " + child + "</p>" +
-                "         <p><strong>Ngày hẹn:</strong> " + bookingDate + "</p>" +
-                "         <p>Nếu Quý khách không thực hiện yêu cầu đặt lịch này, xin vui lòng liên hệ ngay với Tổng đài hỗ trợ qua số điện thoại <strong>" + supportPhone + "</strong> để được tư vấn và hỗ trợ kịp thời.</p>" +
-                "         <p>Chúng tôi rất vinh hạnh được phục vụ Quý khách và mong rằng Quý khách sẽ có trải nghiệm tuyệt vời với dịch vụ của chúng tôi.</p>" +
-                "         <p>Trân trọng,</p>" +
-                "         <p><strong>" + signature + "</strong></p>" +
-                "         <p style='font-size: 0.9em; color: #777777;'>" +
-                "            Địa chỉ: " + companyAddress + "<br>" +
-                "            Email: " + companyEmail + " | Điện thoại: " + companyPhone +
-                "         </p>" +
+                "      <td style='padding: 30px;'>" +
+                "        <p style='font-size: 16px; line-height: 1.6;'>Chào <span style='color: #4CAF50; font-weight: bold;'>" + customerName + "</span>,</p>" +
+                "        <p style='font-size: 16px; line-height: 1.6;'>Chúng tôi xin trân trọng thông báo rằng Quý khách đã đặt lịch thành công cho dịch vụ của <strong style='color: #2c7be5;'>" + companyName + "</strong>.</p>" +
+                "        <table style='width: 100%; margin: 20px 0; border-left: 4px solid #4CAF50; padding-left: 15px; background: #f1f8f1; border-radius: 5px; transition: all 0.3s ease;'>" +
+                "          <tr><td><strong>Ngày đặt lịch:</strong></td><td>" + currentTime + "</td></tr>" +
+                "          <tr><td><strong>Thông tin trẻ:</strong></td><td>" + child + "</td></tr>" +
+                "          <tr><td><strong>Ngày hẹn:</strong></td><td style='color: #e67e22; font-weight: bold;'>" + bookingDate + "</td></tr>" +
+                "        </table>" +
+                "        <p style='font-size: 14px; line-height: 1.6; color: #666666; margin: 20px 0;'>Nếu Quý khách không thực hiện yêu cầu đặt lịch này, xin vui lòng liên hệ ngay với Tổng đài hỗ trợ qua số điện thoại <a href='tel:" + supportPhone + "' style='color: #4CAF50; text-decoration: none; font-weight: bold; transition: color 0.3s ease;'>" + supportPhone + "</a> để được tư vấn và hỗ trợ kịp thời.</p>" +
+                "        <p style='font-size: 16px; line-height: 1.6; margin: 20px 0;'>Chúng tôi rất vinh hạnh được phục vụ Quý khách và mong rằng Quý khách sẽ có trải nghiệm tuyệt vời với dịch vụ của chúng tôi.</p>" +
+                "        <p style='font-size: 16px; margin: 20px 0 0;'>Trân trọng,</p>" +
+                "        <p style='font-size: 16px; color: #2c7be5; margin: 5px 0 20px; font-weight: bold;'>" + signature + "</p>" +
+                "      </td>" +
+                "    </tr>" +
+                "    <tr>" +
+                "      <td style='background: #eef4ed; padding: 15px; text-align: center; border-top: 1px solid #dddddd;'>" +
+                "        <p style='font-size: 12px; color: #777777; margin: 5px 0;'>" +
+                "          Địa chỉ: " + companyAddress + "<br>" +
+                "          Email: <a href='mailto:" + companyEmail + "' style='color: #4CAF50; text-decoration: none;'>" + companyEmail + "</a> | Điện thoại: " + companyPhone +
+                "        </p>" +
                 "      </td>" +
                 "    </tr>" +
                 "  </table>" +
+                "  <style>" +
+                "    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }" +
+                "    a:hover { color: #2c7be5 !important; }" +
+                "    table tr:hover { background: #e8f4e8; }" +
+                "  </style>" +
                 "</body>" +
                 "</html>";
 
@@ -264,6 +276,14 @@ public class EmailService {
                 + "</div>"
                 + "</body>"
                 + "</html>";
+
+        sendEmail(to, subject, body);
+    }
+
+    public void sendOtpEmail(String to, String otp) throws MessagingException {
+        String subject = "Your OTP Code";
+        String body = "<p>Your OTP code is: <b>" + otp + "</b></p>"
+                + "<p>Thank you!</p>";
 
         sendEmail(to, subject, body);
     }

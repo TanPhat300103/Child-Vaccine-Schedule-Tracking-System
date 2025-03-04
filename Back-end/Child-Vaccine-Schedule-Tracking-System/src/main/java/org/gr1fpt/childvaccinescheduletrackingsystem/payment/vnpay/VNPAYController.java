@@ -1,15 +1,18 @@
 package org.gr1fpt.childvaccinescheduletrackingsystem.payment.vnpay;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.gr1fpt.childvaccinescheduletrackingsystem.payment.Payment;
 import org.gr1fpt.childvaccinescheduletrackingsystem.payment.PaymentRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.payment.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -26,36 +29,39 @@ public class VNPAYController  {
       PaymentService paymentService;
 
       @Autowired
+      ApplicationEventPublisher applicationEventPublisher;
+
+      @Autowired
     PaymentRepository paymentRepository;
 
     @GetMapping("/vnpay")
-    public RedirectView getVnpay(@RequestParam String id, @RequestParam int price) throws UnsupportedEncodingException {
-        String paymentUrl = vnpayService.createVnpayUrl(id, price);
+    public RedirectView getVnpay(@RequestParam String id, @RequestParam int price, String bankCode) throws UnsupportedEncodingException {
+        String paymentUrl = vnpayService.createVnpayUrl(id, price,bankCode);
         return new RedirectView(paymentUrl);
     }
     @GetMapping("/vnpay-return")
-    public ResponseEntity<Map<String, Object>> handleVnPayReturn(@RequestParam Map<String, String> params) {
+    public void handleVnPayReturn(@RequestParam Map<String, String> params, HttpServletResponse httpResponse) throws IOException, UnsupportedEncodingException {
         Map<String, Object> response = new HashMap<>();
 
         // Lấy các thông tin quan trọng từ VNPay
-        String vnp_Amount = params.get("vnp_Amount"); // Số tiền thanh toán (đơn vị VND * 100)
-        String vnp_BankCode = params.get("vnp_BankCode"); // Mã ngân hàng
-        String vnp_BankTranNo = params.get("vnp_BankTranNo"); // Mã giao dịch ngân hàng
-        String vnp_CardType = params.get("vnp_CardType"); // Loại thẻ
-        String vnp_OrderInfo = params.get("vnp_OrderInfo"); // Thông tin đơn hàng
-        String vnp_PayDate = params.get("vnp_PayDate"); // Ngày thanh toán (yyyyMMddHHmmss)
-        String vnp_ResponseCode = params.get("vnp_ResponseCode"); // Mã phản hồi (00 là thành công)
-        String vnp_TransactionNo = params.get("vnp_TransactionNo"); // Mã giao dịch VNPay
-        String vnp_TransactionStatus = params.get("vnp_TransactionStatus"); // Trạng thái giao dịch
-        String vnp_TxnRef = params.get("vnp_TxnRef"); // Mã đơn hàng
-        String vnp_SecureHash = params.get("vnp_SecureHash"); // Mã checksum
+        String vnp_Amount = params.get("vnp_Amount");
+        String vnp_BankCode = params.get("vnp_BankCode");
+        String vnp_BankTranNo = params.get("vnp_BankTranNo");
+        String vnp_CardType = params.get("vnp_CardType");
+        String vnp_OrderInfo = params.get("vnp_OrderInfo");
+        String vnp_PayDate = params.get("vnp_PayDate");
+        String vnp_ResponseCode = params.get("vnp_ResponseCode");
+        String vnp_TransactionNo = params.get("vnp_TransactionNo");
+        String vnp_TransactionStatus = params.get("vnp_TransactionStatus");
+        String vnp_TxnRef = params.get("vnp_TxnRef");
+        String vnp_SecureHash = params.get("vnp_SecureHash");
 
         // Kiểm tra mã phản hồi để xác định thanh toán có thành công hay không
         boolean isSuccess = "00".equals(vnp_ResponseCode) && "00".equals(vnp_TransactionStatus);
 
-        // Tạo phản hồi JSON cho FE
+        // Tạo dữ liệu để gửi về frontend
         response.put("orderId", vnp_TxnRef);
-        response.put("amount", Integer.parseInt(vnp_Amount) / 100); // Chia 100 để lấy đúng đơn vị VND
+        response.put("amount", Integer.parseInt(vnp_Amount) / 100);
         response.put("bankCode", vnp_BankCode);
         response.put("bankTransactionNo", vnp_BankTranNo);
         response.put("cardType", vnp_CardType);
@@ -64,27 +70,41 @@ public class VNPAYController  {
         response.put("transactionNo", vnp_TransactionNo);
         response.put("status", isSuccess ? "SUCCESS" : "FAILED");
 
-        //lấy paymentId
+        // Lấy paymentId từ vnp_OrderInfo
         String[] parts = vnp_OrderInfo.split(":");
         String paymentId = parts[1];
         System.out.println(paymentId);
-        System.out.println("trang thai" + isSuccess);
+        System.out.println("trang thai: " + isSuccess);
 
+        // Cập nhật trạng thái thanh toán vào database
         if (isSuccess) {
             Payment payment = paymentService.getPaymentById(paymentId);
             payment.setTransactionId(vnp_TransactionNo);
             payment.setStatus(true);
+            applicationEventPublisher.publishEvent(payment);
             paymentRepository.save(payment);
-        }
-        else
-        {
+        } else {
             Payment payment = paymentService.getPaymentById(paymentId);
             payment.setStatus(false);
+
+            //Tháo coupon và set price về lại giá gốc
+            payment.setTotal(payment.getTotal()/(100-payment.getMarketingCampaign().getDiscount())*100);
+            payment.setMarketingCampaign(null);
             paymentRepository.save(payment);
         }
 
-        // Nếu giao dịch thành công, có thể cập nhật trạng thái đơn hàng vào DB ở đây
+        // Redirect về frontend với thông tin giao dịch qua query parameters
+        String redirectUrl = "http://localhost:3000/payment-return?"
+                + "status=" + (isSuccess ? "SUCCESS" : "FAILED")
+                + "&orderId=" + vnp_TxnRef
+                + "&amount=" + (Integer.parseInt(vnp_Amount) / 100)
+                + "&bankCode=" + vnp_BankCode
+                + "&bankTransactionNo=" + (vnp_BankTranNo != null ? vnp_BankTranNo : "")
+                + "&cardType=" + (vnp_CardType != null ? vnp_CardType : "")
+                + "&orderInfo=" + URLEncoder.encode(vnp_OrderInfo, StandardCharsets.UTF_8.toString())
+                + "&payDate=" + vnp_PayDate
+                + "&transactionNo=" + vnp_TransactionNo;
 
-        return ResponseEntity.ok(response);
+        httpResponse.sendRedirect(redirectUrl);
     }
 }

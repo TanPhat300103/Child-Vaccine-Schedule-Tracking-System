@@ -41,11 +41,11 @@ public class PaymentController {
 
 
     @PostMapping("update")
-    public ResponseEntity<Map<String, Object>> updatePayment(@RequestParam String paymentId, @RequestParam String coupon, @RequestParam boolean method) throws UnsupportedEncodingException {
+    public ResponseEntity<Map<String, Object>> updatePayment(@RequestParam String paymentId, @RequestParam String coupon, @RequestParam boolean method,String bank) throws UnsupportedEncodingException {
         Payment payment = paymentService.updatePayment(paymentId, coupon, method);
         Map<String, Object> response = new HashMap<>();
         if (method) { // Nếu chọn thanh toán qua VNPay
-            String vnpayUrl = vnpayService.createVnpayUrl(payment.getPaymentId(), payment.getTotal());
+            String vnpayUrl = vnpayService.createVnpayUrl(payment.getPaymentId(), payment.getTotal(),bank);
             response.put("VNPAYURL", vnpayUrl);
         } else {
             response.put("message", "COD");
@@ -60,4 +60,13 @@ public class PaymentController {
     public void deletePayment(@RequestParam String paymentId) {
         paymentService.deletePayment(paymentId);
     }
+
+
+    @GetMapping("getbycustomerid")
+    public List<Payment> getPaymentByCustomerId(@RequestParam String customerId) {
+        return paymentService.getPaymentByCustomerId(customerId);
+    }
+
 }
+
+

@@ -10,12 +10,12 @@ import java.util.*;
 
 @Service
 public class VNPAYService {
-    public String createVnpayUrl(String id, int price) throws UnsupportedEncodingException {
+    public String createVnpayUrl(String id, int price, String bank) throws UnsupportedEncodingException {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "other";
         long amount = price * 100;
-        String bankCode = "NCB";
+        String bankCode = bank;
         String vnp_TxnRef = Config.getRandomNumber(8);
         String vnp_IpAddr = "127.0.0.1";
 
