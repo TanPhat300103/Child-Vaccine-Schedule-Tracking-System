@@ -19,7 +19,9 @@ import AddChild from "../pages/CustomerPage/AddChild.jsx";
 import Child from "../pages/CustomerPage/Child.jsx";
 import BookingCustomer from "../pages/CustomerPage/BookingCustomer.jsx";
 import PaymentCustomer from "../pages/CustomerPage/PaymentCustomer.jsx";
+
 import StaffPage from "../pages/StaffPage/StaffPage.jsx";
+import Profile from "../pages/StaffPage/Profile.jsx";
 
 import Customers from "../pages/Manager/Customers.jsx";
 import Childs from "../pages/Manager/Childs.jsx";
@@ -114,6 +116,7 @@ const Main = () => {
 
               {/* Route /staff: giữ đầy đủ child route theo HEAD */}
               <Route path="/staff" element={<StaffPage />}>
+                <Route index element={<Profile />} />
                 <Route path="customers" element={<Customers />} />
                 <Route path="childs/:customerId" element={<Childs />} />
                 <Route path="vaccines" element={<Vaccines />} />

@@ -1,6 +1,6 @@
+// StaffPage.jsx
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import {
   FiHome,
   FiUsers,
@@ -13,18 +13,15 @@ import {
   FiMenu,
   FiX,
   FiChevronDown,
-  FiChevronRight,
   FiLogOut,
   FiSettings,
-  FiBell,
 } from "react-icons/fi";
-import { FaNotesMedical, FaSyringe, FaHospital } from "react-icons/fa";
+import { FaHospital, FaSyringe } from "react-icons/fa";
 import Notification from "../../components/common/Notification";
 
-const StaffDashboard = ({ staffName = "Nguyễn Văn A" }) => {
+const StaffPage = ({ staffName = "Nguyễn Văn A" }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [vaccineMenuOpen, setVaccineMenuOpen] = useState(false);
-  const [notifications, setNotifications] = useState(3);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -63,23 +60,23 @@ const StaffDashboard = ({ staffName = "Nguyễn Văn A" }) => {
         {/* Navigation */}
         <nav className="mt-6">
           <ul className="space-y-2 px-3">
-            {/* Home */}
+            {/* Trang chủ */}
             <li>
               <Link
-                to="/home"
+                to="/staff"
                 className="flex items-center px-4 py-3 text-teal-100 hover:bg-teal-700 rounded-lg transition-all duration-200 group"
               >
                 <FiHome className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`} />
                 {sidebarOpen && <span className="ml-3">Trang chủ</span>}
                 {!sidebarOpen && (
-                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 -translate-x-3 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                     Trang chủ
                   </span>
                 )}
               </Link>
             </li>
 
-            {/* Quản Lý Khách Hàng */}
+            {/* Quản lý khách hàng */}
             <li>
               <Link
                 to="/staff/customers"
@@ -90,14 +87,14 @@ const StaffDashboard = ({ staffName = "Nguyễn Văn A" }) => {
                   <span className="ml-3">Quản lý khách hàng</span>
                 )}
                 {!sidebarOpen && (
-                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 -translate-x-3 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                     Quản lý khách hàng
                   </span>
                 )}
               </Link>
             </li>
 
-            {/* Lịch Đăng Ký Tiêm */}
+            {/* Lịch đăng ký tiêm */}
             <li>
               <Link
                 to="/staff/bookings"
@@ -108,14 +105,14 @@ const StaffDashboard = ({ staffName = "Nguyễn Văn A" }) => {
                 />
                 {sidebarOpen && <span className="ml-3">Lịch đăng ký tiêm</span>}
                 {!sidebarOpen && (
-                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 -translate-x-3 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                     Lịch đăng ký tiêm
                   </span>
                 )}
               </Link>
             </li>
 
-            {/* Báo Cáo Phản Ứng */}
+            {/* Báo cáo phản ứng */}
             <li>
               <Link
                 to="/staff/records"
@@ -126,14 +123,14 @@ const StaffDashboard = ({ staffName = "Nguyễn Văn A" }) => {
                 />
                 {sidebarOpen && <span className="ml-3">Báo cáo phản ứng</span>}
                 {!sidebarOpen && (
-                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 -translate-x-3 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                     Báo cáo phản ứng
                   </span>
                 )}
               </Link>
             </li>
 
-            {/* Phản Hồi */}
+            {/* Phản hồi */}
             <li>
               <Link
                 to="/staff/feedbacks"
@@ -144,7 +141,7 @@ const StaffDashboard = ({ staffName = "Nguyễn Văn A" }) => {
                 />
                 {sidebarOpen && <span className="ml-3">Phản hồi</span>}
                 {!sidebarOpen && (
-                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 -translate-x-3 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                     Phản hồi
                   </span>
                 )}
@@ -162,14 +159,14 @@ const StaffDashboard = ({ staffName = "Nguyễn Văn A" }) => {
                 />
                 {sidebarOpen && <span className="ml-3">Marketing</span>}
                 {!sidebarOpen && (
-                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 -translate-x-3 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                     Marketing
                   </span>
                 )}
               </Link>
             </li>
 
-            {/* Vaccine */}
+            {/* Vaccine với submenu */}
             <li>
               <div
                 onClick={toggleVaccineMenu}
@@ -184,18 +181,17 @@ const StaffDashboard = ({ staffName = "Nguyễn Văn A" }) => {
                 {sidebarOpen && (
                   <FiChevronDown
                     className={`w-5 h-5 transition-transform duration-200 ${
-                      vaccineMenuOpen ? "transform rotate-180" : ""
+                      vaccineMenuOpen ? "rotate-180" : ""
                     }`}
                   />
                 )}
                 {!sidebarOpen && (
-                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 -translate-x-3 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                     Vaccine
                   </span>
                 )}
               </div>
 
-              {/* Submenu */}
               {(vaccineMenuOpen || !sidebarOpen) && (
                 <ul
                   className={`mt-2 space-y-1 ${sidebarOpen ? "pl-10" : "pl-0"}`}
@@ -212,7 +208,7 @@ const StaffDashboard = ({ staffName = "Nguyễn Văn A" }) => {
                         <span className="ml-2">Quản lý vaccine</span>
                       )}
                       {!sidebarOpen && (
-                        <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 -translate-x-3 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                        <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                           Quản lý vaccine
                         </span>
                       )}
@@ -230,7 +226,7 @@ const StaffDashboard = ({ staffName = "Nguyễn Văn A" }) => {
                         <span className="ml-2">Vaccine combo</span>
                       )}
                       {!sidebarOpen && (
-                        <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 -translate-x-3 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                        <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                           Vaccine combo
                         </span>
                       )}
@@ -242,7 +238,7 @@ const StaffDashboard = ({ staffName = "Nguyễn Văn A" }) => {
           </ul>
         </nav>
 
-        {/* Bottom Section of Sidebar */}
+        {/* Bottom Section */}
         <div className="absolute bottom-0 w-full p-4 border-t border-teal-500">
           <Link
             to="/staff/settings"
@@ -251,7 +247,7 @@ const StaffDashboard = ({ staffName = "Nguyễn Văn A" }) => {
             <FiSettings className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`} />
             {sidebarOpen && <span className="ml-3">Cài đặt</span>}
             {!sidebarOpen && (
-              <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 -translate-x-3 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+              <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                 Cài đặt
               </span>
             )}
@@ -265,22 +261,18 @@ const StaffDashboard = ({ staffName = "Nguyễn Văn A" }) => {
           sidebarOpen ? "ml-72" : "ml-20"
         }`}
       >
-        {/* Header */}
+        {/* Header - giữ lại để không thay đổi khi chuyển route */}
         <header className="bg-white shadow-sm sticky top-0 z-10">
           <div className="flex justify-between items-center px-6 py-4">
             <h1 className="text-2xl font-semibold text-gray-800">
               <span className="text-teal-600">Y tế MedCare</span> - Ban quản trị
             </h1>
-
             <div className="flex items-center space-x-4">
-              {/* Notifications */}
               <div className="relative">
                 <button className="p-1 text-gray-500 hover:text-teal-600 focus:outline-none transition-colors">
                   <Notification roleId={2} />
                 </button>
               </div>
-
-              {/* User Profile */}
               <div className="flex items-center">
                 <div className="w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center text-white font-bold">
                   {staffName.charAt(0)}
@@ -292,7 +284,6 @@ const StaffDashboard = ({ staffName = "Nguyễn Văn A" }) => {
                   <p className="text-xs text-gray-500">Quản trị viên</p>
                 </div>
               </div>
-              {/* Logout Button */}
               <button className="p-1 text-gray-500 hover:text-red-600 focus:outline-none transition-colors">
                 <FiLogOut size={24} />
               </button>
@@ -300,100 +291,13 @@ const StaffDashboard = ({ staffName = "Nguyễn Văn A" }) => {
           </div>
         </header>
 
-        {/* Main Content Area */}
+        {/* Nội dung trang */}
         <main className="p-6">
-          {/* Welcome Card */}
-          <div className="mb-6 bg-white rounded-xl shadow-md overflow-hidden">
-            <div className="md:flex">
-              <div className="p-8">
-                <div className="uppercase tracking-wide text-sm text-teal-600 font-semibold">
-                  Trung tâm quản lý y tế
-                </div>
-                <h2 className="mt-1 text-2xl font-semibold text-gray-900">
-                  Chào mừng, {staffName}!
-                </h2>
-                <p className="mt-2 text-gray-600">
-                  Chào mừng bạn đến với hệ thống quản lý tiêm chủng. Hãy xem các
-                  thông tin quan trọng trong ngày hôm nay.
-                </p>
-              </div>
-              <div className="md:shrink-0 bg-teal-500 md:w-48 flex items-center justify-center">
-                <FaNotesMedical className="h-24 w-24 text-white" />
-              </div>
-            </div>
-          </div>
-
-          {/* Dashboard Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {/* Appointments Today */}
-            <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500 hover:shadow-lg transition-shadow">
-              <div className="flex items-center">
-                <div className="p-3 rounded-full bg-blue-100 text-blue-600">
-                  <FiCalendar className="h-8 w-8" />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-500">
-                    Lịch hẹn hôm nay
-                  </p>
-                  <p className="text-2xl font-semibold text-gray-900">24</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Total Patients */}
-            <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500 hover:shadow-lg transition-shadow">
-              <div className="flex items-center">
-                <div className="p-3 rounded-full bg-green-100 text-green-600">
-                  <FiUsers className="h-8 w-8" />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-500">
-                    Tổng bệnh nhân
-                  </p>
-                  <p className="text-2xl font-semibold text-gray-900">1,248</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Vaccines Available */}
-            <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-purple-500 hover:shadow-lg transition-shadow">
-              <div className="flex items-center">
-                <div className="p-3 rounded-full bg-purple-100 text-purple-600">
-                  <FaSyringe className="h-8 w-8" />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-500">
-                    Vaccine có sẵn
-                  </p>
-                  <p className="text-2xl font-semibold text-gray-900">32</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Reports */}
-            <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-red-500 hover:shadow-lg transition-shadow">
-              <div className="flex items-center">
-                <div className="p-3 rounded-full bg-red-100 text-red-600">
-                  <FiAlertTriangle className="h-8 w-8" />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-500">
-                    Báo cáo phản ứng
-                  </p>
-                  <p className="text-2xl font-semibold text-gray-900">7</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Main Content - Router Outlet */}
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <Outlet />
-          </div>
+          <Outlet />
         </main>
       </div>
     </div>
   );
 };
 
-export default StaffDashboard;
+export default StaffPage;

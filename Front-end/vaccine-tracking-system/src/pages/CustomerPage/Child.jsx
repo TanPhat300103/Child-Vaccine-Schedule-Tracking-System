@@ -7,6 +7,7 @@ import {
   updateChild,
   deleteChild,
   getMedicalHistoryByChildId,
+  updateReaction, // Đã thêm import updateReaction
 } from "../../apis/api";
 
 const Child = () => {
@@ -19,6 +20,10 @@ const Child = () => {
   const [editing, setEditing] = useState(false);
   const [editData, setEditData] = useState({});
   const [medicalHistories, setMedicalHistories] = useState([]);
+
+  // State mới để quản lý chỉnh sửa phản ứng
+  const [editingReactionId, setEditingReactionId] = useState(null);
+  const [reactionEditValue, setReactionEditValue] = useState("");
 
   useEffect(() => {
     console.log("Received customerId in Child:", customerId);
@@ -87,6 +92,31 @@ const Child = () => {
         console.error("Lỗi tắt trẻ:", err);
         alert("Lỗi tắt trẻ");
       }
+    }
+  };
+
+  // Hàm cập nhật phản ứng của medical history
+  const handleUpdateReaction = async (id) => {
+    try {
+      const response = await updateReaction(id, reactionEditValue);
+      if (response.success) {
+        alert("Cập nhật phản ứng thành công!");
+        // Cập nhật lại danh sách medicalHistories
+        setMedicalHistories((prevHistories) =>
+          prevHistories.map((history) =>
+            history.medicalHistoryId === id
+              ? { ...history, reaction: reactionEditValue }
+              : history
+          )
+        );
+        setEditingReactionId(null);
+        setReactionEditValue("");
+      } else {
+        alert("Cập nhật phản ứng thất bại!");
+      }
+    } catch (err) {
+      console.error("Lỗi khi cập nhật phản ứng:", err);
+      alert("Lỗi khi cập nhật phản ứng!");
     }
   };
 
@@ -286,7 +316,47 @@ const Child = () => {
                   </td>
                   <td className="py-3 px-6">{history.dose}</td>
                   <td className="py-3 px-6">
-                    {history.reaction ? history.reaction : "Không có"}
+                    {editingReactionId === history.medicalHistoryId ? (
+                      <>
+                        <input
+                          type="text"
+                          value={reactionEditValue}
+                          onChange={(e) => setReactionEditValue(e.target.value)}
+                          className="border rounded px-2 py-1"
+                          placeholder="Nhập phản ứng..."
+                        />
+                        <button
+                          onClick={() =>
+                            handleUpdateReaction(history.medicalHistoryId)
+                          }
+                          className="ml-2 bg-green-500 text-white px-2 py-1 rounded"
+                        >
+                          Lưu
+                        </button>
+                        <button
+                          onClick={() => {
+                            setEditingReactionId(null);
+                            setReactionEditValue("");
+                          }}
+                          className="ml-2 bg-gray-500 text-white px-2 py-1 rounded"
+                        >
+                          Hủy
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        {history.reaction ? history.reaction : "Không có"}
+                        <button
+                          onClick={() => {
+                            setEditingReactionId(history.medicalHistoryId);
+                            setReactionEditValue(history.reaction || "");
+                          }}
+                          className="ml-2 bg-blue-500 text-white px-2 py-1 rounded"
+                        >
+                          Chỉnh sửa
+                        </button>
+                      </>
+                    )}
                   </td>
                 </tr>
               ))
