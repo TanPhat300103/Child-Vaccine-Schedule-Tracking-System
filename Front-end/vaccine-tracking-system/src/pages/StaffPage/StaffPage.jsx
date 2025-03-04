@@ -12,6 +12,7 @@ import {
   FiChevronDown,
   FiHome,
 } from "react-icons/fi";
+import Notification from "./Notification";
 
 const StaffPage = () => {
   const staffName = "Nguyễn Văn A"; // Lấy từ API hoặc state
@@ -136,6 +137,10 @@ const StaffPage = () => {
             <h1 className="text-2xl font-semibold text-gray-800">
               Chào Mừng {staffName}
             </h1>
+            {/* Component Notification */}
+            <div className="mt-2">
+              <Notification roleId={2} />
+            </div>
           </div>
         </header>
 
