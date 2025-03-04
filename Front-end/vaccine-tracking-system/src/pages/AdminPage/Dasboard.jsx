@@ -295,6 +295,11 @@ const Dashboard = () => {
   // Hàm xử lý khi nhấn nút "Áp dụng"
   const handleApply = () => {
     setCustomRange({ ...tempRange });
+    // Tính toán ngay với giá trị mới của tempRange
+    const fromDate = new Date(tempRange.from);
+    const toDate = new Date(tempRange.to);
+    const agg = aggregatePayments(payments, fromDate, toDate);
+    setAggregatedData(agg);
   };
 
   return (
@@ -414,7 +419,7 @@ const Dashboard = () => {
                         {b.customer?.lastName}
                       </span>
                       <span className="text-gray-500">
-                        {b.status === 1 ? "Đang Xử Lý" : "Đã Thanh Toán"}
+                        {b.status === 0 ? "Đang Xử Lý" : "Đã Thanh Toán"}
                       </span>
                     </li>
                   ))}

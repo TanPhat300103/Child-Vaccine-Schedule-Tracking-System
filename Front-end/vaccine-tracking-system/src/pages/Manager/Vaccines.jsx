@@ -186,7 +186,7 @@ const Vaccines = () => {
                 : "bg-green-500 hover:bg-green-600"
             }`}
           >
-            <FaPowerOff className="" />
+            <FaPowerOff className="mr-[15px]" />
             {vaccine.active ? "Ngưng" : "Kích hoạt"}
           </button>
           <div className="absolute right-4 top-4">
