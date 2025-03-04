@@ -276,15 +276,7 @@ const StaffDashboard = ({ staffName = "Nguyễn Văn A" }) => {
               {/* Notifications */}
               <div className="relative">
                 <button className="p-1 text-gray-500 hover:text-teal-600 focus:outline-none transition-colors">
-                  <FiBell size={24} />
-                  {notifications > 0 && (
-                    <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                      {/* Component Notification */}
-                      <div className="mt-2">
-                        <Notification roleId={2} />
-                      </div>
-                    </span>
-                  )}
+                  <Notification roleId={2} />
                 </button>
               </div>
 
@@ -300,7 +292,6 @@ const StaffDashboard = ({ staffName = "Nguyễn Văn A" }) => {
                   <p className="text-xs text-gray-500">Quản trị viên</p>
                 </div>
               </div>
-
               {/* Logout Button */}
               <button className="p-1 text-gray-500 hover:text-red-600 focus:outline-none transition-colors">
                 <FiLogOut size={24} />

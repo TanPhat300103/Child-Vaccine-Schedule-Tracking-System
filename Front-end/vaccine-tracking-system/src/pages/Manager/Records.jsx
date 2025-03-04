@@ -1,7 +1,7 @@
 // src/pages/Staff/Records.jsx
 import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
-import { getAllMedicalHistories, updateReaction } from "../../apis/api";
+import { getMedicalHistory, updateReaction } from "../../apis/api";
 
 const Records = () => {
   const [records, setRecords] = useState([]);
@@ -23,7 +23,7 @@ const Records = () => {
   // Lấy danh sách Medical History
   const fetchRecords = async () => {
     try {
-      const data = await getAllMedicalHistories();
+      const data = await getMedicalHistory();
       setRecords(data);
       setFilteredRecords(data);
     } catch (err) {
