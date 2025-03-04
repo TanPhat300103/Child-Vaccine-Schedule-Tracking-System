@@ -41,4 +41,15 @@ public class EmailController {
         }
     }
 
+    //TEST
+    @GetMapping("/payment")
+    public String paymentTest() {
+        try {
+            emailService.senPaymentEmail("nha3697@gmail.com","Nguyễn Phạm Thu Hà",Date.valueOf(LocalDate.now()),1500000,"123456789",true,"KH012","Quận 9");
+            return "Email sent successfully to " ;
+        } catch (MessagingException e) {
+            return "Error sending email: " + e.getMessage();
+        }
+    }
+
 }

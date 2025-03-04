@@ -3,7 +3,6 @@ package org.gr1fpt.childvaccinescheduletrackingsystem.event;
 import jakarta.mail.MessagingException;
 import org.gr1fpt.childvaccinescheduletrackingsystem.booking.Booking;
 import org.gr1fpt.childvaccinescheduletrackingsystem.booking.BookingDTO;
-import org.gr1fpt.childvaccinescheduletrackingsystem.booking.BookingRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.bookingdetail.BookingDetail;
 import org.gr1fpt.childvaccinescheduletrackingsystem.bookingdetail.BookingDetailRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.bookingdetail.BookingDetailService;
@@ -16,7 +15,6 @@ import org.gr1fpt.childvaccinescheduletrackingsystem.vaccinedetail.VaccineDetail
 import org.gr1fpt.childvaccinescheduletrackingsystem.vaccinedetail.VaccineDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
@@ -60,7 +58,6 @@ public class BookingEventListener {
         List<BookingDetail> list = bookingDetailService.findByBooking(bookingDetail.getBooking().getBookingId());
 
         String vaccine = bookingDetail.getVaccine().getVaccineId();
-        Date administeredDate = bookingDetail.getAdministeredDate();
         Date date_temp = bookingDetail.getAdministeredDate();;
         for(BookingDetail bd : list){
             if(bd.getVaccine().getVaccineId().equals(vaccine) && !bd.getBookingDetailId().equals(bookingDetail.getBookingDetailId()) && bd.getStatus()==1){

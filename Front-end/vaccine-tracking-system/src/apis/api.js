@@ -2,16 +2,28 @@ import axios from "axios";
 
 const API_BASE_URL = "http://localhost:8080";
 
-// Users
-export const getUsers = async () => {
+// Tạo instance axios để gọi API
+const api = axios.create({
+  baseURL: API_BASE_URL,
+});
+
+// Hàm gọi API chung với xử lý lỗi toàn cục
+const apiCall = async (method, endpoint, data = {}) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/customer`);
-    console.log("API Response (Get Users):", response.data); // In toàn bộ dữ liệu người dùng nhận được
+    const response = await api({
+      method,
+      url: endpoint,
+      data,
+    });
     return response.data;
   } catch (error) {
-    throw new Error("Không thể lấy dữ liệu người dùng");
+    const errorMessage = error.response?.data?.message || "Có lỗi xảy ra";
+    console.error(`Error with API call to ${endpoint}:`, errorMessage);
+    throw new Error(errorMessage);
   }
 };
+// Users
+export const getUsers = () => apiCall("get", "/customer");
 
 export const postUsers = async (formData) => {
   console.log("Form data being sent to API:", formData);
@@ -82,6 +94,7 @@ export const getChildByCustomerId = async (customerId) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/child/findbycustomer`, {
       params: { id: customerId },
+      withCredentials: true,
     });
 
     console.log("📡 API Response (get child by CustomerId):", response.data);
@@ -96,6 +109,7 @@ export const getCustomerId = async (customerId) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/customer/findid`, {
       params: { id: customerId },
+      withCredentials: true,
     });
 
     console.log("📡 API Response (getCustomerId):", response.data);
@@ -107,15 +121,7 @@ export const getCustomerId = async (customerId) => {
 };
 
 //Vaccine
-export const getVaccines = async () => {
-  try {
-    const response = await axios.get(`${API_BASE_URL}/vaccine`);
-    console.log("API Response (Get Vaccines):", response.data);
-    return response.data;
-  } catch (error) {
-    throw new Error("Không thể lấy dữ liệu người dùng");
-  }
-};
+export const getVaccines = () => apiCall("get", "/vaccine");
 
 export const getVaccineDetail = async () => {
   try {
@@ -126,22 +132,10 @@ export const getVaccineDetail = async () => {
     throw new Error("Không thể lấy dữ liệu người dùng");
   }
 };
-export const getVaccineDetailByVaccineId = async (vaccineId) => {
-  try {
-    const response = await axios.get(
-      `${API_BASE_URL}/vaccinedetail/findbyvaccine`,
-      {
-        params: {
-          id: vaccineId,
-        },
-      }
-    );
-    console.log("API Response (Get Vaccines Detail):", response.data);
-    return response.data;
-  } catch (error) {
-    throw new Error("Không thể lấy dữ liệu người dùng");
-  }
-};
+
+export const getVaccineDetailByVaccineId = (vaccineId) =>
+  apiCall("get", "/vaccinedetail/findbyvaccine", { params: { id: vaccineId } });
+
 export const getVaccinesByAge = async (ageMin, ageMax) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/vaccine/findbyage`, {
@@ -162,6 +156,7 @@ export const getVaccinesByAge = async (ageMin, ageMax) => {
 export const getVaccineCombos = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/vaccinecombo`);
+
     console.log("API Response (Get VaccineCombos):", response.data);
     return response.data;
   } catch (error) {
@@ -232,6 +227,114 @@ export const postSchedules = async (formData) => {
   try {
     const response = await axios.post(
       `${API_BASE_URL}/booking/create`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    );
+
+    // ✅ Log phản hồi từ Backend
+    console.log("✅ API Response Status:", response.status);
+    console.log("✅ API Response Data:", response.data);
+
+    // Generalized success check for any 2xx status codes
+    if (response.status >= 200 && response.status < 300) {
+      return { success: true, message: "Đặt lịch thành công" };
+    } else {
+      return { success: false, message: "Đặt lịch thất bại" };
+    }
+  } catch (error) {
+    console.error("❌ Error during registration:", error);
+
+    if (error.response) {
+      // Error response data logging
+      console.error("❌ Error response status:", error.response.status);
+      console.error("❌ Error response data:", error.response.data);
+      console.error("❌ Error response headers:", error.response.headers);
+
+      // Ensure that error message is properly handled
+      return {
+        success: false,
+        message:
+          error.response.data?.message ||
+          "Gửi biểu mẫu không thành công. Vui lòng thử lại.",
+      };
+    }
+
+    // If there is no response object
+    return {
+      success: false,
+      message: "Gửi biểu mẫu không thành công. Vui lòng thử lại.",
+    };
+  }
+};
+
+export const postFeedback = async (formData) => {
+  console.log(
+    "🚀 Form data being sent to API:",
+    JSON.stringify(formData, null, 2)
+  );
+
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/feedback/create`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    );
+
+    // ✅ Log phản hồi từ Backend
+    console.log("✅ API Response Status:", response.status);
+    console.log("✅ API Response Data:", response.data);
+
+    // Generalized success check for any 2xx status codes
+    if (response.status >= 200 && response.status < 300) {
+      return { success: true, message: "Đặt lịch thành công" };
+    } else {
+      return { success: false, message: "Đặt lịch thất bại" };
+    }
+  } catch (error) {
+    console.error("❌ Error during registration:", error);
+
+    if (error.response) {
+      // Error response data logging
+      console.error("❌ Error response status:", error.response.status);
+      console.error("❌ Error response data:", error.response.data);
+      console.error("❌ Error response headers:", error.response.headers);
+
+      // Ensure that error message is properly handled
+      return {
+        success: false,
+        message:
+          error.response.data?.message ||
+          "Gửi biểu mẫu không thành công. Vui lòng thử lại.",
+      };
+    }
+
+    // If there is no response object
+    return {
+      success: false,
+      message: "Gửi biểu mẫu không thành công. Vui lòng thử lại.",
+    };
+  }
+};
+
+export const updateFeedback = async (formData) => {
+  console.log(
+    "🚀 Form data being sent to API:",
+    JSON.stringify(formData, null, 2)
+  );
+
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/feedback/update`,
       formData,
       {
         headers: {
@@ -805,3 +908,4 @@ export const setBookingDetailStatus = async (bookingId, status) => {
     throw error;
   }
 };
+

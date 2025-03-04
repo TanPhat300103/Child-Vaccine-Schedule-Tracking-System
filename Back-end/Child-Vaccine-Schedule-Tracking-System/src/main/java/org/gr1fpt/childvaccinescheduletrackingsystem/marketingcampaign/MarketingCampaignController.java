@@ -39,4 +39,10 @@ public class MarketingCampaignController {
         return marketingCampaignService.update(marketingCampaign);
     }
 
+    @GetMapping("findbycoupon")
+    public MarketingCampaign findByCoupon(@RequestParam String coupon) {
+        return marketingCampaignService.findByCoupon(coupon);
+    }
+
+
 }

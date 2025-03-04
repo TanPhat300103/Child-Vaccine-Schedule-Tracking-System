@@ -6,6 +6,7 @@ import path from "path";
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
+    port: 3000,
     proxy: {
       // "/customer": {
       //   target: "http://localhost:8080", // Địa chỉ API server của bạn

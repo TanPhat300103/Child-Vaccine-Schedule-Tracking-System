@@ -1,5 +1,6 @@
 package org.gr1fpt.childvaccinescheduletrackingsystem.payment;
 
+import org.gr1fpt.childvaccinescheduletrackingsystem.booking.BookingService;
 import org.gr1fpt.childvaccinescheduletrackingsystem.exception.CustomException;
 import org.gr1fpt.childvaccinescheduletrackingsystem.booking.Booking;
 import org.gr1fpt.childvaccinescheduletrackingsystem.marketingcampaign.MarketingCampaign;
@@ -8,11 +9,14 @@ import org.gr1fpt.childvaccinescheduletrackingsystem.marketingcampaign.Marketing
 import org.gr1fpt.childvaccinescheduletrackingsystem.notification.Notification;
 import org.gr1fpt.childvaccinescheduletrackingsystem.notification.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,8 +33,12 @@ public class PaymentService {
     @Autowired
     private NotificationService notificationService;
 
-    //CHO MỤC ĐÍCH KIỂM THỬ
+    @Autowired
+    @Lazy
+    private BookingService bookingService;
 
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
     public List<Payment> getAllPayments() {
         return paymentRepository.findAll();
@@ -127,10 +135,13 @@ public class PaymentService {
 
         payment.setMethod(method);
         if(!method){
-        payment.setStatus(true);}
+        payment.setStatus(true);
+            applicationEventPublisher.publishEvent(payment);
+        }
         else
         {
             payment.setStatus(false);
+
         }
         // nêu method là true có nghĩa là dùng vnpay để thanh toán
 
@@ -139,6 +150,7 @@ public class PaymentService {
         notification.setCustomer(payment.getBooking().getCustomer());
         notification.setMessage("Đã thanh toán xong. Bạn có góp ý gì cho chúng tôi không? ");
         notificationService.createNotificationAfterPayment(notification);
+
 
         return  paymentRepository.save(payment);
     }
@@ -149,5 +161,17 @@ public class PaymentService {
     public void deletePayment(String paymentId) {
         paymentRepository.deleteById(paymentId);
     }
+
+    //findbyCustomer Id
+    public List<Payment> getPaymentByCustomerId(String customerId) {
+        List<Payment> paymentList = new ArrayList<>();
+        List<Booking> bookingList = bookingService.getBookingsByCustomerId(customerId);
+        for (Booking booking : bookingList) {
+            paymentList.add(getPaymentByBookingId(booking.getBookingId()));
+        }
+
+        return paymentList;
+    }
+
 
 }

@@ -4,8 +4,8 @@ import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { comment } from "postcss";
 import { toast } from "react-toastify";
-import { postFeedback } from "../../apis/api";
-const Feedback = () => {
+import { postFeedback, updateFeedback } from "../../apis/api";
+const UpdateFeedback = () => {
   const [formData, setFormData] = useState({
     ranking: "",
     comment: "",
@@ -81,6 +81,7 @@ const Feedback = () => {
       console.log("Loading form...");
       try {
         const payload = {
+          id: 2,
           booking: {
             bookingId: "C001-B1",
           },
@@ -90,7 +91,7 @@ const Feedback = () => {
 
         console.log("Payload:", payload);
 
-        const result = await postFeedback(payload);
+        const result = await updateFeedback(payload);
         console.log("API Response payload:", result);
 
         if (result.success) {
@@ -170,4 +171,4 @@ const Feedback = () => {
   );
 };
 
-export default Feedback;
+export default UpdateFeedback;

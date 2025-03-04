@@ -8,6 +8,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -45,39 +46,51 @@ public class EmailService {
     }
 
 
-    public void sendBookingConfirmationEmail(String to, String child, String bookingDate,String customerName) throws MessagingException {
+    public void sendBookingConfirmationEmail(String to, String child, String bookingDate, String customerName) throws MessagingException {
 
         String currentTime = LocalDateTime.now().format(dateTimeFormatter);
 
         String subject = "Xác nhận đặt lịch thành công - Dịch vụ của " + companyName;
 
-
         String body = "<html>" +
-                "<body style='font-family: Arial, sans-serif; color: #333333; margin:0; padding:0;'>" +
-                "  <table align='center' style='width:600px; border:1px solid #dddddd; padding:20px;'>" +
+                "<body style='font-family: Arial, sans-serif; color: #333333; margin: 0; padding: 0; background-color: #f4f4f4;'>" +
+                "  <table align='center' style='width: 600px; max-width: 600px; border-collapse: collapse; margin: 20px auto; background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden;'>" +
                 "    <tr>" +
-                "      <td style='text-align: center;'>" +
-                "         <h2 style='color: #4CAF50;'>Xác Nhận Đặt Lịch Thành Công</h2>" +
+                "      <td style='background: linear-gradient(to right, #4CAF50, #45a049); padding: 20px; text-align: center;'>" +
+                "        <h2 style='color: #ffffff; margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 1px; animation: fadeIn 1s ease-in;'>" +
+                "          Xác Nhận Đặt Lịch Thành Công" +
+                "        </h2>" +
                 "      </td>" +
                 "    </tr>" +
                 "    <tr>" +
-                "      <td>" +
-                "          <p>Chào " + customerName + ",</p>" +
-                "         <p>Chúng tôi xin trân trọng thông báo rằng Quý khách đã đặt lịch thành công cho dịch vụ của <strong>" + companyName + "</strong>." +
-                "         <br><strong>Ngày đặt lịch:</strong> " + currentTime + "</p>" +
-                "         <p><strong>Thông tin trẻ:</strong> " + child + "</p>" +
-                "         <p><strong>Ngày hẹn:</strong> " + bookingDate + "</p>" +
-                "         <p>Nếu Quý khách không thực hiện yêu cầu đặt lịch này, xin vui lòng liên hệ ngay với Tổng đài hỗ trợ qua số điện thoại <strong>" + supportPhone + "</strong> để được tư vấn và hỗ trợ kịp thời.</p>" +
-                "         <p>Chúng tôi rất vinh hạnh được phục vụ Quý khách và mong rằng Quý khách sẽ có trải nghiệm tuyệt vời với dịch vụ của chúng tôi.</p>" +
-                "         <p>Trân trọng,</p>" +
-                "         <p><strong>" + signature + "</strong></p>" +
-                "         <p style='font-size: 0.9em; color: #777777;'>" +
-                "            Địa chỉ: " + companyAddress + "<br>" +
-                "            Email: " + companyEmail + " | Điện thoại: " + companyPhone +
-                "         </p>" +
+                "      <td style='padding: 30px;'>" +
+                "        <p style='font-size: 16px; line-height: 1.6;'>Chào <span style='color: #4CAF50; font-weight: bold;'>" + customerName + "</span>,</p>" +
+                "        <p style='font-size: 16px; line-height: 1.6;'>Chúng tôi xin trân trọng thông báo rằng Quý khách đã đặt lịch thành công cho dịch vụ của <strong style='color: #2c7be5;'>" + companyName + "</strong>.</p>" +
+                "        <table style='width: 100%; margin: 20px 0; border-left: 4px solid #4CAF50; padding-left: 15px; background: #f1f8f1; border-radius: 5px; transition: all 0.3s ease;'>" +
+                "          <tr><td><strong>Ngày đặt lịch:</strong></td><td>" + currentTime + "</td></tr>" +
+                "          <tr><td><strong>Thông tin trẻ:</strong></td><td>" + child + "</td></tr>" +
+                "          <tr><td><strong>Ngày hẹn:</strong></td><td style='color: #e67e22; font-weight: bold;'>" + bookingDate + "</td></tr>" +
+                "        </table>" +
+                "        <p style='font-size: 14px; line-height: 1.6; color: #666666; margin: 20px 0;'>Nếu Quý khách không thực hiện yêu cầu đặt lịch này, xin vui lòng liên hệ ngay với Tổng đài hỗ trợ qua số điện thoại <a href='tel:" + supportPhone + "' style='color: #4CAF50; text-decoration: none; font-weight: bold; transition: color 0.3s ease;'>" + supportPhone + "</a> để được tư vấn và hỗ trợ kịp thời.</p>" +
+                "        <p style='font-size: 16px; line-height: 1.6; margin: 20px 0;'>Chúng tôi rất vinh hạnh được phục vụ Quý khách và mong rằng Quý khách sẽ có trải nghiệm tuyệt vời với dịch vụ của chúng tôi.</p>" +
+                "        <p style='font-size: 16px; margin: 20px 0 0;'>Trân trọng,</p>" +
+                "        <p style='font-size: 16px; color: #2c7be5; margin: 5px 0 20px; font-weight: bold;'>" + signature + "</p>" +
+                "      </td>" +
+                "    </tr>" +
+                "    <tr>" +
+                "      <td style='background: #eef4ed; padding: 15px; text-align: center; border-top: 1px solid #dddddd;'>" +
+                "        <p style='font-size: 12px; color: #777777; margin: 5px 0;'>" +
+                "          Địa chỉ: " + companyAddress + "<br>" +
+                "          Email: <a href='mailto:" + companyEmail + "' style='color: #4CAF50; text-decoration: none;'>" + companyEmail + "</a> | Điện thoại: " + companyPhone +
+                "        </p>" +
                 "      </td>" +
                 "    </tr>" +
                 "  </table>" +
+                "  <style>" +
+                "    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }" +
+                "    a:hover { color: #2c7be5 !important; }" +
+                "    table tr:hover { background: #e8f4e8; }" +
+                "  </style>" +
                 "</body>" +
                 "</html>";
 
@@ -267,4 +280,130 @@ public class EmailService {
         sendEmail(to, subject, body);
     }
 
+    public void sendOtpEmail(String to, String otp) throws MessagingException {
+        String subject = "Your OTP Code";
+        String body = "<p>Your OTP code is: <b>" + otp + "</b></p>"
+                + "<p>Thank you!</p>";
+
+        sendEmail(to, subject, body);
+    }
+
+    public void senPaymentEmail(String to, String customerName, Date date, int total, String transactionId, boolean method, String customerCode, String address) throws MessagingException {
+        String subject = "Hóa Đơn Điện Tử - " + transactionId;
+        String paymentMethod = method ? "Thẻ tín dụng" : "Tiền mặt";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+        String taxCode = "0123456789"; // Mã số thuế công ty
+        String serviceDescription = "Dịch vụ tiêm chủng"; // Chỉ giữ 1 dịch vụ
+
+        String body = "<!DOCTYPE html>"
+                + "<html>"
+                + "<head>"
+                + "<style>"
+                + "@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }"
+                + "@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }"
+                + "@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }"
+                + "table { width: 100%; border-collapse: collapse; margin: 20px 0; }"
+                + "th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e0e0e0; }"
+                + "th { background: #f8f9fa; color: #333; font-weight: bold; }"
+                + "td { color: #555; }"
+                + ".info-section { display: flex; justify-content: space-between; margin-bottom: 20px; }"
+                + ".info-box { width: 48%; padding: 15px; border: 1px solid #e0e0e0; border-radius: 5px; background: #ffffff; }"
+                + ".info-box h3 { margin: 0 0 10px 0; font-size: 14px; color: #007bff; font-weight: 600; text-transform: uppercase; }"
+                + ".info-box p { margin: 5px 0; font-size: 13px; color: #555; line-height: 1.5; }"
+                + ".info-box .label { color: #777; font-weight: 500; }"
+                + "</style>"
+                + "</head>"
+                + "<body style='margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f0f4f8;'>"
+                + "<div style='max-width: 650px; margin: 20px auto; background: linear-gradient(135deg, #ffffff 0%, #fefefe 100%); "
+                + "border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; animation: fadeIn 1s ease-in;'>"
+
+                // Header (giữ nguyên)
+                + "<div style='background: linear-gradient(to right, #27ae60, #2ecc71); padding: 25px; text-align: center; color: white;'>"
+                + "<h1 style='margin: 0; font-size: 26px; animation: slideUp 0.8s ease-out;'>"
+                + "✅ Hóa Đơn Điện Tử - <span style='font-weight: bold;'>" + transactionId + "</span>"
+                + "</h1>"
+                + "<p style='margin: 5px 0; font-size: 16px; opacity: 0.9;'>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!</p>"
+                + "</div>"
+
+                // Nội dung chính
+                + "<div style='padding: 25px; color: #333; line-height: 1.7;'>"
+                // Thông tin tổ chức và khách hàng (thiết kế lại)
+                + "<div class='info-section' style='animation: slideUp 1s ease-out;'>"
+                + "<div class='info-box'>"
+                + "<h3>Đơn vị phát hành</h3>"
+                + "<p class='label'>Tên đơn vị:</p>"
+                + "<p>" + companyName + "</p>"
+                + "<p class='label'>Địa chỉ:</p>"
+                + "<p>" + companyAddress + "</p>"
+                + "<p class='label'>Mã số thuế:</p>"
+                + "<p>" + taxCode + "</p>"
+                + "<p class='label'>Hotline:</p>"
+                + "<p>" + companyPhone + "</p>"
+                + "</div>"
+                + "<div class='info-box'>"
+                + "<h3>Thông tin khách hàng</h3>"
+                + "<p class='label'>Họ và tên:</p>"
+                + "<p>" + customerName + "</p>"
+                + "<p class='label'>Mã khách hàng:</p>"
+                + "<p>" + customerCode + "</p>"
+                + "<p class='label'>Địa chỉ:</p>"
+                + "<p>" + address + "</p>"
+                + "<p class='label'>Email:</p>"
+                + "<p>" + to + "</p>"
+                + "</div>"
+                + "</div>"
+
+                // Ngày giao dịch
+                + "<p style='animation: slideUp 1.2s ease-out; margin-top: 15px;'>"
+                + "Ngày phát hành hóa đơn: <b style='color: #27ae60;'>" + dateFormat.format(date) + "</b></p>"
+
+                // Bảng chi tiết hóa đơn
+                + "<table style='animation: slideUp 1.4s ease-out;'>"
+                + "<tr>"
+                + "<th style='width: 50%;'>Mô tả dịch vụ</th>"
+                + "<th style='width: 25%;'>Phương thức</th>"
+                + "<th style='width: 25%; text-align: right;'>Số tiền</th>"
+                + "</tr>"
+                + "<tr>"
+                + "<td>" + serviceDescription + "</td>"
+                + "<td>" + paymentMethod + "</td>"
+                + "<td style='text-align: right;'>" + String.format("%,d VND", total) + "</td>"
+                + "</tr>"
+                + "<tr style='font-weight: bold;'>"
+                + "<td colspan='2'>Tổng cộng</td>"
+                + "<td style='text-align: right; color: #27ae60;'>" + String.format("%,d VND", total) + "</td>"
+                + "</tr>"
+                + "</table>"
+
+                // Ghi chú
+                + "<p style='animation: slideUp 1.6s ease-out; font-size: 13px; color: #666;'>"
+                + "📌 Đây là hóa đơn điện tử hợp lệ theo quy định pháp luật, có giá trị tương đương hóa đơn giấy. "
+                + "Vui lòng lưu trữ email này để đối chiếu khi cần thiết."
+                + "</p>"
+                // Dòng liên hệ (giữ nguyên nhưng thêm hiệu ứng)
+                + "<p style='animation: slideUp 1.8s ease-out; font-size: 13px; color: #333; background: #e8f8f5; padding: 10px; border-radius: 5px;'>"
+                + "<b>Hỗ trợ khách hàng:</b> Vui lòng liên hệ hotline <span style='color: #27ae60; font-weight: bold;'>0563785425</span> "
+                + "hoặc email <a href='mailto:khangqhse184031@fpt.edu.vn' style='color: #3498db; text-decoration: none;'>khangqhse184031@fpt.edu.vn</a> "
+                + "và <a href='mailto:hanptse184261@fpt.edu.vn' style='color: #3498db; text-decoration: none;'>hanptse184261@fpt.edu.vn</a>."
+                + "</p>"
+                + "</div>"
+
+                // Footer (giữ nguyên)
+                + "<div style='background: #2c3e50; color: #ecf0f1; padding: 20px; text-align: center; font-size: 14px;'>"
+                + "<p style='margin: 5px 0; font-weight: bold;'>" + companyName + "</p>"
+                + "<p style='margin: 5px 0;'>" + companyAddress + "</p>"
+                + "<p style='margin: 5px 0;'>📧 <a href='mailto:" + companyEmail + "' style='color: #27ae60; text-decoration: none;'>"
+                + companyEmail + "</a></p>"
+                + "<p style='margin: 5px 0;'>📞 <b>" + companyPhone + "</b></p>"
+                + "<p style='margin-top: 15px; font-size: 12px; opacity: 0.8;'><i>" + signature + "</i></p>"
+                + "<p style='margin: 5px 0; font-size: 12px; opacity: 0.8;'>Email này được gửi tự động, vui lòng không trả lời trực tiếp.</p>"
+                + "</div>"
+
+                + "</div>"
+                + "</body>"
+                + "</html>";
+
+        sendEmail(to, subject, body);
+    }
 }

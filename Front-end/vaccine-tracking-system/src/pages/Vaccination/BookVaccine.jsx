@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaTimes, FaUser, FaTransgender, FaCalendarAlt } from "react-icons/fa";
 import { format } from "date-fns";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 import {
   getChildByCustomerId,
   getVaccineCombos,
@@ -12,6 +12,7 @@ import {
 import { toast } from "react-toastify";
 import Header from "../../components/common/Header";
 import Footer from "../../components/common/Footer";
+import { useAuth } from "../../components/common/AuthContext";
 
 const BookVaccine = () => {
   const [errors, setErrors] = useState({});
@@ -25,15 +26,16 @@ const BookVaccine = () => {
   const [vaccineData, setVaccineData] = useState([]);
   const [vaccineCombos, setVaccineCombos] = useState([]);
   const navigate = useNavigate();
-
+  const { userInfo } = useAuth();
   // take data
   const userId = localStorage.getItem("userId");
-  console.log("userId: ", userId);
+
+  console.log("user id la: ", userInfo);
 
   // form data
   const [formData, setFormData] = useState({
     bookingDate: "",
-    customerId: userId || "",
+    customerId: userInfo.userId || "",
     vaccineId: [],
     vaccineComboId: [],
     childId: "",
@@ -44,7 +46,7 @@ const BookVaccine = () => {
   useEffect(() => {
     const fetchChildren = async () => {
       try {
-        const data = await getChildByCustomerId(userId);
+        const data = await getChildByCustomerId(userInfo.userId);
         setChildren(data);
         console.log("API Response (Get Childs):", children);
       } catch (error) {
@@ -52,6 +54,26 @@ const BookVaccine = () => {
       }
     };
     fetchChildren();
+  }, []);
+
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [proFileData, setProFileData] = useState(null);
+  useEffect(() => {
+    // Kiểm tra xem người dùng đã đăng nhập chưa
+    const data = fetch("http://localhost:8080/auth/myprofile", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((response) => {
+        if (response.status === 401) {
+          setIsAuthenticated(false);
+        }
+      })
+      .catch((error) => {
+        setIsAuthenticated(false);
+      });
+    setProFileData(data);
+    console.log("my profile data: ", proFileData);
   }, []);
 
   // take api vaccines
@@ -177,7 +199,7 @@ const BookVaccine = () => {
         const payload = {
           booking: {
             bookingDate: formData.bookingDate,
-            customer: { customerId: userId },
+            customer: { customerId: userInfo.userId },
           },
           vaccineId: selectedVaccines.map((v) => v.vaccineId),
           vaccineComboId: selectedCombos.map((c) => c.vaccineComboId),
@@ -517,69 +539,58 @@ const BookVaccine = () => {
               <h2 className="text-2xl font-bold text-gray-800 mb-6">
                 Thông tin trẻ em
               </h2>
-              {children.map((child) => (
-                <div
-                  key={child.childId}
-                  onClick={() => handleChildSelect(child)} // Chọn trẻ khi click
-                  className={`flex items-center p-4 mb-4 rounded-lg cursor-pointer transition-all ${
-                    selectedChild?.childId === child.childId
-                      ? "bg-blue-100 border-2 border-blue-500"
-                      : "bg-gray-50"
-                  }`}
-                >
-                  <img
-                    src={
-                      child.image ||
-                      "https://cdn-icons-png.freepik.com/512/7890/7890168.png"
-                    } // Hình ảnh minh họa
-                    alt={child.firstName}
-                    className="w-16 h-16 object-cover rounded-full mr-4"
-                  />
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <FaUser className="text-gray-600" />
-                      <span className="font-semibold text-lg">
-                        {child.firstName} {child.lastName}
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <FaTransgender className="text-gray-600" />
-                      <span className="text-gray-600">
-                        Giới tính: {child.gender ? "Nam" : "Nữ"}
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <FaCalendarAlt className="text-gray-600" />
-                      <span className="text-gray-600">
-                        Ngày sinh: {child.dob}
-                      </span>
+              {children && children.length > 0 ? (
+                // Nếu có dữ liệu trẻ em
+                children.map((child) => (
+                  <div
+                    key={child.childId}
+                    onClick={() => handleChildSelect(child)} // Chọn trẻ khi click
+                    className={`flex items-center p-4 mb-4 rounded-lg cursor-pointer transition-all ${
+                      selectedChild?.childId === child.childId
+                        ? "bg-blue-100 border-2 border-blue-500"
+                        : "bg-gray-50"
+                    }`}
+                  >
+                    <img
+                      src={
+                        child.image ||
+                        "https://cdn-icons-png.freepik.com/512/7890/7890168.png"
+                      } // Hình ảnh minh họa
+                      alt={child.firstName}
+                      className="w-16 h-16 object-cover rounded-full mr-4"
+                    />
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <FaUser className="text-gray-600" />
+                        <span className="font-semibold text-lg">
+                          {child.firstName} {child.lastName}
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <FaTransgender className="text-gray-600" />
+                        <span className="text-gray-600">
+                          Giới tính: {child.gender ? "Nam" : "Nữ"}
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <FaCalendarAlt className="text-gray-600" />
+                        <span className="text-gray-600">
+                          Ngày sinh: {child.dob}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-
+                ))
+              ) : (
+                // Nếu không có dữ liệu trẻ em, hiển thị thông báo
+                <p className="text-center text-gray-600">No child</p>
+              )}
               <button
                 onClick={() => navigate(`/child`)} // Thêm trẻ mới
                 className="mb-6 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
               >
                 + Thêm trẻ
               </button>
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                Chọn ngày tiêm
-              </h2>
-              <input
-                type="date"
-                min={format(new Date(), "yyyy-MM-dd")}
-                value={formData.bookingDate} // Đảm bảo giá trị được lấy từ formData
-                onChange={(e) => {
-                  setSelectedDate(e.target.value); // Lưu giá trị vào selectedDate
-                  setFormData((prev) => ({
-                    ...prev,
-                    bookingDate: e.target.value, // Cập nhật bookingDate trong formData
-                  }));
-                }}
-                className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none mb-6 w-full md:w-auto"
-              />
             </div>
           </div>
         </div>

@@ -111,7 +111,7 @@ const AgeVaccine = () => {
                       : "bg-gray-100 text-[#1A365D] hover:bg-[#2C5DA3] hover:text-white"
                   }`}
                 >
-                  {selectedPackage.includes(vaccine.id) ? "Selected" : "Select"}
+                  {selectedPackage.includes(vaccine.id) ? "Đã chọn" : "Chọn"}
                 </button>
               </div>
             </div>
