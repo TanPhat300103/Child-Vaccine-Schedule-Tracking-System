@@ -792,3 +792,16 @@ export const updateFeedback = async (feedback) => {
     throw error;
   }
 };
+
+export const setBookingDetailStatus = async (bookingId, status) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/bookingdetail/updatestatus?id=${bookingId}&&status=${status}`
+    );
+    console.log("API Response (setBookingDetailStatus):", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error setting booking detail status:", error);
+    throw error;
+  }
+};

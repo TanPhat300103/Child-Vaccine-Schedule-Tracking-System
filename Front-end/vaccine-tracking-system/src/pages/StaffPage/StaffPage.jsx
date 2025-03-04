@@ -12,7 +12,7 @@ import {
   FiChevronDown,
   FiHome,
 } from "react-icons/fi";
-import Notification from "./Notification";
+import Notification from "../../components/common/Notification";
 
 const StaffPage = () => {
   const staffName = "Nguyễn Văn A"; // Lấy từ API hoặc state
