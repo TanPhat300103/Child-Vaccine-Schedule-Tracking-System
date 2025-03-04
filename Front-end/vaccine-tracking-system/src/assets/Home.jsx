@@ -14,6 +14,7 @@ import AgeVaccine from "../components/homepage/AgeVaccine.jsx";
 import Footer from "../components/common/Footer";
 import { useCart } from "../components/homepage/AddCart.jsx"; // Đảm bảo đúng đường dẫn đến CartContext
 import { getChildByCustomerId, getCustomerId } from "../apis/api.js";
+import { useAuth } from "../components/common/AuthContext.jsx";
 
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -24,21 +25,40 @@ const Home = () => {
   const { cart, addToCart, removeFromCart } = useCart();
   const [customerData, setCustomerData] = useState(null);
   const [childData, setChildData] = useState(null);
-
+  const { userInfo } = useAuth();
   // take data
   const UserId = localStorage.getItem("userId");
   const cartItemCount = useMemo(() => {
     return Object.values(cart).reduce((total, vaccine) => total + 1, 0);
   }, [cart]);
   console.log(cartItemCount);
+  console.log("user id la: ", userInfo.userId);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [proFileData, setProFileData] = useState(null);
+  useEffect(() => {
+    // Kiểm tra xem người dùng đã đăng nhập chưa
+    const data = fetch("http://localhost:8080/auth/myprofile", {
+      method: "GET",
+      credentials: "include", // Gửi cookie/session
+    })
+      .then((response) => {
+        if (response.status === 401) {
+          setIsAuthenticated(false);
+        }
+      })
+      .catch((error) => {
+        setIsAuthenticated(false);
+      });
+    setProFileData(data);
+    console.log("my profile data: ", proFileData);
+  }, []);
 
   // take api customerByid
   useEffect(() => {
     const fetchCustomer = async () => {
       try {
-        const data = await getCustomerId(UserId);
+        const data = await getCustomerId(userInfo.userId);
         setCustomerData(data);
-        console.log("customer data: ", customerData);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu vắc xin:", error.message);
       }
@@ -50,9 +70,8 @@ const Home = () => {
   useEffect(() => {
     const fetchChild = async () => {
       try {
-        const data = await getChildByCustomerId(UserId);
+        const data = await getChildByCustomerId(userInfo.userId);
         setChildData(data);
-        console.log("child data: ", childData);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu vắc xin:", error.message);
       }
