@@ -880,22 +880,7 @@ export const getAllFeedback = async () => {
   }
 };
 
-// Cập nhật Feedback (POST /feedback/update)
 // Hàm nhận vào một đối tượng feedback đã được cập nhật (bao gồm cả id) và gửi lên backend
-export const updateFeedback = async (feedback) => {
-  try {
-    const response = await axios.post(
-      `${API_BASE_URL}/feedback/update`,
-      feedback
-    );
-    console.log("API Response (updateFeedback):", response.data);
-    return response.data;
-  } catch (error) {
-    console.error("Lỗi khi cập nhật feedback:", error);
-    throw error;
-  }
-};
-
 export const setBookingDetailStatus = async (bookingId, status) => {
   try {
     const response = await axios.post(
@@ -908,4 +893,3 @@ export const setBookingDetailStatus = async (bookingId, status) => {
     throw error;
   }
 };
-
