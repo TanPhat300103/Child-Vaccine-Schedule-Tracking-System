@@ -2,16 +2,28 @@ import axios from "axios";
 
 const API_BASE_URL = "http://localhost:8080";
 
-// Users
-export const getUsers = async () => {
+// Tạo instance axios để gọi API
+const api = axios.create({
+  baseURL: API_BASE_URL,
+});
+
+// Hàm gọi API chung với xử lý lỗi toàn cục
+const apiCall = async (method, endpoint, data = {}) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/customer`);
-    console.log("API Response (Get Users):", response.data); // In toàn bộ dữ liệu người dùng nhận được
+    const response = await api({
+      method,
+      url: endpoint,
+      data,
+    });
     return response.data;
   } catch (error) {
-    throw new Error("Không thể lấy dữ liệu người dùng");
+    const errorMessage = error.response?.data?.message || "Có lỗi xảy ra";
+    console.error(`Error with API call to ${endpoint}:`, errorMessage);
+    throw new Error(errorMessage);
   }
 };
+// Users
+export const getUsers = () => apiCall("get", "/customer");
 
 export const postUsers = async (formData) => {
   console.log("Form data being sent to API:", formData);
@@ -82,6 +94,7 @@ export const getChildByCustomerId = async (customerId) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/child/findbycustomer`, {
       params: { id: customerId },
+      withCredentials: true,
     });
 
     console.log("📡 API Response (get child by CustomerId):", response.data);
@@ -96,6 +109,7 @@ export const getCustomerId = async (customerId) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/customer/findid`, {
       params: { id: customerId },
+      withCredentials: true,
     });
 
     console.log("📡 API Response (getCustomerId):", response.data);
@@ -107,15 +121,7 @@ export const getCustomerId = async (customerId) => {
 };
 
 //Vaccine
-export const getVaccines = async () => {
-  try {
-    const response = await axios.get(`${API_BASE_URL}/vaccine`);
-    console.log("API Response (Get Vaccines):", response.data);
-    return response.data;
-  } catch (error) {
-    throw new Error("Không thể lấy dữ liệu người dùng");
-  }
-};
+export const getVaccines = () => apiCall("get", "/vaccine");
 
 export const getVaccineDetail = async () => {
   try {
@@ -126,22 +132,10 @@ export const getVaccineDetail = async () => {
     throw new Error("Không thể lấy dữ liệu người dùng");
   }
 };
-export const getVaccineDetailByVaccineId = async (vaccineId) => {
-  try {
-    const response = await axios.get(
-      `${API_BASE_URL}/vaccinedetail/findbyvaccine`,
-      {
-        params: {
-          id: vaccineId,
-        },
-      }
-    );
-    console.log("API Response (Get Vaccines Detail):", response.data);
-    return response.data;
-  } catch (error) {
-    throw new Error("Không thể lấy dữ liệu người dùng");
-  }
-};
+
+export const getVaccineDetailByVaccineId = (vaccineId) =>
+  apiCall("get", "/vaccinedetail/findbyvaccine", { params: { id: vaccineId } });
+
 export const getVaccinesByAge = async (ageMin, ageMax) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/vaccine/findbyage`, {
@@ -162,6 +156,7 @@ export const getVaccinesByAge = async (ageMin, ageMax) => {
 export const getVaccineCombos = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/vaccinecombo`);
+
     console.log("API Response (Get VaccineCombos):", response.data);
     return response.data;
   } catch (error) {
@@ -887,16 +882,3 @@ export const getAllFeedback = async () => {
 
 // Cập nhật Feedback (POST /feedback/update)
 // Hàm nhận vào một đối tượng feedback đã được cập nhật (bao gồm cả id) và gửi lên backend
-export const updateFeedback = async (feedback) => {
-  try {
-    const response = await axios.post(
-      `${API_BASE_URL}/feedback/update`,
-      feedback
-    );
-    console.log("API Response (updateFeedback):", response.data);
-    return response.data;
-  } catch (error) {
-    console.error("Lỗi khi cập nhật feedback:", error);
-    throw error;
-  }
-};

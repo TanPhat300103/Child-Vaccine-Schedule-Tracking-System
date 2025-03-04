@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { signInWithGoogle } from "../../config/firebase.js";
 import { FcGoogle } from "react-icons/fc";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { getUsers } from "../../apis/api.js";
+import { useAuth } from "../../components/common/AuthContext.jsx";
 
 const Login = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -15,6 +16,7 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { checkLoginStatus } = useAuth();
 
   //check validate phone and password
   const validateForm = () => {
@@ -41,36 +43,85 @@ const Login = () => {
   };
 
   //Submit and handle API
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const response = await fetch("http://localhost:8080/login", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/x-www-form-urlencoded",
+  //     },
+  //     credentials: "include",
+  //     body: new URLSearchParams({
+  //       username: phoneNumber,
+  //       password,
+  //     }).toString(),
+  //   });
+  //   console.log("response: ", response);
+  //   if (validateForm()) {
+  //     setIsLoading(true);
+  //     try {
+  //       const users = await getUsers();
+  //       const user = users.find(
+  //         (user) =>
+  //           user.phoneNumber === phoneNumber && user.password === password
+  //       );
+
+  //       if (user) {
+  //         console.log("User data:", user);
+  //         localStorage.setItem("userId", user.customerId);
+  //         console.log(
+  //           "UserId đã được lưu vào localStorage:",
+  //           localStorage.getItem("userId")
+  //         );
+
+  //         toast.success("Đăng nhập thành công");
+  //         navigate("/book-vaccine");
+  //       } else {
+  //         setErrors({ phoneNumber: "Số điện thoại hoặc Mật khẩu không đúng" });
+  //         toast.error("Số điện thoại hoặc mật khẩu không đúng");
+  //       }
+  //     } catch (error) {
+  //       console.error("Login failed:", error);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   }
+  // };
+
+  // Xử lý đăng nhập
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      setIsLoading(true);
-      try {
-        const users = await getUsers();
-        const user = users.find(
-          (user) =>
-            user.phoneNumber === phoneNumber && user.password === password
-        );
+    setErrors("");
+    setIsLoading(true);
 
-        if (user) {
-          console.log("User data:", user);
-          localStorage.setItem("userId", user.customerId);
-          console.log(
-            "UserId đã được lưu vào localStorage:",
-            localStorage.getItem("userId")
-          );
-
-          toast.success("Đăng nhập thành công");
-          navigate("/home");
-        } else {
-          setErrors({ phoneNumber: "Số điện thoại hoặc Mật khẩu không đúng" });
-          toast.error("Số điện thoại hoặc mật khẩu không đúng");
-        }
-      } catch (error) {
-        console.error("Login failed:", error);
-      } finally {
-        setIsLoading(false);
+    try {
+      const response = await fetch("http://localhost:8080/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        credentials: "include",
+        body: new URLSearchParams({
+          username: phoneNumber,
+          password,
+        }).toString(),
+      });
+      console.log("response login data", response);
+      if (response.ok) {
+        console.log("Login successful - Updating status...");
+        await checkLoginStatus();
+        navigate("/home");
+      } else if (response.status === 401) {
+        setErrors("Số điện thoại hoặc mật khẩu không đúng");
+      } else {
+        const errorText = await response.text();
+        throw new Error(errorText || "Đã xảy ra lỗi khi đăng nhập");
       }
+    } catch (err) {
+      setErrors(err.message);
+      console.error("Lỗi đăng nhập:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 

@@ -1,5 +1,5 @@
-import React from "react";
-import { Outlet, Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Outlet, Link, Navigate } from "react-router-dom";
 import {
   FiGrid,
   FiUsers,
@@ -20,6 +20,31 @@ const AdminPage = () => {
     firstName: "Placeholder",
     lastName: "Admin",
   };
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  useEffect(() => {
+    // Kiểm tra xem người dùng đã đăng nhập chưa
+    fetch("http://localhost:8080/auth/myprofile", {
+      method: "GET",
+      credentials: "include", // Gửi cookie/session
+    })
+      .then((response) => {
+        if (response.status === 401) {
+          setIsAuthenticated(false);
+        }
+      })
+      .catch((error) => {
+        setIsAuthenticated(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    // Lấy cookie và hiển thị trên console
+    console.log("Cookie: ", document.cookie); // Hiển thị tất cả cookies
+  }, []);
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-100">
