@@ -45,8 +45,8 @@ export const process = [
   {
     step: 1,
     title: "Trước khi tiêm",
-    icon: "💉",
-    description: "Kiểm tra sức khỏe và tư vấn",
+    icon: "🗓️",
+    description: "Đặt lịch tiêm",
   },
   {
     step: 2,

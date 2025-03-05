@@ -63,7 +63,7 @@ const VaccineDetailPage = () => {
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-[#333333] flex items-center gap-3">
             <FaSyringe className="text-[#4A90E2]" />
-            {vaccineData?.name || "Vaccine Detail"}
+            {vaccineData.name || "Vaccine Detail"}
           </h1>
         </div>
 
@@ -100,7 +100,9 @@ const VaccineDetailPage = () => {
                 <DetailRow
                   icon={<FaFlask />}
                   label="Mô tả"
-                  value={vaccineData?.vaccine.description || "n"}
+                  value={`Phòng bệnh ${
+                    vaccineData?.vaccine.description || "n"
+                  }`}
                 />
                 <DetailRow
                   icon={<FaGlobe />}
@@ -115,7 +117,7 @@ const VaccineDetailPage = () => {
                 <DetailRow
                   icon={<FaDollarSign />}
                   label="Giá vaccine"
-                  value={vaccineData.vaccine.price}
+                  value={vaccineData.vaccine.price.toLocaleString()}
                 />
               </div>
             </div>

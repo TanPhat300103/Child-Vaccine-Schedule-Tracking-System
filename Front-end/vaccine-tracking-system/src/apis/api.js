@@ -36,7 +36,17 @@ export const getUsers = async () => {
     throw new Error("Không thể lấy dữ liệu người dùng");
   }
 };
-
+export const getMarketing = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/marketing`, {
+      withCredentials: true,
+    });
+    console.log("API Response (Get Childs):", response.data);
+    return response.data;
+  } catch (error) {
+    throw new Error("Không thể lấy dữ liệu người dùng");
+  }
+};
 export const postUsers = async (formData) => {
   console.log("Form data being sent to API:", formData);
   try {
@@ -141,9 +151,18 @@ export const getCustomerId = async (customerId) => {
 };
 
 // Vaccine
-export const getVaccines = () =>
-  apiCall("get", "/vaccine", { withCredentials: true });
 
+export const getVaccines = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/vaccine`, {
+      withCredentials: true,
+    });
+    console.log("API Response (Get Vaccines Detail):", response.data);
+    return response.data;
+  } catch (error) {
+    throw new Error("Không thể lấy dữ liệu người dùng");
+  }
+};
 export const getVaccineDetail = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/vaccinedetail`, {
@@ -156,12 +175,22 @@ export const getVaccineDetail = async () => {
   }
 };
 
-export const getVaccineDetailByVaccineId = (vaccineId) =>
-  apiCall("get", "/vaccinedetail/findbyvaccine", {
-    params: { id: vaccineId },
-    withCredentials: true,
-  });
+export const getVaccineDetailByVaccineId = async (vaccineId) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/vaccinedetail/findbyvaccine?id=${vaccineId}`,
+      {
+        params: { vaccineId },
+      }
+    );
 
+    console.log("📡 API Response (getCustomerID):", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy customer ID:", error);
+    return null;
+  }
+};
 export const getVaccinesByAge = async (ageMin, ageMax) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/vaccine/findbyage`, {
@@ -973,4 +1002,3 @@ export const setBookingDetailStatus = async (bookingId, status) => {
     throw error;
   }
 };
-

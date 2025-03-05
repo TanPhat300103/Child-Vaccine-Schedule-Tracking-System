@@ -46,12 +46,24 @@ const Home = () => {
     console.log("my profile data: ", proFileData);
   }, []);
   // take data
-  console.log("user id la: ", userInfo.userId);
+  console.log("user id la: ", userInfo.authorities[0].authority);
 
   const cartItemCount = useMemo(() => {
     return Object.values(cart).reduce((total, vaccine) => total + 1, 0);
   }, [cart]);
   localStorage.setItem("userId", userInfo.userId);
+  useEffect(() => {
+    if (userInfo) {
+      if (userInfo.authorities[0].authority === "ROLE_CUSTOMER") {
+        navigate("/home"); // Dẫn người dùng tới trang Home
+      } else if (userInfo.authorities[0].authority === "ROLE_STAFF") {
+        navigate("/staff"); // Dẫn người dùng tới trang Staff
+      } else if (userInfo.authorities[0].authority === "ROLE_ADMIN") {
+        console.log("admin on");
+        navigate("/admin"); // Dẫn người dùng tới trang Admin
+      }
+    }
+  }, [userInfo, navigate]); // Dependency array đảm bảo useEffect chỉ chạy khi userInfo thay đổi
 
   // take api customerByid
   useEffect(() => {
@@ -181,7 +193,9 @@ const Home = () => {
                   {childData.map((child) => (
                     <button
                       key={child.childId}
-                      onClick={() => navigate(`/child/${child.childId}`)}
+                      onClick={() =>
+                        navigate(`/customer/child/${child.childId}`)
+                      }
                       className="block w-full px-4 py-3 text-gray-700 font-medium text-left rounded-t-lg hover:bg-gray-100 focus:outline-none"
                     >
                       Hồ sơ của {child.firstName} {child.lastName}
@@ -189,7 +203,7 @@ const Home = () => {
                   ))}
 
                   <button
-                    onClick={() => navigate("/child")}
+                    onClick={() => navigate("/customer/add-child")}
                     className="block w-full px-4 py-3 text-gray-700 font-medium text-left rounded-t-lg hover:bg-gray-100 focus:outline-none"
                   >
                     Thêm hồ sơ mới cho con

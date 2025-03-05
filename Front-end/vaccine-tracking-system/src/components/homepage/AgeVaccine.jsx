@@ -54,7 +54,7 @@ const AgeVaccine = () => {
             } shadow-md`}
           >
             {<MdChildCare className="text-2xl" />}
-            {ageRange}
+            {ageRange} Tuổi
           </button>
         ))}
       </div>
@@ -89,7 +89,7 @@ const AgeVaccine = () => {
               </p>
               <div className="flex justify-between items-center">
                 <span className="text-green-600 font-semibold">
-                  {vaccine.price} VND
+                  {vaccine.price.toLocaleString()} VND
                 </span>
                 <button
                   onClick={() =>

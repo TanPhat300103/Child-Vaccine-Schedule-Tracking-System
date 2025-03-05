@@ -107,6 +107,7 @@ const Login = () => {
         }).toString(),
       });
       console.log("response login data", response);
+
       if (response.ok) {
         console.log("Login successful - Updating status...");
         await checkLoginStatus();

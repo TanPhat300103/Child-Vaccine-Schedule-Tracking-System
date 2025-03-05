@@ -313,14 +313,7 @@ const BookVaccine = () => {
     const existingCombo = selectedCombos.find(
       (c) => c.vaccineComboId === combo.vaccineComboId
     );
-    const dataComboId = await getVaccineCombosByComboId(combo.vaccineComboId);
-    console.log("API response vaccineiddata:", dataComboId);
 
-    // Truy xuất vaccineId từ từng phần tử trong mảng API response
-    const vaccineIdsInCombo = dataComboId.map((item) => item.vaccine.vaccineId);
-    console.log("Vaccine IDs in selected combo:", vaccineIdsInCombo);
-    setDataComboById(vaccineIdsInCombo);
-    console.log("datacombobyid: ", dataComboById);
     if (existingCombo) {
       // Nếu combo đã được chọn, bỏ chọn combo
       setFormData((prevData) => ({
@@ -329,32 +322,43 @@ const BookVaccine = () => {
           (id) => id !== combo.vaccineComboId
         ),
         vaccineId: prevData.vaccineId.filter(
-          (id) => id !== existingCombo.vaccineId // Loại bỏ vaccineId duy nhất khi bỏ chọn combo
+          (id) => !dataComboById.includes(id)
         ),
       }));
 
-      setSelectedCombos(
-        (prev) => prev.filter((c) => c.vaccineComboId !== combo.vaccineComboId) // Loại bỏ combo khỏi selectedCombos
+      setSelectedCombos((prev) =>
+        prev.filter((c) => c.vaccineComboId !== combo.vaccineComboId)
       );
 
       console.log(`Combo ${combo.vaccineComboId} removed from selection.`);
     } else {
-      // Nếu combo chưa được chọn, gọi API để lấy dữ liệu
       try {
         const dataComboId = await getVaccineCombosByComboId(
           combo.vaccineComboId
         );
-        console.log("API response vaccineiddata:", dataComboId.vaccineId);
         console.log("API response vaccineiddata:", dataComboId);
 
         if (dataComboId) {
-          // Kiểm tra vaccineId trong combo (vì vaccineId là chuỗi, không phải mảng)
-          const vaccineIdsInCombo = dataComboId.vaccineId
-            ? [dataComboId.vaccineId]
-            : [];
-          console.log("Vaccine ID in selected combo:", vaccineIdsInCombo);
+          const vaccineIdsInCombo = dataComboId.map(
+            (item) => item.vaccine.vaccineId
+          );
 
-          // Cập nhật lại selectedCombos và formData khi chọn combo
+          // Kiểm tra nếu có vaccineId nào trong vaccineCombo đã có trong vaccineData
+          const isVaccineInVaccineData = vaccineIdsInCombo.some((id) =>
+            vaccineData.some(
+              (vaccineDataItem) => vaccineDataItem.vaccineId === id
+            )
+          );
+
+          if (isVaccineInVaccineData) {
+            toast.error(
+              "Một trong các vaccine trong combo đã có trong vaccineData. Không thể chọn."
+            );
+            return;
+          }
+
+          setDataComboById(vaccineIdsInCombo);
+
           setSelectedCombos((prev) => [...prev, combo]);
 
           setFormData((prevData) => ({
@@ -395,11 +399,11 @@ const BookVaccine = () => {
                 Danh sách Vắc-xin
               </h2>
               <div className="relative">
-                <div className="flex space-x-4 overflow-x-auto pb-4">
+                <div className="grid grid-cols-3 gap-4 max-h-80 overflow-y-auto">
                   {vaccineData.map((vaccine) => (
                     <div
                       key={vaccine.vaccineId}
-                      className={`flex-none w-64 rounded-lg p-4 cursor-pointer transition-all ${
+                      className={`flex-none rounded-lg p-4 cursor-pointer transition-all ${
                         selectedVaccines.some(
                           (v) => v.vaccineId === vaccine.vaccineId
                         )
@@ -409,7 +413,7 @@ const BookVaccine = () => {
                       onClick={() => handleVaccineSelect(vaccine)}
                     >
                       <img
-                        src="https://images.unsplash.com/photo-1593642532744-d377ab507dc8"
+                        src="https://images.unsplash.com/photo-1593642532744-d377ab507dc8" // Static image URL
                         alt={vaccine.name}
                         className="w-full h-40 object-cover rounded-lg mb-3"
                       />
@@ -439,11 +443,11 @@ const BookVaccine = () => {
                 Gói Vắc-xin
               </h2>
               <div className="relative">
-                <div className="flex space-x-4 overflow-x-auto pb-4">
+                <div className="grid grid-cols-3 gap-4 max-h-80 overflow-y-auto">
                   {vaccineCombos.map((combo) => (
                     <div
                       key={combo.vaccineComboId}
-                      className={`flex-none w-64 rounded-lg p-4 cursor-pointer transition-all ${
+                      className={`flex-none rounded-lg p-4 cursor-pointer transition-all ${
                         selectedCombos.find(
                           (c) => c.vaccineComboId === combo.vaccineComboId
                         )
@@ -586,7 +590,7 @@ const BookVaccine = () => {
                 <p className="text-center text-gray-600">No child</p>
               )}
               <button
-                onClick={() => navigate(`/child`)} // Thêm trẻ mới
+                onClick={() => navigate(`/add-child`)} // Thêm trẻ mới
                 className="mb-6 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
               >
                 + Thêm trẻ
