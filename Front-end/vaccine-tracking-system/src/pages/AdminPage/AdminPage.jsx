@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, Link, Navigate } from "react-router-dom";
+import { useAuth } from "../../components/common/AuthContext.jsx";
 import {
   FiGrid,
   FiUsers,
@@ -17,34 +18,40 @@ import {
 
 const AdminPage = () => {
   const adminData = {
-    firstName: "Placeholder",
-    lastName: "Admin",
+    firstName: "Lord",
+    lastName: "Of Cinder",
   };
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
-  useEffect(() => {
-    // Kiểm tra xem người dùng đã đăng nhập chưa
-    fetch("http://localhost:8080/auth/myprofile", {
-      method: "GET",
-      credentials: "include", // Gửi cookie/session
-    })
-      .then((response) => {
-        if (response.status === 401) {
-          setIsAuthenticated(false);
-        }
-      })
-      .catch((error) => {
-        setIsAuthenticated(false);
-      });
-  }, []);
+  // const { userInfo } = useAuth();
+  // const [isAuthenticated, setIsAuthenticated] = useState(true);
+  // const [proFileData, setProFileData] = useState(null);
 
-  useEffect(() => {
-    // Lấy cookie và hiển thị trên console
-    console.log("Cookie: ", document.cookie); // Hiển thị tất cả cookies
-  }, []);
+  // useEffect(() => {
+  //   // Kiểm tra xem người dùng đã đăng nhập chưa
+  //   const data = fetch("http://localhost:8080/auth/myprofile", {
+  //     method: "GET",
+  //     credentials: "include", // Gửi cookie/session
+  //   })
+  //     .then((response) => {
+  //       if (response.status === 401) {
+  //         setIsAuthenticated(false);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       setIsAuthenticated(false);
+  //     });
+  //   setProFileData(data);
+  //   console.log("my profile data: ", proFileData);
+  // }, []);
+  // // take data
+  // console.log("user id la: ", userInfo.userId);
+  // useEffect(() => {
+  //   // Lấy cookie và hiển thị trên console
+  //   console.log("Cookie: ", document.cookie); // Hiển thị tất cả cookies
+  // }, []);
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
-  }
+  // if (!isAuthenticated) {
+  //   return <Navigate to="/login" />;
+  // }
 
   return (
     <div className="flex min-h-screen bg-gray-100">
