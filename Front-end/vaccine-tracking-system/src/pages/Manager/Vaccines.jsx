@@ -2,7 +2,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { NavLink } from "react-router-dom";
-import { FaPowerOff, FaEye, FaEyeSlash } from "react-icons/fa";
+import {
+  FaSyringe,
+  FaSearch,
+  FaPlus,
+  FaPowerOff,
+  FaVial,
+} from "react-icons/fa";
 
 const Vaccines = () => {
   // State danh sách vaccine và tìm kiếm
@@ -144,13 +150,11 @@ const Vaccines = () => {
       });
   };
 
-  // --- Component VaccineItem ---
-  // Mỗi item chỉ hiển thị tên của vaccine. Khi click, mở modal chỉnh sửa.
+  // VaccineItem Component
   const VaccineItem = ({ vaccine, onVaccineUpdated, onToggleActive }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingVaccine, setEditingVaccine] = useState(null);
     const [originalEditingVaccine, setOriginalEditingVaccine] = useState(null);
-    const [editingPasswordVisible, setEditingPasswordVisible] = useState(false);
 
     const handleOpenModal = () => {
       setEditingVaccine({ ...vaccine });
@@ -174,25 +178,38 @@ const Vaccines = () => {
     return (
       <>
         <div
-          className="flex items-center justify-between bg-white rounded-lg shadow-md p-4 hover:shadow-xl transition transform hover:scale-105 cursor-pointer"
+          className="bg-white border-l-4 border-blue-500 rounded-lg shadow-md p-4 flex items-center justify-between hover:shadow-lg transition-all group"
           onClick={handleOpenModal}
         >
-          <h3 className="text-xl font-bold text-blue-700">{vaccine.name}</h3>
-          <div className="flex space-x-2">
+          <div className="flex items-center space-x-4">
+            <div className="bg-blue-100 p-3 rounded-full">
+              <FaVial className="text-blue-600 w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
+                {vaccine.name}
+              </h3>
+              <p className="text-sm text-gray-500">
+                Số liều: {vaccine.doseNumber} | Giá:{" "}
+                {vaccine.price.toLocaleString()} VND
+              </p>
+            </div>
+          </div>
+          <div className="flex space-x-3">
             <button
               onClick={handleToggleActiveLocal}
-              className={`flex items-center px-3 py-1 rounded-lg text-white transition-all text-sm ${
+              className={`px-4 py-2 rounded-lg flex items-center space-x-2 transition-all ${
                 vaccine.active
-                  ? "bg-red-500 hover:bg-red-600"
-                  : "bg-green-500 hover:bg-green-600"
+                  ? "bg-red-100 text-red-600 hover:bg-red-200"
+                  : "bg-green-100 text-green-600 hover:bg-green-200"
               }`}
             >
-              <FaPowerOff size={18} className="mr-1" />
-              {vaccine.active ? "Ngưng" : "Kích hoạt"}
+              <FaPowerOff />
+              <span>{vaccine.active ? "Ngưng" : "Kích hoạt"}</span>
             </button>
             <NavLink
               to={`../vaccine-detail/${vaccine.vaccineId}`}
-              className="block text-center bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition-all text-sm"
+              className="bg-blue-100 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-200 transition-all flex items-center space-x-2"
             >
               Chi tiết
             </NavLink>
@@ -346,87 +363,100 @@ const Vaccines = () => {
   };
 
   return (
-    <div className="p-6 bg-gradient-to-b from-blue-50 to-white min-h-screen">
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-4xl font-bold text-blue-700 mb-8 text-center">
-          Danh sách Vắc xin
-        </h2>
-        {/* Thanh tìm kiếm và nút tạo mới */}
-        <div className="mb-6 flex flex-wrap gap-4 justify-center items-center">
-          <select
-            value={searchType}
-            onChange={(e) => {
-              setSearchType(e.target.value);
-              setSearchValue("");
-              setSearchValueMin("");
-              setSearchValueMax("");
-            }}
-            className="border p-2 rounded"
-          >
-            <option value="name">Tìm theo tên</option>
-            <option value="price">Tìm theo giá</option>
-            <option value="age">Tìm theo độ tuổi</option>
-          </select>
-          {searchType === "name" && (
-            <input
-              type="text"
-              placeholder="Nhập tên vaccine"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              className="border p-2 rounded"
-            />
-          )}
-          {(searchType === "price" || searchType === "age") && (
-            <>
-              <input
-                type="number"
-                placeholder="Từ"
-                value={searchValueMin}
-                onChange={(e) => setSearchValueMin(e.target.value)}
-                className="border p-2 rounded"
-              />
-              <input
-                type="number"
-                placeholder="Đến"
-                value={searchValueMax}
-                onChange={(e) => setSearchValueMax(e.target.value)}
-                className="border p-2 rounded"
-              />
-            </>
-          )}
-          <button
-            onClick={() => {
-              // Nếu cần, logic refresh tìm kiếm ở đây.
-            }}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-all"
-          >
-            Tìm kiếm
-          </button>
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-all"
-          >
-            Tạo mới Vaccine
-          </button>
+        <header className="text-center mb-12">
+          <div className="inline-flex items-center space-x-4">
+            <FaSyringe className="text-5xl text-blue-600" />
+            <h1 className="text-4xl font-light text-gray-800">
+              Quản Lý Vắc Xin
+            </h1>
+          </div>
+          <p className="mt-4 text-gray-500 max-w-2xl mx-auto">
+            Tra cứu, quản lý và theo dõi danh sách vắc xin trong hệ thống tiêm
+            chủng
+          </p>
+        </header>
+
+        {/* Search and Filter Section */}
+        <div className="bg-white shadow-xl rounded-xl p-6 mb-8">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <div className="flex items-center space-x-4 w-full">
+              <div className="relative flex-grow">
+                <select
+                  value={searchType}
+                  onChange={(e) => {
+                    setSearchType(e.target.value);
+                    setSearchValue("");
+                    setSearchValueMin("");
+                    setSearchValueMax("");
+                  }}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="name">Tìm theo tên</option>
+                  <option value="price">Tìm theo giá</option>
+                  <option value="age">Tìm theo độ tuổi</option>
+                </select>
+                <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              </div>
+              {searchType === "name" && (
+                <input
+                  type="text"
+                  placeholder="Nhập tên vaccine"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  className="flex-grow pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              )}
+              {(searchType === "price" || searchType === "age") && (
+                <div className="flex space-x-2">
+                  <input
+                    type="number"
+                    placeholder="Từ"
+                    value={searchValueMin}
+                    onChange={(e) => setSearchValueMin(e.target.value)}
+                    className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Đến"
+                    value={searchValueMax}
+                    onChange={(e) => setSearchValueMax(e.target.value)}
+                    className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              )}
+            </div>
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="ml-4 flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <FaPlus />
+              <span>Tạo mới Vaccine</span>
+            </button>
+          </div>
         </div>
 
-        {filteredVaccines.length === 0 ? (
-          <p className="text-center text-gray-500 text-lg">
-            Không tìm thấy vaccine nào
-          </p>
-        ) : (
-          // Danh sách hiển thị theo hàng ngang: mỗi vaccine chỉ in tên
-          <div className="flex flex-col gap-2">
-            {filteredVaccines.map((vaccine) => (
+        {/* Vaccine List */}
+        <div className="space-y-4">
+          {filteredVaccines.length === 0 ? (
+            <div className="text-center py-12 bg-white rounded-xl shadow-md">
+              <FaSyringe className="mx-auto text-5xl text-gray-300 mb-4" />
+              <p className="text-gray-500 text-lg">
+                Không tìm thấy vaccine nào phù hợp
+              </p>
+            </div>
+          ) : (
+            filteredVaccines.map((vaccine) => (
               <VaccineItem
                 key={vaccine.vaccineId}
                 vaccine={vaccine}
                 onVaccineUpdated={handleVaccineUpdated}
                 onToggleActive={handleToggleActive}
               />
-            ))}
-          </div>
-        )}
+            ))
+          )}
+        </div>
 
         {/* Modal Tạo mới Vaccine và Vaccine Detail */}
         {showCreateModal && (

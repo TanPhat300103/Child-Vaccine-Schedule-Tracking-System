@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, Outlet } from "react-router-dom";
 import { FaNotesMedical, FaSyringe } from "react-icons/fa";
 import { FiCalendar, FiUsers, FiAlertTriangle } from "react-icons/fi";
+import { useAuth } from "../../components/common/AuthContext.jsx";
 
 const StaffProfile = ({ initialStaffData }) => {
   const [staffData, setStaffData] = useState(initialStaffData);
@@ -206,8 +207,30 @@ const StaffProfile = ({ initialStaffData }) => {
 };
 
 const Profile = () => {
-  const { staffId: paramStaffId } = useParams();
-  const staffId = "S04";
+  const { userInfo } = useAuth();
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [proFileData, setProFileData] = useState(null);
+  useEffect(() => {
+    // Kiểm tra xem người dùng đã đăng nhập chưa
+    const data = fetch("http://localhost:8080/auth/myprofile", {
+      method: "GET",
+      credentials: "include", // Gửi cookie/session
+    })
+      .then((response) => {
+        if (response.status === 401) {
+          setIsAuthenticated(false);
+        }
+      })
+      .catch((error) => {
+        setIsAuthenticated(false);
+      });
+    setProFileData(data);
+    console.log("my profile data: ", proFileData);
+  }, []);
+
+  // take data
+  console.log("user id la: ", userInfo.userId);
+  const staffId = userInfo.userId;
 
   const [staffData, setStaffData] = useState(null);
   const [loading, setLoading] = useState(false);

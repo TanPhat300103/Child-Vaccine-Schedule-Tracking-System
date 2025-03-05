@@ -51,7 +51,8 @@ const aggregatePayments = (payments, fromDate, toDate) => {
   labels.forEach((label) => {
     incomeMap[label] = 0;
   });
-  payments.forEach((payment) => {
+  const paymentsArray = Array.isArray(payments) ? payments : [payments];
+  paymentsArray.forEach((payment) => {
     if (payment.status === true) {
       const pDate = parseISO(payment.date);
       if (pDate >= fromDate && pDate <= toDate) {
