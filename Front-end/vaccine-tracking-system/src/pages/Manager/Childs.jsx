@@ -149,6 +149,7 @@ const Childs = () => {
   };
 
   // Lọc danh sách hồ sơ trẻ em theo tên và trạng thái
+
   const childrenArray = Array.isArray(children) ? children : [children];
   const filteredChildren = childrenArray.filter((child) => {
     let matchesSearch = true;
