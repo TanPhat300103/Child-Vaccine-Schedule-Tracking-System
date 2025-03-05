@@ -60,6 +60,8 @@ import { AuthProvider } from "../components/common/AuthContext.jsx";
 import PaymentProcessPage from "../pages/Payment/PaymentVNPay.jsx";
 import PaymentPay from "../pages/Payment/PaymentVNPay.jsx";
 import VNPAY from "../pages/Payment/VNPAY.jsx";
+import PaymentVnpay2 from "../pages/Payment/PaymentVNPay2.jsx";
+import CancelPayment from "../pages/Payment/CancelPayment.jsx";
 
 const Main = () => {
   return (
@@ -104,7 +106,9 @@ const Main = () => {
               <Route path="/footer" element={<Footer />} />
               <Route path="/auth" element={<AuthProvider />} />
               <Route path="/paymentVnpay" element={<PaymentPay />} />
+              <Route path="/paymentVnpay2" element={<PaymentVnpay2 />} />
               <Route path="/vnpay" element={<VNPAY />} />
+              <Route path="/payment-return" element={<CancelPayment />} />
 
               {/* Route /customer */}
               <Route path="/customer" element={<CustomerPage />}>

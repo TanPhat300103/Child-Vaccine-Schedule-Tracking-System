@@ -84,7 +84,7 @@ const PaymentCustomer = () => {
       <div className="mt-2">
         {payment.status === false ? (
           <NavLink
-            to="/paymentC"
+            to="/paymentVnpay2"
             state={{ paymentId: payment.paymentId }}
             className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded"
           >

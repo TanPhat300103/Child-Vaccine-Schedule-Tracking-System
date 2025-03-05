@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useState } from "react";
 import {
   FaCheckCircle,
   FaTimesCircle,
@@ -10,228 +9,162 @@ import {
   FaUniversity,
   FaMoneyBillWave,
 } from "react-icons/fa";
-// import "../style/PaymentReturnPage.css";
 
 function VNPAY() {
-  const location = useLocation();
-  const [paymentResult, setPaymentResult] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [showConfetti, setShowConfetti] = useState(false);
+  const [paymentResult, setPaymentResult] = useState({
+    status: "SUCCESS", // Hoặc "FAILURE" nếu thanh toán thất bại
+    orderId: "ORD123456",
+    amount: 500000,
+    bankCode: "Vietcombank",
+    bankTransactionNo: "VTC123456789",
+    cardType: "VISA",
+    orderInfo: "Mua vaccine cho trẻ",
+    payDate: "20250304103000", // Ngày giờ thanh toán
+    transactionNo: "TRAN123456789",
+    formattedPayDate: "04/03/2025, 10:30:00",
+  });
 
-  useEffect(() => {
-    const handlePaymentResult = () => {
-      // Lấy query parameters từ URL
-      const queryParams = new URLSearchParams(location.search);
+  const [showConfetti, setShowConfetti] = useState(
+    paymentResult.status === "SUCCESS"
+  );
 
-      // Lấy các thông tin từ query parameters
-      const result = {
-        status: queryParams.get("status"),
-        orderId: queryParams.get("orderId"),
-        amount: parseInt(queryParams.get("amount")),
-        bankCode: queryParams.get("bankCode"),
-        bankTransactionNo: queryParams.get("bankTransactionNo"),
-        cardType: queryParams.get("cardType"),
-        orderInfo: queryParams.get("orderInfo"),
-        payDate: queryParams.get("payDate"),
-        transactionNo: queryParams.get("transactionNo"),
-      };
-
-      // Format ngày thanh toán (định dạng YYYYMMDDHHmmss -> dễ đọc hơn)
-      if (result.payDate) {
-        const date = new Date(
-          result.payDate.substring(0, 4), // Năm
-          parseInt(result.payDate.substring(4, 6)) - 1, // Tháng (trừ 1 vì tháng bắt đầu từ 0)
-          result.payDate.substring(6, 8), // Ngày
-          result.payDate.substring(8, 10), // Giờ
-          result.payDate.substring(10, 12), // Phút
-          result.payDate.substring(12, 14) // Giây
-        );
-        result.formattedPayDate = date.toLocaleString("vi-VN");
-      }
-
-      setPaymentResult(result);
-
-      // Bật hiệu ứng confetti nếu thanh toán thành công
-      if (result.status === "SUCCESS") {
-        setShowConfetti(true);
-      }
-
-      setLoading(false);
-    };
-
-    // Thêm delay nhỏ để có animation loading
-    setTimeout(() => {
-      handlePaymentResult();
-    }, 1000);
-  }, [location]);
-
-  // Hiệu ứng Confetti component
   const Confetti = () => {
     return (
-      <div className="confetti-container">
+      <div className="confetti-container absolute top-0 left-0 w-full h-full pointer-events-none">
         {[...Array(50)].map((_, i) => (
-          <div key={i} className={`confetti confetti-${i % 5}`}></div>
+          <div key={i} className={`confetti confetti-${i % 5} absolute`}></div>
         ))}
       </div>
     );
   };
 
-  // Loading spinner
-  if (loading) {
-    return (
-      <div className="paymentreturnpage-container">
-        <div className="spinner-container">
-          <div className="spinner"></div>
-          <h3 className="loading-text">Đang xử lý kết quả thanh toán...</h3>
-        </div>
-      </div>
-    );
-  }
-
-  if (!paymentResult) {
-    return (
-      <div className="paymentreturnpage-container">
-        <div className="paymentreturnpage-card error-card">
-          <FaTimesCircle className="error-icon" />
-          <h2 className="paymentreturnpage-title">
-            Không có dữ liệu kết quả thanh toán.
-          </h2>
-          <p className="error-message">
-            Đã xảy ra lỗi khi xử lý giao dịch của bạn.
-          </p>
-          <a href="/" className="paymentreturnpage-button">
-            <FaHome className="button-icon" /> Quay lại trang chủ
-          </a>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="paymentreturnpage-container">
+    <div className="paymentreturnpage-container bg-light-blue-100 min-h-screen flex items-center justify-center">
       {showConfetti && <Confetti />}
-      <div className="paymentreturnpage-card">
+      <div className="paymentreturnpage-card bg-white shadow-lg rounded-lg w-full max-w-2xl p-6">
         <div
           className={`paymentreturnpage-receipt ${
-            paymentResult.status === "SUCCESS"
-              ? "success-receipt"
-              : "failure-receipt"
-          }`}
+            paymentResult.status === "SUCCESS" ? "bg-green-100" : "bg-red-100"
+          } p-6 rounded-lg`}
         >
-          <div className="receipt-header">
-            <div className="logo-container">
-              <div className="logo">VNPay</div>
-            </div>
-            <h2 className="receipt-title">Biên lai thanh toán</h2>
-            <div className="receipt-status-container">
+          <div className="receipt-header flex items-center justify-between mb-6">
+            <div className="logo text-2xl font-bold text-blue-600">VNPay</div>
+            <h2 className="receipt-title text-xl font-semibold">
+              Biên lai thanh toán
+            </h2>
+            <div className="receipt-status-container flex items-center space-x-2">
               {paymentResult.status === "SUCCESS" ? (
-                <div className="receipt-status success">
-                  <FaCheckCircle className="status-icon" />
+                <div className="receipt-status text-green-500">
+                  <FaCheckCircle className="status-icon text-2xl" />
                   <span>Thanh toán thành công</span>
                 </div>
               ) : (
-                <div className="receipt-status failure">
-                  <FaTimesCircle className="status-icon" />
+                <div className="receipt-status text-red-500">
+                  <FaTimesCircle className="status-icon text-2xl" />
                   <span>Thanh toán thất bại</span>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="receipt-body">
-            <div className="receipt-amount">
+          <div className="receipt-body mb-6">
+            <div className="receipt-amount flex justify-between items-center mb-4">
               {paymentResult.amount && (
                 <>
-                  <span className="amount-label">Tổng thanh toán</span>
-                  <span className="amount-value">
+                  <span className="amount-label font-medium text-gray-700">
+                    Tổng thanh toán
+                  </span>
+                  <span className="amount-value font-semibold text-xl text-gray-900">
                     {paymentResult.amount.toLocaleString("vi-VN")} ₫
                   </span>
                 </>
               )}
             </div>
 
-            <div className="receipt-divider"></div>
+            <div className="receipt-divider border-t border-gray-300 mb-4"></div>
 
             <div className="receipt-details">
-              <div className="detail-row">
-                <div className="detail-icon">
+              <div className="detail-row flex justify-between items-center mb-3">
+                <div className="detail-icon text-lg text-blue-600">
                   <FaReceipt />
                 </div>
-                <div className="detail-label">Mã đơn hàng:</div>
-                <div className="detail-value">
+                <div className="detail-label text-gray-700">Mã đơn hàng:</div>
+                <div className="detail-value text-gray-900">
                   {paymentResult.orderId || "N/A"}
                 </div>
               </div>
 
-              {paymentResult.transactionNo && (
-                <div className="detail-row">
-                  <div className="detail-icon">
-                    <FaMoneyBillWave />
-                  </div>
-                  <div className="detail-label">Mã giao dịch:</div>
-                  <div className="detail-value">
-                    {paymentResult.transactionNo}
-                  </div>
+              <div className="detail-row flex justify-between items-center mb-3">
+                <div className="detail-icon text-lg text-blue-600">
+                  <FaMoneyBillWave />
                 </div>
-              )}
-
-              {paymentResult.orderInfo && (
-                <div className="detail-row">
-                  <div className="detail-icon">
-                    <FaReceipt />
-                  </div>
-                  <div className="detail-label">Thông tin:</div>
-                  <div className="detail-value">
-                    {decodeURIComponent(paymentResult.orderInfo)}
-                  </div>
+                <div className="detail-label text-gray-700">Mã giao dịch:</div>
+                <div className="detail-value text-gray-900">
+                  {paymentResult.transactionNo}
                 </div>
-              )}
+              </div>
 
-              {paymentResult.formattedPayDate && (
-                <div className="detail-row">
-                  <div className="detail-icon">
-                    <FaCalendarAlt />
-                  </div>
-                  <div className="detail-label">Thời gian:</div>
-                  <div className="detail-value">
-                    {paymentResult.formattedPayDate}
-                  </div>
+              <div className="detail-row flex justify-between items-center mb-3">
+                <div className="detail-icon text-lg text-blue-600">
+                  <FaReceipt />
                 </div>
-              )}
+                <div className="detail-label text-gray-700">Thông tin:</div>
+                <div className="detail-value text-gray-900">
+                  {decodeURIComponent(paymentResult.orderInfo)}
+                </div>
+              </div>
 
-              {paymentResult.status === "SUCCESS" && paymentResult.bankCode && (
-                <div className="detail-row">
-                  <div className="detail-icon">
+              <div className="detail-row flex justify-between items-center mb-3">
+                <div className="detail-icon text-lg text-blue-600">
+                  <FaCalendarAlt />
+                </div>
+                <div className="detail-label text-gray-700">Thời gian:</div>
+                <div className="detail-value text-gray-900">
+                  {paymentResult.formattedPayDate}
+                </div>
+              </div>
+
+              {paymentResult.bankCode && (
+                <div className="detail-row flex justify-between items-center mb-3">
+                  <div className="detail-icon text-lg text-blue-600">
                     <FaUniversity />
                   </div>
-                  <div className="detail-label">Ngân hàng:</div>
-                  <div className="detail-value">{paymentResult.bankCode}</div>
+                  <div className="detail-label text-gray-700">Ngân hàng:</div>
+                  <div className="detail-value text-gray-900">
+                    {paymentResult.bankCode}
+                  </div>
                 </div>
               )}
 
-              {paymentResult.status === "SUCCESS" && paymentResult.cardType && (
-                <div className="detail-row">
-                  <div className="detail-icon">
+              {paymentResult.cardType && (
+                <div className="detail-row flex justify-between items-center mb-3">
+                  <div className="detail-icon text-lg text-blue-600">
                     <FaCreditCard />
                   </div>
-                  <div className="detail-label">Loại thẻ:</div>
-                  <div className="detail-value">{paymentResult.cardType}</div>
+                  <div className="detail-label text-gray-700">Loại thẻ:</div>
+                  <div className="detail-value text-gray-900">
+                    {paymentResult.cardType}
+                  </div>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="receipt-footer">
+          <div className="receipt-footer flex justify-between items-center">
             <div className="receipt-actions">
-              <a href="/" className="paymentreturnpage-button primary-button">
-                <FaHome className="button-icon" /> Quay lại trang chủ
+              <a
+                href="/customer/payment"
+                className="paymentreturnpage-button bg-blue-500 text-white py-2 px-6 rounded-lg flex items-center hover:bg-blue-600"
+              >
+                <FaHome className="button-icon mr-2" /> xem trạng thái thanh
+                toán
               </a>
               {paymentResult.status === "SUCCESS" && (
                 <button
                   onClick={() => window.print()}
-                  className="paymentreturnpage-button secondary-button"
+                  className="paymentreturnpage-button bg-gray-200 text-gray-800 py-2 px-6 rounded-lg flex items-center mt-2 hover:bg-gray-300"
                 >
-                  <FaReceipt className="button-icon" /> In biên lai
+                  <FaReceipt className="button-icon mr-2" /> In biên lai
                 </button>
               )}
             </div>

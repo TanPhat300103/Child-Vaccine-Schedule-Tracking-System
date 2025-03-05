@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {
   getBookingByCustomerId,
   getBookingDetailByBooking,
@@ -48,7 +48,6 @@ const BookingCustomer = () => {
     fetchProfileData();
   }, []);
 
-  const location = useLocation();
   const customerId = userInfo?.userId || "C001"; // Sử dụng customerId từ userInfo
 
   // Lấy danh sách booking theo customerId
@@ -105,6 +104,21 @@ const BookingCustomer = () => {
       console.error("Lỗi khi huỷ booking:", error);
     }
   };
+  const handlePaymentClick = (booking) => {
+    if (!booking.totalAmount || !booking.bookingId) {
+      console.error("Thông tin đặt lịch không đầy đủ.");
+      return;
+    }
+
+    const bookingData = {
+      bookingId: booking.bookingId,
+      bookingDate: booking.bookingDate,
+      totalAmount: booking.totalAmount,
+    };
+
+    localStorage.setItem("bookingData", JSON.stringify(bookingData)); // Lưu vào localStorage
+    console.log("Dữ liệu đã lưu vào localStorage:", bookingData);
+  };
 
   const handleRescheduleBooking = async (bookingId, e) => {
     e.stopPropagation();
@@ -150,12 +164,13 @@ const BookingCustomer = () => {
       {booking.status === 0 && (
         <div className="flex space-x-2 mt-2">
           <NavLink
-            to="/paymentVnpay"
-            state={{ bookingId: booking.bookingId }}
+            to="/paymentVnpay2"
+            onClick={() => handlePaymentClick(booking)}
             className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded"
           >
             Thanh Toán
           </NavLink>
+
           <button
             onClick={(e) => handleCancelBooking(booking.bookingId, e)}
             className="px-3 py-1 bg-gray-500 hover:bg-gray-600 text-white rounded"

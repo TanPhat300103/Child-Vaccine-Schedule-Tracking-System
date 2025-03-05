@@ -134,16 +134,20 @@ const PriceVaccine = () => {
         <div className="bg-white p-6 rounded-lg shadow-xl border border-gray-200 max-w-4xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
             <div className="relative">
+              <label className="text-gray-700 font-semibold">
+                Giá tối thiểu:
+              </label>
               <input
                 type="number"
                 className="w-full p-4 pl-12 pr-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300"
                 placeholder="Giá tối thiểu"
                 value={minPrice}
-                onChange={(e) =>
-                  setMinPrice(
-                    Math.floor(Number(e.target.value) / 100000) * 100000
-                  )
-                }
+                onChange={(e) => {
+                  // Chỉ cập nhật giá trị nếu giá trị đó không âm
+                  const newValue =
+                    Math.floor(Number(e.target.value) / 100000) * 100000;
+                  setMinPrice(newValue >= 0 ? newValue : 0); // Nếu giá trị âm, gán về 0
+                }}
                 step="100000"
               />
               <div className="absolute left-4 top-4 text-gray-500">
@@ -152,16 +156,18 @@ const PriceVaccine = () => {
             </div>
 
             <div className="relative">
+              <label className="text-gray-700 font-semibold">Giá tối đa:</label>
               <input
                 type="number"
                 className="w-full p-4 pl-12 pr-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300"
                 placeholder="Giá tối đa"
                 value={maxPrice}
-                onChange={(e) =>
-                  setMaxPrice(
-                    Math.floor(Number(e.target.value) / 100000) * 100000
-                  )
-                }
+                onChange={(e) => {
+                  // Chỉ cập nhật giá trị nếu giá trị đó không âm
+                  const newValue =
+                    Math.floor(Number(e.target.value) / 100000) * 100000;
+                  setMaxPrice(newValue >= 0 ? newValue : 0); // Nếu giá trị âm, gán về 0
+                }}
                 step="100000"
               />
               <div className="absolute left-4 top-4 text-gray-500">
@@ -193,16 +199,6 @@ const PriceVaccine = () => {
                 <i className="fas fa-globe"></i>
               </div>
             </div>
-          </div>
-
-          {/* Phần nút tìm kiếm hoặc áp dụng */}
-          <div className="flex justify-center">
-            <button
-              className="px-6 py-3 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300"
-              onClick={() => console.log("Applied filters")}
-            >
-              Áp dụng bộ lọc
-            </button>
           </div>
         </div>
 
