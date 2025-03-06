@@ -71,7 +71,7 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
           >
             <FaPowerOff className="mr-1" />
             <span className={detail.status ? "text-green-500" : "text-red-500"}>
-              {detail.status ? "Bật" : "Tắt"}
+              {detail.status ? "BậtBật" : "Tắt"}
             </span>
           </button>
           <button

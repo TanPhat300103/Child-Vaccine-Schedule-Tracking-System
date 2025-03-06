@@ -3,6 +3,7 @@ package org.gr1fpt.childvaccinescheduletrackingsystem.event;
 import jakarta.mail.MessagingException;
 import org.gr1fpt.childvaccinescheduletrackingsystem.booking.Booking;
 import org.gr1fpt.childvaccinescheduletrackingsystem.booking.BookingDTO;
+import org.gr1fpt.childvaccinescheduletrackingsystem.booking.BookingRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.bookingdetail.BookingDetail;
 import org.gr1fpt.childvaccinescheduletrackingsystem.bookingdetail.BookingDetailRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.bookingdetail.BookingDetailService;
@@ -36,6 +37,8 @@ public class BookingEventListener {
     BookingDetailRepository bookingDetailRepository;
     @Autowired
     private VaccineDetailRepository vaccineDetailRepository;
+    @Autowired
+    private BookingRepository bookingRepository;
 
     @EventListener
     public void handleBookingCreated(BookingDTO bookingDTO) throws MessagingException {
@@ -50,7 +53,6 @@ public class BookingEventListener {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String date = localDate.format(formatter);
         emailService.sendBookingConfirmationEmail(to,child.getLastName()+" "+child.getFirstName(),date,customer.getLastName()+" "+customer.getFirstName());
-
     }
 
     @EventListener
@@ -70,5 +72,12 @@ public class BookingEventListener {
             }
         }
 
+    }
+
+    @EventListener
+    public void handleBookingConfirmed(String bookingId) {
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow();
+        booking.setStatus(2);
+        bookingRepository.save(booking);
     }
 }

@@ -124,9 +124,25 @@ public class BookingDetailService {
         vaccineDetailService.useNearestVaccineDetail(bookingDetail.getVaccine().getVaccineId());
         createMedicalHistory(bookingDetail.getBooking().getBookingId(), bookingDetail.getVaccine().getVaccineId(),bookingDetail);
         bookingDetail.setStatus(2);
+        bookingDetailRepository.save(bookingDetail);
         //NẾU VACCINE CÓ NHIỀU DOSE THÌ TỰ ĐỘNG CẬP NHẬT ADMINDATE CỦA DOSE KHÁC
         eventPublisher.publishEvent(bookingDetail);
-        return bookingDetailRepository.save(bookingDetail);
+
+        //NÉU BOOKINGDETAIL CONFIRM STATUS VỀ 2 HẾT RỒI THÌ BOOKING TỰ SET VỀ 2
+        List<BookingDetail> detailList = bookingDetailRepository.findBookingDetailsByBooking_BookingId(bookingDetail.getBooking().getBookingId());
+        boolean flag = true;
+        //biến tạm để check
+        for(BookingDetail detail : detailList) {
+            if(detail.getStatus()!= 2){
+                flag = false;
+                //nếu có 1 cái bookingdetail != 2 thì chưa bắt event được
+                break;
+            }
+        }
+        if(flag) {
+            eventPublisher.publishEvent(bookingDetail.getBooking().getBookingId());
+        }
+        return bookingDetail;
     }
 
     public BookingDetail updateReaction(String id, String reaction) {
