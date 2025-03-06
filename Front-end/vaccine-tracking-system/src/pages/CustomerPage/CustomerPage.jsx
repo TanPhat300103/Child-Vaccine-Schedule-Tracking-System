@@ -198,6 +198,9 @@ const CustomerPage = () => {
       setChildren([]);
     }
   };
+  const refreshChildren = () => {
+    fetchChildren();
+  };
 
   if (loading)
     return (
