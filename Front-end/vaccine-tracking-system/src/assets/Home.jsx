@@ -52,6 +52,7 @@ const Home = () => {
     return Object.values(cart).reduce((total, vaccine) => total + 1, 0);
   }, [cart]);
   localStorage.setItem("userId", userInfo.userId);
+
   useEffect(() => {
     if (userInfo) {
       if (userInfo.authorities[0].authority === "ROLE_CUSTOMER") {
@@ -71,12 +72,21 @@ const Home = () => {
       try {
         const data = await getCustomerId(userInfo.userId);
         setCustomerData(data);
+        console.log("customerdata: ", customerData);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu vắc xin:", error.message);
       }
     };
     fetchCustomer();
   }, []);
+  useEffect(() => {
+    if (customerData && customerData.firstName && customerData.lastName) {
+      localStorage.setItem(
+        "userName",
+        customerData.firstName + " " + customerData.lastName
+      );
+    }
+  }, [customerData]);
 
   // take api childByCustomerId
   useEffect(() => {
@@ -150,7 +160,7 @@ const Home = () => {
                     scrollToFooter(); // Cuộn đến Footer
                   }
                   if (item === "Đặt lịch") {
-                    navigate("/book-vaccine");
+                    navigate("/customer/booking");
                   }
                   if (item === "Trang chủ") {
                     window.scrollTo({

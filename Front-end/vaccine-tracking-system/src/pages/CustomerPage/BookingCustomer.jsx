@@ -142,14 +142,14 @@ const BookingCustomer = () => {
 
   const statusLabels = {
     0: "Đã Đặt",
-    2: "Đã Hoàn Thành",
-    3: "Đã Huỷ",
+    1: "Đã Hoàn Thành",
+    2: "Đã Huỷ",
   };
 
   const statusButtonStyles = {
     0: "bg-blue-500 hover:bg-blue-600",
-    2: "bg-green-500 hover:bg-green-600",
-    3: "bg-red-500 hover:bg-red-600",
+    1: "bg-green-500 hover:bg-green-600",
+    2: "bg-red-500 hover:bg-red-600",
   };
 
   const renderBookingCard = (booking) => (
@@ -219,7 +219,7 @@ const BookingCustomer = () => {
   return (
     <div className="p-4">
       <div className="flex space-x-4 mb-6">
-        {[0, 2, 3].map((status) => (
+        {[0, 1, 2].map((status) => (
           <button
             key={status}
             onClick={() => handleStatusClick(status)}

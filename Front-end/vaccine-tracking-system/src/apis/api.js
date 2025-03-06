@@ -41,7 +41,7 @@ export const getMarketing = async () => {
     const response = await axios.get(`${API_BASE_URL}/marketing`, {
       withCredentials: true,
     });
-    console.log("API Response (Get Childs):", response.data);
+    console.log("API Response (Get marketing):", response.data);
     return response.data;
   } catch (error) {
     throw new Error("Không thể lấy dữ liệu người dùng");
@@ -133,7 +133,20 @@ export const getChildByCustomerId = async (customerId) => {
     return null;
   }
 };
+export const getPaymentByBookingId = async (bookingId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/payment/findbybooking`, {
+      params: { id: bookingId },
+      withCredentials: true,
+    });
 
+    console.log("📡 API Response (get child by CustomerId):", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy thông tin khách hàng:", error);
+    return null;
+  }
+};
 // Customers
 export const getCustomerId = async (customerId) => {
   try {
