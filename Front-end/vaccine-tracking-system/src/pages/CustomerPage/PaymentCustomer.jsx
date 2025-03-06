@@ -10,6 +10,7 @@ const PaymentCustomer = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { userInfo } = useAuth();
+  console.log(userInfo);
 
   const location = useLocation();
   const customerId = location.state?.customerId || userInfo.userId;
@@ -103,7 +104,10 @@ const PaymentCustomer = () => {
         {payment.status === false ? (
           <NavLink
             to="/paymentVnpay2"
-            state={{ paymentId: payment.paymentId }}
+            state={{
+              paymentId: payment.paymentId,
+              bookingId: payment.booking.bookingId,
+            }}
             className="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200"
           >
             <FaMoneyBillWave className="mr-2" />

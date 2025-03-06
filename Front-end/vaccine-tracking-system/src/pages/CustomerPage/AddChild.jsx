@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 const AddChild = ({ refreshChildren }) => {
   const location = useLocation();
   const { userInfo } = useAuth();
+  console.log(userInfo);
   const customerId = location.state?.customerId || userInfo.userId; // Lấy customerId từ state
   const [childData, setChildData] = useState({
     firstName: "",
@@ -52,10 +53,8 @@ const AddChild = ({ refreshChildren }) => {
     setLoading(true);
     setError(null);
     try {
-      // Chuẩn bị payload theo định dạng API yêu cầu
       const payload = {
         ...childData,
-        // Gói customerId trong đối tượng customer
         customer: { customerId },
       };
 
@@ -74,15 +73,15 @@ const AddChild = ({ refreshChildren }) => {
         });
         toast(message);
 
-        // Nếu có function refresh danh sách trẻ em, gọi lại để cập nhật danh sách
-        if (refreshChildren) refreshChildren();
+        // Cập nhật danh sách trẻ em ở component cha
+        if (refreshChildren) {
+          // Có thể refreshChildren gọi lại API hoặc trực tiếp cập nhật state với data
+          refreshChildren(data);
+        }
 
-        // Lấy id của trẻ từ dữ liệu trả về (sử dụng data.childId hoặc data.id tùy theo API)
         const childId = data.childId || data.id;
         if (childId) {
-          // Hiển thị thông báo chuyển hướng
           toast("Đang chuyển hướng đến hồ sơ của trẻ...");
-          // Delay 2 giây rồi chuyển hướng
           setTimeout(() => {
             navigate(`/customer/child/${childId}`);
           }, 2000);
