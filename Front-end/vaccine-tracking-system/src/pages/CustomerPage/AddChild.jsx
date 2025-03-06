@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { createChild } from "../../apis/api";
 import {
   FiUser,
@@ -11,6 +11,7 @@ import {
 } from "react-icons/fi";
 import { FaMars, FaVenus } from "react-icons/fa";
 import { useAuth } from "../../components/common/AuthContext.jsx";
+import { toast } from "react-toastify";
 
 const AddChild = ({ refreshChildren }) => {
   const location = useLocation();
@@ -43,27 +44,26 @@ const AddChild = ({ refreshChildren }) => {
     if (error) setError(null);
   };
 
+  // Sử dụng useNavigate để chuyển hướng trang
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
     try {
-      // Chuẩn bị dữ liệu gửi đi theo đúng định dạng API của bạn
+      // Chuẩn bị payload theo định dạng API yêu cầu
       const payload = {
         ...childData,
-        // Bao bọc customerId trong một đối tượng customer
-        customer: {
-          customerId: customerId,
-        },
+        // Gói customerId trong đối tượng customer
+        customer: { customerId },
       };
+
       console.log("🚀 Dữ liệu gửi lên API:", JSON.stringify(payload, null, 2));
-      console.log("customerId:", customerId);
-      console.log("Form Data:", childData);
-      // Gửi request đến API endpoint
-      const { success, message } = await createChild(payload);
+      const { success, message, data } = await createChild(payload);
 
       if (success) {
-        // Reset form sau khi thêm thành công
+        // Reset form sau khi tạo trẻ thành công
         setChildData({
           firstName: "",
           lastName: "",
@@ -72,14 +72,24 @@ const AddChild = ({ refreshChildren }) => {
           contraindications: "",
           active: true,
         });
+        toast(message);
 
-        // Hiển thị thông báo thành công
-        alert(message);
-
-        // Gọi function refresh danh sách trẻ em
+        // Nếu có function refresh danh sách trẻ em, gọi lại để cập nhật danh sách
         if (refreshChildren) refreshChildren();
+
+        // Lấy id của trẻ từ dữ liệu trả về (sử dụng data.childId hoặc data.id tùy theo API)
+        const childId = data.childId || data.id;
+        if (childId) {
+          // Hiển thị thông báo chuyển hướng
+          toast("Đang chuyển hướng đến hồ sơ của trẻ...");
+          // Delay 2 giây rồi chuyển hướng
+          setTimeout(() => {
+            navigate(`/customer/child/${childId}`);
+          }, 2000);
+        } else {
+          console.error("Không tìm thấy childId trong dữ liệu trả về:", data);
+        }
       } else {
-        // Hiển thị thông báo lỗi
         setError(message);
       }
     } catch (err) {

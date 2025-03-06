@@ -705,6 +705,7 @@ export const deleteStaff = async (staffId) => {
 };
 
 // Continue adding the `withCredentials: true` for other functions in a similar way.
+// Hàm tạo trẻ, trả về dữ liệu từ API (bao gồm cả id của trẻ)
 export const createChild = async (formData) => {
   try {
     console.log("Form data being sent to API (createChild):", formData);
@@ -712,31 +713,29 @@ export const createChild = async (formData) => {
       `${API_BASE_URL}/child/create`,
       formData,
       {
-        withCredentials: true, // Added here
+        withCredentials: true,
       }
     );
-    console.log("API Response Status:", response.status); // Status code
-    console.log("API Response Data:", response); // Dữ liệu trả về
+    console.log("API Response Status:", response.status);
+    console.log("API Response Data:", response.data);
     if (response.status === 200) {
-      return { success: true, message: "Tạo trẻ em thành công" };
-    } else {
+      // Giả sử response.data chứa thông tin trẻ, bao gồm thuộc tính childId (hoặc id)
       return {
-        success: false,
-        message: "Tạo trẻ em thất bại",
+        success: true,
+        message: "Tạo trẻ em thành công",
+        data: response.data,
       };
+    } else {
+      return { success: false, message: "Tạo trẻ em thất bại" };
     }
   } catch (error) {
     console.error("Error creating child:", error);
     if (error.response) {
-      // In chi tiết về status và dữ liệu lỗi từ backend
-      console.error("Error response status:", error.response.status); // In status code
-      console.error("Error response data:", error.response.data); // In dữ liệu lỗi
-      console.error("Error response headers:", error.response.headers); // In headers (nếu cần)
+      console.error("Error response status:", error.response.status);
+      console.error("Error response data:", error.response.data);
+      console.error("Error response headers:", error.response.headers);
       if (error.response.data && error.response.data.message) {
-        return {
-          success: false,
-          message: error.response.data.message,
-        };
+        return { success: false, message: error.response.data.message };
       }
     }
     return {
