@@ -175,47 +175,76 @@ const Home = () => {
                 <FaUser className="text-white" size={20} />
               </button>
               {isOpen && (
-                <div className="absolute right-0 mt-2 w-68 bg-white border rounded-lg shadow-xl border-gray-200">
-                  <button
-                    onClick={() => navigate("/customer")}
-                    className="block w-full px-4 py-3 text-gray-700 font-medium text-left rounded-t-lg hover:bg-gray-100 focus:outline-none"
-                  >
-                    {customerData.firstName} {customerData.lastName}
-                  </button>
-                  <button
-                    onClick={() => navigate("/customer")}
-                    className="block w-full px-4 py-3 text-gray-700 font-medium text-left rounded-t-lg hover:bg-gray-100 focus:outline-none"
-                  >
-                    Hồ sơ của tôi
-                  </button>
+  <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
+    {/* Phần đầu: Thông tin người dùng */}
+    <div className="p-4 bg-gray-50 border-b border-gray-200">
+      <div className="flex items-center space-x-3">
+        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">
+          T
+        </div>
+        <div>
+  <h3 className="text-sm font-medium text-gray-800">
+    Chào{' '}
+    <span className="text-blue-600 font-semibold">
+      {customerData.firstName} {customerData.lastName}
+    </span>
+    ,
+  </h3>
+</div>
+      </div>
+    </div>
 
-                  {/* Loop through children from the API and display their profiles */}
-                  {childData.map((child) => (
-                    <button
-                      key={child.childId}
-                      onClick={() =>
-                        navigate(`/customer/child/${child.childId}`)
-                      }
-                      className="block w-full px-4 py-3 text-gray-700 font-medium text-left rounded-t-lg hover:bg-gray-100 focus:outline-none"
-                    >
-                      Hồ sơ của {child.firstName} {child.lastName}
-                    </button>
-                  ))}
+    {/* Danh sách các mục */}
+    <nav className="py-2">
+      {/* Mục người dùng chính */}
+      <a
+        onClick={() => navigate("/customer")}
+        className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-200 cursor-pointer"
+      >
+        <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold mr-3">
+          N
+        </div>
+        <span className="text-sm font-medium">Hồ sơ của tôi</span>
+      </a>
 
-                  <button
-                    onClick={() => navigate("/customer/add-child")}
-                    className="block w-full px-4 py-3 text-gray-700 font-medium text-left rounded-t-lg hover:bg-gray-100 focus:outline-none"
-                  >
-                    Thêm hồ sơ mới cho con
-                  </button>
-                  <button
-                    onClick={() => navigate("/")}
-                    className="block w-full px-4 py-3 text-gray-700 font-medium text-left rounded-b-lg hover:bg-gray-100 focus:outline-none"
-                  >
-                    Đăng xuất
-                  </button>
-                </div>
-              )}
+      {/* Loop qua danh sách con (childData) - Không có badge màu đỏ */}
+      {childData.map((child) => (
+        <a
+          key={child.childId}
+          onClick={() => navigate(`/customer/child/${child.childId}`)}
+          className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-200 cursor-pointer"
+        >
+          <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold mr-3">
+            N
+          </div>
+          <span className="text-sm font-medium">Hồ sơ của {child.firstName} {child.lastName}</span>
+        </a>
+      ))}
+
+      {/* Thêm hồ sơ mới */}
+      <a
+        onClick={() => navigate("/customer/add-child")}
+        className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-200 cursor-pointer"
+      >
+        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold mr-3">
+          +
+        </div>
+        <span className="text-sm font-medium">Thêm hồ sơ mới cho con</span>
+      </a>
+
+      {/* Đăng xuất */}
+      <a
+        onClick={() => navigate("/")}
+        className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-200 cursor-pointer border-t border-gray-200"
+      >
+        <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center text-red-600 font-bold mr-3">
+          X
+        </div>
+        <span className="text-sm font-medium">Đăng xuất</span>
+      </a>
+    </nav>
+  </div>
+)}
             </div>
             {/* Icon Cart */}
             <motion.div
