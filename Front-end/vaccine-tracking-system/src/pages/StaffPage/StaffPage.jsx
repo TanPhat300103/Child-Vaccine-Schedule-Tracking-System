@@ -270,9 +270,10 @@ const StaffPage = ({ staffName = "Nguyễn Văn A" }) => {
             </h1>
             <div className="flex items-center space-x-4">
               <div className="relative">
-                <button className="p-1 text-gray-500 hover:text-teal-600 focus:outline-none transition-colors">
-                  <Notification roleId={2} />
-                </button>
+                <Notification
+                  roleId={2}
+                  className="p-1 text-gray-500 hover:text-teal-600 focus:outline-none transition-colors"
+                />
               </div>
               <div className="flex items-center">
                 <div className="w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center text-white font-bold">

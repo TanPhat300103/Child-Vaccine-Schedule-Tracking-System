@@ -71,7 +71,7 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
           >
             <FaPowerOff className="mr-1" />
             <span className={detail.status ? "text-green-500" : "text-red-500"}>
-              {detail.status ? "BậtBật" : "Tắt"}
+              {detail.status ? "Bật" : "Tắt"}
             </span>
           </button>
           <button
@@ -229,7 +229,6 @@ const VaccineDetail = () => {
       prev.map((d) => (d.id === updatedDetail.id ? updatedDetail : d))
     );
   };
-
   const handleToggleStatus = (detailId, currentStatus) => {
     console.log(
       "Đang chuyển trạng thái cho detailId:",
@@ -238,7 +237,7 @@ const VaccineDetail = () => {
       currentStatus
     );
     axios
-      .post(`http://localhost:8080/vaccinedetail/active?id=${detailId}`, {
+      .post(`http://localhost:8080/vaccinedetail/active?id=${detailId}`, null, {
         withCredentials: true,
       })
       .then((res) => {

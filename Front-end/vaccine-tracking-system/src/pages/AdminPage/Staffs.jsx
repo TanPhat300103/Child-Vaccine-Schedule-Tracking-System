@@ -1,7 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
-import { FaUsers, FaSearch, FaPlus, FaPowerOff, FaEye, FaEyeSlash } from "react-icons/fa";
-import { getStaffs, createStaff, updateStaff, deleteStaff } from "../../apis/api";
+import {
+  FaUsers,
+  FaSearch,
+  FaPlus,
+  FaPowerOff,
+  FaEye,
+  FaEyeSlash,
+} from "react-icons/fa";
+import {
+  getStaffs,
+  createStaff,
+  updateStaff,
+  deleteStaff,
+} from "../../apis/api";
 
 const Staffs = () => {
   // Danh sách nhân viên
@@ -17,6 +29,7 @@ const Staffs = () => {
     email: "",
     password: "",
     // roleId đã loại bỏ khỏi form, mặc định là 2 (Nhân viên)
+    roleId: 2,
     active: true,
   });
   const [newPasswordVisible, setNewPasswordVisible] = useState(false);
@@ -75,7 +88,7 @@ const Staffs = () => {
     e.stopPropagation();
     console.log("Gửi API cập nhật trạng thái active cho:", staffId);
     fetch(`http://localhost:8080/staff/active?id=${staffId}`, {
-      method: "POST",
+      method: "DELETE",
       credentials: "include",
       withCredentials: true,
     })
@@ -215,7 +228,9 @@ const Staffs = () => {
         <header className="text-center mb-12">
           <div className="inline-flex items-center space-x-4">
             <FaUsers className="text-5xl text-blue-600" />
-            <h1 className="text-4xl font-light text-gray-800">Quản Lý Nhân Viên</h1>
+            <h1 className="text-4xl font-light text-gray-800">
+              Quản Lý Nhân Viên
+            </h1>
           </div>
           <p className="mt-4 text-gray-500 max-w-2xl mx-auto">
             Tra cứu, quản lý và theo dõi danh sách nhân viên trong hệ thống
@@ -361,10 +376,17 @@ const Staffs = () => {
               >
                 ×
               </button>
-              <h2 className="text-2xl font-semibold mb-6">Thêm Nhân Viên Mới</h2>
-              <form onSubmit={handleAddStaff} className="grid grid-cols-2 gap-6">
+              <h2 className="text-2xl font-semibold mb-6">
+                Thêm Nhân Viên Mới
+              </h2>
+              <form
+                onSubmit={handleAddStaff}
+                className="grid grid-cols-2 gap-6"
+              >
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Họ</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Họ
+                  </label>
                   <input
                     type="text"
                     name="firstName"
@@ -375,7 +397,9 @@ const Staffs = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Tên</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Tên
+                  </label>
                   <input
                     type="text"
                     name="lastName"
@@ -386,7 +410,9 @@ const Staffs = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">SĐT</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    SĐT
+                  </label>
                   <input
                     type="text"
                     name="phoneNumber"
@@ -396,7 +422,9 @@ const Staffs = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Ngày Sinh</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Ngày Sinh
+                  </label>
                   <input
                     type="date"
                     name="dob"
@@ -406,7 +434,9 @@ const Staffs = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Địa chỉ</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Địa chỉ
+                  </label>
                   <input
                     type="text"
                     name="address"
@@ -416,7 +446,9 @@ const Staffs = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                  </label>
                   <input
                     type="email"
                     name="email"
@@ -426,7 +458,9 @@ const Staffs = () => {
                   />
                 </div>
                 <div className="relative">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Mật khẩu</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Mật khẩu
+                  </label>
                   <input
                     type={newPasswordVisible ? "text" : "password"}
                     name="password"
@@ -454,7 +488,9 @@ const Staffs = () => {
                     onChange={handleNewStaffChange}
                     className="mr-2"
                   />
-                  <label className="text-sm font-medium text-gray-700">Kích hoạt</label>
+                  <label className="text-sm font-medium text-gray-700">
+                    Kích hoạt
+                  </label>
                 </div>
                 <div className="col-span-2 flex justify-end space-x-4">
                   <button
@@ -486,10 +522,17 @@ const Staffs = () => {
               >
                 ×
               </button>
-              <h2 className="text-2xl font-semibold mb-6">Chỉnh Sửa Nhân Viên</h2>
-              <form onSubmit={handleEditSave} className="grid grid-cols-2 gap-6">
+              <h2 className="text-2xl font-semibold mb-6">
+                Chỉnh Sửa Nhân Viên
+              </h2>
+              <form
+                onSubmit={handleEditSave}
+                className="grid grid-cols-2 gap-6"
+              >
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Họ</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Họ
+                  </label>
                   <input
                     type="text"
                     name="firstName"
@@ -500,7 +543,9 @@ const Staffs = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Tên</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Tên
+                  </label>
                   <input
                     type="text"
                     name="lastName"
@@ -511,7 +556,9 @@ const Staffs = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">SĐT</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    SĐT
+                  </label>
                   <input
                     type="text"
                     name="phoneNumber"
@@ -521,7 +568,9 @@ const Staffs = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Ngày Sinh</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Ngày Sinh
+                  </label>
                   <input
                     type="date"
                     name="dob"
@@ -531,7 +580,9 @@ const Staffs = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Địa chỉ</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Địa chỉ
+                  </label>
                   <input
                     type="text"
                     name="address"
@@ -541,7 +592,9 @@ const Staffs = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                  </label>
                   <input
                     type="email"
                     name="email"
@@ -551,7 +604,9 @@ const Staffs = () => {
                   />
                 </div>
                 <div className="relative">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Mật khẩu</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Mật khẩu
+                  </label>
                   <input
                     type={editPasswordVisible ? "text" : "password"}
                     name="password"
@@ -579,7 +634,9 @@ const Staffs = () => {
                     onChange={handleEditChange}
                     className="mr-2"
                   />
-                  <label className="text-sm font-medium text-gray-700">Kích hoạt</label>
+                  <label className="text-sm font-medium text-gray-700">
+                    Kích hoạt
+                  </label>
                 </div>
                 <div className="col-span-2 flex justify-end space-x-4">
                   <button

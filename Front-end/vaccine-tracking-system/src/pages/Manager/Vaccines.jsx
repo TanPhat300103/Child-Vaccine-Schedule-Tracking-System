@@ -96,8 +96,11 @@ const Vaccines = () => {
   // Toggle trạng thái active của vaccine
   const handleToggleActive = (id, currentStatus) => {
     axios
-      .post(`http://localhost:8080/vaccine/active?id=${id}`, {
+      .post(`http://localhost:8080/vaccine/active?id=${id}`, null, {
         withCredentials: true,
+      })
+      .then((res) => {
+        console.log("API toggle active thành công:", res.data);
       })
       .then(() => {
         setVaccines((prev) =>

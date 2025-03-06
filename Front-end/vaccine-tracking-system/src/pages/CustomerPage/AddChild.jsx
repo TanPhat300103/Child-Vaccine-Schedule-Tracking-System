@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 const AddChild = ({ refreshChildren }) => {
   const location = useLocation();
   const { userInfo } = useAuth();
+  console.log(userInfo);
   const customerId = location.state?.customerId || userInfo.userId; // Lấy customerId từ state
   const [childData, setChildData] = useState({
     firstName: "",

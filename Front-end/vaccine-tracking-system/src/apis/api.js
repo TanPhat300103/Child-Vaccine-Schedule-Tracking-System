@@ -614,6 +614,7 @@ export const createStaff = async (formData) => {
         address: formData.address,
         mail: formData.email, // Chuyển từ email sang mail
         password: formData.password,
+        roleId: formData.roleId,
         active: formData.active,
       },
       { withCredentials: true }
@@ -682,7 +683,7 @@ export const updateStaff = async (formData) => {
 export const deleteStaff = async (staffId) => {
   try {
     const response = await axios.post(
-      `${API_BASE_URL}/staff/inactive?id=${staffId}`,
+      `${API_BASE_URL}/staff/active?id=${staffId}`,
       { withCredentials: true } // Added here
     );
     console.log("API Response Status (deleteStaff):", response.status);

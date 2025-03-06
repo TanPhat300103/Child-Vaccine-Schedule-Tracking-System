@@ -10,6 +10,7 @@ const PaymentCustomer = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { userInfo } = useAuth();
+  console.log(userInfo);
 
   const location = useLocation();
   const customerId = location.state?.customerId || userInfo.userId;

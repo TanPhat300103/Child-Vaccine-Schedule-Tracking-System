@@ -24,6 +24,8 @@ import { toast } from "react-toastify";
 const Child = () => {
   const { childId } = useParams();
   const { userInfo } = useAuth();
+  console.log(userInfo);
+
   const location = useLocation();
   const customerId = location.state?.customerId || userInfo.userId;
   const navigate = useNavigate();

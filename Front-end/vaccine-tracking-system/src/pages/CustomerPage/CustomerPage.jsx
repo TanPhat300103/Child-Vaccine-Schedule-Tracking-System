@@ -69,6 +69,7 @@ const CustomerPage = () => {
     password: "",
   });
   const { userInfo } = useAuth();
+  console.log(userInfo);
   const customerId = userInfo.userId;
   console.log("userinfo: ", userInfo);
   // Khi customer thay đổi => set lại formData và originalData
