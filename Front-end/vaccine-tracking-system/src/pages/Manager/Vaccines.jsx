@@ -93,7 +93,6 @@ const Vaccines = () => {
     );
   };
 
-
   // Toggle trạng thái active của vaccine
   const handleToggleActive = (id, currentStatus) => {
     axios
@@ -112,7 +111,7 @@ const Vaccines = () => {
       .catch((err) => console.error("Lỗi khi cập nhật trạng thái:", err));
   };
 
-  const handleCreateVaccine = async (e) => {
+  const handleCreateVaccine = (e) => {
     e.preventDefault();
     console.log("Creating vaccine:", newVaccine);
     axios
@@ -154,8 +153,8 @@ const Vaccines = () => {
               active: true,
             });
             setNewVaccineDetail({
-              entryDate: "",
-              expiredDate: "",
+              entryDate: null,
+              expiredDate: null,
               img: "",
               day: 0,
               tolerance: 0,
@@ -168,23 +167,18 @@ const Vaccines = () => {
       })
       .catch((err) => {
         console.error("Lỗi khi tạo Vaccine:", err);
-        setNewVaccineError(err.message);
-
+        setNewVaccineError(
+          err.message || "Đã xảy ra lỗi khi tạo. Vui lòng thử lại!"
+        );
+        setNewVaccineDetail({
+          entryDate: null,
+          expiredDate: null,
+          img: "",
+          day: 0,
+          tolerance: 0,
+          quantity: 0,
+        });
       });
-      setNewVaccineDetail({
-        entryDate: null,
-        expiredDate: null,
-        img: "",
-        day: 0,
-        tolerance: 0,
-        quantity: 0,
-      });
-      setNewVaccineError(null);
-      fetchVaccines();
-    } catch (err) {
-      console.error("Lỗi khi tạo Vaccine hoặc Vaccine Detail:", err);
-      setNewVaccineError("Đã xảy ra lỗi khi tạo. Vui lòng thử lại!");
-    }
   };
 
   const VaccineItem = ({ vaccine, onVaccineUpdated, onToggleActive }) => {
