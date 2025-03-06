@@ -139,7 +139,9 @@ const Dashboard = () => {
       const res = await axios.get("http://localhost:8080/payment", {
         withCredentials: true,
       });
+
       console.log("response la: ", res.data);
+
       setPayments(res.data);
       console.log("payment la: ", payments);
     } catch (err) {
@@ -155,22 +157,34 @@ const Dashboard = () => {
       const year = now.getFullYear();
 
       const resToday = await axios.get(
-        `http://localhost:8080/admin/incomebydate?date=${todayStr}`
+        `http://localhost:8080/admin/incomebydate?date=${todayStr}`,
+        {
+          withCredentials: true,
+        }
       );
       setIncomeToday(resToday.data);
 
       const resWeek = await axios.get(
-        `http://localhost:8080/admin/incomebyweek?date=${todayStr}`
+        `http://localhost:8080/admin/incomebyweek?date=${todayStr}`,
+        {
+          withCredentials: true,
+        }
       );
       setIncomeWeek(resWeek.data);
 
       const resMonth = await axios.get(
-        `http://localhost:8080/admin/incomebymonth?month=${month}&year=${year}`
+        `http://localhost:8080/admin/incomebymonth?month=${month}&year=${year}`,
+        {
+          withCredentials: true,
+        }
       );
       setIncomeMonth(resMonth.data);
 
       const resYear = await axios.get(
-        `http://localhost:8080/admin/incomebyyear?year=${year}`
+        `http://localhost:8080/admin/incomebyyear?year=${year}`,
+        {
+          withCredentials: true,
+        }
       );
       setIncomeYear(resYear.data);
     } catch (err) {
@@ -186,24 +200,36 @@ const Dashboard = () => {
       const lastYear = subYears(new Date(), 1);
 
       const resYesterday = await axios.get(
-        `http://localhost:8080/admin/incomebydate?date=${yesterdayStr}`
+        `http://localhost:8080/admin/incomebydate?date=${yesterdayStr}`,
+        {
+          withCredentials: true,
+        }
       );
       setIncomeYesterday(resYesterday.data);
 
       const resLastWeek = await axios.get(
-        `http://localhost:8080/admin/incomebyweek?date=${lastWeekStr}`
+        `http://localhost:8080/admin/incomebyweek?date=${lastWeekStr}`,
+        {
+          withCredentials: true,
+        }
       );
       setIncomeLastWeek(resLastWeek.data);
 
       const resLastMonth = await axios.get(
         `http://localhost:8080/admin/incomebymonth?month=${
           lastMonth.getMonth() + 1
-        }&year=${lastMonth.getFullYear()}`
+        }&year=${lastMonth.getFullYear()}`,
+        {
+          withCredentials: true,
+        }
       );
       setIncomeLastMonth(resLastMonth.data);
 
       const resLastYear = await axios.get(
-        `http://localhost:8080/admin/incomebyyear?year=${lastYear.getFullYear()}`
+        `http://localhost:8080/admin/incomebyyear?year=${lastYear.getFullYear()}`,
+        {
+          withCredentials: true,
+        }
       );
       setIncomeLastYear(resLastYear.data);
     } catch (err) {
@@ -213,7 +239,9 @@ const Dashboard = () => {
 
   const fetchBookingsToday = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/admin/bookingtoday");
+      const res = await axios.get("http://localhost:8080/admin/bookingtoday", {
+        withCredentials: true,
+      });
       if (!Array.isArray(res.data)) {
         throw new Error("Dữ liệu nhận được không phải là mảng");
       }
@@ -226,11 +254,17 @@ const Dashboard = () => {
   const fetchOutOfStockAndExpired = async () => {
     try {
       const resOut = await axios.get(
-        "http://localhost:8080/admin/vaccineoutofstock"
+        "http://localhost:8080/admin/vaccineoutofstock",
+        {
+          withCredentials: true,
+        }
       );
       setOutOfStockVaccines(resOut.data);
       const resExp = await axios.get(
-        "http://localhost:8080/admin/expiredvaccine"
+        "http://localhost:8080/admin/expiredvaccine",
+        {
+          withCredentials: true,
+        }
       );
       setExpiredVaccines(resExp.data);
     } catch (err) {
@@ -240,7 +274,9 @@ const Dashboard = () => {
 
   const fetchBestsellerVaccines = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/admin/bestvaccine");
+      const res = await axios.get("http://localhost:8080/admin/bestvaccine", {
+        withCredentials: true,
+      });
       setBestsellerVaccines(res.data);
     } catch (err) {
       console.error("Error fetching bestseller vaccines:", err);

@@ -32,7 +32,9 @@ const StaffProfile = ({ initialStaffData }) => {
   const handleSave = async () => {
     try {
       const response = await fetch("http://localhost:8080/staff/update", {
-        method: "PUT",
+        method: "POST",
+        credentials: "include",
+        withCredentials: true,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
@@ -229,7 +231,7 @@ const Profile = () => {
   }, []);
 
   // take data
-  console.log("user id la: ", userInfo.userId);
+  console.log("user id la: ", userInfo.data);
   const staffId = userInfo.userId;
 
   const [staffData, setStaffData] = useState(null);
@@ -242,7 +244,12 @@ const Profile = () => {
       setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:8080/staff/findid?id=${staffId}`
+          `http://localhost:8080/staff/findid?id=${staffId}`,
+          {
+            method: "GET",
+            credentials: "include",
+            withCredentials: true, // Gửi cookie/session
+          }
         );
 
         if (!response.ok) {

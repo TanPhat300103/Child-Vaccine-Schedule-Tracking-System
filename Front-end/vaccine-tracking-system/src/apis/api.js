@@ -614,7 +614,6 @@ export const createStaff = async (formData) => {
         address: formData.address,
         mail: formData.email, // Chuyển từ email sang mail
         password: formData.password,
-        roleId: formData.roleId,
         active: formData.active,
       },
       { withCredentials: true }

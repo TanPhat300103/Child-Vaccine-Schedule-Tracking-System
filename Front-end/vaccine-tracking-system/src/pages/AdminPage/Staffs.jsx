@@ -22,7 +22,7 @@ const Staffs = () => {
     address: "",
     email: "",
     password: "",
-    // roleId đã loại bỏ khỏi form, mặc định là 1
+    // roleId đã loại bỏ khỏi form, mặc định là 2 (Nhân viên)
     active: true,
   });
   const [newPasswordVisible, setNewPasswordVisible] = useState(false);
@@ -76,6 +76,8 @@ const Staffs = () => {
     console.log("Gửi API cập nhật trạng thái active cho:", staffId);
     fetch(`http://localhost:8080/staff/active?id=${staffId}`, {
       method: "POST",
+      credentials: "include",
+      withCredentials: true,
     })
       .then((response) => response.json())
       .then((updatedStaff) => {
@@ -194,7 +196,6 @@ const Staffs = () => {
           address: "",
           email: "",
           password: "",
-          roleId: 1,
           active: true,
         });
         fetchStaffList();

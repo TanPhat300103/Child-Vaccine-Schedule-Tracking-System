@@ -464,9 +464,7 @@ const Child = () => {
                           </svg>
                         </div>
                         <div>
-                          <p className="text-xs text-slate-500 text-slate-900 ">
-                            Vaccine
-                          </p>
+                          <p className="text-xs  text-slate-900">Vaccine</p>
                           <p className="font-medium text-slate-900 dark:text-slate-900">
                             {selectedHistory.vaccine.name}
                           </p>
@@ -491,9 +489,7 @@ const Child = () => {
                           </svg>
                         </div>
                         <div>
-                          <p className="text-xs text-slate-500 text-slate-900 ">
-                            Ngày tiêm
-                          </p>
+                          <p className="text-xs  text-slate-900 ">Ngày tiêm</p>
                           <p className="font-medium text-slate-900 dark:text-indigo-900">
                             {format(
                               new Date(selectedHistory.date),
@@ -521,9 +517,7 @@ const Child = () => {
                           </svg>
                         </div>
                         <div>
-                          <p className="text-xs text-slate-500 text-slate-900 ">
-                            Liều lượng
-                          </p>
+                          <p className="text-xs  text-slate-900 ">Liều lượng</p>
                           <p className="font-medium text-slate-900 dark:text-slate-900">
                             {selectedHistory.dose}
                           </p>
