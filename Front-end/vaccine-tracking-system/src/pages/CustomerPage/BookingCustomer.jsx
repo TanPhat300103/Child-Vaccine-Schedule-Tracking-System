@@ -165,6 +165,11 @@ const BookingCustomer = () => {
         <div className="flex space-x-2 mt-2">
           <NavLink
             to="/paymentVnpay2"
+            state={{
+              bookingId: booking.bookingId,
+              bookingDate: booking.bookingDate,
+              totalAmount: booking.totalAmount.toLocaleString(),
+            }}
             onClick={() => handlePaymentClick(booking)}
             className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded"
           >
