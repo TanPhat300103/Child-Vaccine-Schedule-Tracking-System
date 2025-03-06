@@ -160,8 +160,8 @@ const Child = () => {
     );
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-1">
-      <div className="max-w-4xl mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden">
+    <div className=" bg-gradient-to-br from-blue-50 to-blue-100 p-1">
+      <div className="max-w-5xl mx-auto flex flex-col bg-white shadow-2xl rounded-2xl overflow-hidden">
         {/* Header */}
         <div className="bg-gradient-to-r from-teal-500 to-blue-500 p-6 flex items-center justify-between">
           <div className="flex items-center space-x-4">

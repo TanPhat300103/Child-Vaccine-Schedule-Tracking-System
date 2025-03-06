@@ -31,7 +31,7 @@ const BookingCustomer = () => {
   const { userInfo } = useAuth();
   console.log(userInfo);
 
-  // Hàm helper recategorizedStatus: Nếu booking.status===2 nhưng không đủ administeredDate, trả về 0
+  // Hàm helper: Tính trạng thái hiển thị dựa trên booking.status và bookingDetails
   const recategorizedStatus = (booking) => {
     if (booking.status === 2) {
       if (booking.bookingDetails && booking.bookingDetails.length > 0) {
@@ -40,18 +40,34 @@ const BookingCustomer = () => {
         );
         return fullyAdministered ? 2 : 0;
       }
-      // Nếu không có bookingDetails, xem như chưa đủ administeredDate
+      // Nếu chưa có bookingDetails hoặc mảng rỗng, xem như chưa hoàn thành
       return 0;
     }
     return booking.status;
   };
 
+  // Cập nhật API: Với mỗi booking có status === 2, fetch booking details ngay khi load trang
   const fetchBookings = async () => {
     try {
       const customerId = userInfo?.userId || "C001";
       const data = await getBookingByCustomerId(customerId);
-      // Giả sử API cũng trả về bookingDetails trong mỗi booking, nếu không bạn cần fetch riêng và gộp lại
-      setBookings(data);
+      // Với mỗi booking có status = 2, fetch booking details và gán vào booking.bookingDetails
+      const updatedData = await Promise.all(
+        data.map(async (booking) => {
+          if (booking.status === 2) {
+            try {
+              const details = await getBookingDetailByBooking(
+                booking.bookingId
+              );
+              return { ...booking, bookingDetails: details };
+            } catch (err) {
+              return { ...booking, bookingDetails: [] };
+            }
+          }
+          return booking;
+        })
+      );
+      setBookings(updatedData);
     } catch (err) {
       setError("Không thể lấy thông tin đặt lịch");
     } finally {
@@ -65,13 +81,19 @@ const BookingCustomer = () => {
 
   const handleStatusClick = (status) => setSelectedStatus(status);
 
+  // Khi người dùng nhấn vào thẻ booking, nếu cần cập nhật chi tiết thì vẫn có thể fetch lại
   const handleCardClick = async (booking) => {
     setSelectedBooking(booking);
     try {
-      const details = await getBookingDetailByBooking(booking.bookingId);
-      setBookingDetails(details);
-      // Giả sử bạn gán bookingDetails cho booking để dùng trong hàm recategorizedStatus
-      booking.bookingDetails = details;
+      // Nếu booking đã có bookingDetails thì không cần fetch lại
+      if (!booking.bookingDetails) {
+        const details = await getBookingDetailByBooking(booking.bookingId);
+        setBookingDetails(details);
+        // Cập nhật booking object để sử dụng cho modal
+        booking.bookingDetails = details;
+      } else {
+        setBookingDetails(booking.bookingDetails);
+      }
     } catch (err) {
       setBookingDetails([]);
     }
@@ -108,7 +130,7 @@ const BookingCustomer = () => {
   const statusLabels = { 0: "Đã Đặt", 2: "Đã Hoàn Thành", 3: "Đã Huỷ" };
 
   const renderBookingCard = (booking) => {
-    // Xác định trạng thái hiển thị dựa theo recategorizedStatus
+    // Dùng recategorizedStatus để xác định trạng thái hiển thị
     const displayStatus = recategorizedStatus(booking);
     return (
       <div
