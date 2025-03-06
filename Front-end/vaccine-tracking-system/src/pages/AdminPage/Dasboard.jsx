@@ -139,7 +139,11 @@ const Dashboard = () => {
       const res = await axios.get("http://localhost:8080/payment", {
         withCredentials: true,
       });
+
+      console.log("response la: ", res.data);
+
       setPayments(res.data);
+      console.log("payment la: ", payments);
     } catch (err) {
       console.error("Error fetching payments:", err);
     }
