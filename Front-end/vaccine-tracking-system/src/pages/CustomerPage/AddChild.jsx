@@ -2,6 +2,15 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { createChild } from "../../apis/api";
+import { 
+  FiUser, 
+  FiCalendar, 
+  FiAlertCircle, 
+  FiPlus, 
+  FiLoader
+} from "react-icons/fi";
+import { FaMars, FaVenus } from "react-icons/fa";
+
 const AddChild = ({ refreshChildren }) => {
   const location = useLocation();
   const customerId = location.state?.customerId; // Lấy customerId từ state
@@ -83,132 +92,183 @@ const AddChild = ({ refreshChildren }) => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <h2 className="text-2xl font-bold text-center">Thêm Hồ Sơ Trẻ Em</h2>
+    <div className="max-w-2xl mx-auto mt-6 mb-10">
+      {/* Header với biểu tượng và tiêu đề */}
+      <div className="bg-blue-600 text-white rounded-t-lg p-4 flex items-center gap-3 mb-6 shadow-md">
+        <div className="bg-white rounded-full p-2 w-10 h-10 flex items-center justify-center">
+          <FiPlus className="text-blue-600 w-6 h-6" />
+        </div>
+        <h2 className="text-xl font-bold">Thêm Hồ Sơ Sức Khỏe Trẻ Em</h2>
+      </div>
 
+      {/* Hiển thị lỗi */}
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-          {error}
+        <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-md flex items-start">
+          <FiAlertCircle className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
+          <p>{error}</p>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label
-            htmlFor="firstName"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Họ và tên đệm
-          </label>
-          <input
-            id="firstName"
-            type="text"
-            name="firstName"
-            placeholder="Nhập họ và tên đệm"
-            required
-            value={childData.firstName}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
+      {/* Form chính */}
+      <div className="bg-white rounded-lg shadow-md p-6 border border-blue-100">
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* Họ và tên đệm */}
+            <div className="space-y-2">
+              <label
+                htmlFor="firstName"
+                className="block text-sm font-medium text-blue-800"
+              >
+                Họ và tên đệm
+              </label>
+              <div className="relative">
+                <FiUser className="absolute left-3 top-3 text-blue-500" />
+                <input
+                  id="firstName"
+                  type="text"
+                  name="firstName"
+                  placeholder="Nhập họ và tên đệm"
+                  required
+                  value={childData.firstName}
+                  onChange={handleChange}
+                  className="w-full pl-10 pr-3 py-2 bg-blue-50 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors"
+                />
+              </div>
+            </div>
 
-        <div>
-          <label
-            htmlFor="lastName"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Tên
-          </label>
-          <input
-            id="lastName"
-            type="text"
-            name="lastName"
-            placeholder="Nhập tên"
-            required
-            value={childData.lastName}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Giới tính
-          </label>
-          <div className="flex gap-4">
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="gender"
-                value="true"
-                required
-                checked={childData.gender === "true"}
-                onChange={handleChange}
-                className="mr-2"
-              />
-              Nam
-            </label>
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="gender"
-                value="false"
-                required
-                checked={childData.gender === "false"}
-                onChange={handleChange}
-                className="mr-2"
-              />
-              Nữ
-            </label>
+            {/* Tên */}
+            <div className="space-y-2">
+              <label
+                htmlFor="lastName"
+                className="block text-sm font-medium text-blue-800"
+              >
+                Tên
+              </label>
+              <div className="relative">
+                <FiUser className="absolute left-3 top-3 text-blue-500" />
+                <input
+                  id="lastName"
+                  type="text"
+                  name="lastName"
+                  placeholder="Nhập tên"
+                  required
+                  value={childData.lastName}
+                  onChange={handleChange}
+                  className="w-full pl-10 pr-3 py-2 bg-blue-50 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors"
+                />
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div>
-          <label
-            htmlFor="dob"
-            className="block text-sm font-medium text-gray-700 mb-1"
+          {/* Giới tính */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-blue-800">
+              Giới tính
+            </label>
+            <div className="flex gap-6 mt-1">
+              <label className="relative flex items-center bg-blue-50 p-3 rounded-md border border-blue-200 cursor-pointer transition-colors hover:bg-blue-100">
+                <input
+                  type="radio"
+                  name="gender"
+                  value="true"
+                  required
+                  checked={childData.gender === "true"}
+                  onChange={handleChange}
+                  className="opacity-0 absolute h-0 w-0"
+                />
+                <span className={`flex items-center justify-center w-8 h-8 rounded-full mr-3 ${childData.gender === "true" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-400"}`}>
+                  <FaMars className="w-5 h-5" />
+                </span>
+                <span className={childData.gender === "true" ? "font-medium text-blue-800" : "text-gray-600"}>Nam</span>
+              </label>
+              
+              <label className="relative flex items-center bg-blue-50 p-3 rounded-md border border-blue-200 cursor-pointer transition-colors hover:bg-blue-100">
+                <input
+                  type="radio"
+                  name="gender"
+                  value="false"
+                  required
+                  checked={childData.gender === "false"}
+                  onChange={handleChange}
+                  className="opacity-0 absolute h-0 w-0"
+                />
+                <span className={`flex items-center justify-center w-8 h-8 rounded-full mr-3 ${childData.gender === "false" ? "bg-pink-500 text-white" : "bg-gray-200 text-gray-400"}`}>
+                  <FaVenus className="w-5 h-5" />
+                </span>
+                <span className={childData.gender === "false" ? "font-medium text-blue-800" : "text-gray-600"}>Nữ</span>
+              </label>
+            </div>
+          </div>
+
+          {/* Ngày sinh */}
+          <div className="space-y-2">
+            <label
+              htmlFor="dob"
+              className="block text-sm font-medium text-blue-800"
+            >
+              Ngày sinh
+            </label>
+            <div className="relative">
+              <FiCalendar className="absolute left-3 top-3 text-blue-500" />
+              <input
+                id="dob"
+                type="date"
+                name="dob"
+                required
+                value={childData.dob}
+                onChange={handleChange}
+                className="w-full pl-10 pr-3 py-2 bg-blue-50 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors"
+              />
+            </div>
+          </div>
+
+          {/* Chống chỉ định */}
+          <div className="space-y-2">
+            <label
+              htmlFor="contraindications"
+              className="block text-sm font-medium text-blue-800"
+            >
+              Chống chỉ định y tế (nếu có)
+            </label>
+            <div className="relative">
+              <FiAlertCircle className="absolute left-3 top-3 text-blue-500" />
+              <input
+                id="contraindications"
+                type="text"
+                name="contraindications"
+                placeholder="Ví dụ: dị ứng, bệnh mãn tính, các lưu ý đặc biệt về sức khỏe"
+                value={childData.contraindications}
+                onChange={handleChange}
+                className="w-full pl-10 pr-3 py-2 bg-blue-50 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors"
+              />
+            </div>
+            <p className="text-xs text-gray-500 mt-1">Thông tin này sẽ được sử dụng để đảm bảo an toàn trong quá trình chăm sóc y tế.</p>
+          </div>
+
+          {/* Nút Submit */}
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full flex items-center justify-center gap-2 py-3 rounded-md transition-colors ${
+              loading 
+                ? "bg-gray-400 cursor-not-allowed" 
+                : "bg-blue-600 hover:bg-blue-700 active:bg-blue-800"
+            } text-white font-medium shadow-md mt-6`}
           >
-            Ngày sinh
-          </label>
-          <input
-            id="dob"
-            type="date"
-            name="dob"
-            required
-            value={childData.dob}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="contraindications"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Chống chỉ định (nếu có)
-          </label>
-          <input
-            id="contraindications"
-            type="text"
-            name="contraindications"
-            placeholder="Nhập các chống chỉ định nếu có"
-            value={childData.contraindications}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className={`w-full py-3 ${
-            loading ? "bg-gray-400" : "bg-green-500 hover:bg-green-600"
-          } text-white rounded-md transition-colors uppercase font-bold`}
-        >
-          {loading ? "Đang xử lý..." : "Thêm Hồ Sơ Trẻ Em"}
-        </button>
-      </form>
+            {loading ? (
+              <>
+                <FiLoader className="w-5 h-5 animate-spin" />
+                Đang xử lý...
+              </>
+            ) : (
+              <>
+                <FiPlus className="w-5 h-5" />
+                Tạo Hồ Sơ Sức Khỏe
+              </>
+            )}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
