@@ -960,12 +960,14 @@ export const getMedicalHistoryByChildId = async (childId) => {
 
 // Cập nhật phản ứng cho Medical History
 export const updateReaction = async (id, reaction) => {
+  console.log("Updating reaction for ID:", id, "and:", reaction);
   try {
     const response = await axios.post(
       `${API_BASE_URL}/medicalhistory/updatereaction?id=${id}&reaction=${encodeURIComponent(
         reaction
       )}`,
-      { withCredentials: true } // Added here
+      null, // Không có dữ liệu gửi lên nếu không cần thiết
+      { withCredentials: true } // Đưa config vào vị trí thứ 3
     );
     console.log("API Response (updateReaction):", response.data);
     return response.data;
