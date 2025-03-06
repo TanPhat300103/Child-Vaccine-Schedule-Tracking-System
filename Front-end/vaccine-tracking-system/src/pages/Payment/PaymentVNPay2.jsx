@@ -1,24 +1,46 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaCreditCard, FaMoneyBill, FaSpinner } from "react-icons/fa";
 import { BsBank2 } from "react-icons/bs";
 import { MdLocalHospital, MdOutlineDiscount } from "react-icons/md";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../components/common/AuthContext";
+import { getMarketing, getPaymentByBookingID } from "../../apis/api";
 
 const PaymentVnpay2 = () => {
   const [paymentMethod, setPaymentMethod] = useState("direct");
   const [couponCode, setCouponCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [Error, setErrors] = useState(false);
+  const [customerData, setCustomerData] = useState(null);
+  const [paymentData, setPaymentData] = useState(null);
+  const [marketingData, setMarketingData] = useState([]);
   const [selectedBank, setSelectedBank] = useState("");
   const [discount, setDiscount] = useState(0);
+  const [coupon, setCoupon] = useState(null);
   const navigate = useNavigate();
+  const { userInfo } = useAuth();
+  function getBookingData() {
+    const storedData = localStorage.getItem("bookingData"); // Lấy dữ liệu từ localStorage
+    const userName = localStorage.getItem("userName"); // Lấy dữ liệu từ localStorage
+
+    if (storedData) {
+      return JSON.parse(storedData); // Chuyển đổi dữ liệu JSON thành đối tượng JavaScript
+    } else {
+      console.log("Không có dữ liệu trong localStorage");
+      return null; // Trả về null nếu không có dữ liệu
+    }
+  }
+  console.log("usurinfo: ", userInfo);
+  const bookingDataFromStorage = getBookingData();
+  console.log("Dữ liệu lấy từ localStorage:", bookingDataFromStorage.bookingId);
+
   const bookingDetails = {
-    customerName: "Nguyễn Nam",
-    bookingDate: "15/04/2025",
+    customerName: localStorage.getItem("userName"),
+    bookingDate: bookingDataFromStorage.bookingDate,
     vaccineType: "Viêm gan B",
     quantity: 2,
-    pricePerUnit: 356000,
+    pricePerUnit: bookingDataFromStorage.totalAmount,
   };
 
   const banks = [
@@ -73,7 +95,22 @@ const PaymentVnpay2 = () => {
       icon: "https://cdn.haitrieu.com/wp-content/uploads/2022/02/Icon-SCB.png",
     },
   ];
-
+  useEffect(() => {
+    const fetchMarketing = async () => {
+      try {
+        const data = await getMarketing();
+        console.log("data: ", data);
+        setMarketingData(data);
+        console.log("marketing data: ", marketingData);
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu vắc xin:", error.message);
+      }
+    };
+    fetchMarketing();
+  }, []);
+  useEffect(() => {
+    console.log("marketingData đã được cập nhật: ", marketingData);
+  }, [marketingData]); // Log khi marketingData thay đổi
   const validateForm = () => {
     const newErrors = {};
 
@@ -90,11 +127,42 @@ const PaymentVnpay2 = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+  useEffect(() => {
+    const fetchMarketingId = async () => {
+      try {
+        const data = await getPaymentByBookingID(
+          bookingDataFromStorage.bookingId
+        );
+        console.log("datapayment: ", data.paymentId);
+        setPaymentData(data);
+        console.log("setPaymentData: ", paymentData);
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu vắc xin:", error.message);
+      }
+    };
+    fetchMarketingId();
+  }, []);
+
   const handleCouponValidation = () => {
     setIsLoading(true);
+    const foundCoupon = marketingData.find(
+      (item) => item.coupon === couponCode
+    );
+
+    if (foundCoupon) {
+      // Nếu tìm thấy coupon, áp dụng discount
+      setDiscount(foundCoupon.discount);
+      console.log("foundcounpon: ", foundCoupon.discount);
+      alert(`Mã giảm giá hợp lệ! Bạn được giảm ${foundCoupon.discount}%`);
+      setCoupon(foundCoupon.coupon);
+    } else {
+      // Nếu không tìm thấy coupon hợp lệ
+      setDiscount(0);
+      alert("Mã giảm giá không hợp lệ!");
+    }
     setTimeout(() => {
-      if (couponCode === "DISCOUNT2025") {
-        setDiscount(10);
+      if (couponCode === foundCoupon.coupon) {
+        setDiscount(foundCoupon.discount);
         alert("Mã giảm giá hợp lệ! Bạn được giảm 10%");
       } else {
         setDiscount(0);
@@ -116,12 +184,12 @@ const PaymentVnpay2 = () => {
       console.log("Loading form...");
       try {
         const params = {
-          paymentId: "P-C001-B11",
-          coupon: "DISCOUNT2025",
+          paymentId: paymentData.paymentId,
+          coupon: coupon,
           method: paymentMethod === "online" ? "TRUE" : "FALSE",
           bank: selectedBank,
         };
-
+        console.log("param: ", params);
         // Chuyển object params thành query string đúng chuẩn
         const queryString = new URLSearchParams(params).toString();
 
@@ -199,10 +267,7 @@ const PaymentVnpay2 = () => {
                   <p className="text-gray-600">Ngày đặt:</p>
                   <p className="font-medium">{bookingDetails.bookingDate}</p>
                 </div>
-                <div>
-                  <p className="text-gray-600">Loại vaccine:</p>
-                  <p className="font-medium">{bookingDetails.vaccineType}</p>
-                </div>
+
                 <div>
                   <p className="text-gray-600">Số lượng:</p>
                   <p className="font-medium">{bookingDetails.quantity}</p>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../../components/common/Header";
 
 const CancelPayment = () => {
@@ -8,7 +8,7 @@ const CancelPayment = () => {
   const [statusClass, setStatusClass] = useState("");
   const [headerClass, setHeaderClass] = useState(""); // New state for header class
   const location = useLocation();
-
+  const navigate = useNavigate();
   useEffect(() => {
     // Lấy các tham số từ URL query string
     const params = new URLSearchParams(location.search);
@@ -96,7 +96,12 @@ const CancelPayment = () => {
 
               <div className={`p-6 rounded-lg ${statusClass}`}>
                 <div className="text-center">
-                  <span className="text-xl font-semibold">{statusMessage}</span>
+                  <button
+                    className="text-xl font-semibold bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-all"
+                    onClick={() => navigate("/customer/payment")}
+                  >
+                    Tiếp theo
+                  </button>
                 </div>
               </div>
             </div>

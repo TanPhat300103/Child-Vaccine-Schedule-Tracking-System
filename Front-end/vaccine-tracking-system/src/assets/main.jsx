@@ -62,6 +62,7 @@ import PaymentPay from "../pages/Payment/PaymentVNPay.jsx";
 import VNPAY from "../pages/Payment/VNPAY.jsx";
 import PaymentVnpay2 from "../pages/Payment/PaymentVNPay2.jsx";
 import CancelPayment from "../pages/Payment/CancelPayment.jsx";
+// import LichTiemChung from "../components/homepage/PriceTest.jsx";
 
 const Main = () => {
   return (
@@ -109,6 +110,7 @@ const Main = () => {
               <Route path="/paymentVnpay2" element={<PaymentVnpay2 />} />
               <Route path="/vnpay" element={<VNPAY />} />
               <Route path="/payment-return" element={<CancelPayment />} />
+              {/* <Route path="/lichtiem" element={<LichTiemChung />} /> */}
 
               {/* Route /customer */}
               <Route path="/customer" element={<CustomerPage />}>

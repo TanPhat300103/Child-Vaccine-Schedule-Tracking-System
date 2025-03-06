@@ -79,7 +79,9 @@ const BookingCustomer = () => {
     fetchBookings();
   };
 
+
   const statusLabels = { 0: "Đã Đặt", 2: "Đã Hoàn Thành", 3: "Đã Huỷ" };
+
 
   const renderBookingCard = (booking) => (
     <div
@@ -173,6 +175,8 @@ const BookingCustomer = () => {
   if (error) return <p className="text-red-600 text-center">{error}</p>;
 
   return (
+
+
     <div className="min-h-screen bg-gray-50 py-10 px-6">
       <div className="max-w-6xl mx-auto">
         {/* Tiêu đề */}
@@ -208,6 +212,7 @@ const BookingCustomer = () => {
 
         {/* Nút mở lịch */}
         <div className="mt-10 text-center">
+
           <button
             onClick={() => setShowCalendarModal(true)}
             className="px-6 py-3 bg-blue-600 text-white rounded-full shadow-md hover:bg-blue-700 transition-all duration-300 flex items-center mx-auto"

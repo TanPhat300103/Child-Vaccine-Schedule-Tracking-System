@@ -131,7 +131,7 @@ const Header = () => {
                 {childData.map((child) => (
                   <button
                     key={child.childId}
-                    onClick={() => navigate(`/child/${child.childId}`)}
+                    onClick={() => navigate(`/customer/child/${child.childId}`)}
                     className="block w-full px-4 py-3 text-gray-700 font-medium text-left rounded-t-lg hover:bg-gray-100 focus:outline-none"
                   >
                     Hồ sơ của {child.firstName} {child.lastName}
@@ -139,7 +139,7 @@ const Header = () => {
                 ))}
 
                 <button
-                  onClick={() => navigate("/child")}
+                  onClick={() => navigate("/customer/add-child")}
                   className="block w-full px-4 py-3 text-gray-700 font-medium text-left rounded-t-lg hover:bg-gray-100 focus:outline-none"
                 >
                   Thêm hồ sơ mới cho con
