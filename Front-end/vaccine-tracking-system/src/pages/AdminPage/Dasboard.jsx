@@ -110,7 +110,14 @@ const StatCard = ({ title, value, prevValue, icon }) => {
 };
 
 // Component con cho card thông tin
-const InfoCard = ({ title, children, onClick, icon, badgeCount, badgeColor }) => {
+const InfoCard = ({
+  title,
+  children,
+  onClick,
+  icon,
+  badgeCount,
+  badgeColor,
+}) => {
   return (
     <div
       onClick={onClick}
@@ -173,7 +180,10 @@ const Dashboard = () => {
   const [bestsellerVaccines, setBestsellerVaccines] = useState({});
   const [outOfStockVaccines, setOutOfStockVaccines] = useState([]);
   const [expiredVaccines, setExpiredVaccines] = useState([]);
-  const [bookingCounts, setBookingCounts] = useState({ pending: 0, completed: 0 });
+  const [bookingCounts, setBookingCounts] = useState({
+    pending: 0,
+    completed: 0,
+  });
 
   // States cho modal
   const [bookingsModalOpen, setBookingsModalOpen] = useState(false);
@@ -652,36 +662,6 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-teal-500 to-teal-700 text-white p-4 md:p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold">
-                Trang Quản Trị Trung Tâm Tiêm Chủng
-              </h1>
-              <p className="text-teal-100 mt-1">
-                {format(new Date(), "EEEE, dd/MM/yyyy")}
-              </p>
-            </div>
-            <div className="bg-teal-600 p-2 rounded-full">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-6">
@@ -727,7 +707,10 @@ const Dashboard = () => {
                     type="date"
                     value={tempRange.from}
                     onChange={(e) =>
-                      setTempRange((prev) => ({ ...prev, from: e.target.value }))
+                      setTempRange((prev) => ({
+                        ...prev,
+                        from: e.target.value,
+                      }))
                     }
                     className="border border-gray-300 rounded-lg w-full p-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
                   />
@@ -762,7 +745,9 @@ const Dashboard = () => {
                   <Line data={lineChartData} options={lineChartOptions} />
                 ) : (
                   <div className="flex items-center justify-center h-full">
-                    <p className="text-gray-500">Không có dữ liệu để hiển thị</p>
+                    <p className="text-gray-500">
+                      Không có dữ liệu để hiển thị
+                    </p>
                   </div>
                 )}
               </div>
@@ -779,7 +764,9 @@ const Dashboard = () => {
               >
                 <div className="space-y-2">
                   {outOfStockVaccines.length === 0 ? (
-                    <p className="text-gray-500 text-sm">Không có vaccine nào hết hàng</p>
+                    <p className="text-gray-500 text-sm">
+                      Không có vaccine nào hết hàng
+                    </p>
                   ) : (
                     <ul className="space-y-2">
                       {outOfStockVaccines.slice(0, 3).map((vaccine, idx) => (
@@ -812,7 +799,9 @@ const Dashboard = () => {
               >
                 <div className="space-y-2">
                   {expiredVaccines.length === 0 ? (
-                    <p className="text-gray-500 text-sm">Không có vaccine nào hết hạn</p>
+                    <p className="text-gray-500 text-sm">
+                      Không có vaccine nào hết hạn
+                    </p>
                   ) : (
                     <ul className="space-y-2">
                       {expiredVaccines.slice(0, 3).map((vaccine, idx) => (
