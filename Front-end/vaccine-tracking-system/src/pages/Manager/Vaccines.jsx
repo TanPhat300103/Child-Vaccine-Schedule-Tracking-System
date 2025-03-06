@@ -39,14 +39,17 @@ const Vaccines = () => {
   });
   const [newVaccineError, setNewVaccineError] = useState(null);
 
-  const fetchVaccines = async () => {
-    try {
-      const response = await axios.get("http://localhost:8080/vaccine");
-      console.log("Fetch vaccines success:", response.data);
-      setVaccines(response.data);
-    } catch (err) {
-      console.error("Lỗi khi lấy danh sách vaccine:", err);
-    }
+  // Fetch vaccines từ API
+  const fetchVaccines = () => {
+    axios
+      .get("http://localhost:8080/vaccine", {
+        withCredentials: true,
+      })
+      .then((res) => {
+        console.log("Fetch vaccines success:", res.data);
+        setVaccines(res.data);
+      })
+      .catch((err) => console.error("Lỗi:", err));
   };
 
   useEffect(() => {
@@ -90,62 +93,83 @@ const Vaccines = () => {
     );
   };
 
-  const handleToggleActive = async (id, currentStatus) => {
-    try {
-      await axios.post(`http://localhost:8080/vaccine/active?id=${id}`);
-      setVaccines((prev) =>
-        prev.map((vaccine) =>
-          vaccine.vaccineId === id
-            ? { ...vaccine, active: !currentStatus }
-            : vaccine
-        )
-      );
-    } catch (err) {
-      console.error("Lỗi khi cập nhật trạng thái:", err);
-    }
+
+  // Toggle trạng thái active của vaccine
+  const handleToggleActive = (id, currentStatus) => {
+    axios
+      .post(`http://localhost:8080/vaccine/active?id=${id}`, {
+        withCredentials: true,
+      })
+      .then(() => {
+        setVaccines((prev) =>
+          prev.map((vaccine) =>
+            vaccine.vaccineId === id
+              ? { ...vaccine, active: !currentStatus }
+              : vaccine
+          )
+        );
+      })
+      .catch((err) => console.error("Lỗi khi cập nhật trạng thái:", err));
   };
 
   const handleCreateVaccine = async (e) => {
     e.preventDefault();
-    try {
-      console.log("Creating vaccine:", newVaccine);
-      const response = await axios.post(
-        "http://localhost:8080/vaccine/create",
-        newVaccine
-      );
-      console.log("Vaccine created successfully:", response.data);
-      const createdVaccine = response.data;
+    console.log("Creating vaccine:", newVaccine);
+    axios
+      .post("http://localhost:8080/vaccine/create", newVaccine, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        console.log("Vaccine created successfully:", res.data);
+        const createdVaccine = res.data;
+        const vaccineDetailData = {
+          vaccine: createdVaccine,
+          entryDate: newVaccineDetail.entryDate,
+          expiredDate: newVaccineDetail.expiredDate,
+          status: true,
+          img: newVaccineDetail.img,
+          day: Number(newVaccineDetail.day) || 0,
+          tolerance: Number(newVaccineDetail.tolerance) || 0,
+          quantity: Number(newVaccineDetail.quantity) || 0,
+        };
+        axios
+          .post(
+            "http://localhost:8080/vaccinedetail/create",
+            vaccineDetailData,
+            {
+              withCredentials: true,
+            }
+          )
+          .then((resDetail) => {
+            console.log("Vaccine detail created successfully:", resDetail.data);
+            setShowCreateModal(false);
+            setNewVaccine({
+              name: "",
+              doseNumber: 0,
+              price: 0,
+              description: "",
+              country: "",
+              ageMin: 0,
+              ageMax: 0,
+              active: true,
+            });
+            setNewVaccineDetail({
+              entryDate: "",
+              expiredDate: "",
+              img: "",
+              day: 0,
+              tolerance: 0,
+              quantity: 0,
+            });
+            setNewVaccineError(null);
+            fetchVaccines();
+          })
+          .catch((err) => console.error("Lỗi khi tạo Vaccine Detail:", err));
+      })
+      .catch((err) => {
+        console.error("Lỗi khi tạo Vaccine:", err);
+        setNewVaccineError(err.message);
 
-      const vaccineDetailData = {
-        vaccine: createdVaccine,
-        entryDate: newVaccineDetail.entryDate
-          ? newVaccineDetail.entryDate.toISOString().split("T")[0]
-          : "",
-        expiredDate: newVaccineDetail.expiredDate
-          ? newVaccineDetail.expiredDate.toISOString().split("T")[0]
-          : "",
-        status: true,
-        img: newVaccineDetail.img || "",
-        day: Number(newVaccineDetail.day) || 0,
-        tolerance: Number(newVaccineDetail.tolerance) || 0,
-        quantity: Number(newVaccineDetail.quantity) || 0,
-      };
-
-      await axios.post(
-        "http://localhost:8080/vaccinedetail/create",
-        vaccineDetailData
-      );
-      console.log("Vaccine detail created successfully");
-      setShowCreateModal(false);
-      setNewVaccine({
-        name: "",
-        doseNumber: 0,
-        price: 0,
-        description: "",
-        country: "",
-        ageMin: 0,
-        ageMax: 0,
-        active: true,
       });
       setNewVaccineDetail({
         entryDate: null,

@@ -3,15 +3,16 @@ import { useLocation, NavLink } from "react-router-dom";
 import { getBookingByCustomerId, getPaymentByBookingID } from "../../apis/api";
 import { format } from "date-fns";
 import { FaCheckCircle, FaStethoscope, FaMoneyBillWave } from "react-icons/fa"; // Thêm icon từ react-icons
-
+import { useAuth } from "../../components/common/AuthContext.jsx";
 const PaymentCustomer = () => {
   const [selectedPaymentStatus, setSelectedPaymentStatus] = useState(true);
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { userInfo } = useAuth();
 
   const location = useLocation();
-  const customerId = location.state?.customerId;
+  const customerId = location.state?.customerId || userInfo.userId;
 
   const fetchPayments = async () => {
     try {
@@ -44,7 +45,9 @@ const PaymentCustomer = () => {
     return <p className="text-center text-red-500 font-semibold">{error}</p>;
   if (payments.length === 0)
     return (
-      <p className="text-center text-gray-500">Không có thông tin thanh toán nào</p>
+      <p className="text-center text-gray-500">
+        Không có thông tin thanh toán nào
+      </p>
     );
 
   const filteredPayments = payments.filter(
@@ -70,7 +73,9 @@ const PaymentCustomer = () => {
     >
       <div className="flex items-center mb-3">
         <FaStethoscope className="text-blue-500 mr-2" />
-        <p className="font-semibold text-blue-700">Mã thanh toán: {payment.paymentId}</p>
+        <p className="font-semibold text-blue-700">
+          Mã thanh toán: {payment.paymentId}
+        </p>
       </div>
       <p className="text-gray-600">
         <span className="font-medium">Ngày thanh toán:</span>{" "}
@@ -118,7 +123,7 @@ const PaymentCustomer = () => {
     <div className="p-6 bg-gray-50 min-h-screen">
       <h2 className="text-3xl font-bold text-blue-700 mb-6 flex items-center">
         <FaStethoscope className="mr-3" />
-        Lịch sử thanh toán 
+        Lịch sử thanh toán
       </h2>
       <div className="flex space-x-4 mb-8">
         {statusOptions.map((status) => (

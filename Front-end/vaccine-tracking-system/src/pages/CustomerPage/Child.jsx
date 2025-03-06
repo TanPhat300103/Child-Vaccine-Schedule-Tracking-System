@@ -18,11 +18,14 @@ import {
   Mars,
   Venus,
 } from "lucide-react";
+import { useAuth } from "../../components/common/AuthContext.jsx";
+import { toast } from "react-toastify";
 
 const Child = () => {
   const { childId } = useParams();
+  const { userInfo } = useAuth();
   const location = useLocation();
-  const customerId = location.state?.customerId;
+  const customerId = location.state?.customerId || userInfo.userId;
   const navigate = useNavigate();
 
   const [child, setChild] = useState(null);
@@ -115,8 +118,10 @@ const Child = () => {
   const handleUpdateReaction = async (id) => {
     try {
       const response = await updateReaction(id, reactionEditValue);
-      if (response.success) {
-        alert("Cập nhật phản ứng thành công!");
+      console.log("Response from updateReaction:", response);
+      // Kiểm tra nếu response có medicalHistoryId thì xem như thành công
+      if (response && response.medicalHistoryId) {
+        toast("Cập nhật phản ứng thành công!");
         setMedicalHistories((prevHistories) =>
           prevHistories.map((history) =>
             history.medicalHistoryId === id
@@ -127,7 +132,7 @@ const Child = () => {
         setEditingReactionId(null);
         setReactionEditValue("");
       } else {
-        alert("Cập nhật phản ứng thất bại!");
+        toast("Cập nhật phản ứng thất bại!");
       }
     } catch (err) {
       console.error("Lỗi khi cập nhật phản ứng:", err);
@@ -153,7 +158,7 @@ const Child = () => {
     );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-8">
+    <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-1">
       <div className="max-w-4xl mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden">
         {/* Header */}
         <div className="bg-gradient-to-r from-teal-500 to-blue-500 p-6 flex items-center justify-between">

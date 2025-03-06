@@ -9,7 +9,12 @@ const useVaccineImage = (vaccineId) => {
   useEffect(() => {
     if (!vaccineId) return;
     axios
-      .get(`http://localhost:8080/vaccinedetail/findbyvaccine?id=${vaccineId}`)
+      .get(
+        `http://localhost:8080/vaccinedetail/findbyvaccine?id=${vaccineId}`,
+        {
+          withCredentials: true,
+        }
+      )
       .then((res) => {
         if (res.data && res.data.length > 0) {
           setImg(res.data[0].img);
@@ -176,7 +181,9 @@ const ComboDetail = () => {
   useEffect(() => {
     if (showAddModal) {
       axios
-        .get("http://localhost:8080/vaccine")
+        .get("http://localhost:8080/vaccine", {
+          withCredentials: true,
+        })
         .then((res) => {
           console.log("Fetch vaccines for modal success:", res.data);
           setAvailableVaccines(res.data);

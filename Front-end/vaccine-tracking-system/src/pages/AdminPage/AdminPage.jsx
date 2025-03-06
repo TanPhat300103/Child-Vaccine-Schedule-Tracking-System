@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, Link, Navigate } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../components/common/AuthContext.jsx";
 import {
   FiGrid,
@@ -26,8 +26,13 @@ const AdminPage = () => {
     firstName: "Lord",
     lastName: "Of Cinder",
   };
+
+
+  const navigate = useNavigate();
+  const { userInfo } = useAuth();
+
   // Các phần comment về authentication giữ nguyên như code gốc
-   // const { userInfo } = useAuth();
+
   // const [isAuthenticated, setIsAuthenticated] = useState(true);
   // const [proFileData, setProFileData] = useState(null);
 

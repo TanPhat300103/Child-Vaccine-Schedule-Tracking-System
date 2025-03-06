@@ -35,7 +35,6 @@ const isFormChanged = (formData, originalData) => {
 };
 
 const CustomerPage = () => {
-  const customerId = localStorage.getItem("userId");
   const [customer, setCustomer] = useState(null);
   const [children, setChildren] = useState([]);
   const [showAllChildren, setShowAllChildren] = useState(false);
@@ -70,6 +69,7 @@ const CustomerPage = () => {
     password: "",
   });
   const { userInfo } = useAuth();
+  const customerId = userInfo.userId;
   console.log("userinfo: ", userInfo);
   // Khi customer thay đổi => set lại formData và originalData
   useEffect(() => {
@@ -357,8 +357,8 @@ const CustomerPage = () => {
         </aside>
 
         {/* Right Content Area */}
-        <main className="w-full md:w-10/10 bg-gradient-to-b from-blue-50 to-white text-blue-800 border border-blue-200 rounded-lg shadow-md p-6 flex flex-col justify-between">
-          <div className="rounded-lg p-6">
+        <main className="w-full md:w-10/10 bg-gradient-to-b from-blue-50 to-white text-blue-800 border border-blue-200 rounded-lg shadow-md  flex flex-col justify-between">
+          <div className="rounded-full p-2">
             {isExactPath ? (
               <div className="space-y-6">
                 {/* Header thông tin bệnh nhân với biểu tượng y tế */}

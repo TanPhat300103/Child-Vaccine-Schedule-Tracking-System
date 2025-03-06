@@ -305,7 +305,7 @@ const Customers = () => {
                   <span>{customer.active ? "Ngừng" : "Hoạt Động"}</span>
                 </button>
                 <Link
-                  to={`/staff/childs/${customer.customerId}`}
+                  to={`../childs/${customer.customerId}`}
                   onClick={(e) => e.stopPropagation()}
                   className="bg-purple-100 text-purple-700 px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-purple-200 transition-all"
                 >
