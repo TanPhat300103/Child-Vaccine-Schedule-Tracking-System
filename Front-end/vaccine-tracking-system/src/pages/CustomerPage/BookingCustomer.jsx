@@ -137,9 +137,16 @@ const BookingCustomer = () => {
         )}
         {booking.status === 2 && (
           <NavLink
-            to="/feedback"
-            state={{ customerId: userInfo?.userId }}
-            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all duration-200"
+
+            to="/paymentVnpay2"
+            state={{
+              bookingId: booking.bookingId,
+              bookingDate: booking.bookingDate,
+              totalAmount: booking.totalAmount.toLocaleString(),
+            }}
+            onClick={() => handlePaymentClick(booking)}
+            className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded"
+
           >
             Feedback
           </NavLink>
