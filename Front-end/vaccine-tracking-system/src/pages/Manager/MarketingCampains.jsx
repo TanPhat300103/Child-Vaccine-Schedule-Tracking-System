@@ -199,6 +199,8 @@ const CampaignItem = ({ campaign, onCampaignSelected, onCampaignUpdated }) => {
     try {
       const res = await fetch("http://localhost:8080/marketing/update", {
         method: "POST",
+        credentials: "include",
+        withCredentials: true,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(toggled),
       });
@@ -258,7 +260,11 @@ const MarketingCampaigns = () => {
 
   const fetchCampaigns = async () => {
     try {
-      const response = await fetch("http://localhost:8080/marketing");
+      const response = await fetch("http://localhost:8080/marketing", {
+        method: "GET",
+        credentials: "include",
+        withCredentials: true,
+      });
       if (!response.ok) throw new Error("Lỗi khi tải dữ liệu");
       const data = await response.json();
       setCampaigns(data);
@@ -283,6 +289,8 @@ const MarketingCampaigns = () => {
     try {
       const response = await fetch("http://localhost:8080/marketing/create", {
         method: "POST",
+        credentials: "include",
+        withCredentials: true,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newCampaign),
       });
@@ -319,6 +327,8 @@ const MarketingCampaigns = () => {
       };
       const response = await fetch("http://localhost:8080/marketing/update", {
         method: "POST",
+        credentials: "include",
+        withCredentials: true,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });

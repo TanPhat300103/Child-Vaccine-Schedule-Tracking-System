@@ -145,7 +145,11 @@ const VaccineCombos = () => {
         console.log("Gửi API thay đổi trạng thái cho comboId:", comboId);
         const response = await fetch(
           `http://localhost:8080/vaccinecombo/active?id=${comboId}`,
-          { method: "POST" }
+          {
+            method: "POST",
+            credentials: "include",
+            withCredentials: true,
+          }
         );
         if (!response.ok) throw new Error("Lỗi khi thay đổi trạng thái");
         const updated = await response.json();
@@ -163,6 +167,8 @@ const VaccineCombos = () => {
           "http://localhost:8080/vaccinecombo/update",
           {
             method: "POST",
+            credentials: "include",
+            withCredentials: true,
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(updatedData),
           }
@@ -248,7 +254,11 @@ const VaccineCombos = () => {
   const fetchCombos = async () => {
     try {
       console.log("Gửi API lấy danh sách combo...");
-      const response = await fetch("http://localhost:8080/vaccinecombo");
+      const response = await fetch("http://localhost:8080/vaccinecombo", {
+        method: "GET",
+        credentials: "include",
+        withCredentials: true,
+      });
       if (!response.ok) throw new Error("Lỗi khi tải dữ liệu");
       const data = await response.json();
       console.log("GET API VaccineCombo thành công, dữ liệu trả về:", data);
@@ -274,6 +284,8 @@ const VaccineCombos = () => {
         "http://localhost:8080/vaccinecombo/create",
         {
           method: "POST",
+          credentials: "include",
+          withCredentials: true,
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(newCombo),
         }

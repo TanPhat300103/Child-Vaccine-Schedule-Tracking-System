@@ -28,7 +28,11 @@ const Childs = () => {
 
   // Lấy thông tin khách hàng
   useEffect(() => {
-    fetch(`http://localhost:8080/customer/findid?id=${customerId}`)
+    fetch(`http://localhost:8080/customer/findid?id=${customerId}`, {
+      method: "GET",
+      credentials: "include",
+      withCredentials: true, // Gửi cookie/session
+    })
       .then((response) => response.json())
       .then((data) => {
         console.log("GET API thông tin khách hàng:", data);
@@ -41,7 +45,11 @@ const Childs = () => {
 
   // Lấy danh sách hồ sơ trẻ em
   useEffect(() => {
-    fetch(`http://localhost:8080/child/findbycustomer?id=${customerId}`)
+    fetch(`http://localhost:8080/child/findbycustomer?id=${customerId}`, {
+      method: "GET",
+      credentials: "include",
+      withCredentials: true, // Gửi cookie/session
+    })
       .then((response) => response.json())
       .then((data) => {
         console.log("GET API hồ sơ trẻ em:", data);
@@ -55,6 +63,8 @@ const Childs = () => {
     console.log("Gửi API tạo hồ sơ trẻ em với dữ liệu:", newChild);
     fetch("http://localhost:8080/child/create", {
       method: "POST",
+      credentials: "include",
+      withCredentials: true, // Gửi cookie/session
       headers: { "Content-Type": "application/json" },
       // Gửi kèm thông tin khách hàng để BE gán lại customerId
       body: JSON.stringify({ ...newChild, customer: customerInfo }),
@@ -100,6 +110,8 @@ const Childs = () => {
     console.log("Gửi API cập nhật hồ sơ trẻ em với dữ liệu:", editingChild);
     fetch("http://localhost:8080/child/update", {
       method: "POST",
+      credentials: "include",
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(editingChild),
     })
@@ -133,6 +145,8 @@ const Childs = () => {
     console.log("Gửi API cập nhật trạng thái cho childId:", childId);
     fetch(`http://localhost:8080/child/active?id=${childId}`, {
       method: "POST",
+      credentials: "include",
+      withCredentials: true,
     })
       .then((response) => response.json())
       .then((updatedChild) => {

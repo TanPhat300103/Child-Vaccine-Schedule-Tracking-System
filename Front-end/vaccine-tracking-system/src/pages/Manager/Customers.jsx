@@ -32,7 +32,6 @@ const Customers = () => {
     address: "",
     banking: "",
     email: "",
-    roleId: 3,
     active: true,
   });
   const [newCustomerError, setNewCustomerError] = useState(null);
@@ -40,7 +39,11 @@ const Customers = () => {
   const [editingPasswordVisible, setEditingPasswordVisible] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:8080/customer")
+    fetch("http://localhost:8080/customer", {
+      method: "GET",
+      credentials: "include",
+      withCredentials: true,
+    })
       .then((response) => response.json())
       .then((data) => {
         console.log("GET API thành công. Dữ liệu khách hàng:", data);
@@ -56,6 +59,8 @@ const Customers = () => {
     console.log("Gửi API cập nhật trạng thái active cho:", customerId);
     fetch(`http://localhost:8080/customer/inactive?id=${customerId}`, {
       method: "POST",
+      credentials: "include",
+      withCredentials: true,
     })
       .then((response) => response.json())
       .then((updatedCustomer) => {
@@ -91,6 +96,8 @@ const Customers = () => {
     console.log("Gửi API cập nhật khách hàng với dữ liệu:", editingCustomer);
     fetch("http://localhost:8080/customer/update", {
       method: "POST",
+      credentials: "include",
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(editingCustomer),
     })
@@ -125,6 +132,8 @@ const Customers = () => {
     console.log("Gửi API tạo khách hàng với dữ liệu:", newCustomer);
     fetch("http://localhost:8080/customer/create", {
       method: "POST",
+      credentials: "include",
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newCustomer),
     })
@@ -617,9 +626,7 @@ const Customers = () => {
                     />
                     <button
                       type="button"
-                      onClick={() =>
-                        setNewPasswordVisible(!newPasswordVisible)
-                      }
+                      onClick={() => setNewPasswordVisible(!newPasswordVisible)}
                       className="absolute inset-y-0 right-0 pr-3 flex items-center focus:outline-none"
                     >
                       {newPasswordVisible ? (

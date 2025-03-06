@@ -1,6 +1,6 @@
 // StaffPage.jsx
 import React, { useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import {
   FiHome,
   FiUsers,
@@ -22,6 +22,7 @@ import Notification from "../../components/common/Notification";
 const StaffPage = ({ staffName = "Nguyễn Văn A" }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [vaccineMenuOpen, setVaccineMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -284,8 +285,13 @@ const StaffPage = ({ staffName = "Nguyễn Văn A" }) => {
                   <p className="text-xs text-gray-500">Quản trị viên</p>
                 </div>
               </div>
-              <button className="p-1 text-gray-500 hover:text-red-600 focus:outline-none transition-colors">
+
+              <button
+                onClick={() => navigate("/")}
+                className="block w-full px-4 py-3 text-gray-700 font-medium text-left rounded-b-lg hover:bg-gray-100 focus:outline-none"
+              >
                 <FiLogOut size={24} />
+                Đăng xuất
               </button>
             </div>
           </div>

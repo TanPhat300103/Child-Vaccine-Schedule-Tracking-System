@@ -159,7 +159,9 @@ const ComboDetail = () => {
     try {
       const apiUrl = `http://localhost:8080/combodetail/findcomboid?id=${vaccineComboId}`;
       console.log(`Requesting API: ${apiUrl}`);
-      const response = await axios.get(apiUrl);
+      const response = await axios.get(apiUrl, {
+        withCredentials: true,
+      });
       console.log("Response received:", response.data);
       setComboDetails(response.data);
     } catch (err) {
@@ -222,7 +224,9 @@ const ComboDetail = () => {
           vaccine: { vaccineId },
         };
         console.log("Creating ComboDetail with payload:", payload);
-        return axios.post("http://localhost:8080/combodetail/create", payload);
+        return axios.post("http://localhost:8080/combodetail/create", payload, {
+          withCredentials: true,
+        });
       });
       await Promise.all(promises);
       // Sau khi thêm xong, đóng modal và refresh danh sách combo
