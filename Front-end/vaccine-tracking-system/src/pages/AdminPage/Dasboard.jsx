@@ -214,6 +214,9 @@ const Dashboard = () => {
   const fetchBookingsToday = async () => {
     try {
       const res = await axios.get("http://localhost:8080/admin/bookingtoday");
+      if (!Array.isArray(res.data)) {
+        throw new Error("Dữ liệu nhận được không phải là mảng");
+      }
       setBookingsToday(res.data);
     } catch (err) {
       console.error("Error fetching bookings today:", err);
@@ -415,19 +418,21 @@ const Dashboard = () => {
               <h3 className="text-lg font-semibold text-blue-700 mb-4">
                 Đặt Lịch Hôm Nay
               </h3>
+
               {bookingsToday.length > 0 ? (
                 <ul className="space-y-2 text-sm">
-                  {bookingsToday.slice(0, 5).map((b) => (
-                    <li key={b.bookingId} className="flex justify-between">
-                      <span>
-                        {b.bookingId} - {b.customer?.firstName}{" "}
-                        {b.customer?.lastName}
-                      </span>
-                      <span className="text-gray-500">
-                        {b.status === 0 ? "Đang Xử Lý" : "Đã Thanh Toán"}
-                      </span>
-                    </li>
-                  ))}
+                  {Array.isArray(bookingsToday) &&
+                    bookingsToday.slice(0, 5).map((b) => (
+                      <li key={b.bookingId} className="flex justify-between">
+                        <span>
+                          {b.bookingId} - {b.customer?.firstName}{" "}
+                          {b.customer?.lastName}
+                        </span>
+                        <span className="text-gray-500">
+                          {b.status === 0 ? "Đang Xử Lý" : "Đã Thanh Toán"}
+                        </span>
+                      </li>
+                    ))}
                 </ul>
               ) : (
                 <p className="text-gray-500 text-sm">
@@ -467,7 +472,9 @@ const Dashboard = () => {
               Số lượng: {outOfStockVaccines.length}
             </p>
             <p className="text-gray-700 text-sm">
-              {outOfStockVaccines.map((v) => v.name).join(", ")}
+              {Array.isArray(outOfStockVaccines)
+                ? outOfStockVaccines.map((v) => v.name).join(", ")
+                : "Không có vaccine hết hàng"}
             </p>
           </div>
           <div className="bg-white rounded-xl shadow p-4 hover:shadow-xl hover:scale-105 transition-transform duration-300">
@@ -478,7 +485,9 @@ const Dashboard = () => {
               Số lượng: {expiredVaccines.length}
             </p>
             <p className="text-gray-700 text-sm">
-              {expiredVaccines.map((v) => v.name).join(", ")}
+              {Array.isArray(expiredVaccines)
+                ? expiredVaccines.map((v) => v.name).join(", ")
+                : "Không có vaccine hết hạn"}
             </p>
           </div>
         </div>

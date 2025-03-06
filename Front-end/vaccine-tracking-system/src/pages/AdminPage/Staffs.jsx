@@ -23,7 +23,6 @@ const Staffs = () => {
     email: "",
     password: "",
     // roleId đã loại bỏ khỏi form, mặc định là 1
-    roleId: 1,
     active: true,
   });
   const [newPasswordVisible, setNewPasswordVisible] = useState(false);

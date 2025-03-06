@@ -15,7 +15,9 @@ import {
   FiEye,
   FiEyeOff,
   FiUser as FiUserOutline,
+  FiUser,
   FiLogOut,
+  FiPlusCircle,
 } from "react-icons/fi";
 import { FaMars, FaVenus, FaChild } from "react-icons/fa";
 import { AiOutlineHistory } from "react-icons/ai";
@@ -225,342 +227,358 @@ const CustomerPage = () => {
       <Header />
       <div className="container mx-auto px-1 py-30 flex flex-col md:flex-row gap-6">
         {/* Sidebar */}
-        <aside className="w-full md:w-1/4 bg-white text-blue-700 border border-blue-300 rounded-lg shadow p-6 flex flex-col ">
-          <nav className="space-y-3 text-base">
-            {/* Mục “Hồ sơ của tôi” với icon nhà */}
-            <NavLink
-              to="/customer"
-              end
-              className={({ isActive }) =>
-                `flex items-center px-4 py-3 rounded-md font-bold text-xl transition-colors [text-shadow:1px_1px_2px_rgba(59,130,246,0.3)] ${
-                  isActive ? "bg-blue-100" : "hover:bg-blue-50"
-                }`
-              }
-            >
-              <FiHome className="mr-2 w-6 h-6" />
-              Hồ sơ của tôi
-            </NavLink>
+        <aside className="w-full md:w-1/4 bg-white border border-teal-200 rounded-xl shadow-md p-5 flex flex-col">
+    {/* Phần header của sidebar */}
+    <div className="mb-4 pb-3 border-b border-teal-100">
+      <NavLink
+        to="/customer"
+        end
+        className={({ isActive }) =>
+          `flex items-center px-4 py-3 rounded-lg font-medium text-lg transition-colors ${
+            isActive ? "bg-teal-50 text-teal-700" : "text-teal-600 hover:bg-teal-50"
+          }`
+        }
+      >
+        <FiUser className="mr-3 w-5 h-5" />
+        Hồ sơ của tôi
+      </NavLink>
+    </div>
 
-            {/* Hồ sơ trẻ em */}
-            <div className="mt-3">
-              <div className="flex items-center px-4 py-2 text-1sm font-bold uppercase tracking-wider [text-shadow:1px_1px_2px_rgba(59,130,246,0.3)]">
-                <span>Hồ sơ trẻ em</span>
-                {children.length > 0 && (
-                  <span className="ml-auto bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                    {children.length}
-                  </span>
-                )}
-              </div>
-              {children.length > 0 ? (
-                <>
-                  {(showAllChildren ? children : children.slice(0, 5)).map(
-                    (child) => (
-                      <NavLink
-                        key={child.childId}
-                        to={`/customer/child/${child.childId}`}
-                        state={{ customerId }}
-                        className={({ isActive }) =>
-                          `flex items-center px-4 py-2 rounded-lg transition-all transform hover:shadow-md text-1xl ${
-                            isActive
-                              ? "bg-blue-100"
-                              : "hover:bg-blue-50 text-blue-700"
-                          }`
-                        }
-                      >
-                        <FaChild className="mr-2 w-5 h-5" />
-                        {child.firstName} {child.lastName}
-                      </NavLink>
-                    )
-                  )}
-                  {children.length > 5 && (
-                    <button
-                      onClick={() => setShowAllChildren((prev) => !prev)}
-                      className="block w-full text-left px-4 py-2 text-xl text-blue-500 hover:underline transition-colors"
-                    >
-                      {showAllChildren ? "Thu gọn" : "Xem thêm..."}
-                    </button>
-                  )}
-                </>
-              ) : (
-                <p className="px-4 py-2 text-xl text-blue-300">
-                  Chưa có thông tin
-                </p>
-              )}
-            </div>
-
-            {/* Thêm hồ sơ */}
-            <NavLink
-              to="/customer/add-child"
-              state={{ customerId }}
-              className={({ isActive }) =>
-                `flex items-center justify-center px-4 py-3 mt-3 rounded-md font-bold text-xl transition-colors ${
-                  isActive
-                    ? "bg-green-600 text-white"
-                    : "bg-green-500 text-white hover:bg-green-600"
-                }`
-              }
-            >
-              ➕ Thêm hồ sơ
-            </NavLink>
-
-            {/* Xem đặt lịch */}
-            <NavLink
-              to="/customer/booking"
-              state={{ customerId }}
-              className={({ isActive }) =>
-                `flex items-center justify-center px-4 py-3 mt-3 rounded-md font-bold text-xl transition-colors ${
-                  isActive
-                    ? "bg-blue-600 text-white"
-                    : "bg-blue-500 text-white hover:bg-blue-600"
-                }`
-              }
-            >
-              🗓 Xem đặt lịch
-            </NavLink>
-
-            <NavLink
-              to="/customer/payment"
-              state={{ customerId }}
-              className={({ isActive }) =>
-                `flex items-center justify-center px-4 py-3 mt-3 rounded-md font-bold text-xl transition-colors ${
-                  isActive
-                    ? "bg-blue-600 text-white"
-                    : "bg-blue-500 text-white hover:bg-blue-600"
-                }`
-              }
-            >
-              <AiOutlineHistory className="mr-2 text-2xl" /> Lịch Sử Thanh Toán
-            </NavLink>
-          </nav>
-
-          {/* Nút Đăng xuất */}
-          <div className="mt-6 flex justify-center ">
+    {/* Phần hồ sơ trẻ em - GIỮ NGUYÊN */}
+    <div className="mt-3">
+      <div className="flex items-center px-4 py-2 text-1sm font-bold uppercase tracking-wider [text-shadow:1px_1px_2px_rgba(59,130,246,0.3)]">
+        <span>Hồ sơ trẻ em</span>
+        {children.length > 0 && (
+          <span className="ml-auto bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+            {children.length}
+          </span>
+        )}
+      </div>
+      {children.length > 0 ? (
+        <>
+          {(showAllChildren ? children : children.slice(0, 5)).map(
+            (child) => (
+              <NavLink
+                key={child.childId}
+                to={`/customer/child/${child.childId}`}
+                state={{ customerId }}
+                className={({ isActive }) =>
+                  `flex items-center px-4 py-2 rounded-lg transition-all transform hover:shadow-md text-1xl ${
+                    isActive
+                      ? "bg-blue-100"
+                      : "hover:bg-blue-50 text-blue-700"
+                  }`
+                }
+              >
+                <FaChild className="mr-2 w-5 h-5" />
+                {child.firstName} {child.lastName}
+              </NavLink>
+            )
+          )}
+          {children.length > 5 && (
             <button
-              onClick={() => {
-                localStorage.removeItem("customerId");
-                navigate("/");
-              }}
-              className="flex items-center gap-2 px-5 py-3 bg-red-500 text-white rounded-full shadow hover:bg-red-600 transition-colors font-bold text-xl"
+              onClick={() => setShowAllChildren((prev) => !prev)}
+              className="block w-full text-left px-4 py-2 text-xl text-blue-500 hover:underline transition-colors"
             >
-              <FiLogOut className="w-5 h-5" />
-              Đăng xuất
+              {showAllChildren ? "Thu gọn" : "Xem thêm..."}
             </button>
-          </div>
-        </aside>
+          )}
+        </>
+      ) : (
+        <p className="px-4 py-2 text-xl text-blue-300">
+          Chưa có thông tin
+        </p>
+      )}
+    </div>
+
+    {/* Phần các chức năng chính - THIẾT KẾ LẠI */}
+    <div className="space-y-3 mt-4">
+      <NavLink
+        to="/customer/add-child"
+        state={{ customerId }}
+        className={({ isActive }) =>
+          `flex items-center px-4 py-3 rounded-lg transition-colors shadow-sm ${
+            isActive
+              ? "bg-green-600 text-white"
+              : "bg-green-50 text-green-700 hover:bg-green-100 hover:shadow"
+          }`
+        }
+      >
+        <FiPlusCircle className="mr-3 w-5 h-5" />
+        <span className="font-medium">Thêm hồ sơ</span>
+      </NavLink>
+
+      <NavLink
+        to="/customer/booking"
+        state={{ customerId }}
+        className={({ isActive }) =>
+          `flex items-center px-4 py-3 rounded-lg transition-colors shadow-sm ${
+            isActive
+              ? "bg-teal-600 text-white"
+              : "bg-teal-50 text-teal-700 hover:bg-teal-100 hover:shadow"
+          }`
+        }
+      >
+        <FiCalendar className="mr-3 w-5 h-5" />
+        <span className="font-medium">Xem đặt lịch</span>
+      </NavLink>
+
+      <NavLink
+        to="/customer/payment"
+        state={{ customerId }}
+        className={({ isActive }) =>
+          `flex items-center px-4 py-3 rounded-lg transition-colors shadow-sm ${
+            isActive
+              ? "bg-indigo-600 text-white" 
+              : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:shadow"
+          }`
+        }
+      >
+        <AiOutlineHistory className="mr-3 w-5 h-5" />
+        <span className="font-medium">Lịch sử thanh toán</span>
+      </NavLink>
+    </div>
+
+    {/* Nút đăng xuất - THIẾT KẾ LẠI */}
+    <div className="mt-auto pt-4 border-t border-teal-100">
+      <button
+        onClick={() => {
+          localStorage.removeItem("customerId");
+          navigate("/");
+        }}
+        className="flex items-center justify-center w-full gap-2 px-4 py-3 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors shadow-sm hover:shadow"
+      >
+        <FiLogOut className="w-5 h-5" />
+        <span className="font-medium">Đăng xuất</span>
+      </button>
+    </div>
+  </aside>
 
         {/* Right Content Area */}
-        <main className="w-full md:w-10/10  bg-white text-blue-700 border border-blue-300 rounded-lg shadow p-6 flex flex-col justify-between">
-          <div className="bg-white rounded-lg shadow p-6">
-            {isExactPath ? (
-              <div className="space-y-8">
-                {/* Header thông tin khách hàng với avatar ở bên trái và giới tính bên phải */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center">
-                      <FiUserOutline className="w-12 h-12 text-gray-400" />
-                    </div>
-                    <div>
-                      <p className="text-xl font-bold text-gray-800">
-                        {formData.firstName} {formData.lastName}
-                      </p>
-                      <p className="text-base text-gray-500">
-                        Mã KH: {customerId}
-                      </p>
-                    </div>
-                  </div>
-                  {/* Giới tính: đặt ở bên phải */}
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg font-semibold text-gray-700">
-                      Giới Tính:
-                    </span>
-                    <button
-                      type="button"
-                      onClick={toggleGender}
-                      className="flex items-center justify-center w-16 h-16 rounded-full transition-colors shadow hover:shadow-lg"
-                      title="Nhấn để đổi giới tính"
-                      style={
-                        formData.gender === "true"
-                          ? { backgroundColor: "#3B82F6" }
-                          : { backgroundColor: "#EC4899" }
-                      }
-                    >
-                      {formData.gender === "true" ? (
-                        <FaMars className="w-8 h-8 text-white" />
-                      ) : (
-                        <FaVenus className="w-8 h-8 text-white" />
-                      )}
-                    </button>
-                    <span className="text-lg font-semibold text-gray-800">
-                      {formData.gender === "true" ? "" : ""}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Form thông tin cá nhân */}
-                <form
-                  className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6"
-                  onSubmit={handleSubmit}
-                >
-                  {/* Họ */}
-                  <div className="space-y-3">
-                    <label className="text-base font-medium text-gray-600 block">
-                      Họ
-                    </label>
-                    <div className="relative">
-                      <FiUserOutline className="absolute top-3 left-3 text-gray-400" />
-                      <input
-                        type="text"
-                        name="firstName"
-                        value={formData.firstName}
-                        onChange={handleInputChange}
-                        className="w-full pl-10 pr-4 py-2 border rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-                        placeholder="Họ"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Tên */}
-                  <div className="space-y-3">
-                    <label className="text-base font-medium text-gray-600 block">
-                      Tên
-                    </label>
-                    <div className="relative">
-                      <FiUserOutline className="absolute top-3 left-3 text-gray-400" />
-                      <input
-                        type="text"
-                        name="lastName"
-                        value={formData.lastName}
-                        onChange={handleInputChange}
-                        className="w-full pl-10 pr-4 py-2 border rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-                        placeholder="Tên"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Ngày sinh */}
-                  <div className="space-y-3">
-                    <label className="text-base font-medium text-gray-600 block">
-                      Ngày sinh
-                    </label>
-                    <div className="relative">
-                      <FiCalendar className="absolute top-3 left-3 text-gray-400" />
-                      <input
-                        type="date"
-                        name="dob"
-                        value={formData.dob}
-                        onChange={handleInputChange}
-                        className="w-full pl-10 pr-4 py-2 border rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Email */}
-                  <div className="space-y-3">
-                    <label className="text-base font-medium text-gray-600 block">
-                      Email
-                    </label>
-                    <div className="relative">
-                      <FiMail className="absolute top-3 left-3 text-gray-400" />
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        className="w-full pl-10 pr-4 py-2 border rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-                        placeholder="Email"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Số điện thoại */}
-                  <div className="space-y-3">
-                    <label className="text-base font-medium text-gray-600 block">
-                      Số điện thoại
-                    </label>
-                    <div className="relative">
-                      <FiPhone className="absolute top-3 left-3 text-gray-400" />
-                      <input
-                        type="tel"
-                        name="phoneNumber"
-                        value={formData.phoneNumber}
-                        onChange={handleInputChange}
-                        className="w-full pl-10 pr-4 py-2 border rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-                        placeholder="Số điện thoại"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Mật khẩu */}
-                  <div className="space-y-3 ">
-                    <label className="text-base font-medium text-gray-600 block">
-                      Mật khẩu mới (để trống nếu không đổi)
-                    </label>
-                    <div className="relative">
-                      <FiLock className="absolute top-3 left-3 text-gray-400" />
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        name="password"
-                        value={formData.password}
-                        onChange={handleInputChange}
-                        className="w-full pl-10 pr-12 py-2 border rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-                        placeholder="Mật khẩu"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-3 text-gray-400 hover:text-indigo-500 transition-colors"
-                        aria-label={
-                          showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"
-                        }
-                      >
-                        {showPassword ? (
-                          <FiEyeOff className="w-5 h-5" />
-                        ) : (
-                          <FiEye className="w-5 h-5" />
-                        )}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Địa chỉ */}
-                  <div className="space-y-3 sm:col-span-2">
-                    <label className="text-base font-medium text-gray-600 block">
-                      Địa chỉ
-                    </label>
-                    <div className="relative">
-                      <FiHome className="absolute top-3 left-3 text-gray-400" />
-                      <input
-                        type="text"
-                        name="address"
-                        value={formData.address}
-                        onChange={handleInputChange}
-                        className="w-full pl-10 pr-4 py-2 border rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-                        placeholder="Địa chỉ"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Nút Lưu thay đổi */}
-                  <div className="md:col-span-2 flex justify-end mt-4">
-                    <button
-                      type="submit"
-                      disabled={!isChanged}
-                      className={`px-6 py-3 rounded-md transition-colors font-semibold ${
-                        isChanged
-                          ? "bg-indigo-600 text-white hover:bg-indigo-700"
-                          : "bg-gray-400 text-white cursor-not-allowed"
-                      }`}
-                    >
-                      Lưu thay đổi
-                    </button>
-                  </div>
-                </form>
-              </div>
-            ) : (
-              <Outlet />
-            )}
+        <main className="w-full md:w-10/10 bg-gradient-to-b from-blue-50 to-white text-blue-800 border border-blue-200 rounded-lg shadow-md p-6 flex flex-col justify-between">
+  <div className="rounded-lg p-6">
+    {isExactPath ? (
+      <div className="space-y-6">
+        {/* Header thông tin bệnh nhân với biểu tượng y tế */}
+        <div className="flex items-center justify-between bg-blue-100 p-4 rounded-lg">
+          <div className="flex items-center gap-4">
+            <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center shadow-md">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-xl font-bold text-blue-800">
+                {formData.firstName} {formData.lastName}
+              </p>
+              <p className="text-sm text-blue-600 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+                </svg>
+                Mã BN: {customerId}
+              </p>
+            </div>
           </div>
-        </main>
+          {/* Giới tính: thiết kế lại với biểu tượng y tế */}
+          <div className="flex items-center gap-3 bg-white p-2 rounded-lg shadow-sm">
+            <span className="text-sm font-medium text-blue-700">
+              Giới Tính:
+            </span>
+            <button
+              type="button"
+              onClick={toggleGender}
+              className="flex items-center justify-center w-12 h-12 rounded-full transition-colors shadow hover:shadow-lg"
+              title="Nhấn để đổi giới tính"
+              style={
+                formData.gender === "true"
+                  ? { backgroundColor: "#4299E1" }
+                  : { backgroundColor: "#F687B3" }
+              }
+            >
+              {formData.gender === "true" ? (
+                <FaMars className="w-6 h-6 text-white" />
+              ) : (
+                <FaVenus className="w-6 h-6 text-white" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Form thông tin cá nhân với thiết kế y tế */}
+        <form
+          className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-4 bg-white p-5 rounded-lg shadow-sm"
+          onSubmit={handleSubmit}
+        >
+          <h3 className="md:col-span-2 text-lg font-semibold text-blue-800 border-b border-blue-100 pb-2 mb-3 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            Thông tin cá nhân
+          </h3>
+
+          {/* Họ */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-blue-700 block">
+              Họ
+            </label>
+            <div className="relative">
+              <FiUserOutline className="absolute top-3 left-3 text-blue-500" />
+              <input
+                type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleInputChange}
+                className="w-full pl-10 pr-4 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors bg-blue-50"
+                placeholder="Họ"
+              />
+            </div>
+          </div>
+
+          {/* Tên */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-blue-700 block">
+              Tên
+            </label>
+            <div className="relative">
+              <FiUserOutline className="absolute top-3 left-3 text-blue-500" />
+              <input
+                type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleInputChange}
+                className="w-full pl-10 pr-4 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors bg-blue-50"
+                placeholder="Tên"
+              />
+            </div>
+          </div>
+
+          {/* Ngày sinh */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-blue-700 block">
+              Ngày sinh
+            </label>
+            <div className="relative">
+              <FiCalendar className="absolute top-3 left-3 text-blue-500" />
+              <input
+                type="date"
+                name="dob"
+                value={formData.dob}
+                onChange={handleInputChange}
+                className="w-full pl-10 pr-4 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors bg-blue-50"
+              />
+            </div>
+          </div>
+
+          {/* Email */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-blue-700 block">
+              Email
+            </label>
+            <div className="relative">
+              <FiMail className="absolute top-3 left-3 text-blue-500" />
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className="w-full pl-10 pr-4 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors bg-blue-50"
+                placeholder="Email"
+              />
+            </div>
+          </div>
+
+          {/* Số điện thoại */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-blue-700 block">
+              Số điện thoại
+            </label>
+            <div className="relative">
+              <FiPhone className="absolute top-3 left-3 text-blue-500" />
+              <input
+                type="tel"
+                name="phoneNumber"
+                value={formData.phoneNumber}
+                onChange={handleInputChange}
+                className="w-full pl-10 pr-4 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors bg-blue-50"
+                placeholder="Số điện thoại"
+              />
+            </div>
+          </div>
+
+          {/* Mật khẩu */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-blue-700 block">
+              Mật khẩu mới (để trống nếu không đổi)
+            </label>
+            <div className="relative">
+              <FiLock className="absolute top-3 left-3 text-blue-500" />
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                className="w-full pl-10 pr-12 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors bg-blue-50"
+                placeholder="Mật khẩu"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-3 text-blue-500 hover:text-blue-700 transition-colors"
+                aria-label={
+                  showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"
+                }
+              >
+                {showPassword ? (
+                  <FiEyeOff className="w-5 h-5" />
+                ) : (
+                  <FiEye className="w-5 h-5" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Địa chỉ */}
+          <div className="space-y-2 md:col-span-2">
+            <label className="text-sm font-medium text-blue-700 block">
+              Địa chỉ
+            </label>
+            <div className="relative">
+              <FiHome className="absolute top-3 left-3 text-blue-500" />
+              <input
+                type="text"
+                name="address"
+                value={formData.address}
+                onChange={handleInputChange}
+                className="w-full pl-10 pr-4 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors bg-blue-50"
+                placeholder="Địa chỉ"
+              />
+            </div>
+          </div>
+
+          {/* Nút Lưu thay đổi */}
+          <div className="md:col-span-2 flex justify-end mt-4">
+            <button
+              type="submit"
+              disabled={!isChanged}
+              className={`px-5 py-2 rounded-md transition-colors font-medium flex items-center ${
+                isChanged
+                  ? "bg-blue-600 text-white hover:bg-blue-700"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+              </svg>
+              Lưu thay đổi
+            </button>
+          </div>
+        </form>
+      </div>
+    ) : (
+      <Outlet />
+    )}
+  </div>
+</main>
       </div>
       <Footer />
     </div>
