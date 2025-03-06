@@ -254,7 +254,7 @@ const CustomerPage = () => {
           <div className="mt-3">
             <div className="flex items-center px-4 py-2 text-1sm font-bold uppercase tracking-wider [text-shadow:1px_1px_2px_rgba(59,130,246,0.3)]">
               <span>Hồ sơ trẻ em</span>
-              {children.length > 0 && (
+              {children.length > 0 && fetchChildren && (
                 <span className="ml-auto bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
                   {children.length}
                 </span>
@@ -263,23 +263,24 @@ const CustomerPage = () => {
             {children.length > 0 ? (
               <>
                 {(showAllChildren ? children : children.slice(0, 5)).map(
-                  (child) => (
-                    <NavLink
-                      key={child.childId}
-                      to={`/customer/child/${child.childId}`}
-                      state={{ customerId }}
-                      className={({ isActive }) =>
-                        `flex items-center px-4 py-2 rounded-lg transition-all transform hover:shadow-md text-1xl ${
-                          isActive
-                            ? "bg-blue-100"
-                            : "hover:bg-blue-50 text-blue-700"
-                        }`
-                      }
-                    >
-                      <FaChild className="mr-2 w-5 h-5" />
-                      {child.firstName} {child.lastName}
-                    </NavLink>
-                  )
+                  (child) =>
+                    fetchChildren && (
+                      <NavLink
+                        key={child.childId}
+                        to={`/customer/child/${child.childId}`}
+                        state={{ customerId }}
+                        className={({ isActive }) =>
+                          `flex items-center px-4 py-2 rounded-lg transition-all transform hover:shadow-md text-1xl ${
+                            isActive
+                              ? "bg-blue-100"
+                              : "hover:bg-blue-50 text-blue-700"
+                          }`
+                        }
+                      >
+                        <FaChild className="mr-2 w-5 h-5" />
+                        {child.firstName} {child.lastName}
+                      </NavLink>
+                    )
                 )}
                 {children.length > 5 && (
                   <button

@@ -230,7 +230,10 @@ const AdminPage = () => {
               <p className="text-xs text-teal-300">Quản trị viên Y tế</p>
             </div>
           )}
-          <button className="ml-auto text-teal-300 hover:text-white">
+          <button
+            onClick={() => navigate("/")}
+            className="ml-auto text-teal-300 hover:text-white"
+          >
             <FiLogOut className="w-5 h-5" />
           </button>
         </div>

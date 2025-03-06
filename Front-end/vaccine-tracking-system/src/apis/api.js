@@ -873,6 +873,7 @@ export const cancelBooking = async (bookingId) => {
   try {
     const response = await axios.post(
       `${API_BASE_URL}/booking/cancel?bookingId=${bookingId}`,
+      null,
       { withCredentials: true } // Added here
     );
     console.log("API Response (cancelBooking):", response.data);
@@ -888,7 +889,8 @@ export const cancelBooking = async (bookingId) => {
 export const rescheduleBooking = async (bookingId) => {
   try {
     const response = await axios.post(
-      `${API_BASE_URL}/booking/setstatus?bookingId=${bookingId}&status=1`,
+      `${API_BASE_URL}/booking/setstatus?bookingId=${bookingId}&status=0`,
+      null,
       { withCredentials: true } // Added here
     );
     console.log("API Response (rescheduleBooking):", response.data);
