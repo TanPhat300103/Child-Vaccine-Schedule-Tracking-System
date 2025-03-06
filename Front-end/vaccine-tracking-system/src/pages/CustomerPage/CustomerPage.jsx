@@ -362,8 +362,8 @@ const CustomerPage = () => {
         </aside>
 
         {/* Right Content Area */}
-        <main className="w-full md:w-10/10 bg-gradient-to-b from-blue-50 to-white text-blue-800 border border-blue-200 rounded-lg shadow-md  flex flex-col justify-between">
-          <div className="rounded-full p-2">
+        <main className="w-auto md:w-10/10 bg-gradient-to-b from-blue-50 to-white text-blue-800 border border-blue-200 rounded-lg shadow-md  flex flex-col justify-between">
+          <div className="rounded-lg  p-2">
             {isExactPath ? (
               <div className="space-y-6">
                 {/* Header thông tin bệnh nhân với biểu tượng y tế */}
