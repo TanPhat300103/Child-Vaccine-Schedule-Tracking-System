@@ -156,10 +156,12 @@ const Child = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-8">
       <div className="max-w-4xl mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden">
         {/* Header */}
-        <div className="bg-blue-600 text-white p-6 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-teal-500 to-blue-500 p-6 flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <HeartPulse className="w-10 h-10" />
-            <h2 className="text-2xl font-bold">Hồ Sơ Tiêm Chủng Trẻ Em</h2>
+            <HeartPulse className="w-10 h-10 text-blue-100" />
+            <h2 className="text-2xl font-bold text-blue-50">
+              Hồ Sơ Tiêm Chủng Trẻ Em
+            </h2>
           </div>
           <div className="flex space-x-4">
             {editing ? (
@@ -405,8 +407,8 @@ const Child = () => {
 
       {/* Modal chỉnh sửa Phản Ứng */}
       {editingReactionId && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-slate-900/50 backdrop-blur-md">
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-11/12 md:w-2/5 overflow-hidden border border-slate-200 dark:border-slate-700 transition-all duration-300 transform">
+        <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-md">
+          <div className="bg-white rounded-2xl shadow-xl w-11/12 md:w-2/5 overflow-hidden border border-slate-200  transition-all duration-300 transform">
             {/* Header with medical theme */}
             <div className="bg-gradient-to-r from-teal-500 to-blue-500 p-5">
               <div className="flex items-center">
@@ -442,13 +444,13 @@ const Child = () => {
             <div className="p-6">
               {selectedHistory ? (
                 <>
-                  <div className="mb-6 bg-slate-50 dark:bg-slate-700/30 p-4 rounded-xl border-l-4 border-teal-500">
+                  <div className="mb-6 bg-slate-50  p-4 rounded-xl border-l-4 border-teal-500">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="flex items-center">
-                        <div className="w-10 h-10 rounded-full bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center mr-3">
+                        <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center mr-3">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 text-teal-600 dark:text-teal-400"
+                            className="h-5 w-5 text-teal-600 "
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -457,25 +459,25 @@ const Child = () => {
                               strokeLinecap="round"
                               strokeLinejoin="round"
                               strokeWidth={2}
-                              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                              d="M9 12h6m-5 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                             />
                           </svg>
                         </div>
                         <div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">
+                          <p className="text-xs text-slate-500 text-slate-900 ">
                             Vaccine
                           </p>
-                          <p className="font-medium text-slate-900 dark:text-white">
+                          <p className="font-medium text-slate-900 dark:text-slate-900">
                             {selectedHistory.vaccine.name}
                           </p>
                         </div>
                       </div>
 
                       <div className="flex items-center">
-                        <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center mr-3">
+                        <div className="w-10 h-10 rounded-full bg-blue-100  flex items-center justify-center mr-3">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 text-blue-600 dark:text-blue-400"
+                            className="h-5 w-5 text-blue-600 "
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -489,10 +491,10 @@ const Child = () => {
                           </svg>
                         </div>
                         <div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">
+                          <p className="text-xs text-slate-500 text-slate-900 ">
                             Ngày tiêm
                           </p>
-                          <p className="font-medium text-slate-900 dark:text-white">
+                          <p className="font-medium text-slate-900 dark:text-indigo-900">
                             {format(
                               new Date(selectedHistory.date),
                               "dd/MM/yyyy"
@@ -502,10 +504,10 @@ const Child = () => {
                       </div>
 
                       <div className="flex items-center">
-                        <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center mr-3">
+                        <div className="w-10 h-10 rounded-full bg-indigo-100  flex items-center justify-center mr-3">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 text-indigo-600 dark:text-indigo-400"
+                            className="h-5 w-5 text-indigo-600 "
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -519,10 +521,10 @@ const Child = () => {
                           </svg>
                         </div>
                         <div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">
+                          <p className="text-xs text-slate-500 text-slate-900 ">
                             Liều lượng
                           </p>
-                          <p className="font-medium text-slate-900 dark:text-white">
+                          <p className="font-medium text-slate-900 dark:text-slate-900">
                             {selectedHistory.dose}
                           </p>
                         </div>
@@ -533,7 +535,7 @@ const Child = () => {
                   <div className="mb-5">
                     <label
                       htmlFor="reaction"
-                      className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+                      className="block text-sm font-medium text-slate-700 dark:text-blue-900 mb-2"
                     >
                       Mô tả phản ứng sau tiêm
                     </label>
@@ -541,7 +543,7 @@ const Child = () => {
                       id="reaction"
                       value={reactionEditValue}
                       onChange={(e) => setReactionEditValue(e.target.value)}
-                      className="w-full bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-xl p-4 h-32 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 focus:border-transparent transition-all duration-200 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 resize-none"
+                      className="w-full bg-white  border border-slate-300  rounded-xl p-4 h-32 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 focus:border-transparent transition-all duration-200  dark:text-blue-950 placeholder-slate-400  resize-none"
                       placeholder="Mô tả chi tiết các phản ứng sau khi tiêm (nếu có)..."
                     ></textarea>
                   </div>
@@ -552,7 +554,7 @@ const Child = () => {
                         setEditingReactionId(null);
                         setReactionEditValue("");
                       }}
-                      className="px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all duration-200 flex items-center"
+                      className="px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-900 hover:bg-slate-100 dark:hover:bg-slate-300 transition-all duration-200 flex items-center"
                     >
                       <X className="w-4 h-4 mr-2" />
                       Hủy
