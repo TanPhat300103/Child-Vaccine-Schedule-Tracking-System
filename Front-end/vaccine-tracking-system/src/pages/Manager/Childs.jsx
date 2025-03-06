@@ -223,7 +223,7 @@ const Childs = () => {
             )}
           </div>
           <Link
-            to="/staff/customers"
+            to="../customers"
             className="inline-block mt-4 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
           >
             Quay lại danh sách khách hàng

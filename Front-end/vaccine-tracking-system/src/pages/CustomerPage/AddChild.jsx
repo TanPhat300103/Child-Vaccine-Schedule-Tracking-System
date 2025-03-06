@@ -2,18 +2,20 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { createChild } from "../../apis/api";
-import { 
-  FiUser, 
-  FiCalendar, 
-  FiAlertCircle, 
-  FiPlus, 
-  FiLoader
+import {
+  FiUser,
+  FiCalendar,
+  FiAlertCircle,
+  FiPlus,
+  FiLoader,
 } from "react-icons/fi";
 import { FaMars, FaVenus } from "react-icons/fa";
+import { useAuth } from "../../components/common/AuthContext.jsx";
 
 const AddChild = ({ refreshChildren }) => {
   const location = useLocation();
-  const customerId = location.state?.customerId; // Lấy customerId từ state
+  const { userInfo } = useAuth();
+  const customerId = location.state?.customerId || userInfo.userId; // Lấy customerId từ state
   const [childData, setChildData] = useState({
     firstName: "",
     lastName: "",
@@ -176,12 +178,26 @@ const AddChild = ({ refreshChildren }) => {
                   onChange={handleChange}
                   className="opacity-0 absolute h-0 w-0"
                 />
-                <span className={`flex items-center justify-center w-8 h-8 rounded-full mr-3 ${childData.gender === "true" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-400"}`}>
+                <span
+                  className={`flex items-center justify-center w-8 h-8 rounded-full mr-3 ${
+                    childData.gender === "true"
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 text-gray-400"
+                  }`}
+                >
                   <FaMars className="w-5 h-5" />
                 </span>
-                <span className={childData.gender === "true" ? "font-medium text-blue-800" : "text-gray-600"}>Nam</span>
+                <span
+                  className={
+                    childData.gender === "true"
+                      ? "font-medium text-blue-800"
+                      : "text-gray-600"
+                  }
+                >
+                  Nam
+                </span>
               </label>
-              
+
               <label className="relative flex items-center bg-blue-50 p-3 rounded-md border border-blue-200 cursor-pointer transition-colors hover:bg-blue-100">
                 <input
                   type="radio"
@@ -192,10 +208,24 @@ const AddChild = ({ refreshChildren }) => {
                   onChange={handleChange}
                   className="opacity-0 absolute h-0 w-0"
                 />
-                <span className={`flex items-center justify-center w-8 h-8 rounded-full mr-3 ${childData.gender === "false" ? "bg-pink-500 text-white" : "bg-gray-200 text-gray-400"}`}>
+                <span
+                  className={`flex items-center justify-center w-8 h-8 rounded-full mr-3 ${
+                    childData.gender === "false"
+                      ? "bg-pink-500 text-white"
+                      : "bg-gray-200 text-gray-400"
+                  }`}
+                >
                   <FaVenus className="w-5 h-5" />
                 </span>
-                <span className={childData.gender === "false" ? "font-medium text-blue-800" : "text-gray-600"}>Nữ</span>
+                <span
+                  className={
+                    childData.gender === "false"
+                      ? "font-medium text-blue-800"
+                      : "text-gray-600"
+                  }
+                >
+                  Nữ
+                </span>
               </label>
             </div>
           </div>
@@ -242,7 +272,10 @@ const AddChild = ({ refreshChildren }) => {
                 className="w-full pl-10 pr-3 py-2 bg-blue-50 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors"
               />
             </div>
-            <p className="text-xs text-gray-500 mt-1">Thông tin này sẽ được sử dụng để đảm bảo an toàn trong quá trình chăm sóc y tế.</p>
+            <p className="text-xs text-gray-500 mt-1">
+              Thông tin này sẽ được sử dụng để đảm bảo an toàn trong quá trình
+              chăm sóc y tế.
+            </p>
           </div>
 
           {/* Nút Submit */}
@@ -250,8 +283,8 @@ const AddChild = ({ refreshChildren }) => {
             type="submit"
             disabled={loading}
             className={`w-full flex items-center justify-center gap-2 py-3 rounded-md transition-colors ${
-              loading 
-                ? "bg-gray-400 cursor-not-allowed" 
+              loading
+                ? "bg-gray-400 cursor-not-allowed"
                 : "bg-blue-600 hover:bg-blue-700 active:bg-blue-800"
             } text-white font-medium shadow-md mt-6`}
           >

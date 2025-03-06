@@ -18,11 +18,13 @@ import {
   Mars,
   Venus,
 } from "lucide-react";
+import { useAuth } from "../../components/common/AuthContext.jsx";
 
 const Child = () => {
   const { childId } = useParams();
+  const { userInfo } = useAuth();
   const location = useLocation();
-  const customerId = location.state?.customerId;
+  const customerId = location.state?.customerId || userInfo.userId;
   const navigate = useNavigate();
 
   const [child, setChild] = useState(null);

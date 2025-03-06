@@ -35,7 +35,6 @@ const isFormChanged = (formData, originalData) => {
 };
 
 const CustomerPage = () => {
-  const customerId = localStorage.getItem("userId");
   const [customer, setCustomer] = useState(null);
   const [children, setChildren] = useState([]);
   const [showAllChildren, setShowAllChildren] = useState(false);
@@ -70,6 +69,7 @@ const CustomerPage = () => {
     password: "",
   });
   const { userInfo } = useAuth();
+  const customerId = userInfo.userId;
   console.log("userinfo: ", userInfo);
   // Khi customer thay đổi => set lại formData và originalData
   useEffect(() => {

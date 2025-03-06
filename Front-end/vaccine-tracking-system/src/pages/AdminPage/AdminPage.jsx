@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, Link, Navigate } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../components/common/AuthContext.jsx";
 import {
   FiGrid,
@@ -14,6 +14,7 @@ import {
   FiHome,
   FiAlertTriangle,
   FiMessageSquare,
+  FiLogOut,
 } from "react-icons/fi";
 
 const AdminPage = () => {
@@ -21,7 +22,9 @@ const AdminPage = () => {
     firstName: "Lord",
     lastName: "Of Cinder",
   };
-  // const { userInfo } = useAuth();
+
+  const navigate = useNavigate();
+  const { userInfo } = useAuth();
   // const [isAuthenticated, setIsAuthenticated] = useState(true);
   // const [proFileData, setProFileData] = useState(null);
 
@@ -187,8 +190,14 @@ const AdminPage = () => {
       <div className="flex-1">
         <header className="bg-white shadow-sm">
           <div className="mx-auto px-4 py-4">
-            <h1 className="text-2xl font-semibold text-gray-800">
+            <h1 className="text-2xl font-semibold text-gray-800 flex items-center justify-between ">
               Welcome, {adminData.firstName} {adminData.lastName}!
+              <button
+                onClick={() => navigate("/")}
+                className=" px-4 py-3 text-gray-700 font-medium text-left rounded-b-lg hover:bg-gray-100 focus:outline-none flex items-center justify-between  "
+              >
+                <FiLogOut size={24} />
+              </button>
             </h1>
           </div>
         </header>

@@ -41,7 +41,9 @@ const Vaccines = () => {
   // Fetch vaccines từ API
   const fetchVaccines = () => {
     axios
-      .get("http://localhost:8080/vaccine")
+      .get("http://localhost:8080/vaccine", {
+        withCredentials: true,
+      })
       .then((res) => {
         console.log("Fetch vaccines success:", res.data);
         setVaccines(res.data);
@@ -84,7 +86,9 @@ const Vaccines = () => {
   // Toggle trạng thái active của vaccine
   const handleToggleActive = (id, currentStatus) => {
     axios
-      .post(`http://localhost:8080/vaccine/active?id=${id}`)
+      .post(`http://localhost:8080/vaccine/active?id=${id}`, {
+        withCredentials: true,
+      })
       .then(() => {
         setVaccines((prev) =>
           prev.map((vaccine) =>
@@ -102,7 +106,9 @@ const Vaccines = () => {
     e.preventDefault();
     console.log("Creating vaccine:", newVaccine);
     axios
-      .post("http://localhost:8080/vaccine/create", newVaccine)
+      .post("http://localhost:8080/vaccine/create", newVaccine, {
+        withCredentials: true,
+      })
       .then((res) => {
         console.log("Vaccine created successfully:", res.data);
         const createdVaccine = res.data;
@@ -117,7 +123,13 @@ const Vaccines = () => {
           quantity: Number(newVaccineDetail.quantity) || 0,
         };
         axios
-          .post("http://localhost:8080/vaccinedetail/create", vaccineDetailData)
+          .post(
+            "http://localhost:8080/vaccinedetail/create",
+            vaccineDetailData,
+            {
+              withCredentials: true,
+            }
+          )
           .then((resDetail) => {
             console.log("Vaccine detail created successfully:", resDetail.data);
             setShowCreateModal(false);
