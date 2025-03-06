@@ -16,4 +16,6 @@ public interface BookingDetailRepository extends JpaRepository<BookingDetail, St
 
     @Query("SELECT COUNT(bd) FROM BookingDetail bd WHERE bd.booking.bookingId = :bookingId AND bd.vaccine.vaccineId = :vaccineId AND bd.administeredDate IS NOT NULL")
     int countByBookingIdAndVaccineIdAndAdministeredDateNotNull(@Param("bookingId") String bookingId, @Param("vaccineId") String vaccineId);
+
+    public List<BookingDetail> findBookingDetailsByBooking_BookingId(String bookingId);
 }

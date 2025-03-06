@@ -75,8 +75,6 @@ public class BookingService {
             bookingDTO.getBooking().setBookingId(booking.getBookingId());
             //Set booking total
             bookingDTO.getBooking().setTotalAmount(calculatorAmount(bookingDTO));
-            System.out.println("2"+calculatorAmount(bookingDTO));
-
             Booking savedBooking = bookingRepository.save(booking);
             //PAYMENT
             paymentService.createPayment(savedBooking);
