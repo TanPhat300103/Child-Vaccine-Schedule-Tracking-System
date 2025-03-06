@@ -20,7 +20,7 @@ public class Feedback {
     @NotNull
     private int id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "bookingId",nullable = false)
     @NotNull(message = "Booking Id cannot be null")
     Booking booking;
