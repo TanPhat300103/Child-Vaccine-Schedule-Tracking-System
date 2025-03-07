@@ -48,7 +48,7 @@ public class ComboDetailController {
         return comboDetailService.findByVaccineId(id);
     }
 
-    @DeleteMapping("deletevaccine")
+    @PostMapping("deletevaccine")
     public void deleteByVaccine(@RequestParam String id){
         comboDetailService.deleteByVaccineId(id);
     }
