@@ -30,8 +30,8 @@ public class ComboDetailService {
         return comboDetailRepository.findById(id);
     }
 
-    public void delete(String id) {
-        comboDetailRepository.deleteById(id);
+    public void deleteByVaccineId(String vaccineId) {
+        comboDetailRepository.deleteByVaccine_VaccineId(vaccineId);
     }
 
     public ComboDetail update (ComboDetail comboDetail)
