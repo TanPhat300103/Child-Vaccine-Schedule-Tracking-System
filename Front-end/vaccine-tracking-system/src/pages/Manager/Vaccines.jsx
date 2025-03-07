@@ -524,343 +524,280 @@ const Vaccines = () => {
 
         {/* Modal Tạo mới Vaccine */}
         {showCreateModal && (
-          <div
-            className="fixed inset-0 flex items-center justify-center z-1000"
-            style={{ background: "rgba(0, 0, 0, 0.7)" }} // Độ mờ 70%
-          >
-            <div className="relative bg-white rounded-xl p-6 w-full max-w-md shadow-2xl max-h-[85vh] overflow-y-auto border-t-4 border-teal-500">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-semibold text-teal-700 flex items-center">
-                  <svg
-                    className="w-6 h-6 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 4v16m8-8H4"
-                    ></path>
-                  </svg>
-                  Thêm Vaccine Mới
-                </h3>
-                <button
-                  onClick={() => setShowCreateModal(false)}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    ></path>
-                  </svg>
-                </button>
-              </div>
-
-              <form onSubmit={handleCreateVaccine} className="space-y-5">
-                <div className="space-y-4">
-                  <h4 className="text-sm font-medium text-gray-600 uppercase tracking-wide">
-                    Thông tin cơ bản
-                  </h4>
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <div
+              className="absolute inset-0 backdrop-blur-md"
+              onClick={() => setShowCreateModal(false)}
+            ></div>
+            <div className="relative bg-white rounded-xl shadow-xl p-6 w-full max-w-md max-h-[80vh] overflow-y-auto transform transition-all animate-fadeIn">
+              <h3 className="text-2xl font-bold text-blue-700 mb-4">
+                Tạo Vaccine Mới
+              </h3>
+              <form onSubmit={handleCreateVaccine} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Tên Vaccine <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={newVaccine.name}
+                    onChange={(e) =>
+                      setNewVaccine({ ...newVaccine, name: e.target.value })
+                    }
+                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+                    placeholder="Nhập tên vaccine"
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Tên Vaccine <span className="text-red-500">*</span>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Số liều <span className="text-red-500">*</span>
                     </label>
                     <input
-                      type="text"
-                      name="name"
-                      value={newVaccine.name}
-                      onChange={(e) =>
-                        setNewVaccine({ ...newVaccine, name: e.target.value })
-                      }
-                      className="w-full p-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none text-sm shadow-sm"
-                      placeholder="Nhập tên vaccine"
-                      required
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Số liều <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="number"
-                        name="doseNumber"
-                        value={newVaccine.doseNumber}
-                        onChange={(e) =>
-                          setNewVaccine({
-                            ...newVaccine,
-                            doseNumber: Number(e.target.value),
-                          })
-                        }
-                        className="w-full p-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none text-sm shadow-sm"
-                        placeholder="0"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Giá (VND) <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="number"
-                        name="price"
-                        value={newVaccine.price}
-                        onChange={(e) =>
-                          setNewVaccine({
-                            ...newVaccine,
-                            price: Number(e.target.value),
-                          })
-                        }
-                        className="w-full p-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none text-sm shadow-sm"
-                        placeholder="0"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Mô tả <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="description"
-                      value={newVaccine.description}
+                      type="number"
+                      name="doseNumber"
+                      value={newVaccine.doseNumber}
                       onChange={(e) =>
                         setNewVaccine({
                           ...newVaccine,
-                          description: e.target.value,
+                          doseNumber: Number(e.target.value),
                         })
                       }
-                      className="w-full p-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none text-sm shadow-sm"
-                      placeholder="Nhập mô tả vaccine"
+                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+                      placeholder="0"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Xuất xứ <span className="text-red-500">*</span>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Giá (VND) <span className="text-red-500">*</span>
                     </label>
                     <input
-                      type="text"
-                      name="country"
-                      value={newVaccine.country}
+                      type="number"
+                      name="price"
+                      value={newVaccine.price}
                       onChange={(e) =>
                         setNewVaccine({
                           ...newVaccine,
-                          country: e.target.value,
+                          price: Number(e.target.value),
                         })
                       }
-                      className="w-full p-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none text-sm shadow-sm"
-                      placeholder="Nhập quốc gia xuất xứ"
+                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+                      placeholder="0"
                       required
                     />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Tuổi tối thiểu <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="number"
-                        name="ageMin"
-                        value={newVaccine.ageMin}
-                        onChange={(e) =>
-                          setNewVaccine({
-                            ...newVaccine,
-                            ageMin: Number(e.target.value),
-                          })
-                        }
-                        className="w-full p-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none text-sm shadow-sm"
-                        placeholder="0"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Tuổi tối đa <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="number"
-                        name="ageMax"
-                        value={newVaccine.ageMax}
-                        onChange={(e) =>
-                          setNewVaccine({
-                            ...newVaccine,
-                            ageMax: Number(e.target.value),
-                          })
-                        }
-                        className="w-full p-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none text-sm shadow-sm"
-                        placeholder="0"
-                        required
-                      />
-                    </div>
                   </div>
                 </div>
-
-                <div className="space-y-4 pt-4 border-t border-gray-100">
-                  <h4 className="text-sm font-medium text-gray-600 uppercase tracking-wide">
-                    Chi tiết Vaccine
-                  </h4>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Ngày nhập <span className="text-red-500">*</span>
-                      </label>
-                      <DatePicker
-                        selected={newVaccineDetail.entryDate}
-                        onChange={(date) =>
-                          setNewVaccineDetail({
-                            ...newVaccineDetail,
-                            entryDate: date,
-                          })
-                        }
-                        dateFormat="dd/MM/yyyy"
-                        className="w-full p-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none text-sm shadow-sm"
-                        placeholderText="Chọn ngày nhập"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Ngày hết hạn <span className="text-red-500">*</span>
-                      </label>
-                      <DatePicker
-                        selected={newVaccineDetail.expiredDate}
-                        onChange={(date) =>
-                          setNewVaccineDetail({
-                            ...newVaccineDetail,
-                            expiredDate: date,
-                          })
-                        }
-                        dateFormat="dd/MM/yyyy"
-                        className="w-full p-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none text-sm shadow-sm"
-                        placeholderText="Chọn ngày hết hạn"
-                        required
-                      />
-                    </div>
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Mô tả <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    name="description"
+                    value={newVaccine.description}
+                    onChange={(e) =>
+                      setNewVaccine({
+                        ...newVaccine,
+                        description: e.target.value,
+                      })
+                    }
+                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+                    placeholder="Nhập mô tả vaccine"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Xuất xứ <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="country"
+                    value={newVaccine.country}
+                    onChange={(e) =>
+                      setNewVaccine({
+                        ...newVaccine,
+                        country: e.target.value,
+                      })
+                    }
+                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+                    placeholder="Nhập quốc gia xuất xứ"
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      URL Hình ảnh
+                    <label className="block text-sm font-medium text-gray-700">
+                      Tuổi tối thiểu <span className="text-red-500">*</span>
                     </label>
                     <input
-                      type="text"
-                      name="img"
-                      value={newVaccineDetail.img}
+                      type="number"
+                      name="ageMin"
+                      value={newVaccine.ageMin}
+                      onChange={(e) =>
+                        setNewVaccine({
+                          ...newVaccine,
+                          ageMin: Number(e.target.value),
+                        })
+                      }
+                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+                      placeholder="0"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Tuổi tối đa <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      name="ageMax"
+                      value={newVaccine.ageMax}
+                      onChange={(e) =>
+                        setNewVaccine({
+                          ...newVaccine,
+                          ageMax: Number(e.target.value),
+                        })
+                      }
+                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+                      placeholder="0"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Ngày nhập <span className="text-red-500">*</span>
+                    </label>
+                    <DatePicker
+                      selected={newVaccineDetail.entryDate}
+                      onChange={(date) =>
+                        setNewVaccineDetail({
+                          ...newVaccineDetail,
+                          entryDate: date,
+                        })
+                      }
+                      dateFormat="dd/MM/yyyy"
+                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+                      placeholderText="Chọn ngày nhập"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Ngày hết hạn <span className="text-red-500">*</span>
+                    </label>
+                    <DatePicker
+                      selected={newVaccineDetail.expiredDate}
+                      onChange={(date) =>
+                        setNewVaccineDetail({
+                          ...newVaccineDetail,
+                          expiredDate: date,
+                        })
+                      }
+                      dateFormat="dd/MM/yyyy"
+                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+                      placeholderText="Chọn ngày hết hạn"
+                      required
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    URL Hình ảnh
+                  </label>
+                  <input
+                    type="text"
+                    name="img"
+                    value={newVaccineDetail.img}
+                    onChange={(e) =>
+                      setNewVaccineDetail({
+                        ...newVaccineDetail,
+                        img: e.target.value,
+                      })
+                    }
+                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+                    placeholder="Dán URL hình ảnh (tùy chọn)"
+                  />
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Số ngày <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      name="day"
+                      value={newVaccineDetail.day}
                       onChange={(e) =>
                         setNewVaccineDetail({
                           ...newVaccineDetail,
-                          img: e.target.value,
+                          day: Number(e.target.value),
                         })
                       }
-                      className="w-full p-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none text-sm shadow-sm"
-                      placeholder="Dán URL hình ảnh (tùy chọn)"
+                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+                      placeholder="0"
+                      required
                     />
                   </div>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Số ngày <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="number"
-                        name="day"
-                        value={newVaccineDetail.day}
-                        onChange={(e) =>
-                          setNewVaccineDetail({
-                            ...newVaccineDetail,
-                            day: Number(e.target.value),
-                          })
-                        }
-                        className="w-full p-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none text-sm shadow-sm"
-                        placeholder="0"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Dung sai <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="number"
-                        name="tolerance"
-                        value={newVaccineDetail.tolerance}
-                        onChange={(e) =>
-                          setNewVaccineDetail({
-                            ...newVaccineDetail,
-                            tolerance: Number(e.target.value),
-                          })
-                        }
-                        className="w-full p-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none text-sm shadow-sm"
-                        placeholder="0"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Số lượng <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="number"
-                        name="quantity"
-                        value={newVaccineDetail.quantity}
-                        onChange={(e) =>
-                          setNewVaccineDetail({
-                            ...newVaccineDetail,
-                            quantity: Number(e.target.value),
-                          })
-                        }
-                        className="w-full p-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-teal-400 outline-none text-sm shadow-sm"
-                        placeholder="0"
-                        required
-                      />
-                    </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Dung sai <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      name="tolerance"
+                      value={newVaccineDetail.tolerance}
+                      onChange={(e) =>
+                        setNewVaccineDetail({
+                          ...newVaccineDetail,
+                          tolerance: Number(e.target.value),
+                        })
+                      }
+                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+                      placeholder="0"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Số lượng <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      name="quantity"
+                      value={newVaccineDetail.quantity}
+                      onChange={(e) =>
+                        setNewVaccineDetail({
+                          ...newVaccineDetail,
+                          quantity: Number(e.target.value),
+                        })
+                      }
+                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+                      placeholder="0"
+                      required
+                    />
                   </div>
                 </div>
-
                 {newVaccineError && (
-                  <p className="text-red-500 text-sm mt-2">{newVaccineError}</p>
+                  <p className="text-red-500 text-sm">{newVaccineError}</p>
                 )}
-
-                <div className="flex justify-end space-x-3 mt-6">
+                <div className="flex space-x-3">
+                  <button
+                    type="submit"
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all"
+                  >
+                    Tạo
+                  </button>
                   <button
                     type="button"
                     onClick={() => setShowCreateModal(false)}
-                    className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-all text-sm font-medium"
+                    className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-all"
                   >
                     Hủy
-                  </button>
-                  <button
-                    type="submit"
-                    className="bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition-all text-sm font-medium flex items-center"
-                  >
-                    <svg
-                      className="w-4 h-4 mr-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 13l4 4L19 7"
-                      ></path>
-                    </svg>
-                    Tạo Vaccine
                   </button>
                 </div>
               </form>

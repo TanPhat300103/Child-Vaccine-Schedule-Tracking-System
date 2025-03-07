@@ -34,7 +34,7 @@ public class StaffController {
         return staffService.update(staff);
     }
 
-    @DeleteMapping("active")
+    @PostMapping("active")
     public void activeStaff(@RequestParam String id) {
         staffService.active(id);
     }

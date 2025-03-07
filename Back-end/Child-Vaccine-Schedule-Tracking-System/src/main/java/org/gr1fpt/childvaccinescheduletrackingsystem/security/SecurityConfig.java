@@ -53,7 +53,7 @@ public class SecurityConfig {
                         .hasAnyRole("CUSTOMER", "STAFF", "ADMIN")
 
 
-                        .requestMatchers("/staff/create", "/vaccine/**", "/booking/**", "/bookingdetail/**", "/child/**", "/combodetail/**", "/email/**", "/marketing/**", "/medicalhistory/**", "/payment/**", "/vaccinecombo/**", "/vaccinedetail/**")
+                        .requestMatchers("/staff/create", "/vaccine/**", "/booking/**", "/bookingdetail/**", "/child/**", "/combodetail/**", "/email/**", "/marketing/**", "/medicalhistory/**", "/payment/**", "/vaccinecombo/**", "/vaccinedetail/**","/staff/findid","staff/update")
                         .hasAnyRole("STAFF", "ADMIN","CUSTOMER")
 
                         .requestMatchers("/admin/**", "/staff/**")

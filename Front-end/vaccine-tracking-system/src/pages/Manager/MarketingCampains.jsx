@@ -37,7 +37,10 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "discount" ? Number(value) || 0 : value,
+    }));
   };
 
   const handleCheckboxChange = (e) => {
@@ -63,74 +66,95 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
-      <div className="absolute inset-0 bg-gray-500 bg-opacity-50" onClick={onClose}></div>
-      <div className="relative bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
-        <h3 className="text-xl font-semibold text-blue-600 mb-4">
+      <div
+        className="absolute inset-0 backdrop-blur-md"
+        onClick={onClose}
+      ></div>
+      <div className="relative bg-white rounded-xl shadow-xl p-6 w-full max-w-md transform transition-all animate-fadeIn">
+        <h3 className="text-2xl font-bold text-blue-700 mb-4">
           {isEditMode ? "Chỉnh sửa sự kiện" : "Tạo sự kiện mới"}
         </h3>
         <form onSubmit={handleFormSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Tên sự kiện</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Tên sự kiện
+            </label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400"
+              className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+              placeholder="Tên sự kiện"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Mã coupon</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Mã coupon
+            </label>
             <input
               type="text"
               name="coupon"
               value={formData.coupon}
               onChange={handleChange}
-              className="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400"
+              className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+              placeholder="Mã coupon"
               required
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Ngày bắt đầu</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Ngày bắt đầu
+              </label>
               <DatePicker
                 selected={formData.startTime}
                 onChange={(date) => handleDateChange(date, "startTime")}
                 dateFormat="dd/MM/yyyy"
-                className="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400"
+                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+                placeholderText="Chọn ngày"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Ngày kết thúc</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Ngày kết thúc
+              </label>
               <DatePicker
                 selected={formData.endTime}
                 onChange={(date) => handleDateChange(date, "endTime")}
                 dateFormat="dd/MM/yyyy"
-                className="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400"
+                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+                placeholderText="Chọn ngày"
                 required
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Giảm giá (%)</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Giảm giá (%)
+            </label>
             <input
               type="number"
               name="discount"
               value={formData.discount}
               onChange={handleChange}
-              className="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400"
+              className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+              placeholder="Giảm giá (%)"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Mô tả</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Mô tả
+            </label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400"
+              className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+              placeholder="Mô tả sự kiện"
               rows="3"
               required
             />
@@ -141,21 +165,23 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
               name="active"
               checked={formData.active}
               onChange={handleCheckboxChange}
-              className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+              className="w-4 h-4 text-blue-600"
             />
-            <label className="ml-2 text-sm text-gray-700">Kích hoạt</label>
+            <label className="ml-2 text-sm font-medium text-gray-700">
+              Kích hoạt
+            </label>
           </div>
-          <div className="flex justify-end space-x-2">
+          <div className="flex space-x-3">
             <button
               type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all"
             >
               {isEditMode ? "Lưu" : "Tạo"}
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300"
+              className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-all"
             >
               Hủy
             </button>
