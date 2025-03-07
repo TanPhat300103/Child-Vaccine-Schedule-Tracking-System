@@ -182,7 +182,7 @@ const Records = () => {
 
       {/* Danh sách báo cáo phản ứng */}
       {filteredRecords.length > 0 ? (
-        <div className="flex space-x-4 overflow-x-auto">
+        <div className="flex space-x-4 ">
           {filteredRecords.map((record) => renderRecordCard(record))}
         </div>
       ) : (
