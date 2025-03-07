@@ -40,8 +40,9 @@ const SpecificCombo = () => {
     const fetchVaccines = async () => {
       try {
         const data = await getVaccineComboDetailByVaccineId(vaccineComboId);
+        console.log("object", data);
         setVaccineData(data[0]);
-        console.log("vaccine data: ", vaccineData);
+        console.log("vaccinedata: ", vaccineData);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu vắc-xin:", error);
       } finally {
@@ -93,19 +94,20 @@ const SpecificCombo = () => {
               </h2>
 
               <div className="space-y-4">
-                <DetailRow icon={<FaSyringe />} label="Số liều" value={"n"} />
+                <DetailRow
+                  icon={<FaSyringe />}
+                  label="Tên Combo"
+                  value={vaccineData.vaccineCombo.name || "n"}
+                />
+
                 <DetailRow
                   icon={<FaFlask />}
                   label="Mô tả"
                   value={`Phòng bệnh ${
-                    vaccineData?.vaccine.description || "n"
+                    vaccineData?.vaccineCombo.description || "n"
                   }`}
                 />
-                <DetailRow
-                  icon={<FaGlobe />}
-                  label="Quốc gia sản xuất"
-                  value={vaccineData?.vaccine.country || "n"}
-                />
+
                 <DetailRow
                   icon={<FaUserClock />}
                   label="Độ tuổi khuyến nghị"
@@ -114,44 +116,7 @@ const SpecificCombo = () => {
                 <DetailRow
                   icon={<FaDollarSign />}
                   label="Giá vaccine"
-                  value={vaccineData.vaccine.price.toLocaleString()}
-                />
-              </div>
-            </div>
-
-            {/* Tracking Section */}
-            <div className="bg-[#E6F2FF] p-6 rounded-xl">
-              <h2 className="text-xl font-semibold mb-4 text-[#333333]">
-                Theo dõi tiêm chủng
-              </h2>
-
-              <div className="space-y-4">
-                <DetailRow
-                  icon={<FaCalendarAlt />}
-                  label="Ngày sản xuất"
-                  value={
-                    // Kiểm tra xem entryDate có hợp lệ không
-                    isNaN(Date.parse(vaccineData.entryDate))
-                      ? "Ngày không hợp lệ" // Nếu không hợp lệ, hiển thị thông báo lỗi
-                      : format(
-                          new Date(vaccineData.entryDate), // Chuyển đổi chuỗi thành đối tượng Date
-                          "dd MMMM yyyy", // Định dạng ngày
-                          { locale: vi }
-                        )
-                  }
-                />
-
-                <div className="flex items-center gap-4">
-                  <FaChartLine className="text-[#4A90E2] text-xl" />
-                  <span className="text-[#333333] min-w-[150px]">
-                    Mức độ dung nạp:
-                  </span>
-                  <ToleranceIndicator value={vaccineData.tolerance} />
-                </div>
-                <DetailRow
-                  icon={<FaBoxOpen />}
-                  label="Số lượng còn lại"
-                  value={`${vaccineData.quantity} liều`}
+                  value={vaccineData.vaccineCombo.priceCombo.toLocaleString()}
                 />
               </div>
             </div>

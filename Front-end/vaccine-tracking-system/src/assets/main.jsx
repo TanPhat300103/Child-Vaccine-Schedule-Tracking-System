@@ -64,6 +64,9 @@ import VNPAY from "../pages/Payment/VNPAY.jsx";
 import CancelPayment from "../pages/Payment/CancelPayment.jsx";
 import PriceVaccine from "../components/homepage/PriceVaccine.jsx";
 import PaymentVnpay from "../pages/Payment/PaymentVNPay.jsx";
+import Overview from "../components/common/OverviewPage.jsx";
+import PaymentReturnPage from "../pages/Payment/PaymentReturnPage.jsx";
+import BookingDetailPage from "../pages/CustomerPage/BookingDetailPage.jsx";
 
 // import BookingPage from "../apis/test.jsx";
 
@@ -111,10 +114,15 @@ const Main = () => {
               <Route path="/header" element={<Header />} />
               <Route path="/footer" element={<Footer />} />
               <Route path="/auth" element={<AuthProvider />} />
+              <Route path="/overview" element={<Overview />} />
+              <Route
+                path="/booking-detail/:bookingId"
+                element={<BookingDetailPage />}
+              />
 
               <Route path="/paymentVnpay" element={<PaymentVnpay />} />
               <Route path="/vnpay" element={<VNPAY />} />
-              <Route path="/payment-return" element={<CancelPayment />} />
+              <Route path="/payment-return" element={<PaymentReturnPage />} />
               {/* <Route path="/lichtiem" element={<LichTiemChung />} /> */}
 
               {/* Route /customer */}

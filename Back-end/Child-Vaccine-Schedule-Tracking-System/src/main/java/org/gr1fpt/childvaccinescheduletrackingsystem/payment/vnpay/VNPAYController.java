@@ -86,10 +86,11 @@ public class VNPAYController  {
         } else {
             Payment payment = paymentService.getPaymentById(paymentId);
             payment.setStatus(false);
-
             //Tháo coupon và set price về lại giá gốc
-            payment.setTotal(payment.getTotal()/(100-payment.getMarketingCampaign().getDiscount())*100);
-            payment.setMarketingCampaign(null);
+            if (payment.getMarketingCampaign() != null) {
+                payment.setTotal(payment.getTotal()/(100-payment.getMarketingCampaign().getDiscount())*100);
+                payment.setMarketingCampaign(null);
+            }
             paymentRepository.save(payment);
         }
 

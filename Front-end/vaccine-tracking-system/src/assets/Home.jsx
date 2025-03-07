@@ -159,33 +159,38 @@ const Home = () => {
           {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             {/* Navbar */}
-            {["Trang chủ", "Đặt lịch", "Gói tiêm", "Liên lạc"].map((item) => (
-              <motion.a
-                key={item}
-                onClick={() => {
-                  if (item === "Gói tiêm") {
-                    scrollVaccinePricing(); // Cuộn đến phần VaccinePricingTable
-                  }
-                  if (item === "Liên lạc") {
-                    scrollToFooter(); // Cuộn đến Footer
-                  }
-                  if (item === "Đặt lịch") {
-                    navigate("/book-vaccine");
-                  }
-                  if (item === "Trang chủ") {
-                    window.scrollTo({
-                      top: 0,
-                      behavior: "smooth", // Cuộn mượt mà lên đầu trang
-                    });
-                  }
-                }}
-                whileHover={{ scale: 1.05 }}
-                className="text-gray-700 hover:text-blue-600 transition-colors relative group cursor-pointer"
-              >
-                {item}
-                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform " />
-              </motion.a>
-            ))}{" "}
+            {["Trang chủ", "Đặt lịch", "Gói tiêm", "Liên lạc", "Overview"].map(
+              (item) => (
+                <motion.a
+                  key={item}
+                  onClick={() => {
+                    if (item === "Gói tiêm") {
+                      scrollVaccinePricing(); // Cuộn đến phần VaccinePricingTable
+                    }
+                    if (item === "Liên lạc") {
+                      scrollToFooter(); // Cuộn đến Footer
+                    }
+                    if (item === "Đặt lịch") {
+                      navigate("/book-vaccine");
+                    }
+                    if (item === "Overview") {
+                      navigate("/overview");
+                    }
+                    if (item === "Trang chủ") {
+                      window.scrollTo({
+                        top: 0,
+                        behavior: "smooth", // Cuộn mượt mà lên đầu trang
+                      });
+                    }
+                  }}
+                  whileHover={{ scale: 1.05 }}
+                  className="text-gray-700 hover:text-blue-600 transition-colors relative group cursor-pointer"
+                >
+                  {item}
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform " />
+                </motion.a>
+              )
+            )}{" "}
             {/* User */}
             <div className="relative">
               <button
