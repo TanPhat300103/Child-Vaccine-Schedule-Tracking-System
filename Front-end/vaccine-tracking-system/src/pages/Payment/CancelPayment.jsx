@@ -21,11 +21,11 @@ const CancelPayment = () => {
 
     // Kiểm tra và hiển thị thông báo dựa trên status
     if (status === "SUCCESS") {
-      setStatusMessage("Thành công");
+      setStatusMessage("Thanh toán thành công");
       setStatusClass("bg-green-50 text-green-600");
       setHeaderClass("bg-green-600 text-white"); // Set header for success
     } else if (status === "FAILED") {
-      setStatusMessage("Bị hủy");
+      setStatusMessage("Thanh toán thất bại");
       setStatusClass("bg-red-50 text-red-600");
       setHeaderClass("bg-red-600 text-white"); // Set header for failure
     }

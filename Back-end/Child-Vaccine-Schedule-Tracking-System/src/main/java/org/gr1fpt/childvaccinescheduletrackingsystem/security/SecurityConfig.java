@@ -63,7 +63,7 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )
-                        .defaultSuccessUrl("/auth/user", true)
+                        .defaultSuccessUrl("http://localhost:3000/home", true)
                 )
 
                 .formLogin(form -> form

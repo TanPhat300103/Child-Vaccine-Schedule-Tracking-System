@@ -6,6 +6,9 @@ import { slides, benefits, process } from "../stores/homedata.jsx";
 import PriceVaccine from "../components/homepage/PriceVaccine.jsx";
 import AgeVaccine from "../components/homepage/AgeVaccine.jsx";
 import Footer from "../components/common/Footer";
+import ComboVaccine from "../components/homepage/ComboVaccine.jsx";
+import AgeVaccineGuest from "../components/homepage/AgeVaccineGuest.jsx";
+import PriceVaccineGuest from "../components/homepage/PriceVaccineGuest.jsx";
 
 const App = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -138,7 +141,7 @@ const App = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="bg-blue-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-blue-700 transition-colors duration-300 animate-pulse"
-                    onClick={() => navigate("/login")}
+                    onClick={() => navigate("/book-vaccine")}
                   >
                     Đăng ký tiêm
                   </motion.button>
@@ -147,6 +150,19 @@ const App = () => {
             </div>
           ))}
         </motion.div>
+
+        {/* Dots for Slide Navigation */}
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-6">
+          {slides.map((_, index) => (
+            <div
+              key={index}
+              onClick={() => setCurrentSlide(index)} // Set current slide on click
+              className={`w-5 h-5 rounded-full cursor-pointer ${
+                currentSlide === index ? "bg-blue-600" : "bg-gray-400"
+              } transition-colors duration-300`}
+            />
+          ))}
+        </div>
       </motion.section>
 
       {/* Benefit */}
@@ -235,11 +251,13 @@ const App = () => {
       </motion.section>
 
       {/* Age Vaccine */}
-      <AgeVaccine></AgeVaccine>
+      <AgeVaccineGuest></AgeVaccineGuest>
 
+      {/* Age Vaccine */}
+      <ComboVaccine></ComboVaccine>
       {/* Price Vaccine */}
       <motion.section className="py-20 bg-white" ref={vaccinePricingRef}>
-        <PriceVaccine></PriceVaccine>
+        <PriceVaccineGuest></PriceVaccineGuest>
       </motion.section>
 
       {/* Processing */}
