@@ -187,11 +187,12 @@ const ComboDetail = () => {
     }
   };
 
-  // Hàm xoá vaccine khỏi combo
+  // Hàm xoá vaccine khỏi combo (sử dụng POST theo backend)
   const handleRemoveFromCombo = async (vaccineId) => {
     try {
-      await axios.delete(
+      await axios.post(
         `http://localhost:8080/combodetail/deletevaccine?id=${vaccineId}`,
+        {},
         { withCredentials: true }
       );
       // Cập nhật lại state để loại bỏ vaccine vừa xoá

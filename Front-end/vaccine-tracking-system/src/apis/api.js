@@ -938,6 +938,7 @@ export const confirmBooking = async (bookingId) => {
   try {
     const response = await axios.post(
       `${API_BASE_URL}/bookingdetail/confirmdate?id=${bookingId}`,
+      null,
       { withCredentials: true } // Added here
     );
     console.log("API Response (confirmBooking):", response.data);

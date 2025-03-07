@@ -1,47 +1,38 @@
 // src/pages/Staff/Bookings.jsx
 import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
-import {
-  getAllBookings,
-  cancelBooking,
-  confirmBooking,
-  getBookingDetailByBooking,
-  rescheduleBooking,
-  // Bỏ phần getPaymentByBookingID vì không cần dùng nữa
-} from "../../apis/api";
+import { useNavigate } from "react-router-dom";
+import { getAllBookings } from "../../apis/api";
 
 const Bookings = () => {
+  const navigate = useNavigate();
   const [bookings, setBookings] = useState([]);
-  const [filteredBookings, setFilteredBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Các trạng thái tìm kiếm
-  const [searchBookingId, setSearchBookingId] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
+  // Các state tìm kiếm khách hàng (bên trái)
+  const [customerIdSearch, setCustomerIdSearch] = useState("");
+  const [customerNameSearch, setCustomerNameSearch] = useState("");
+  const [customerPhoneSearch, setCustomerPhoneSearch] = useState("");
+  const [customerEmailSearch, setCustomerEmailSearch] = useState("");
 
-  // Các trạng thái: "daHoanThanh" (status === 0) và "daHuy" (status === 1)
-  const [selectedStatus, setSelectedStatus] = useState("daHoanThanh");
+  // Các state tìm kiếm booking (bên phải)
+  const [bookingIdSearch, setBookingIdSearch] = useState("");
+  const [bookingDateSearch, setBookingDateSearch] = useState("");
+  const [childNameSearch, setChildNameSearch] = useState("");
+  const [scheduledDateSearch, setScheduledDateSearch] = useState("");
+  const [vaccineSearch, setVaccineSearch] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("all"); // all, daDat, daHoanThanh, daHuy
 
-  // Modal để hiển thị chi tiết booking
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedBooking, setSelectedBooking] = useState(null);
-  const [bookingDetails, setBookingDetails] = useState([]);
+  // Khách hàng được chọn
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
 
-  const [isExpanded, setIsExpanded] = useState(false);
-  // Lấy danh sách booking từ backend
+  // Lấy danh sách booking từ API
   const fetchBookings = async () => {
     try {
-      console.log("Gọi API getAllBookings...");
       const data = await getAllBookings();
-      console.log("API getAllBookings trả về:", data);
       setBookings(data);
-      setFilteredBookings(data);
     } catch (err) {
-      console.error("Error fetching bookings:", err);
       setError("Không thể lấy thông tin đặt lịch");
     } finally {
       setLoading(false);
@@ -52,360 +43,254 @@ const Bookings = () => {
     fetchBookings();
   }, []);
 
-  // Áp dụng bộ lọc tìm kiếm và trạng thái
-  useEffect(() => {
-    let filtered = bookings;
-    // Lọc theo mã đặt lịch
-    if (searchBookingId) {
-      filtered = filtered.filter((b) =>
-        b.bookingId.toLowerCase().includes(searchBookingId.toLowerCase())
-      );
-    }
-    // Lọc theo khoảng ngày (bookingDate)
-    if (startDate) {
-      const start = new Date(startDate);
-      filtered = filtered.filter((b) => new Date(b.bookingDate) >= start);
-    }
-    if (endDate) {
-      const end = new Date(endDate);
-      filtered = filtered.filter((b) => new Date(b.bookingDate) <= end);
-    }
-    // Lọc theo khoảng giá (totalAmount)
-    if (minPrice) {
-      filtered = filtered.filter((b) => b.totalAmount >= Number(minPrice));
-    }
-    if (maxPrice) {
-      filtered = filtered.filter((b) => b.totalAmount <= Number(maxPrice));
-    }
-    // Lọc theo trạng thái đã chọn:
-    filtered = filtered.filter((b) => {
-      if (selectedStatus === "daHoanThanh") {
-        return b.status === 2;
-      } else if (selectedStatus === "daHuy") {
-        return b.status === 3;
-      }
-      return true;
-    });
-    console.log("Filtered bookings:", filtered);
-    setFilteredBookings(filtered);
-  }, [
-    bookings,
-    searchBookingId,
-    startDate,
-    endDate,
-    minPrice,
-    maxPrice,
-    selectedStatus,
-  ]);
-
-  // Xử lý hành động huỷ booking
-  const handleCancelBooking = async (bookingId) => {
-    try {
-      console.log("Gọi API cancelBooking cho bookingId:", bookingId);
-      await cancelBooking(bookingId);
-      console.log("Huỷ booking thành công cho bookingId:", bookingId);
-      fetchBookings();
-    } catch (error) {
-      console.error("Error canceling booking:", error);
-    }
-  };
-
-  // Xử lý đặt lại booking
-  const handleRescheduleBooking = async (bookingId) => {
-    try {
-      console.log("Gọi API rescheduleBooking cho bookingId:", bookingId);
-      await rescheduleBooking(bookingId);
-      console.log("Đặt lại booking thành công cho bookingId:", bookingId);
-      fetchBookings();
-    } catch (error) {
-      console.error("Error rescheduling booking:", error);
-    }
-  };
-
-  // Mở modal chi tiết booking và lấy chi tiết của booking đó
-  const openBookingModal = async (booking) => {
-    setSelectedBooking(booking);
-    try {
-      console.log(
-        "Gọi API getBookingDetailByBooking cho bookingId:",
-        booking.bookingId
-      );
-      const details = await getBookingDetailByBooking(booking.bookingId);
-      console.log("API getBookingDetailByBooking trả về:", details);
-      setBookingDetails(details);
-    } catch (err) {
-      console.error("Error fetching booking details:", err);
-      setBookingDetails([]);
-    }
-    setModalVisible(true);
-  };
-
-  const closeModal = () => {
-    console.log("Đóng modal chi tiết booking");
-    setModalVisible(false);
-    setSelectedBooking(null);
-    setBookingDetails([]);
-  };
-
-  // Xác nhận từng booking detail (xác nhận administeredDate)
-  const handleConfirmDetail = async (bookingDetailId) => {
-    try {
-      console.log(
-        "Gọi API confirmBooking cho bookingDetailId:",
-        bookingDetailId
-      );
-      await confirmBooking(bookingDetailId);
-      console.log(
-        "Xác nhận booking detail thành công cho bookingDetailId:",
-        bookingDetailId
-      );
-      const details = await getBookingDetailByBooking(
-        selectedBooking.bookingId
-      );
-      console.log("Làm mới booking details:", details);
-      setBookingDetails(details);
-    } catch (error) {
-      console.error("Error confirming booking detail:", error);
-    }
-  };
-
-  // Render từng thẻ booking với nút Hủy hoặc Đặt Lại tùy theo trạng thái
-  const renderBookingCard = (booking) => (
-    <div
-      key={booking.bookingId}
-      className="p-4 border rounded-md shadow-sm cursor-pointer min-w-[250px] flex-shrink-0 hover:shadow-lg hover:scale-105 transition-transform duration-300"
-      onClick={() => openBookingModal(booking)}
-    >
-      <p className="font-bold">Mã đặt lịch: {booking.bookingId}</p>
-      {booking.customer && (
-        <p className="text-lg text-indigo-600 font-bold">
-          Customer: {booking.customer.firstName} {booking.customer.lastName}
-        </p>
-      )}
-      <p>Ngày đặt: {format(new Date(booking.bookingDate), "dd/MM/yyyy")}</p>
-      <p>Tổng tiền: {booking.totalAmount.toLocaleString()} VNĐ</p>
-      {booking.feedback && (
-        <p className="mt-2 text-sm italic">Feedback: {booking.feedback}</p>
-      )}
-      <div className="mt-4">
-        {selectedStatus === "daHuy" && (
-          <p className="text-red-600 font-bold">Đã Hủy</p>
-        )}
-      </div>
-      <div className="mt-4">
-        {selectedStatus === "daHoanThanh" && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleCancelBooking(booking.bookingId);
-            }}
-            className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded"
-          >
-            Hủy
-          </button>
-        )}
-        {selectedStatus === "daHuy" && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleRescheduleBooking(booking.bookingId);
-            }}
-            className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded"
-          >
-            Đặt Lại
-          </button>
-        )}
-      </div>
-    </div>
+  // Tạo danh sách khách hàng duy nhất từ bookings
+  const customers = Array.from(
+    new Map(bookings.map((b) => [b.customer.customerId, b.customer])).values()
   );
 
-  // Chỉ còn 2 trạng thái: Đã Hoàn Thành và Đã Hủy
-  const statusFilters = [
-    {
-      key: "daHoanThanh",
-      label: "Đã Hoàn Thành",
-      style: "bg-green-500 hover:bg-green-600",
-    },
-    {
-      key: "daHuy",
-      label: "Đã Hủy",
-      style: "bg-red-500 hover:bg-red-600",
-    },
-  ];
+  // Lọc khách hàng theo các ô tìm kiếm riêng
+  const filteredCustomers = customers.filter((cust) => {
+    const matchId = cust.customerId
+      .toLowerCase()
+      .includes(customerIdSearch.toLowerCase());
+    const fullName = (cust.firstName + " " + cust.lastName).toLowerCase();
+    const matchName = fullName.includes(customerNameSearch.toLowerCase());
+    const matchPhone = cust.phoneNumber
+      .toLowerCase()
+      .includes(customerPhoneSearch.toLowerCase());
+    const matchEmail = cust.email
+      ?.toLowerCase()
+      .includes(customerEmailSearch.toLowerCase());
+    return matchId && matchName && matchPhone && matchEmail;
+  });
+
+  // Lọc danh sách booking của khách hàng được chọn
+  let customerBookings = [];
+  if (selectedCustomer) {
+    customerBookings = bookings.filter(
+      (b) => b.customer.customerId === selectedCustomer.customerId
+    );
+  }
+
+  // Lọc booking theo các ô tìm kiếm bên phải
+  const filteredBookings = customerBookings.filter((b) => {
+    let match = true;
+    if (bookingIdSearch) {
+      match =
+        match &&
+        b.bookingId.toLowerCase().includes(bookingIdSearch.toLowerCase());
+    }
+    if (bookingDateSearch) {
+      const dateStr = format(new Date(b.bookingDate), "yyyy-MM-dd");
+      match = match && dateStr === bookingDateSearch;
+    }
+    // Các trường "childName", "scheduledDate", "vaccine" thường có ở chi tiết đặt lịch
+    // Nếu cần lọc theo các thông tin này, cần có dữ liệu bookingDetails. Ví dụ ở đây sẽ chỉ để hiển thị nếu có
+    // (Để demo, ta có thể bỏ qua hoặc xử lý tùy thuộc vào cấu trúc dữ liệu thực tế.)
+    if (selectedStatus !== "all") {
+      const statusMap = {
+        daDat: 1,
+        daHoanThanh: 2,
+        daHuy: 3,
+      };
+      match = match && b.status === statusMap[selectedStatus];
+    }
+    return match;
+  });
+
+  // Khi click vào 1 khách hàng (thẻ ngang)
+  const handleCustomerClick = (customer) => {
+    setSelectedCustomer(customer);
+  };
+
+  // Khi click vào 1 booking (thẻ ngang) -> điều hướng đến BookingDetail
+  const handleBookingClick = (booking) => {
+    navigate(`../booking-detail/${booking.bookingId}`);
+  };
 
   if (loading) return <p>Đang tải thông tin đặt lịch...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (
-    <div className="p-4">
-      <h2 className="text-3xl font-bold mb-4">Quản Lý Đặt Lịch</h2>
-
-      {/* Thanh tìm kiếm */}
-      <div className="mb-6 p-4 border rounded-md">
-        <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
+    <div className="p-4 flex gap-4">
+      {/* Bên trái: Danh sách khách hàng */}
+      <div className="w-1/3 border p-4 rounded">
+        <h2 className="text-2xl font-bold mb-4">Danh sách khách hàng</h2>
+        <div className="mb-4 space-y-2">
           <input
             type="text"
-            placeholder="Tìm theo mã đặt lịch"
-            value={searchBookingId}
-            onChange={(e) => setSearchBookingId(e.target.value)}
-            className="px-3 py-2 border rounded-md w-full md:w-1/3"
+            placeholder="Mã khách hàng"
+            value={customerIdSearch}
+            onChange={(e) => setCustomerIdSearch(e.target.value)}
+            className="w-full p-2 border rounded"
           />
           <input
-            type="date"
-            placeholder="Từ ngày"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="px-3 py-2 border rounded-md w-full md:w-1/4"
+            type="text"
+            placeholder="Tên khách hàng"
+            value={customerNameSearch}
+            onChange={(e) => setCustomerNameSearch(e.target.value)}
+            className="w-full p-2 border rounded"
           />
           <input
-            type="date"
-            placeholder="Đến ngày"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="px-3 py-2 border rounded-md w-full md:w-1/4"
+            type="text"
+            placeholder="SĐT"
+            value={customerPhoneSearch}
+            onChange={(e) => setCustomerPhoneSearch(e.target.value)}
+            className="w-full p-2 border rounded"
           />
           <input
-            type="number"
-            placeholder="Giá tối thiểu"
-            value={minPrice}
-            onChange={(e) => setMinPrice(e.target.value)}
-            className="px-3 py-2 border rounded-md w-full md:w-1/5"
+            type="text"
+            placeholder="Email"
+            value={customerEmailSearch}
+            onChange={(e) => setCustomerEmailSearch(e.target.value)}
+            className="w-full p-2 border rounded"
           />
-          <input
-            type="number"
-            placeholder="Giá tối đa"
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(e.target.value)}
-            className="px-3 py-2 border rounded-md w-full md:w-1/5"
-          />
+        </div>
+        <div className="space-y-2">
+          {filteredCustomers.length > 0 ? (
+            filteredCustomers.map((cust) => (
+              <div
+                key={cust.customerId}
+                onClick={() => handleCustomerClick(cust)}
+                className={`p-4 border rounded cursor-pointer flex flex-row items-center justify-between ${
+                  selectedCustomer &&
+                  selectedCustomer.customerId === cust.customerId
+                    ? "bg-blue-200"
+                    : "bg-white"
+                }`}
+              >
+                <div>
+                  <p className="font-bold">Mã: {cust.customerId}</p>
+                  <p>
+                    Tên: {cust.firstName} {cust.lastName}
+                  </p>
+                </div>
+                <div className="text-sm">
+                  <p>SĐT: {cust.phoneNumber}</p>
+                  <p>Email: {cust.email}</p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>Không có khách hàng phù hợp</p>
+          )}
         </div>
       </div>
 
-      {/* Các nút filter trạng thái */}
-      <div className="flex space-x-4 mb-6">
-        {statusFilters.map((filter) => (
-          <button
-            key={filter.key}
-            onClick={() => {
-              console.log("Đã chọn filter:", filter.key);
-              setSelectedStatus(filter.key);
-            }}
-            className={`px-4 py-2 rounded text-white ${filter.style} ${
-              selectedStatus === filter.key
-                ? "ring-4 ring-offset-2 ring-gray-300"
-                : ""
-            }`}
-          >
-            {filter.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Danh sách booking */}
-      {filteredBookings.length > 0 ? (
-        <div className="flex space-x-4 overflow-x-auto">
-          {filteredBookings.map((booking) => renderBookingCard(booking))}
-        </div>
-      ) : (
-        <p>Không có đặt lịch nào phù hợp với tiêu chí tìm kiếm</p>
-      )}
-
-      {/* Modal chi tiết booking */}
-      {modalVisible && selectedBooking && (
-        <div
-          className="fixed inset-0 bg-opacity-60 flex items-center justify-center backdrop-blur-md z-50"
-          onClick={closeModal} // Bấm ngoài modal để đóng
-        >
-          <div
-            className="bg-white rounded-lg p-8 shadow-2xl max-w-2xl w-full relative max-h-[80vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()} // Ngăn không cho bấm vào trong modal đóng modal
-          >
-            <button
-              onClick={closeModal}
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl font-bold"
-            >
-              &times;
-            </button>
-            <h3 className="text-2xl font-bold mb-4">
-              Chi tiết đặt lịch: {selectedBooking.bookingId}
-            </h3>
-            <p className="mb-2">
-              Ngày đặt:{" "}
-              {format(new Date(selectedBooking.bookingDate), "dd/MM/yyyy")}
-            </p>
-            <p className="mb-4">
-              Tổng tiền: {selectedBooking.totalAmount.toLocaleString()} VNĐ
-            </p>
-            <div>
-              <h4 className="text-xl font-semibold mb-3">
-                Chi tiết vaccine & trẻ em:
-              </h4>
-              {bookingDetails.length > 0 ? (
-                <>
-                  {(isExpanded
-                    ? bookingDetails
-                    : bookingDetails.slice(0, 3)
-                  ).map((detail) => (
-                    <div
-                      key={detail.bookingDetailId}
-                      className="mb-6 p-4 border rounded-lg shadow-sm"
-                    >
-                      <p className="text-2xl font-extrabold mb-2">
-                        {detail.child.firstName} {detail.child.lastName}
-                      </p>
-                      <p>
-                        <strong>Vaccine:</strong> {detail.vaccine.name}
-                      </p>
-                      <p>
-                        <strong>Ngày dự kiến tiêm:</strong>{" "}
-                        {format(new Date(detail.scheduledDate), "dd/MM/yyyy")}
-                      </p>
-                      <p>
-                        <strong>Ngày tiêm:</strong>{" "}
-                        {detail.administeredDate
-                          ? format(
-                              new Date(detail.administeredDate),
-                              "dd/MM/yyyy"
-                            )
-                          : "Chưa tiêm"}
-                      </p>
-                      {detail.feedback && (
-                        <p className="mt-2 text-sm italic">
-                          Feedback: {detail.feedback}
-                        </p>
-                      )}
-                      {selectedStatus === "daHoanThanh" &&
-                        !detail.administeredDate && (
-                          <button
-                            onClick={() =>
-                              handleConfirmDetail(detail.bookingDetailId)
-                            }
-                            className="mt-2 px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded"
-                          >
-                            Xác nhận
-                          </button>
-                        )}
-                    </div>
-                  ))}
-                  {/* Nếu có hơn 3 chi tiết và chưa mở rộng thì hiển thị nút "Xem thêm" */}
-                  {!isExpanded && bookingDetails.length > 3 && (
-                    <div className="text-center">
-                      <button
-                        onClick={() => setIsExpanded(true)}
-                        className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
-                      >
-                        Xem thêm
-                      </button>
-                    </div>
-                  )}
-                </>
+      {/* Bên phải: Danh sách booking của khách hàng được chọn */}
+      <div className="w-2/3 border p-4 rounded">
+        {selectedCustomer ? (
+          <>
+            <h2 className="text-2xl font-bold mb-4">
+              Booking của khách hàng: {selectedCustomer.firstName}{" "}
+              {selectedCustomer.lastName}
+            </h2>
+            {/* Thanh tìm kiếm booking */}
+            <div className="mb-4 space-y-2">
+              <input
+                type="text"
+                placeholder="Mã booking"
+                value={bookingIdSearch}
+                onChange={(e) => setBookingIdSearch(e.target.value)}
+                className="w-full p-2 border rounded"
+              />
+              <input
+                type="date"
+                placeholder="Ngày đặt"
+                value={bookingDateSearch}
+                onChange={(e) => setBookingDateSearch(e.target.value)}
+                className="w-full p-2 border rounded"
+              />
+              <input
+                type="text"
+                placeholder="Tên đứa trẻ"
+                value={childNameSearch}
+                onChange={(e) => setChildNameSearch(e.target.value)}
+                className="w-full p-2 border rounded"
+              />
+              <input
+                type="date"
+                placeholder="Ngày dự kiến tiêm"
+                value={scheduledDateSearch}
+                onChange={(e) => setScheduledDateSearch(e.target.value)}
+                className="w-full p-2 border rounded"
+              />
+              <input
+                type="text"
+                placeholder="Vaccine"
+                value={vaccineSearch}
+                onChange={(e) => setVaccineSearch(e.target.value)}
+                className="w-full p-2 border rounded"
+              />
+            </div>
+            {/* Nút lọc trạng thái */}
+            <div className="flex gap-2 mb-4">
+              <button
+                onClick={() => setSelectedStatus("all")}
+                className={`px-4 py-2 rounded ${
+                  selectedStatus === "all"
+                    ? "bg-gray-700 text-white"
+                    : "bg-gray-300"
+                }`}
+              >
+                Tất cả
+              </button>
+              <button
+                onClick={() => setSelectedStatus("daDat")}
+                className={`px-4 py-2 rounded ${
+                  selectedStatus === "daDat"
+                    ? "bg-blue-700 text-white"
+                    : "bg-blue-300"
+                }`}
+              >
+                Đã Đặt
+              </button>
+              <button
+                onClick={() => setSelectedStatus("daHoanThanh")}
+                className={`px-4 py-2 rounded ${
+                  selectedStatus === "daHoanThanh"
+                    ? "bg-green-700 text-white"
+                    : "bg-green-300"
+                }`}
+              >
+                Đã Hoàn Thành
+              </button>
+              <button
+                onClick={() => setSelectedStatus("daHuy")}
+                className={`px-4 py-2 rounded ${
+                  selectedStatus === "daHuy"
+                    ? "bg-red-700 text-white"
+                    : "bg-red-300"
+                }`}
+              >
+                Đã Hủy
+              </button>
+            </div>
+            <div className="space-y-2">
+              {filteredBookings.length > 0 ? (
+                filteredBookings.map((booking) => (
+                  <div
+                    key={booking.bookingId}
+                    onClick={() => handleBookingClick(booking)}
+                    className="p-4 border rounded cursor-pointer flex flex-row items-center justify-between hover:shadow-lg transition-transform duration-300"
+                  >
+                    <p className="font-bold">Mã: {booking.bookingId}</p>
+                    <p>
+                      Ngày đặt:{" "}
+                      {format(new Date(booking.bookingDate), "dd/MM/yyyy")}
+                    </p>
+                    <p>Tổng: {booking.totalAmount.toLocaleString()} VNĐ</p>
+                  </div>
+                ))
               ) : (
-                <p>Không có chi tiết đặt lịch cho booking này.</p>
+                <p>Không có booking nào phù hợp</p>
               )}
             </div>
-          </div>
-        </div>
-      )}
+          </>
+        ) : (
+          <p>Vui lòng chọn khách hàng bên trái để xem danh sách booking.</p>
+        )}
+      </div>
     </div>
   );
 };
