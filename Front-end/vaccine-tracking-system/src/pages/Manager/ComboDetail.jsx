@@ -26,7 +26,7 @@ const useVaccineImage = (vaccineId) => {
 };
 
 // --- Component hiển thị từng vaccine trong ComboDetail (grid chính) ---
-const ComboDetailItem = ({ vaccine }) => {
+const ComboDetailItem = ({ vaccine, onRemove }) => {
   const img = useVaccineImage(vaccine.vaccineId);
   return (
     <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-md overflow-hidden transition-all hover:scale-105 hover:shadow-xl border border-gray-100 flex flex-col h-full">
@@ -65,6 +65,16 @@ const ComboDetailItem = ({ vaccine }) => {
             </span>
           </p>
         </div>
+        {/* Nút Loại Khỏi Combo */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove(vaccine.vaccineId);
+          }}
+          className="mt-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition-all"
+        >
+          Loại Khỏi Combo
+        </button>
       </div>
     </div>
   );
@@ -177,6 +187,22 @@ const ComboDetail = () => {
     }
   };
 
+  // Hàm xoá vaccine khỏi combo
+  const handleRemoveFromCombo = async (vaccineId) => {
+    try {
+      await axios.delete(
+        `http://localhost:8080/combodetail/deletevaccine?id=${vaccineId}`,
+        { withCredentials: true }
+      );
+      // Cập nhật lại state để loại bỏ vaccine vừa xoá
+      setComboDetails((prevDetails) =>
+        prevDetails.filter((item) => item.vaccine.vaccineId !== vaccineId)
+      );
+    } catch (err) {
+      console.error("Error removing vaccine from combo:", err);
+    }
+  };
+
   // Khi mở modal, lấy danh sách vaccine hiện có từ API
   useEffect(() => {
     if (showAddModal) {
@@ -268,7 +294,11 @@ const ComboDetail = () => {
           <AddVaccineCard onOpenModal={() => setShowAddModal(true)} />
           {/* Danh sách vaccine trong combo */}
           {comboDetails.map((item) => (
-            <ComboDetailItem key={item.comboDetailId} vaccine={item.vaccine} />
+            <ComboDetailItem
+              key={item.comboDetailId}
+              vaccine={item.vaccine}
+              onRemove={handleRemoveFromCombo}
+            />
           ))}
         </div>
       </div>
