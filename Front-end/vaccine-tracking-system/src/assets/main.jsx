@@ -52,17 +52,18 @@ import ErrorBoundary from "../components/common/ErrorBoundary.jsx";
 import DetailVaccine2 from "../pages/Vaccination/DetailVaccine2.jsx";
 import ReactVaccine2 from "../pages/Vaccination/ReactVaccine2.jsx";
 import Feedback from "../pages/Feedback/Feedback.jsx";
-import PriceVaccine from "../components/homepage/PriceVaccine.jsx";
+
 import BookVaccine from "../pages/Vaccination/BookVaccine.jsx";
 import Header from "../components/common/Header.jsx";
 import Footer from "../components/common/Footer.jsx";
 import { AuthProvider } from "../components/common/AuthContext.jsx";
-import PaymentProcessPage from "../pages/Payment/PaymentVNPay.jsx";
-import PaymentPay from "../pages/Payment/PaymentVNPay.jsx";
+
 import VNPAY from "../pages/Payment/VNPAY.jsx";
-import PaymentVnpay2 from "../pages/Payment/PaymentVNPay2.jsx";
+
 import CancelPayment from "../pages/Payment/CancelPayment.jsx";
-// import LichTiemChung from "../components/homepage/PriceTest.jsx";
+
+import PaymentVnpay from "../pages/Payment/PaymentVNPay2.jsx";
+import PriceVaccine2 from "../components/homepage/PriceVaccine.jsx";
 
 const Main = () => {
   return (
@@ -102,12 +103,13 @@ const Main = () => {
               {/* Các route mới từ main */}
               <Route path="/cart" element={<Cart />} />
               <Route path="/feedback" element={<Feedback />} />
-              <Route path="/price-vaccine" element={<PriceVaccine />} />
+
+              <Route path="/price-vaccine2" element={<PriceVaccine2 />} />
               <Route path="/header" element={<Header />} />
               <Route path="/footer" element={<Footer />} />
               <Route path="/auth" element={<AuthProvider />} />
-              <Route path="/paymentVnpay" element={<PaymentPay />} />
-              <Route path="/paymentVnpay2" element={<PaymentVnpay2 />} />
+
+              <Route path="/paymentVnpay" element={<PaymentVnpay />} />
               <Route path="/vnpay" element={<VNPAY />} />
               <Route path="/payment-return" element={<CancelPayment />} />
               {/* <Route path="/lichtiem" element={<LichTiemChung />} /> */}

@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../components/common/AuthContext";
 import { getMarketing, getPaymentByBookingID } from "../../apis/api";
 
-const PaymentVnpay2 = () => {
+const PaymentVnpay = () => {
   const [paymentMethod, setPaymentMethod] = useState("direct");
   const [couponCode, setCouponCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +33,7 @@ const PaymentVnpay2 = () => {
   }
   console.log("usurinfo: ", userInfo);
   const bookingDataFromStorage = getBookingData();
-  console.log("Dữ liệu lấy từ localStorage:", bookingDataFromStorage.bookingId);
+  console.log("Dữ liệu lấy từ localStorage:", bookingDataFromStorage);
 
   const bookingDetails = {
     customerName: localStorage.getItem("userName"),
@@ -153,7 +153,6 @@ const PaymentVnpay2 = () => {
       // Nếu tìm thấy coupon, áp dụng discount
       setDiscount(foundCoupon.discount);
       console.log("foundcounpon: ", foundCoupon.discount);
-      alert(`Mã giảm giá hợp lệ! Bạn được giảm ${foundCoupon.discount}%`);
       setCoupon(foundCoupon.coupon);
     } else {
       // Nếu không tìm thấy coupon hợp lệ
@@ -163,7 +162,6 @@ const PaymentVnpay2 = () => {
     setTimeout(() => {
       if (couponCode === foundCoupon.coupon) {
         setDiscount(foundCoupon.discount);
-        alert("Mã giảm giá hợp lệ! Bạn được giảm 10%");
       } else {
         setDiscount(0);
         alert("Mã giảm giá không hợp lệ!");
@@ -221,7 +219,8 @@ const PaymentVnpay2 = () => {
           });
 
           // Navigate to /customer
-          navigate("/customer/payment");
+
+          window.location.href = "/customer/payment";
         } else {
           toast.update(loadingToast, {
             render: data.message || "Đặt lịch thất bại. Vui lòng thử lại.",
@@ -392,4 +391,4 @@ const PaymentVnpay2 = () => {
   );
 };
 
-export default PaymentVnpay2;
+export default PaymentVnpay;

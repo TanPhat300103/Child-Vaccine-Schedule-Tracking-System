@@ -5,11 +5,10 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
-  const [isLoading, setIsLoading] = useState(true); // Thêm trạng thái loading
+  const [isLoading, setIsLoading] = useState(true);
 
-  console.log("unser info la ", userInfo);
   const checkLoginStatus = async () => {
-    setIsLoading(true); // Bắt đầu kiểm tra
+    setIsLoading(true);
     try {
       const response = await fetch("http://localhost:8080/auth/myprofile", {
         method: "GET",
@@ -30,15 +29,21 @@ export function AuthProvider({ children }) {
       setIsLoggedIn(false);
       setUserInfo(null);
     } finally {
-      setIsLoading(false); // Kết thúc kiểm tra
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    checkLoginStatus();
+    const fetchData = async () => {
+      await checkLoginStatus();
+    };
+    fetchData();
   }, []);
 
-  // Hàm logout để đồng bộ với Header
+  const login = async () => {
+    await checkLoginStatus();
+  };
+
   const logout = async () => {
     try {
       const response = await fetch("http://localhost:8080/logout", {
@@ -49,11 +54,17 @@ export function AuthProvider({ children }) {
         setIsLoggedIn(false);
         setUserInfo(null);
         console.log("AuthContext - Logged out");
+      } else {
+        console.log("AuthContext - Logout failed:", response.status);
       }
     } catch (err) {
       console.error("AuthContext - Logout error:", err);
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <AuthContext.Provider
@@ -63,6 +74,7 @@ export function AuthProvider({ children }) {
         userInfo,
         setUserInfo,
         checkLoginStatus,
+        login,
         logout,
         isLoading,
       }}

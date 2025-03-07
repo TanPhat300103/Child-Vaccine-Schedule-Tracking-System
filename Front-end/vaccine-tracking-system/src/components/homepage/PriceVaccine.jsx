@@ -1,19 +1,48 @@
-import Modal from "react-modal";
 import React, { useState, useEffect } from "react";
-import { useCart } from "../homepage/AddCart";
+import { useCart } from "./AddCart";
 import { getVaccineDetailByVaccineId, getVaccines } from "../../apis/api";
-import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
+import { FiFilter, FiSearch } from "react-icons/fi";
 import {
-  FaSyringe,
+  FaDollarSign,
   FaFlask,
   FaGlobe,
+  FaSyringe,
   FaUserClock,
-  FaDollarSign,
 } from "react-icons/fa";
+import Modal from "react-modal"; // Ensure Modal is imported
+import { Slider } from "@mui/material";
+import { styled } from "@mui/system";
+import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
+
+const CustomSlider = styled(Slider)(`
+  color: #1E90FF;
+  height: 8px;
+  .MuiSlider-thumb {
+    height: 24px;
+    width: 24px;
+    background-color: #fff;
+    border: 2px solid #1E90FF;
+    &:focus, &:hover, &.Mui-active, &.Mui-focusVisible {
+      boxShadow: inherit;
+    }
+  }
+`);
 
 const PriceVaccine = () => {
   const [pricePackages, setPricePackages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(1000000);
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedVaccine, setSelectedVaccine] = useState(null);
+  const [priceRange, setPriceRange] = useState([0, 3000000]);
+  const [selectedPackage, setSelectedPackage] = useState([]);
+  const { addToCart, removeFromCart } = useCart();
+  const [selectedAgeRange, setSelectedAgeRange] = useState("");
+
   const [vaccineData, setVaccineData] = useState({
     id: 6,
     vaccine: {
@@ -35,32 +64,26 @@ const PriceVaccine = () => {
     tolerance: 5,
     day: 30,
   });
-
-  const [selectedPackage, setSelectedPackage] = useState([]);
-  const { addToCart } = useCart();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(1000000);
-  const [selectedCountry, setSelectedCountry] = useState("");
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectedVaccine, setSelectedVaccine] = useState(null);
-
-  // filter vaccine name
-  const filteredVaccines = pricePackages.filter(
-    (vaccine) =>
-      vaccine.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      vaccine.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  // filter vaccine price and country
-  const filteredVaccinesByPriceAndCountry = filteredVaccines.filter(
-    (vaccine) =>
-      vaccine.price >= minPrice &&
-      vaccine.price <= maxPrice &&
-      (selectedCountry ? vaccine.country === selectedCountry : true)
-  );
-
-  // take api vaccineDetail
+  // handle slider value change for price range
+  const handlePriceChange = (event, newValue) => {
+    setPriceRange(newValue);
+    setMinPrice(newValue[0]);
+    setMaxPrice(newValue[1]);
+  };
+  const CustomSlider = styled(Slider)(`
+  color: #1E90FF;
+  height: 8px;
+  .MuiSlider-thumb {
+    height: 24px;
+    width: 24px;
+    background-color: #fff;
+    border: 2px solid #1E90FF;
+    &:focus, &:hover, &.Mui-active, &.Mui-focusVisible {
+      boxShadow: inherit;
+    }
+  }
+`);
+  // Fetch vaccine details when a vaccine is selected
   useEffect(() => {
     if (!selectedVaccine?.vaccineId) return;
 
@@ -84,317 +107,346 @@ const PriceVaccine = () => {
     fetchVaccineData();
   }, [selectedVaccine]);
 
-  // take api vaccines
+  // Fetch list of vaccines on load
   useEffect(() => {
-    const fetchPriceData = async () => {
+    const fetchVaccineData = async () => {
       try {
+        setLoading(true);
         const data = await getVaccines();
         setPricePackages(data);
-        setSelectedPackage(data);
       } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu bảng giá vắc xin:", error.message);
+        console.error("Error fetching vaccine price data:", error);
+      } finally {
+        setLoading(false);
       }
     };
-
-    fetchPriceData();
+    fetchVaccineData();
   }, []);
 
-  // modal
-  const openModal = (vaccine) => {
-    setSelectedVaccine(vaccine);
-    setModalIsOpen(true);
-  };
+  // Filter vaccines by name, description, price, and country
+  const filteredVaccines = pricePackages.filter(
+    (vaccine) =>
+      vaccine.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      vaccine.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
+  const filteredVaccinesByPriceAndAge = filteredVaccines.filter((vaccine) => {
+    let isPriceValid = vaccine.price >= minPrice && vaccine.price <= maxPrice;
+    let isAgeValid = true;
+
+    // Lọc theo độ tuổi nếu có lựa chọn
+    if (selectedAgeRange) {
+      const [minAge, maxAge] = selectedAgeRange.split("-").map(Number);
+      isAgeValid = vaccine.ageMin >= minAge && vaccine.ageMax <= maxAge;
+    }
+
+    // Lọc theo quốc gia nếu có lựa chọn
+    let isCountryValid = true;
+    if (selectedCountry) {
+      isCountryValid = vaccine.country === selectedCountry;
+    }
+
+    return isPriceValid && isAgeValid && isCountryValid;
+  });
+
+  // Open modal for vaccine details
+
+  // Close modal
   const closeModal = () => {
     setModalIsOpen(false);
     setSelectedVaccine(null);
   };
 
+  // Handle selecting vaccine and adding it to cart
+  const handleSelectVaccine = (e, vaccine) => {
+    // Ngừng sự kiện mặc định khi click vào button chọn
+    e.stopPropagation();
+
+    // Kiểm tra vaccine có trong selectedPackage không
+    if (selectedPackage.includes(vaccine.vaccineId)) {
+      console.log("removed: ");
+      // Nếu có, bỏ vaccine đó ra khỏi danh sách và xóa khỏi giỏ hàng
+      setSelectedPackage((prev) =>
+        prev.filter((id) => id !== vaccine.vaccineId)
+      );
+      removeFromCart(vaccine.vaccineId); // Gọi hàm để bỏ vaccine khỏi giỏ hàng
+    } else {
+      console.log("added");
+      // Nếu không có, thêm vaccine vào danh sách và thêm vào giỏ hàng
+      setSelectedPackage((prev) => [...prev, vaccine.vaccineId]);
+      addToCart(vaccine); // Thêm vaccine vào giỏ hàng
+    }
+  };
+
+  // Mở modal chỉ khi click vào vaccine
+  const openModal = (vaccine) => {
+    setSelectedVaccine(vaccine);
+    setModalIsOpen(true);
+  };
+
   return (
-    <div className="min-h-screen bg-[#F0F4F8] p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Phần nhập giá và tìm kiếm */}
-        <div className="relative mb-4">
-          <input
-            type="text"
-            className="w-full p-4 pl-10 pr-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 shadow-md transition duration-300 ease-in-out"
-            placeholder="🔍 Tìm kiếm vắc xin theo tên hoặc mô tả"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <div className="absolute left-3 top-3 text-gray-500">
-            <i className="fas fa-search"></i>
-          </div>
-          <div className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500">
-            <i className="fas fa-microphone"></i>
-          </div>
-        </div>
+    <div className="min-h-screen bg-gray-50 p-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-col md:flex-row gap-6">
+          <button
+            className="md:hidden flex items-center justify-center w-full bg-blue-600 text-white p-3 rounded-lg"
+            onClick={() => setIsMobileFilterOpen(!isMobileFilterOpen)}
+          >
+            <FiFilter className="mr-2" />
+            Bộ lọc
+          </button>
 
-        {/* Phần bảng giá vắc xin */}
-        <div className="bg-white p-6 rounded-lg shadow-xl border border-gray-200 max-w-4xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-            <div className="relative">
-              <label className="text-gray-700 font-semibold">
-                Giá tối thiểu:
-              </label>
-              <input
-                type="number"
-                className="w-full p-4 pl-12 pr-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300"
-                placeholder="Giá tối thiểu"
-                value={minPrice}
-                onChange={(e) => {
-                  // Chỉ cập nhật giá trị nếu giá trị đó không âm
-                  const newValue =
-                    Math.floor(Number(e.target.value) / 100000) * 100000;
-                  setMinPrice(newValue >= 0 ? newValue : 0); // Nếu giá trị âm, gán về 0
-                }}
-                step="100000"
-              />
-              <div className="absolute left-4 top-4 text-gray-500">
-                <i className="fas fa-dollar-sign"></i>
+          <div
+            className={`w-full md:w-64 ${
+              isMobileFilterOpen ? "block" : "hidden md:block"
+            }`}
+          >
+            <div className="bg-white p-4 rounded-lg shadow">
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold mb-3">Khoảng giá</h3>
+                <CustomSlider
+                  value={priceRange}
+                  onChange={handlePriceChange}
+                  valueLabelDisplay="auto"
+                  min={0}
+                  max={3000000}
+                  valueLabelFormat={(value) => `${value.toLocaleString()} VND`}
+                />
+                <div className="flex justify-between mt-2 text-sm text-gray-600">
+                  <span>{priceRange[0].toLocaleString()} VND</span>
+                  <span>{priceRange[1].toLocaleString()} VND</span>
+                </div>
               </div>
-            </div>
-
-            <div className="relative">
-              <label className="text-gray-700 font-semibold">Giá tối đa:</label>
-              <input
-                type="number"
-                className="w-full p-4 pl-12 pr-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300"
-                placeholder="Giá tối đa"
-                value={maxPrice}
-                onChange={(e) => {
-                  // Chỉ cập nhật giá trị nếu giá trị đó không âm
-                  const newValue =
-                    Math.floor(Number(e.target.value) / 100000) * 100000;
-                  setMaxPrice(newValue >= 0 ? newValue : 0); // Nếu giá trị âm, gán về 0
-                }}
-                step="100000"
-              />
-              <div className="absolute left-4 top-4 text-gray-500">
-                <i className="fas fa-dollar-sign"></i>
+              {/* Lọc theo độ tuổi */}
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold mb-3">
+                  Độ tuổi khuyến nghị
+                </h3>
+                <select
+                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  value={selectedAgeRange}
+                  onChange={(e) => setSelectedAgeRange(e.target.value)}
+                >
+                  <option value="">Tất cả độ tuổi</option>
+                  <option value="0-2">0 - 2 tuổi</option>
+                  <option value="2-9">2 - 9 tuổi</option>
+                  <option value="9-18">9 - 18 tuổi</option>
+                </select>
               </div>
-            </div>
-          </div>
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold mb-3">Quốc gia</h3>
+                <select
+                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  value={selectedCountry}
+                  onChange={(e) => setSelectedCountry(e.target.value)}
+                >
+                  <option value="">Tất cả quốc gia</option>
+                  <option value="USA">USA</option>
+                  <option value="Vietnam">Vietnam</option>
+                  <option value="France">France</option>
+                  <option value="Germany">Germany</option>
+                  <option value="Japan">Japan</option>
+                  <option value="UK">UK</option>
 
-          {/* Phần chọn quốc gia */}
-          <div className="mb-6">
-            <label className="text-gray-700 font-semibold">
-              Chọn quốc gia:
-            </label>
-            <div className="relative">
-              <select
-                className="w-full p-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                value={selectedCountry}
-                onChange={(e) => setSelectedCountry(e.target.value)}
-              >
-                <option value="">Chọn quốc gia</option>
-                <option value="USA">USA</option>
-                <option value="Vietnam">Vietnam</option>
-                <option value="Japan">Japan</option>
-                <option value="Germany">Germany</option>
-                <option value="UK">UK</option>
-                <option value="France">France</option>
-              </select>
-              <div className="absolute right-4 top-4 text-gray-500">
-                <i className="fas fa-globe"></i>
+                  {/* Thêm các quốc gia khác ở đây */}
+                </select>
               </div>
             </div>
           </div>
-        </div>
 
-        <h1 className="text-[#1A365D] text-3xl md:text-4xl font-bold mb-8 text-center">
-          Bảng Giá Vắc Xin
-        </h1>
-
-        <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-1">
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
-            <div
-              onClick={() => setSelectedPackage(pricePackages)}
-              className="cursor-pointer bg-[#2C5DA3] text-white p-6 flex items-center justify-between"
-            >
-              <div className="flex items-center space-x-4">
-                <FaSyringe className="text-3xl" />
-                <h2 className="text-xl font-semibold">Tất cả vắc xin</h2>
+          <div className="flex-1">
+            <div className="mb-6 flex flex-col sm:flex-row gap-4">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm vắc xin..."
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               </div>
-              {selectedPackage === pricePackages ? (
-                <IoMdArrowDropup className="text-2xl" />
-              ) : (
-                <IoMdArrowDropdown className="text-2xl" />
-              )}
             </div>
 
-            {selectedPackage === pricePackages && (
-              <div className="p-6">
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-gray-200">
-                        <th className="text-left py-3 px-4 text-[#1A365D]">
-                          Tên
-                        </th>
-                        <th className="text-left py-3 px-4 text-[#1A365D]">
-                          Phòng bệnh
-                        </th>
-                        <th className="text-left py-3 px-4 text-[#1A365D]">
-                          Nước sản xuất
-                        </th>
-                        <th className="text-left py-3 px-4 text-[#1A365D]">
-                          Số mũi
-                        </th>
-                        <th className="text-left py-3 px-4 text-[#1A365D]">
-                          Giá
-                        </th>
-                        <th className="text-left py-3 px-4 text-[#1A365D]">
-                          Action
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredVaccinesByPriceAndCountry.length === 0 ? (
-                        <tr>
-                          <td
-                            colSpan="6"
-                            className="text-center py-4 text-gray-500"
-                          >
-                            Không có dữ liệu bảng giá vắc xin.
-                          </td>
-                        </tr>
-                      ) : (
-                        filteredVaccinesByPriceAndCountry.map((vaccine) => (
-                          <tr
-                            key={vaccine.vaccineId}
-                            className="border-b border-gray-100 hover:bg-gray-50"
-                          >
-                            <td
-                              className="py-4 px-4 cursor-pointer"
-                              onClick={() => openModal(vaccine)}
-                            >
-                              {vaccine.name}
-                            </td>
-                            <td className="py-4 px-4">{vaccine.description}</td>
-                            <td className="py-4 px-4">{vaccine.country}</td>
-                            <td className="py-4 px-4">{vaccine.doseNumber}</td>
-                            <td className="py-4 px-4">{vaccine.price}</td>
-                            <td className="py-4 px-4">
-                              <button
-                                onClick={() => addToCart(vaccine)}
-                                className={`px-4 py-2 rounded-lg transition-colors ${
-                                  selectedPackage.includes(vaccine.id)
-                                    ? "bg-[#5D90D4] text-white"
-                                    : "bg-gray-100 text-[#1A365D] hover:bg-[#2C5DA3] hover:text-white"
-                                }`}
-                              >
-                                {selectedPackage.includes(vaccine.id)
-                                  ? "Selected"
-                                  : "Select"}
-                              </button>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
+            {loading ? (
+              <div className="text-center text-xl text-gray-500">
+                Loading...
+              </div>
+            ) : (
+              <div className="grid gap-6">
+                <div className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
+                  <div className="grid gap-6">
+                    <div className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
+                      <div className="p-6">
+                        <div className="overflow-x-auto">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {filteredVaccinesByPriceAndAge.length === 0 ? (
+                              <div>No vaccines available</div>
+                            ) : (
+                              filteredVaccinesByPriceAndAge.map((vaccine) => (
+                                <div
+                                  key={vaccine.vaccineId}
+                                  className="border-b border-gray-100 hover:bg-gray-50"
+                                  onClick={() => openModal(vaccine)} // Chỉ mở modal khi click vào vaccine
+                                >
+                                  <div className="py-4 px-4 cursor-pointer">
+                                    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                                      <div className="p-4">
+                                        <div className="flex items-center justify-between mb-2">
+                                          <h3 className="text-lg font-semibold text-blue-900">
+                                            {vaccine.name}
+                                          </h3>
+                                        </div>
+                                        <p className="text-gray-600 text-sm mb-4">
+                                          {vaccine.description}
+                                        </p>
+                                        <div className="flex items-center justify-between text-sm">
+                                          <span className="font-medium text-blue-600">
+                                            {vaccine.price.toLocaleString()} VND
+                                          </span>
+                                        </div>
+                                        <div className="mt-4">
+                                          <img
+                                            src={
+                                              "https://news.asu.edu/sites/default/files/35327061344_d199614bd8_k.jpg"
+                                            } // Đảm bảo có ảnh cho mỗi vaccine
+                                            alt={vaccine.name}
+                                            className="w-92 h-52 object-cover rounded-lg" // Thay đổi kích thước ở đây
+                                          />
+                                        </div>
+                                      </div>
+
+                                      {/* Nút chọn ở phía bên phải */}
+                                      <div className="flex justify-end mt-4">
+                                        <button
+                                          onClick={(e) =>
+                                            handleSelectVaccine(e, vaccine)
+                                          }
+                                          className={`px-6 py-2 rounded-lg border-2 transition-colors duration-300 ${
+                                            selectedPackage.includes(
+                                              vaccine.vaccineId
+                                            )
+                                              ? "bg-[#5D90D4] text-white border-[#5D90D4]"
+                                              : "bg-gray-100 text-[#1A365D] hover:bg-[#2C5DA3] hover:text-white border-gray-300 hover:border-[#2C5DA3]"
+                                          }`}
+                                        >
+                                          {selectedPackage.includes(
+                                            vaccine.vaccineId
+                                          )
+                                            ? "Đã chọn"
+                                            : "Chọn"}
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
           </div>
         </div>
+      </div>
 
-        {/* Modal hiển thị chi tiết vắc xin */}
+      {modalIsOpen && selectedVaccine && (
         <Modal
           isOpen={modalIsOpen}
           onRequestClose={closeModal}
           contentLabel="Thông tin chi tiết vắc xin"
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
-          overlayClassName="fixed inset-0 bg-black bg-opacity-30"
+          className="fixed inset-0 flex items-center justify-center bg-transparent"
+          overlayClassName="fixed inset-0 bg-black bg-opacity-40"
           ariaHideApp={false}
         >
-          <div className="bg-white p-6 rounded-lg w-96">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-96 max-w-xl">
             {selectedVaccine ? (
               <>
-                <div className="flex items-center justify-between mb-8">
-                  <h1 className="text-3xl font-bold text-[#333333] flex items-center gap-3">
+                <div className="flex items-center justify-between mb-6">
+                  <h1 className="text-3xl font-semibold text-[#333333] flex items-center gap-3">
                     <FaSyringe className="text-[#4A90E2]" />
                     {vaccineData?.vaccine.name || "Vaccine Detail"}
                   </h1>
                 </div>
 
-                <h2 className="text-xl font-semibold mb-4 text-[#333333]">
+                {/* Thêm ảnh vaccine trong modal */}
+                <div className="mb-4">
+                  <img
+                    src={
+                      "https://news.asu.edu/sites/default/files/35327061344_d199614bd8_k.jpg"
+                    } // Đảm bảo có ảnh vaccine
+                    alt={vaccineData?.vaccine.name}
+                    className="w-full h-60 object-cover rounded-lg"
+                  />
+                </div>
+
+                <h2 className="text-xl font-semibold mb-6 text-[#333333]">
                   Thông tin chi tiết
                 </h2>
 
-                <div className="space-y-4">
-                  <div className="flex items-center gap-4">
-                    <span className="text-[#4A90E2] text-xl">
-                      <FaSyringe />
-                    </span>
-                    <span className="text-[#333333] min-w-[150px]">
-                      Số liều:
-                    </span>
-                    <span className="text-[#333333] font-medium">
-                      {vaccineData?.vaccine.doseNumber || "n"}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <span className="text-[#4A90E2] text-xl">
-                      <FaFlask />
-                    </span>
-                    <span className="text-[#333333] min-w-[150px]">Mô tả:</span>
-                    <span className="text-[#333333] font-medium">
-                      {vaccineData?.vaccine.description || "n"}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <span className="text-[#4A90E2] text-xl">
-                      <FaGlobe />
-                    </span>
-                    <span className="text-[#333333] min-w-[150px]">
-                      Quốc gia sản xuất:
-                    </span>
-                    <span className="text-[#333333] font-medium">
-                      {vaccineData?.vaccine.country || "n"}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <span className="text-[#4A90E2] text-xl">
-                      <FaUserClock />
-                    </span>
-                    <span className="text-[#333333] min-w-[150px]">
-                      Độ tuổi khuyến nghị:
-                    </span>
-                    <span className="text-[#333333] font-medium">
-                      {vaccineData?.vaccine.ageMin} -{" "}
-                      {vaccineData?.vaccine.ageMax} tuổi
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <span className="text-[#4A90E2] text-xl">
-                      <FaDollarSign />
-                    </span>
-                    <span className="text-[#333333] min-w-[150px]">
-                      Giá vaccine:
-                    </span>
-                    <span className="text-[#333333] font-medium">
-                      {vaccineData?.vaccine.price || "n"}
-                    </span>
-                  </div>
+                <div className="space-y-6">
+                  {[
+                    {
+                      icon: <FaSyringe />,
+                      label: "Số liều",
+                      value: vaccineData?.vaccine.doseNumber || "n",
+                    },
+                    {
+                      icon: <FaFlask />,
+                      label: "Mô tả",
+                      value: vaccineData?.vaccine.description || "n",
+                    },
+                    {
+                      icon: <FaGlobe />,
+                      label: "Quốc gia sản xuất",
+                      value: vaccineData?.vaccine.country || "n",
+                    },
+                    {
+                      icon: <FaUserClock />,
+                      label: "Độ tuổi khuyến nghị",
+                      value: `${vaccineData?.vaccine.ageMin} - ${vaccineData?.vaccine.ageMax} tuổi`,
+                    },
+                    {
+                      icon: <FaDollarSign />,
+                      label: "Giá vaccine",
+                      value: vaccineData?.vaccine.price || "n",
+                    },
+                  ].map((item, index) => (
+                    <div key={index} className="flex items-center gap-5">
+                      <span className="text-[#4A90E2] text-2xl">
+                        {item.icon}
+                      </span>
+                      <span className="text-[#333333] min-w-[160px]">
+                        {item.label}:
+                      </span>
+                      <span className="text-[#333333] font-medium">
+                        {item.value}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </>
             ) : (
-              <div>Không có thông tin vắc xin</div>
+              <div className="text-center text-[#333333]">
+                Không có thông tin vắc xin
+              </div>
             )}
 
-            <div className="mt-4 flex justify-end">
+            <div className="mt-6 flex justify-end">
               <button
                 onClick={closeModal}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition"
               >
                 Đóng
               </button>
             </div>
           </div>
         </Modal>
-      </div>
+      )}
     </div>
   );
 };

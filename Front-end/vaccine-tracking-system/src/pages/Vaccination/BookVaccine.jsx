@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaTimes, FaUser, FaTransgender, FaCalendarAlt } from "react-icons/fa";
 import { format } from "date-fns";
-import { data, useNavigate } from "react-router-dom";
+import { data, useLocation, useNavigate } from "react-router-dom";
 import {
   getChildByCustomerId,
   getVaccineCombos,
@@ -17,7 +17,7 @@ import { useAuth } from "../../components/common/AuthContext";
 const BookVaccine = () => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedVaccines, setSelectedVaccines] = useState([]);
+
   const [selectedCombos, setSelectedCombos] = useState([]);
   const [selectedChild, setSelectedChild] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -27,6 +27,21 @@ const BookVaccine = () => {
   const [vaccineCombos, setVaccineCombos] = useState([]);
   const navigate = useNavigate();
   const { userInfo } = useAuth();
+  const location = useLocation();
+  const { cartItems } = location.state || {}; // Lấy cart từ state truyền vào
+  // Hiển thị vaccineId
+  const itemsArray = Object.values(cartItems || {});
+  console.log("itemsArray,", itemsArray);
+  const vaccineIds = itemsArray.map((item) => item.vaccineId); // Create an array of vaccineId from cartItems
+  console.log("vaccineIds", vaccineIds);
+  const [selectedVaccines, setSelectedVaccines] = useState(itemsArray || []);
+  console.log("selecttedvaccine: ", selectedVaccines);
+  // Only run when cartItems change
+  useEffect(() => {
+    // This useEffect will be triggered after selectedVaccines state updates
+    console.log("selectedVaccines updated:", selectedVaccines); // Log the updated selectedVaccines
+  }, [selectedVaccines]); // Watch selectedVaccines for changes
+
   // take data
   const userId = localStorage.getItem("userId");
 
@@ -200,6 +215,7 @@ const BookVaccine = () => {
           booking: {
             bookingDate: formData.bookingDate,
             customer: { customerId: userInfo.userId },
+            status: 1,
           },
           vaccineId: selectedVaccines.map((v) => v.vaccineId),
           vaccineComboId: selectedCombos.map((c) => c.vaccineComboId),
@@ -270,7 +286,7 @@ const BookVaccine = () => {
     );
 
     // Kiểm tra nếu vaccine đã có trong combo (isVaccineInCombo)
-    const isVaccineInCombo = dataComboById.includes(vaccine.vaccineId);
+    const isVaccineInCombo = selectedCombos.includes(vaccine.vaccineId);
 
     if (isVaccineInCombo) {
       // Nếu vaccine có trong combo, không cho phép chọn vaccine và hiển thị thông báo lỗi
@@ -303,12 +319,6 @@ const BookVaccine = () => {
   const handleComboSelect = async (combo) => {
     console.log("Selected Comboid:", combo.vaccineComboId);
 
-    // Kiểm tra nếu vaccineComboId có hợp lệ không trước khi gọi API
-    if (!combo.vaccineComboId) {
-      console.error("VaccineComboId is invalid");
-      return;
-    }
-
     // Kiểm tra nếu combo đã có trong selectedCombos
     const existingCombo = selectedCombos.find(
       (c) => c.vaccineComboId === combo.vaccineComboId
@@ -338,41 +348,49 @@ const BookVaccine = () => {
         );
         console.log("API response vaccineiddata:", dataComboId);
 
-        if (dataComboId) {
-          const vaccineIdsInCombo = dataComboId.map(
-            (item) => item.vaccine.vaccineId
+        if (!dataComboId || dataComboId.length === 0) {
+          console.error(
+            "Data for this vaccine combo is not found or is empty."
           );
-
-          // Kiểm tra nếu có vaccineId nào trong vaccineCombo đã có trong vaccineData
-          const isVaccineInVaccineData = vaccineIdsInCombo.some((id) =>
-            vaccineData.some(
-              (vaccineDataItem) => vaccineDataItem.vaccineId === id
-            )
-          );
-
-          if (isVaccineInVaccineData) {
-            toast.error(
-              "Một trong các vaccine trong combo đã có trong vaccineData. Không thể chọn."
-            );
-            return;
-          }
-
-          setDataComboById(vaccineIdsInCombo);
-
-          setSelectedCombos((prev) => [...prev, combo]);
-
-          setFormData((prevData) => ({
-            ...prevData,
-            vaccineComboId: [...prevData.vaccineComboId, combo.vaccineComboId],
-            vaccineId: [...prevData.vaccineId, ...vaccineIdsInCombo],
-          }));
-
-          console.log(`Combo ${combo.vaccineComboId} added to selection.`);
-        } else {
-          console.error("Data for this vaccine combo is not found.");
+          return;
         }
+        console.log("datacomboId: ", dataComboId);
+        const vaccineIdsInCombo = dataComboId.map(
+          (item) => item.vaccine.vaccineId
+        );
+        const vaccineIdsInLe = vaccineData.map((item) => item.vaccineId);
+        console.log("vaccineIdsInLe: ", selectedVaccines);
+        console.log("vaccineIdsInCombo: ", vaccineIdsInCombo);
+        console.log("vaccineData: ", vaccineData.vaccineId);
+        // Kiểm tra nếu có vaccineId nào trong vaccineCombo đã có trong vaccineData
+        const isVaccineInVaccineData = vaccineIdsInCombo.some((id) =>
+          selectedVaccines.some(
+            (vaccineDataItem) => vaccineDataItem.vaccineId === id
+          )
+        );
+
+        if (isVaccineInVaccineData) {
+          toast.error(
+            "Một trong các vaccine trong combo đã có trong vaccineData. Không thể chọn."
+          );
+          return;
+        }
+
+        // Nếu vaccineIdsInCombo hợp lệ, thêm vaccine combo vào selection
+        setDataComboById(vaccineIdsInCombo);
+
+        setSelectedCombos((prev) => [...prev, combo]);
+
+        setFormData((prevData) => ({
+          ...prevData,
+          vaccineComboId: [...prevData.vaccineComboId, combo.vaccineComboId],
+          vaccineId: [...prevData.vaccineId, ...vaccineIdsInCombo],
+        }));
+
+        console.log(`Combo ${combo.vaccineComboId} added to selection.`);
       } catch (error) {
         console.error("Error fetching vaccine combo data:", error);
+        toast.error("Đã xảy ra lỗi khi lấy dữ liệu vaccine combo.");
       }
     }
   };
@@ -494,9 +512,7 @@ const BookVaccine = () => {
                   >
                     <span className="font-medium">{vaccine.name}</span>
                     <div className="flex items-center space-x-3">
-                      <span className="text-green-600">
-                        {vaccine.price.toLocaleString()}đ
-                      </span>
+                      <span className="text-green-600">{vaccine.price}đ</span>
                       <button
                         onClick={() => handleVaccineSelect(vaccine)}
                         className="text-red-500 hover:text-red-700"

@@ -9,12 +9,13 @@ export const CartProvider = ({ children }) => {
     setCart((prevCart) => {
       const updatedCart = { ...prevCart };
 
-      // Check if the vaccine already exists in the cart
+      // Kiểm tra nếu vaccine đã có trong giỏ hàng
       if (updatedCart[vaccine.vaccineId]) {
-        // Add doses only if vaccine is already in the cart
-        updatedCart[vaccine.vaccineId].doseNumber += vaccine.doseNumber;
+        // Nếu có, tăng số lượng (quantity)
+        updatedCart[vaccine.vaccineId].quantity += 1;
       } else {
-        updatedCart[vaccine.vaccineId] = { ...vaccine };
+        // Nếu chưa có, thêm vaccine mới vào giỏ hàng và set số lượng = 1
+        updatedCart[vaccine.vaccineId] = { ...vaccine, quantity: 1 };
       }
 
       return updatedCart;
@@ -24,13 +25,27 @@ export const CartProvider = ({ children }) => {
   const removeFromCart = (vaccineId) => {
     setCart((prevCart) => {
       const updatedCart = { ...prevCart };
-      delete updatedCart[vaccineId]; // Remove the item from the cart
+
+      // Nếu vaccine đã có trong giỏ hàng và số lượng lớn hơn 1, giảm số lượng đi 1
+      if (updatedCart[vaccineId] && updatedCart[vaccineId].quantity > 1) {
+        updatedCart[vaccineId].quantity -= 1;
+      } else {
+        // Nếu số lượng là 1 hoặc không còn vaccine này, xóa khỏi giỏ hàng
+        delete updatedCart[vaccineId];
+      }
+
       return updatedCart;
     });
   };
 
+  const clearCart = () => {
+    setCart({}); // Xóa toàn bộ giỏ hàng
+  };
+
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
+    <CartContext.Provider
+      value={{ cart, addToCart, removeFromCart, clearCart }}
+    >
       {children}
     </CartContext.Provider>
   );

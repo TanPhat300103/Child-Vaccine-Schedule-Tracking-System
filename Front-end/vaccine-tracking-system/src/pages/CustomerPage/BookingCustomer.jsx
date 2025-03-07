@@ -11,7 +11,13 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import isSameDay from "date-fns/isSameDay";
 import { useAuth } from "../../components/common/AuthContext";
-import { FaSyringe, FaCalendarAlt, FaTimes, FaChild, FaMoneyCheckAlt } from "react-icons/fa"; // Thêm icon từ react-icons
+import {
+  FaSyringe,
+  FaCalendarAlt,
+  FaTimes,
+  FaChild,
+  FaMoneyCheckAlt,
+} from "react-icons/fa"; // Thêm icon từ react-icons
 
 const BookingCustomer = () => {
   const [bookings, setBookings] = useState([]);
@@ -46,6 +52,7 @@ const BookingCustomer = () => {
     try {
       const details = await getBookingDetailByBooking(booking.bookingId);
       setBookingDetails(details);
+      console.log("setBookingDetails", bookingDetails);
     } catch (err) {
       setBookingDetails([]);
     }
@@ -79,9 +86,7 @@ const BookingCustomer = () => {
     fetchBookings();
   };
 
-
-  const statusLabels = { 0: "Đã Đặt", 2: "Đã Hoàn Thành", 3: "Đã Huỷ" };
-
+  const statusLabels = { 1: "Đã Đặt", 2: "Đã Hoàn Thành", 3: "Đã Huỷ" };
 
   const renderBookingCard = (booking) => (
     <div
@@ -91,12 +96,16 @@ const BookingCustomer = () => {
     >
       {/* Nền gradient nhẹ */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-green-50 opacity-50"></div>
-      
+
       {/* Icon trạng thái */}
       <div className="absolute top-4 left-4">
         <FaSyringe
           className={`text-2xl ${
-            booking.status === 0 ? "text-blue-500" : booking.status === 2 ? "text-green-500" : "text-red-500"
+            booking.status === 1
+              ? "text-blue-500"
+              : booking.status === 2
+              ? "text-green-500"
+              : "text-red-500"
           } animate-pulse`}
         />
       </div>
@@ -117,10 +126,10 @@ const BookingCustomer = () => {
 
       {/* Nút hành động */}
       <div className="mt-4 flex space-x-3 z-10 relative">
-        {booking.status === 0 && (
+        {booking.status === 1 && (
           <>
             <NavLink
-              to="/paymentVnpay2"
+              to="/paymentVnpay"
               onClick={(e) => {
                 e.stopPropagation();
                 handlePaymentClick(booking);
@@ -139,7 +148,6 @@ const BookingCustomer = () => {
         )}
         {booking.status === 2 && (
           <NavLink
-
             to="/paymentVnpay2"
             state={{
               bookingId: booking.bookingId,
@@ -148,7 +156,6 @@ const BookingCustomer = () => {
             }}
             onClick={() => handlePaymentClick(booking)}
             className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded"
-
           >
             Feedback
           </NavLink>
@@ -175,8 +182,6 @@ const BookingCustomer = () => {
   if (error) return <p className="text-red-600 text-center">{error}</p>;
 
   return (
-
-
     <div className="min-h-screen bg-gray-50 py-10 px-6">
       <div className="max-w-6xl mx-auto">
         {/* Tiêu đề */}
@@ -186,17 +191,21 @@ const BookingCustomer = () => {
 
         {/* Bộ lọc trạng thái */}
         <div className="flex justify-center space-x-4 mb-8">
-          {[0, 2, 3].map((status) => (
+          {[1, 2, 3].map((status) => (
             <button
               key={status}
               onClick={() => handleStatusClick(status)}
               className={`px-6 py-3 rounded-full font-semibold text-white shadow-md hover:shadow-lg transition-all duration-300 ${
-                status === 0
+                status === 1
                   ? "bg-blue-500 hover:bg-blue-600"
                   : status === 2
                   ? "bg-green-500 hover:bg-green-600"
                   : "bg-red-500 hover:bg-red-600"
-              } ${selectedStatus === status ? "ring-4 ring-opacity-50 ring-offset-2 ring-blue-300" : ""}`}
+              } ${
+                selectedStatus === status
+                  ? "ring-4 ring-opacity-50 ring-offset-2 ring-blue-300"
+                  : ""
+              }`}
             >
               {statusLabels[status]}
             </button>
@@ -212,7 +221,6 @@ const BookingCustomer = () => {
 
         {/* Nút mở lịch */}
         <div className="mt-10 text-center">
-
           <button
             onClick={() => setShowCalendarModal(true)}
             className="px-6 py-3 bg-blue-600 text-white rounded-full shadow-md hover:bg-blue-700 transition-all duration-300 flex items-center mx-auto"
@@ -249,15 +257,21 @@ const BookingCustomer = () => {
               >
                 <FaTimes />
               </button>
-              <h3 className="text-2xl font-bold text-blue-700 mb-6">Chi Tiết Đặt Lịch</h3>
+              <h3 className="text-2xl font-bold text-blue-700 mb-6">
+                Chi Tiết Đặt Lịch
+              </h3>
               {selectedBooking && (
                 <div className="space-y-4">
                   <p className="text-gray-800">
-                    <strong className="text-blue-600">Mã đặt lịch:</strong> {selectedBooking.bookingId}
+                    <strong className="text-blue-600">Mã đặt lịch:</strong>{" "}
+                    {selectedBooking.bookingId}
                   </p>
                   <p className="text-gray-800">
                     <strong className="text-blue-600">Ngày đặt:</strong>{" "}
-                    {format(new Date(selectedBooking.bookingDate), "dd/MM/yyyy")}
+                    {format(
+                      new Date(selectedBooking.bookingDate),
+                      "dd/MM/yyyy"
+                    )}
                   </p>
                   <p className="text-gray-800">
                     <strong className="text-blue-600">Tổng tiền:</strong>{" "}
@@ -275,7 +289,8 @@ const BookingCustomer = () => {
                         {detail.child.firstName} {detail.child.lastName}
                       </p>
                       <p className="text-gray-700">
-                        <strong className="text-blue-600">Vaccine:</strong> {detail.vaccine.name}
+                        <strong className="text-blue-600">Vaccine:</strong>{" "}
+                        {detail.vaccine.name}
                       </p>
                       <p className="text-gray-700">
                         <strong className="text-blue-600">Combo:</strong>{" "}
@@ -297,4 +312,4 @@ const BookingCustomer = () => {
   );
 };
 
-export default BookingCustomer; 
+export default BookingCustomer;
