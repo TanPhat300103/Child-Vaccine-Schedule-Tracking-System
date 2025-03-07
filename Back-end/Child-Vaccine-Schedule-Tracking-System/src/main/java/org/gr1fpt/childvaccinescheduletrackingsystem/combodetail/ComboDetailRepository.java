@@ -9,4 +9,5 @@ import java.util.List;
 public interface ComboDetailRepository extends JpaRepository<ComboDetail,String> {
     List<ComboDetail> findByVaccineCombo_VaccineComboId(String vaccineComboId);
     List<ComboDetail> findByVaccine_VaccineId(String vaccineId);
+    void deleteByVaccine_VaccineId(String vaccineId);
 }
