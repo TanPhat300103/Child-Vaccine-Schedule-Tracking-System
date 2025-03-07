@@ -3,15 +3,17 @@ import { useLocation, NavLink } from "react-router-dom";
 import { getBookingByCustomerId, getPaymentByBookingID } from "../../apis/api";
 import { format } from "date-fns";
 import { FaCheckCircle, FaStethoscope, FaMoneyBillWave } from "react-icons/fa"; // Thêm icon từ react-icons
-
+import { useAuth } from "../../components/common/AuthContext.jsx";
 const PaymentCustomer = () => {
   const [selectedPaymentStatus, setSelectedPaymentStatus] = useState(true);
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { userInfo } = useAuth();
+  console.log(userInfo);
 
   const location = useLocation();
-  const customerId = location.state?.customerId;
+  const customerId = location.state?.customerId || userInfo.userId;
 
   const fetchPayments = async () => {
     try {
@@ -101,8 +103,13 @@ const PaymentCustomer = () => {
       <div className="mt-4">
         {payment.status === false ? (
           <NavLink
+
             to="/paymentVnpay"
-            state={{ paymentId: payment.paymentId }}
+            state={{
+              paymentId: payment.paymentId,
+              bookingId: payment.booking.bookingId,
+            }}
+
             className="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200"
           >
             <FaMoneyBillWave className="mr-2" />

@@ -32,7 +32,9 @@ const StaffProfile = ({ initialStaffData }) => {
   const handleSave = async () => {
     try {
       const response = await fetch("http://localhost:8080/staff/update", {
-        method: "PUT",
+        method: "POST",
+        credentials: "include",
+        withCredentials: true,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
@@ -208,28 +210,9 @@ const StaffProfile = ({ initialStaffData }) => {
 
 const Profile = () => {
   const { userInfo } = useAuth();
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
-  const [proFileData, setProFileData] = useState(null);
-  useEffect(() => {
-    // Kiểm tra xem người dùng đã đăng nhập chưa
-    const data = fetch("http://localhost:8080/auth/myprofile", {
-      method: "GET",
-      credentials: "include", // Gửi cookie/session
-    })
-      .then((response) => {
-        if (response.status === 401) {
-          setIsAuthenticated(false);
-        }
-      })
-      .catch((error) => {
-        setIsAuthenticated(false);
-      });
-    setProFileData(data);
-    console.log("my profile data: ", proFileData);
-  }, []);
 
   // take data
-  console.log("user id la: ", userInfo.userId);
+  console.log("user id ldada: ", userInfo.userId);
   const staffId = userInfo.userId;
 
   const [staffData, setStaffData] = useState(null);
@@ -238,11 +221,18 @@ const Profile = () => {
   const [showStaffProfile, setShowStaffProfile] = useState(false);
 
   useEffect(() => {
+    if (!staffId) return; // Chỉ thực hiện khi có staffId
+
     const fetchStaffData = async () => {
       setLoading(true);
+      console.log("staffId: ", staffId);
       try {
         const response = await fetch(
-          `http://localhost:8080/staff/findid?id=${staffId}`
+          `http://localhost:8080/staff/findid?id=${staffId}`,
+          {
+            method: "GET",
+            credentials: "include", // Đảm bảo cookie được gửi đi
+          }
         );
 
         if (!response.ok) {

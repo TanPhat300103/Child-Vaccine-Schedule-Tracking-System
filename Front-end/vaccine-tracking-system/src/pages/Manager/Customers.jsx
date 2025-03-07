@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import {
-  FaUserMd,
+  FaUser,
   FaUserPlus,
   FaSearch,
   FaFilter,
@@ -32,7 +32,6 @@ const Customers = () => {
     address: "",
     banking: "",
     email: "",
-    roleId: 3,
     active: true,
   });
   const [newCustomerError, setNewCustomerError] = useState(null);
@@ -40,7 +39,11 @@ const Customers = () => {
   const [editingPasswordVisible, setEditingPasswordVisible] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:8080/customer")
+    fetch("http://localhost:8080/customer", {
+      method: "GET",
+      credentials: "include",
+      withCredentials: true,
+    })
       .then((response) => response.json())
       .then((data) => {
         console.log("GET API thành công. Dữ liệu khách hàng:", data);
@@ -56,6 +59,8 @@ const Customers = () => {
     console.log("Gửi API cập nhật trạng thái active cho:", customerId);
     fetch(`http://localhost:8080/customer/inactive?id=${customerId}`, {
       method: "POST",
+      credentials: "include",
+      withCredentials: true,
     })
       .then((response) => response.json())
       .then((updatedCustomer) => {
@@ -91,6 +96,8 @@ const Customers = () => {
     console.log("Gửi API cập nhật khách hàng với dữ liệu:", editingCustomer);
     fetch("http://localhost:8080/customer/update", {
       method: "POST",
+      credentials: "include",
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(editingCustomer),
     })
@@ -125,6 +132,8 @@ const Customers = () => {
     console.log("Gửi API tạo khách hàng với dữ liệu:", newCustomer);
     fetch("http://localhost:8080/customer/create", {
       method: "POST",
+      credentials: "include",
+      withCredentials: true,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newCustomer),
     })
@@ -182,32 +191,22 @@ const Customers = () => {
     return matchesSearch && matchesStatus;
   });
 
-  // Hàm chuyển đổi trạng thái bộ lọc
-  const cycleFilterStatus = () => {
-    if (filterStatus === "all") setFilterStatus("active");
-    else if (filterStatus === "active") setFilterStatus("inactive");
-    else if (filterStatus === "inactive") setFilterStatus("all");
-  };
-
   return (
-    <div className="bg-gray-50 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 relative">
       <div className="max-w-7xl mx-auto">
         <header className="text-center mb-12">
           <div className="inline-flex items-center space-x-4">
-            <FaUserMd className="text-5xl text-blue-600" />
-            <h1 className="text-4xl font-light text-gray-800">
-              Quản Lý Khách Hàng
-            </h1>
+            <FaUser className="text-5xl text-blue-600" />
+            <h1 className="text-4xl font-light text-gray-800">Quản Lý Khách Hàng</h1>
           </div>
-          <p className="mt-4 text-gray-500">
-            Tra cứu và quản lý thông tin khách hàng
+          <p className="mt-4 text-gray-500 max-w-2xl mx-auto">
+            Tra cứu, quản lý và theo dõi danh sách khách hàng trong hệ thống
           </p>
         </header>
 
-        {/* Search and Filter Section */}
         <div className="bg-white shadow-xl rounded-xl p-6 mb-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="flex items-center space-x-4 w-full md:w-auto">
+            <div className="flex items-center space-x-4 w-full">
               <div className="relative flex-grow">
                 <select
                   value={searchType}
@@ -223,39 +222,47 @@ const Customers = () => {
                 </select>
                 <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               </div>
-              <div className="relative flex-grow">
-                <input
-                  type="text"
-                  placeholder="Nhập từ khóa..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-                <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              </div>
+              <input
+                type="text"
+                placeholder="Nhập từ khóa..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="flex-grow pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
             </div>
-            <div className="flex space-x-4">
-              {/* Nút Hiện Theo Trạng Thái */}
-              <button
-                onClick={cycleFilterStatus}
-                className={`flex items-center space-x-2 px-6 py-3 rounded-lg transition-colors ${
-                  filterStatus === "all"
-                    ? "bg-blue-600 text-white hover:bg-blue-700"
-                    : filterStatus === "active"
-                    ? "bg-green-600 text-white hover:bg-green-700"
-                    : "bg-red-600 text-white hover:bg-red-700"
-                }`}
-              >
-                <FaFilter />
-                <span>
-                  {filterStatus === "all"
-                    ? "Tất Cả"
-                    : filterStatus === "active"
-                    ? "Hoạt Động"
-                    : "Ngừng"}
-                </span>
-              </button>
-              {/* Nút Thêm Khách Hàng */}
+            <div className="flex items-center space-x-4">
+              <div className="flex space-x-2 bg-gray-100 rounded-lg p-1">
+                <button
+                  onClick={() => setFilterStatus("all")}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    filterStatus === "all"
+                      ? "bg-blue-500 text-white"
+                      : "text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  Tất cả
+                </button>
+                <button
+                  onClick={() => setFilterStatus("active")}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    filterStatus === "active"
+                      ? "bg-green-600 text-white hover:bg-green-700"
+                      : "text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  Hoạt động
+                </button>
+                <button
+                  onClick={() => setFilterStatus("inactive")}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    filterStatus === "inactive"
+                      ? "bg-red-600 text-white hover:bg-red-700"
+                      : "text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  Ngừng
+                </button>
+              </div>
               <button
                 onClick={() => setShowAddForm(true)}
                 className="flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
@@ -267,43 +274,40 @@ const Customers = () => {
           </div>
         </div>
 
-        {/* Customer List */}
-        <div className="grid gap-4">
+        <div className="space-y-4">
           {filteredCustomers.map((customer) => (
             <div
               key={customer.customerId}
               onClick={(e) => handleEdit(customer, e)}
-              className="bg-white shadow-md rounded-xl p-6 flex items-center justify-between hover:shadow-lg transition-shadow"
+              className="bg-white border-l-4 border-blue-500 rounded-lg shadow-md p-4 flex items-center justify-between hover:shadow-lg transition-all group cursor-pointer"
             >
               <div className="flex items-center space-x-4">
                 <div className="bg-blue-100 p-3 rounded-full">
-                  <FaUserMd className="text-blue-600" />
+                  <FaUser className="text-blue-600 w-6 h-6" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-800">
+                  <h2 className="text-xl font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
                     {customer.firstName} {customer.lastName}
                   </h2>
-                  <p className="text-sm text-gray-500">
-                    Mã Khách Hàng: {customer.customerId}
-                  </p>
+                  <p className="text-sm text-gray-500">Mã Khách Hàng: {customer.customerId}</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-3">
+              <div className="flex space-x-3">
                 <button
                   onClick={(e) => handleActive(customer.customerId, e)}
-                  className={`px-4 py-2 rounded-lg flex items-center space-x-2 ${
+                  className={`px-4 py-2 rounded-lg flex items-center space-x-2 transition-all ${
                     customer.active
-                      ? "bg-green-100 text-green-700"
-                      : "bg-red-100 text-red-700"
+                      ? "bg-red-100 text-red-600 hover:bg-red-200"
+                      : "bg-green-100 text-green-600 hover:bg-green-200"
                   }`}
                 >
                   <FaPowerOff />
-                  <span>{customer.active ? "Hoạt Động" : "Ngừng"}</span>
+                  <span>{customer.active ? "Ngừng" : "Hoạt Động"}</span>
                 </button>
                 <Link
-                  to={`/staff/childs/${customer.customerId}`}
+                  to={`../childs/${customer.customerId}`}
                   onClick={(e) => e.stopPropagation()}
-                  className="bg-purple-100 text-purple-700 px-4 py-2 rounded-lg flex items-center space-x-2"
+                  className="bg-purple-100 text-purple-700 px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-purple-200 transition-all"
                 >
                   <FaChild />
                   <span>Hồ Sơ Trẻ Em</span>
@@ -315,14 +319,18 @@ const Customers = () => {
 
         {/* Modal chỉnh sửa khách hàng */}
         {editingCustomer && (
-          <div className="fixed inset-0 flex items-center justify-center bg-opacity-30 backdrop-blur-md z-50">
-            <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-3xl ring-1 ring-gray-200">
-              <h3 className="text-2xl font-semibold mb-6">
-                Cập Nhật Khách Hàng
-              </h3>
+          <div className="fixed inset-0 flex items-center justify-center bg-black/20 backdrop-blur-md z-50">
+            <div className="relative bg-white rounded-xl p-6 w-full max-w-3xl shadow-xl ring-1 ring-gray-200">
+              <button
+                onClick={() => setEditingCustomer(null)}
+                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              >
+                ×
+              </button>
+              <h2 className="text-2xl font-semibold mb-6">Cập Nhật Khách Hàng</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Họ
                   </label>
                   <input
@@ -334,11 +342,11 @@ const Customers = () => {
                         firstName: e.target.value,
                       })
                     }
-                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Tên
                   </label>
                   <input
@@ -350,11 +358,11 @@ const Customers = () => {
                         lastName: e.target.value,
                       })
                     }
-                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Số Điện Thoại
                   </label>
                   <input
@@ -366,11 +374,11 @@ const Customers = () => {
                         phoneNumber: e.target.value,
                       })
                     }
-                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Ngày Sinh
                   </label>
                   <input
@@ -382,11 +390,11 @@ const Customers = () => {
                         dob: e.target.value,
                       })
                     }
-                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Giới Tính
                   </label>
                   <select
@@ -397,45 +405,43 @@ const Customers = () => {
                         gender: e.target.value === "true",
                       })
                     }
-                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   >
                     <option value="true">Nam</option>
                     <option value="false">Nữ</option>
                   </select>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                <div className="relative">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Mật Khẩu
                   </label>
-                  <div className="relative">
-                    <input
-                      type={editingPasswordVisible ? "text" : "password"}
-                      value={editingCustomer.password}
-                      onChange={(e) =>
-                        setEditingCustomer({
-                          ...editingCustomer,
-                          password: e.target.value,
-                        })
-                      }
-                      className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    />
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setEditingPasswordVisible(!editingPasswordVisible)
-                      }
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center focus:outline-none"
-                    >
-                      {editingPasswordVisible ? (
-                        <FaEyeSlash size={20} />
-                      ) : (
-                        <FaEye size={20} />
-                      )}
-                    </button>
-                  </div>
+                  <input
+                    type={editingPasswordVisible ? "text" : "password"}
+                    value={editingCustomer.password}
+                    onChange={(e) =>
+                      setEditingCustomer({
+                        ...editingCustomer,
+                        password: e.target.value,
+                      })
+                    }
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setEditingPasswordVisible(!editingPasswordVisible)
+                    }
+                    className="absolute inset-y-0 right-0 flex items-center pr-3"
+                  >
+                    {editingPasswordVisible ? (
+                      <FaEyeSlash size={20} className="text-gray-600" />
+                    ) : (
+                      <FaEye size={20} className="text-gray-600" />
+                    )}
+                  </button>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Địa Chỉ
                   </label>
                   <input
@@ -447,11 +453,11 @@ const Customers = () => {
                         address: e.target.value,
                       })
                     }
-                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Số Tài Khoản Ngân Hàng
                   </label>
                   <input
@@ -463,11 +469,11 @@ const Customers = () => {
                         banking: e.target.value,
                       })
                     }
-                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Email
                   </label>
                   <input
@@ -479,7 +485,7 @@ const Customers = () => {
                         email: e.target.value,
                       })
                     }
-                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -511,14 +517,18 @@ const Customers = () => {
 
         {/* Modal thêm khách hàng */}
         {showAddForm && (
-          <div className="fixed inset-0 flex items-center justify-center bg-opacity-30 backdrop-blur-md z-50">
-            <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-3xl ring-1 ring-gray-200">
-              <h3 className="text-2xl font-semibold mb-6">
-                Thêm Khách Hàng Mới
-              </h3>
+          <div className="fixed inset-0 flex items-center justify-center bg-black/20 backdrop-blur-md z-50">
+            <div className="relative bg-white rounded-xl p-6 w-full max-w-3xl shadow-xl ring-1 ring-gray-200">
+              <button
+                onClick={() => setShowAddForm(false)}
+                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              >
+                ×
+              </button>
+              <h2 className="text-2xl font-semibold mb-6">Thêm Khách Hàng Mới</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Họ
                   </label>
                   <input
@@ -530,11 +540,11 @@ const Customers = () => {
                         firstName: e.target.value,
                       })
                     }
-                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Tên
                   </label>
                   <input
@@ -546,11 +556,11 @@ const Customers = () => {
                         lastName: e.target.value,
                       })
                     }
-                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Số Điện Thoại
                   </label>
                   <input
@@ -562,11 +572,11 @@ const Customers = () => {
                         phoneNumber: e.target.value,
                       })
                     }
-                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Ngày Sinh
                   </label>
                   <input
@@ -578,11 +588,11 @@ const Customers = () => {
                         dob: e.target.value,
                       })
                     }
-                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Giới Tính
                   </label>
                   <select
@@ -593,45 +603,41 @@ const Customers = () => {
                         gender: e.target.value === "true",
                       })
                     }
-                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   >
                     <option value="true">Nam</option>
                     <option value="false">Nữ</option>
                   </select>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                <div className="relative">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Mật Khẩu
                   </label>
-                  <div className="relative">
-                    <input
-                      type={newPasswordVisible ? "text" : "password"}
-                      value={newCustomer.password}
-                      onChange={(e) =>
-                        setNewCustomer({
-                          ...newCustomer,
-                          password: e.target.value,
-                        })
-                      }
-                      className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    />
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setNewPasswordVisible(!newPasswordVisible)
-                      }
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center focus:outline-none"
-                    >
-                      {newPasswordVisible ? (
-                        <FaEyeSlash size={20} />
-                      ) : (
-                        <FaEye size={20} />
-                      )}
-                    </button>
-                  </div>
+                  <input
+                    type={newPasswordVisible ? "text" : "password"}
+                    value={newCustomer.password}
+                    onChange={(e) =>
+                      setNewCustomer({
+                        ...newCustomer,
+                        password: e.target.value,
+                      })
+                    }
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setNewPasswordVisible(!newPasswordVisible)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3"
+                  >
+                    {newPasswordVisible ? (
+                      <FaEyeSlash size={20} className="text-gray-600" />
+                    ) : (
+                      <FaEye size={20} className="text-gray-600" />
+                    )}
+                  </button>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Địa Chỉ
                   </label>
                   <input
@@ -643,11 +649,11 @@ const Customers = () => {
                         address: e.target.value,
                       })
                     }
-                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Số Tài Khoản Ngân Hàng
                   </label>
                   <input
@@ -659,11 +665,11 @@ const Customers = () => {
                         banking: e.target.value,
                       })
                     }
-                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Email
                   </label>
                   <input
@@ -675,7 +681,7 @@ const Customers = () => {
                         email: e.target.value,
                       })
                     }
-                    className="mt-1 w-full rounded-md ring-1 ring-gray-200 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -685,13 +691,13 @@ const Customers = () => {
               <div className="flex justify-end space-x-4 mt-6">
                 <button
                   onClick={handleCreate}
-                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg"
+                  className="bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition-all text-sm font-medium flex items-center"
                 >
                   Thêm
                 </button>
                 <button
                   onClick={() => setShowAddForm(false)}
-                  className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg"
+                  className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-all text-sm font-medium"
                 >
                   Hủy
                 </button>

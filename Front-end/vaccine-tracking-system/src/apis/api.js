@@ -699,7 +699,7 @@ export const updateStaff = async (formData) => {
 export const deleteStaff = async (staffId) => {
   try {
     const response = await axios.post(
-      `${API_BASE_URL}/staff/inactive?id=${staffId}`,
+      `${API_BASE_URL}/staff/active?id=${staffId}`,
       { withCredentials: true } // Added here
     );
     console.log("API Response Status (deleteStaff):", response.status);
@@ -722,6 +722,7 @@ export const deleteStaff = async (staffId) => {
 };
 
 // Continue adding the `withCredentials: true` for other functions in a similar way.
+// Hàm tạo trẻ, trả về dữ liệu từ API (bao gồm cả id của trẻ)
 export const createChild = async (formData) => {
   try {
     console.log("Form data being sent to API (createChild):", formData);
@@ -729,31 +730,29 @@ export const createChild = async (formData) => {
       `${API_BASE_URL}/child/create`,
       formData,
       {
-        withCredentials: true, // Added here
+        withCredentials: true,
       }
     );
-    console.log("API Response Status:", response.status); // Status code
-    console.log("API Response Data:", response); // Dữ liệu trả về
+    console.log("API Response Status:", response.status);
+    console.log("API Response Data:", response.data);
     if (response.status === 200) {
-      return { success: true, message: "Tạo trẻ em thành công" };
-    } else {
+      // Giả sử response.data chứa thông tin trẻ, bao gồm thuộc tính childId (hoặc id)
       return {
-        success: false,
-        message: "Tạo trẻ em thất bại",
+        success: true,
+        message: "Tạo trẻ em thành công",
+        data: response.data,
       };
+    } else {
+      return { success: false, message: "Tạo trẻ em thất bại" };
     }
   } catch (error) {
     console.error("Error creating child:", error);
     if (error.response) {
-      // In chi tiết về status và dữ liệu lỗi từ backend
-      console.error("Error response status:", error.response.status); // In status code
-      console.error("Error response data:", error.response.data); // In dữ liệu lỗi
-      console.error("Error response headers:", error.response.headers); // In headers (nếu cần)
+      console.error("Error response status:", error.response.status);
+      console.error("Error response data:", error.response.data);
+      console.error("Error response headers:", error.response.headers);
       if (error.response.data && error.response.data.message) {
-        return {
-          success: false,
-          message: error.response.data.message,
-        };
+        return { success: false, message: error.response.data.message };
       }
     }
     return {
@@ -890,6 +889,7 @@ export const cancelBooking = async (bookingId) => {
   try {
     const response = await axios.post(
       `${API_BASE_URL}/booking/cancel?bookingId=${bookingId}`,
+      null,
       { withCredentials: true } // Added here
     );
     console.log("API Response (cancelBooking):", response.data);
@@ -905,7 +905,8 @@ export const cancelBooking = async (bookingId) => {
 export const rescheduleBooking = async (bookingId) => {
   try {
     const response = await axios.post(
-      `${API_BASE_URL}/booking/setstatus?bookingId=${bookingId}&status=1`,
+      `${API_BASE_URL}/booking/setstatus?bookingId=${bookingId}&status=0`,
+      null,
       { withCredentials: true } // Added here
     );
     console.log("API Response (rescheduleBooking):", response.data);
@@ -977,12 +978,14 @@ export const getMedicalHistoryByChildId = async (childId) => {
 
 // Cập nhật phản ứng cho Medical History
 export const updateReaction = async (id, reaction) => {
+  console.log("Updating reaction for ID:", id, "and:", reaction);
   try {
     const response = await axios.post(
       `${API_BASE_URL}/medicalhistory/updatereaction?id=${id}&reaction=${encodeURIComponent(
         reaction
       )}`,
-      { withCredentials: true } // Added here
+      null, // Không có dữ liệu gửi lên nếu không cần thiết
+      { withCredentials: true } // Đưa config vào vị trí thứ 3
     );
     console.log("API Response (updateReaction):", response.data);
     return response.data;

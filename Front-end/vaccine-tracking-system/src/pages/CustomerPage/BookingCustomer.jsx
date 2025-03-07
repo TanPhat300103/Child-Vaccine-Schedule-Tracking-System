@@ -17,7 +17,9 @@ import {
   FaTimes,
   FaChild,
   FaMoneyCheckAlt,
-} from "react-icons/fa"; // Thêm icon từ react-icons
+
+} from "react-icons/fa";
+
 
 const BookingCustomer = () => {
   const [bookings, setBookings] = useState([]);
@@ -29,30 +31,73 @@ const BookingCustomer = () => {
   const [selectedStatus, setSelectedStatus] = useState(0);
   const [showCalendarModal, setShowCalendarModal] = useState(false);
   const { userInfo } = useAuth();
+  console.log(userInfo);
+
+  // Hàm helper: Tính trạng thái hiển thị dựa trên booking.status và bookingDetails
+  const recategorizedStatus = (booking) => {
+    if (booking.status === 2) {
+      if (booking.bookingDetails && booking.bookingDetails.length > 0) {
+        const fullyAdministered = booking.bookingDetails.every(
+          (detail) => detail.administeredDate !== null
+        );
+        return fullyAdministered ? 2 : 0;
+      }
+      // Nếu chưa có bookingDetails hoặc mảng rỗng, xem như chưa hoàn thành
+      return 0;
+    }
+    return booking.status;
+  };
+
+  // Cập nhật API: Với mỗi booking có status === 2, fetch booking details ngay khi load trang
+  const fetchBookings = async () => {
+    try {
+      const customerId = userInfo?.userId || "C001";
+      const data = await getBookingByCustomerId(customerId);
+      // Với mỗi booking có status = 2, fetch booking details và gán vào booking.bookingDetails
+      const updatedData = await Promise.all(
+        data.map(async (booking) => {
+          if (booking.status === 2) {
+            try {
+              const details = await getBookingDetailByBooking(
+                booking.bookingId
+              );
+              return { ...booking, bookingDetails: details };
+            } catch (err) {
+              return { ...booking, bookingDetails: [] };
+            }
+          }
+          return booking;
+        })
+      );
+      setBookings(updatedData);
+    } catch (err) {
+      setError("Không thể lấy thông tin đặt lịch");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchBookings = async () => {
-      try {
-        const customerId = userInfo?.userId || "C001";
-        const data = await getBookingByCustomerId(customerId);
-        setBookings(data);
-      } catch (err) {
-        setError("Không thể lấy thông tin đặt lịch");
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchBookings();
   }, [userInfo]);
 
   const handleStatusClick = (status) => setSelectedStatus(status);
 
+  // Khi người dùng nhấn vào thẻ booking, nếu cần cập nhật chi tiết thì vẫn có thể fetch lại
   const handleCardClick = async (booking) => {
     setSelectedBooking(booking);
     try {
-      const details = await getBookingDetailByBooking(booking.bookingId);
-      setBookingDetails(details);
-      console.log("setBookingDetails", bookingDetails);
+
+      // Nếu booking đã có bookingDetails thì không cần fetch lại
+      if (!booking.bookingDetails) {
+        const details = await getBookingDetailByBooking(booking.bookingId);
+        setBookingDetails(details);
+        // Cập nhật booking object để sử dụng cho modal
+        booking.bookingDetails = details;
+      } else {
+        setBookingDetails(booking.bookingDetails);
+      }
+
     } catch (err) {
       setBookingDetails([]);
     }
@@ -86,90 +131,116 @@ const BookingCustomer = () => {
     fetchBookings();
   };
 
-  const statusLabels = { 1: "Đã Đặt", 2: "Đã Hoàn Thành", 3: "Đã Huỷ" };
 
-  const renderBookingCard = (booking) => (
-    <div
-      key={booking.bookingId}
-      className="p-5 bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer relative overflow-hidden"
-      onClick={() => handleCardClick(booking)}
-    >
-      {/* Nền gradient nhẹ */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-green-50 opacity-50"></div>
+  const statusLabels = { 0: "Đã Đặt", 2: "Đã Hoàn Thành", 3: "Đã Huỷ" };
 
-      {/* Icon trạng thái */}
-      <div className="absolute top-4 left-4">
-        <FaSyringe
-          className={`text-2xl ${
-            booking.status === 1
-              ? "text-blue-500"
-              : booking.status === 2
-              ? "text-green-500"
-              : "text-red-500"
-          } animate-pulse`}
-        />
-      </div>
+  const renderBookingCard = (booking) => {
+    // Dùng recategorizedStatus để xác định trạng thái hiển thị
+    const displayStatus = recategorizedStatus(booking);
+    return (
+      <div
+        key={booking.bookingId}
+        className="p-5 bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer relative overflow-hidden"
+        onClick={() => handleCardClick(booking)}
+      >
+        {/* Nền gradient nhẹ */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-green-50 opacity-50"></div>
 
-      <div className="relative z-10 pl-10 space-y-2">
-        <p className="font-semibold text-blue-600 text-lg">
-          Mã đặt lịch: {booking.bookingId}
-        </p>
-        <p className="text-gray-700 flex items-center">
-          <FaCalendarAlt className="mr-2 text-blue-400" />
-          Ngày đặt: {format(new Date(booking.bookingDate), "dd/MM/yyyy")}
-        </p>
-        <p className="text-gray-700 flex items-center">
-          <FaMoneyCheckAlt className="mr-2 text-green-400" />
-          Tổng tiền: {booking.totalAmount.toLocaleString()} VNĐ
-        </p>
-      </div>
+        {/* Icon trạng thái */}
+        <div className="absolute top-4 left-4">
+          <FaSyringe
+            className={`text-2xl ${
+              displayStatus === 0
+                ? "text-blue-500"
+                : displayStatus === 2
+                ? "text-green-500"
+                : "text-red-500"
+            } animate-pulse`}
+          />
+        </div>
 
-      {/* Nút hành động */}
-      <div className="mt-4 flex space-x-3 z-10 relative">
-        {booking.status === 1 && (
-          <>
-            <NavLink
-              to="/paymentVnpay"
-              onClick={(e) => {
-                e.stopPropagation();
-                handlePaymentClick(booking);
-              }}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200 flex items-center"
-            >
-              <FaMoneyCheckAlt className="mr-2" /> Thanh Toán
-            </NavLink>
+
+        <div className="relative z-10 pl-10 space-y-2">
+          <p className="font-semibold text-blue-600 text-lg">
+            Mã đặt lịch: {booking.bookingId}
+          </p>
+          <p className="text-gray-700 flex items-center">
+            <FaCalendarAlt className="mr-2 text-blue-400" />
+            Ngày đặt: {format(new Date(booking.bookingDate), "dd/MM/yyyy")}
+          </p>
+          <p className="text-gray-700 flex items-center">
+            <FaMoneyCheckAlt className="mr-2 text-green-400" />
+            Tổng tiền: {booking.totalAmount.toLocaleString()} VNĐ
+          </p>
+        </div>
+
+
+        {/* Nút hành động */}
+        <div className="mt-4 flex space-x-3 z-10 relative">
+          {booking.status === 0 && (
+            <>
+              <NavLink
+                to="/paymentVnpay2"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePaymentClick(booking);
+                }}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200 flex items-center"
+              >
+                <FaMoneyCheckAlt className="mr-2" /> Thanh Toán
+              </NavLink>
+              <button
+                onClick={(e) => handleCancelBooking(booking.bookingId, e)}
+                className="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-all duration-200"
+              >
+                Huỷ
+              </button>
+            </>
+          )}
+          {booking.status === 2 &&
+            booking.bookingDetails &&
+            booking.bookingDetails.every(
+              (detail) => detail.administeredDate !== null
+            ) && (
+              <NavLink
+                to="/paymentVnpay2"
+                state={{
+                  bookingId: booking.bookingId,
+                  bookingDate: booking.bookingDate,
+                  totalAmount: booking.totalAmount.toLocaleString(),
+                }}
+                onClick={() => handlePaymentClick(booking)}
+                className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded"
+              >
+                Feedback
+              </NavLink>
+            )}
+          {booking.status === 2 &&
+            (!booking.bookingDetails ||
+              !booking.bookingDetails.every(
+                (detail) => detail.administeredDate !== null
+              )) && (
+              <span className="px-4 py-2 text-gray-500">Chờ Ngày Tiêm</span>
+            )}
+          {booking.status === 3 && (
+
             <button
-              onClick={(e) => handleCancelBooking(booking.bookingId, e)}
-              className="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-all duration-200"
+              onClick={(e) => handleRescheduleBooking(booking.bookingId, e)}
+              className="px-4 py-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-all duration-200"
             >
-              Huỷ
+              Đặt Lại
             </button>
-          </>
-        )}
-        {booking.status === 2 && (
-          <NavLink
-            to="/paymentVnpay2"
-            state={{
-              bookingId: booking.bookingId,
-              bookingDate: booking.bookingDate,
-              totalAmount: booking.totalAmount.toLocaleString(),
-            }}
-            onClick={() => handlePaymentClick(booking)}
-            className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded"
-          >
-            Feedback
-          </NavLink>
-        )}
-        {booking.status === 3 && (
-          <button
-            onClick={(e) => handleRescheduleBooking(booking.bookingId, e)}
-            className="px-4 py-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-all duration-200"
-          >
-            Đặt Lại
-          </button>
-        )}
+
+          )}
+        </div>
+
       </div>
-    </div>
+    );
+  };
+
+  // Lọc danh sách booking theo trạng thái recategorized:
+  const filteredBookings = bookings.filter(
+    (b) => recategorizedStatus(b) === selectedStatus
   );
 
   const bookingDates = bookings.map((b) => new Date(b.bookingDate));
@@ -214,9 +285,7 @@ const BookingCustomer = () => {
 
         {/* Danh sách booking */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {bookings
-            .filter((b) => b.status === selectedStatus)
-            .map((booking) => renderBookingCard(booking))}
+          {filteredBookings.map((booking) => renderBookingCard(booking))}
         </div>
 
         {/* Nút mở lịch */}

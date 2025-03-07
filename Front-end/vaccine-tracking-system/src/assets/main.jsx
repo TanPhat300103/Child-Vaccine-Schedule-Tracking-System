@@ -62,8 +62,12 @@ import VNPAY from "../pages/Payment/VNPAY.jsx";
 
 import CancelPayment from "../pages/Payment/CancelPayment.jsx";
 
-import PaymentVnpay from "../pages/Payment/PaymentVNPay2.jsx";
-import PriceVaccine2 from "../components/homepage/PriceVaccine.jsx";
+
+
+
+
+// import BookingPage from "../apis/test.jsx";
+
 
 const Main = () => {
   return (
@@ -78,6 +82,7 @@ const Main = () => {
             />
             <Routes>
               {/* Các route chính */}
+              {/* <Route path="/test" element={<BookingPage />} /> */}
               <Route path="/" element={<App />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />

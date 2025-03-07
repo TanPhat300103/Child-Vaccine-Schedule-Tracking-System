@@ -1,7 +1,13 @@
-// src/pages/Staffs.jsx
 import React, { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
-import { FaPowerOff, FaChild, FaEye, FaEyeSlash } from "react-icons/fa";
+import {
+  FaUsers,
+  FaSearch,
+  FaPlus,
+  FaPowerOff,
+  FaEye,
+  FaEyeSlash,
+} from "react-icons/fa";
 import {
   getStaffs,
   createStaff,
@@ -22,7 +28,8 @@ const Staffs = () => {
     address: "",
     email: "",
     password: "",
-    // roleId đã loại bỏ khỏi form, mặc định là 1
+    // roleId đã loại bỏ khỏi form, mặc định là 2 (Nhân viên)
+    roleId: 2,
     active: true,
   });
   const [newPasswordVisible, setNewPasswordVisible] = useState(false);
@@ -35,6 +42,8 @@ const Staffs = () => {
   // Tìm kiếm
   const [searchType, setSearchType] = useState("name"); // name, code, email, phone
   const [searchTerm, setSearchTerm] = useState("");
+  // Lọc theo trạng thái
+  const [filterStatus, setFilterStatus] = useState("all");
 
   // Lấy danh sách nhân viên khi component mount
   useEffect(() => {
@@ -53,21 +62,25 @@ const Staffs = () => {
 
   // Xử lý tìm kiếm & lọc
   const filteredStaff = staffList.filter((staff) => {
-    if (!searchTerm) return true;
-    const term = searchTerm.toLowerCase();
-    if (searchType === "name") {
-      return (
-        staff.firstName.toLowerCase().includes(term) ||
-        staff.lastName.toLowerCase().includes(term)
-      );
-    } else if (searchType === "code") {
-      return staff.staffId.toLowerCase().includes(term);
-    } else if (searchType === "email") {
-      return staff.mail.toLowerCase().includes(term);
-    } else if (searchType === "phone") {
-      return staff.phone.toLowerCase().includes(term);
+    let matchesSearch = true;
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      if (searchType === "name") {
+        matchesSearch =
+          staff.firstName.toLowerCase().includes(term) ||
+          staff.lastName.toLowerCase().includes(term);
+      } else if (searchType === "code") {
+        matchesSearch = staff.staffId.toLowerCase().includes(term);
+      } else if (searchType === "email") {
+        matchesSearch = staff.mail.toLowerCase().includes(term);
+      } else if (searchType === "phone") {
+        matchesSearch = staff.phone.toLowerCase().includes(term);
+      }
     }
-    return true;
+    let matchesStatus = true;
+    if (filterStatus === "active") matchesStatus = staff.active;
+    else if (filterStatus === "inactive") matchesStatus = !staff.active;
+    return matchesSearch && matchesStatus;
   });
 
   // Xử lý Active/Inactive
@@ -75,7 +88,9 @@ const Staffs = () => {
     e.stopPropagation();
     console.log("Gửi API cập nhật trạng thái active cho:", staffId);
     fetch(`http://localhost:8080/staff/active?id=${staffId}`, {
-      method: "POST",
+      method: "DELETE",
+      credentials: "include",
+      withCredentials: true,
     })
       .then((response) => response.json())
       .then((updatedStaff) => {
@@ -194,7 +209,6 @@ const Staffs = () => {
           address: "",
           email: "",
           password: "",
-          roleId: 1,
           active: true,
         });
         fetchStaffList();
@@ -209,340 +223,447 @@ const Staffs = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
-      <h1 className="text-3xl font-bold text-center mb-4">Quản lý Nhân Viên</h1>
-      {message && (
-        <div className="bg-blue-100 text-blue-700 px-4 py-2 rounded text-center">
-          {message}
-        </div>
-      )}
-      {/* Thanh tìm kiếm */}
-      <div className="flex flex-wrap items-center justify-between mb-6 gap-4">
-        <div className="flex items-center gap-4">
-          <select
-            value={searchType}
-            onChange={(e) => {
-              setSearchType(e.target.value);
-              setSearchTerm("");
-            }}
-            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="name">Tìm theo Tên</option>
-            <option value="code">Tìm theo Mã</option>
-            <option value="email">Tìm theo Email</option>
-            <option value="phone">Tìm theo SĐT</option>
-          </select>
-          <input
-            type="text"
-            placeholder="Nhập từ khóa..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="border-2 border-yellow-500 text-yellow-500 font-bold py-3 px-6 rounded-full hover:bg-yellow-500 hover:text-white transition-all"
-          >
-            Thêm Nhân Viên
-          </button>
-        </div>
-      </div>
-
-      {/* Danh sách nhân viên dạng card */}
-      <div className="flex flex-col gap-2">
-        {filteredStaff.map((staff) => (
-          <div
-            key={staff.staffId}
-            onClick={(e) => handleEditOpen(staff, e)}
-            className="flex items-center justify-between bg-white rounded-lg shadow-md p-4 hover:shadow-xl transition transform hover:scale-105 cursor-pointer"
-          >
-            <div>
-              <h2 className="text-xl font-extrabold text-blue-600">
-                {staff.firstName} {staff.lastName}
-              </h2>
-              <p className="text-sm text-gray-600">Mã: {staff.staffId}</p>
-              <p className="text-sm text-gray-600">SĐT: {staff.phone}</p>
-              <p className="text-sm text-gray-600">Email: {staff.mail}</p>
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleActive(staff.staffId, e);
-                }}
-                className={`text-white font-bold py-1 px-3 rounded flex items-center ${
-                  staff.active
-                    ? "bg-green-500 hover:bg-green-700"
-                    : "bg-red-500 hover:bg-red-700"
-                }`}
-              >
-                {staff.active ? "Active" : "Inactive"}
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeleteStaff(staff.staffId);
-                }}
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
-              >
-                Delete
-              </button>
-            </div>
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 relative">
+      <div className="max-w-7xl mx-auto">
+        <header className="text-center mb-12">
+          <div className="inline-flex items-center space-x-4">
+            <FaUsers className="text-5xl text-blue-600" />
+            <h1 className="text-4xl font-light text-gray-800">
+              Quản Lý Nhân Viên
+            </h1>
           </div>
-        ))}
-      </div>
+          <p className="mt-4 text-gray-500 max-w-2xl mx-auto">
+            Tra cứu, quản lý và theo dõi danh sách nhân viên trong hệ thống
+          </p>
+        </header>
 
-      {/* Modal tạo mới nhân viên */}
-      {showAddModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-md z-50">
-          <div className="relative bg-white p-6 rounded-lg shadow-xl w-full max-w-3xl ring-1 ring-gray-200">
-            <button
-              onClick={() => setShowAddModal(false)}
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl"
-            >
-              &times;
-            </button>
-            <h2 className="text-2xl font-semibold mb-6">Thêm Nhân Viên Mới</h2>
-            <form onSubmit={handleAddStaff} className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block mb-1 font-medium">Họ</label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={newStaff.firstName}
-                  onChange={handleNewStaffChange}
-                  className="border rounded w-full px-2 py-1"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block mb-1 font-medium">Tên</label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={newStaff.lastName}
-                  onChange={handleNewStaffChange}
-                  className="border rounded w-full px-2 py-1"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block mb-1 font-medium">SĐT</label>
-                <input
-                  type="text"
-                  name="phoneNumber"
-                  value={newStaff.phoneNumber}
-                  onChange={handleNewStaffChange}
-                  className="border rounded w-full px-2 py-1"
-                />
-              </div>
-              <div>
-                <label className="block mb-1 font-medium">Ngày Sinh</label>
-                <input
-                  type="date"
-                  name="dob"
-                  value={newStaff.dob}
-                  onChange={handleNewStaffChange}
-                  className="border rounded w-full px-2 py-1"
-                />
-              </div>
-              <div>
-                <label className="block mb-1 font-medium">Địa chỉ</label>
-                <input
-                  type="text"
-                  name="address"
-                  value={newStaff.address}
-                  onChange={handleNewStaffChange}
-                  className="border rounded w-full px-2 py-1"
-                />
-              </div>
-              <div>
-                <label className="block mb-1 font-medium">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={newStaff.email}
-                  onChange={handleNewStaffChange}
-                  className="border rounded w-full px-2 py-1"
-                />
-              </div>
-              <div className="relative">
-                <label className="block mb-1 font-medium">Mật khẩu</label>
-                <input
-                  type={newPasswordVisible ? "text" : "password"}
-                  name="password"
-                  value={newStaff.password}
-                  onChange={handleNewStaffChange}
-                  className="border rounded w-full px-2 py-1 pr-10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setNewPasswordVisible(!newPasswordVisible)}
-                  className="absolute inset-y-11 right-0 flex items-center pr-2"
+        <div className="bg-white shadow-xl rounded-xl p-6 mb-8">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <div className="flex items-center space-x-4 w-full">
+              <div className="relative flex-grow">
+                <select
+                  value={searchType}
+                  onChange={(e) => {
+                    setSearchType(e.target.value);
+                    setSearchTerm("");
+                  }}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  {newPasswordVisible ? (
-                    <FaEyeSlash size={20} className="text-gray-600" />
-                  ) : (
-                    <FaEye size={20} className="text-gray-600" />
-                  )}
-                </button>
+                  <option value="name">Tìm theo Tên</option>
+                  <option value="code">Tìm theo Mã</option>
+                  <option value="email">Tìm theo Email</option>
+                  <option value="phone">Tìm theo SĐT</option>
+                </select>
+                <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               </div>
-              {/* Bỏ Role ID khỏi form tạo mới */}
-              <div className="col-span-2 flex items-center">
-                <input
-                  type="checkbox"
-                  name="active"
-                  checked={newStaff.active}
-                  onChange={handleNewStaffChange}
-                  className="mr-2"
-                />
-                <label>Kích hoạt</label>
-              </div>
-              <div className="col-span-2 text-right">
+              <input
+                type="text"
+                placeholder="Nhập từ khóa..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="flex-grow pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="flex space-x-2 bg-gray-100 rounded-lg p-1">
                 <button
-                  type="submit"
-                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
-                >
-                  Thêm Nhân Viên
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Modal chỉnh sửa nhân viên */}
-      {editStaff && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-md z-50">
-          <div className="relative bg-white p-6 rounded-lg shadow-xl w-full max-w-3xl ring-1 ring-gray-200">
-            <button
-              onClick={handleEditCancel}
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl"
-            >
-              &times;
-            </button>
-            <h2 className="text-2xl font-semibold mb-6">Chỉnh Sửa Nhân Viên</h2>
-            <form onSubmit={handleEditSave} className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block mb-1 font-medium">Họ</label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={editStaff.firstName}
-                  onChange={handleEditChange}
-                  className="border rounded w-full px-2 py-1"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block mb-1 font-medium">Tên</label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={editStaff.lastName}
-                  onChange={handleEditChange}
-                  className="border rounded w-full px-2 py-1"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block mb-1 font-medium">SĐT</label>
-                <input
-                  type="text"
-                  name="phoneNumber"
-                  value={editStaff.phoneNumber}
-                  onChange={handleEditChange}
-                  className="border rounded w-full px-2 py-1"
-                />
-              </div>
-              <div>
-                <label className="block mb-1 font-medium">Ngày Sinh</label>
-                <input
-                  type="date"
-                  name="dob"
-                  value={editStaff.dob}
-                  onChange={handleEditChange}
-                  className="border rounded w-full px-2 py-1"
-                />
-              </div>
-              <div>
-                <label className="block mb-1 font-medium">Địa chỉ</label>
-                <input
-                  type="text"
-                  name="address"
-                  value={editStaff.address}
-                  onChange={handleEditChange}
-                  className="border rounded w-full px-2 py-1"
-                />
-              </div>
-              <div>
-                <label className="block mb-1 font-medium">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={editStaff.email}
-                  onChange={handleEditChange}
-                  className="border rounded w-full px-2 py-1"
-                />
-              </div>
-              <div className="relative">
-                <label className="block mb-1 font-medium">Mật khẩu</label>
-                <input
-                  type={editPasswordVisible ? "text" : "password"}
-                  name="password"
-                  value={editStaff.password}
-                  onChange={handleEditChange}
-                  className="border rounded w-full px-2 py-1 pr-10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setEditPasswordVisible(!editPasswordVisible)}
-                  className="absolute inset-y-11 right-0 flex items-center pr-2"
-                >
-                  {editPasswordVisible ? (
-                    <FaEyeSlash size={20} className="text-gray-600" />
-                  ) : (
-                    <FaEye size={20} className="text-gray-600" />
-                  )}
-                </button>
-              </div>
-              <div className="col-span-2 flex items-center">
-                <input
-                  type="checkbox"
-                  name="active"
-                  checked={editStaff.active}
-                  onChange={handleEditChange}
-                  className="mr-2"
-                />
-                <label>Kích hoạt</label>
-              </div>
-              <div className="col-span-2 flex justify-end space-x-4">
-                <button
-                  type="submit"
-                  disabled={!isEditChanged()}
-                  className={`font-bold py-2 px-4 rounded-lg ${
-                    !isEditChanged()
-                      ? "bg-gray-400 text-gray-200 cursor-not-allowed"
-                      : "bg-green-500 hover:bg-green-700 text-white"
+                  onClick={() => setFilterStatus("all")}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    filterStatus === "all"
+                      ? "bg-blue-500 text-white"
+                      : "text-gray-600 hover:bg-gray-200"
                   }`}
                 >
-                  Lưu
+                  Tất cả
                 </button>
                 <button
-                  type="button"
-                  onClick={handleEditCancel}
-                  className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg"
+                  onClick={() => setFilterStatus("active")}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    filterStatus === "active"
+                      ? "bg-green-600 text-white hover:bg-green-700"
+                      : "text-gray-600 hover:bg-gray-200"
+                  }`}
                 >
-                  Hủy
+                  Hoạt động
+                </button>
+                <button
+                  onClick={() => setFilterStatus("inactive")}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    filterStatus === "inactive"
+                      ? "bg-red-600 text-white hover:bg-red-700"
+                      : "text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  Ngưng
                 </button>
               </div>
-            </form>
+              <button
+                onClick={() => setShowAddModal(true)}
+                className="flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <FaPlus />
+                <span>Thêm Nhân Viên</span>
+              </button>
+            </div>
           </div>
         </div>
-      )}
-      <Outlet />
+
+        <div className="space-y-4">
+          {filteredStaff.length === 0 ? (
+            <div className="text-center py-12 bg-white rounded-xl shadow-md">
+              <FaUsers className="mx-auto text-5xl text-gray-300 mb-4" />
+              <p className="text-gray-500 text-lg">
+                Không tìm thấy nhân viên nào phù hợp
+              </p>
+            </div>
+          ) : (
+            filteredStaff.map((staff) => (
+              <div
+                key={staff.staffId}
+                onClick={(e) => handleEditOpen(staff, e)}
+                className="bg-white border-l-4 border-blue-500 rounded-lg shadow-md p-4 flex items-center justify-between hover:shadow-lg transition-all group cursor-pointer"
+              >
+                <div className="flex items-center space-x-4">
+                  <div className="bg-blue-100 p-3 rounded-full">
+                    <FaUsers className="text-blue-600 w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
+                      {staff.firstName} {staff.lastName}
+                    </h3>
+                    <p className="text-sm text-gray-500">Mã: {staff.staffId}</p>
+                    <p className="text-sm text-gray-500">SĐT: {staff.phone}</p>
+                    <p className="text-sm text-gray-500">Email: {staff.mail}</p>
+                  </div>
+                </div>
+                <div className="flex space-x-3">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleActive(staff.staffId, e);
+                    }}
+                    className={`px-4 py-2 rounded-lg flex items-center space-x-2 transition-all ${
+                      staff.active
+                        ? "bg-red-100 text-red-600 hover:bg-red-200"
+                        : "bg-green-100 text-green-600 hover:bg-green-200"
+                    }`}
+                  >
+                    <FaPowerOff />
+                    <span>{staff.active ? "Ngưng" : "Kích hoạt"}</span>
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteStaff(staff.staffId);
+                    }}
+                    className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-all"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Modal tạo mới nhân viên */}
+        {showAddModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/20 backdrop-blur-md z-50">
+            <div className="relative bg-white rounded-xl p-6 w-full max-w-3xl shadow-xl ring-1 ring-gray-200">
+              <button
+                onClick={() => setShowAddModal(false)}
+                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              >
+                ×
+              </button>
+              <h2 className="text-2xl font-semibold mb-6">
+                Thêm Nhân Viên Mới
+              </h2>
+              <form
+                onSubmit={handleAddStaff}
+                className="grid grid-cols-2 gap-6"
+              >
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Họ
+                  </label>
+                  <input
+                    type="text"
+                    name="firstName"
+                    value={newStaff.firstName}
+                    onChange={handleNewStaffChange}
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Tên
+                  </label>
+                  <input
+                    type="text"
+                    name="lastName"
+                    value={newStaff.lastName}
+                    onChange={handleNewStaffChange}
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    SĐT
+                  </label>
+                  <input
+                    type="text"
+                    name="phoneNumber"
+                    value={newStaff.phoneNumber}
+                    onChange={handleNewStaffChange}
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Ngày Sinh
+                  </label>
+                  <input
+                    type="date"
+                    name="dob"
+                    value={newStaff.dob}
+                    onChange={handleNewStaffChange}
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Địa chỉ
+                  </label>
+                  <input
+                    type="text"
+                    name="address"
+                    value={newStaff.address}
+                    onChange={handleNewStaffChange}
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={newStaff.email}
+                    onChange={handleNewStaffChange}
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                  />
+                </div>
+                <div className="relative">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Mật khẩu
+                  </label>
+                  <input
+                    type={newPasswordVisible ? "text" : "password"}
+                    name="password"
+                    value={newStaff.password}
+                    onChange={handleNewStaffChange}
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setNewPasswordVisible(!newPasswordVisible)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3"
+                  >
+                    {newPasswordVisible ? (
+                      <FaEyeSlash size={20} className="text-gray-600" />
+                    ) : (
+                      <FaEye size={20} className="text-gray-600" />
+                    )}
+                  </button>
+                </div>
+                <div className="col-span-2 flex items-center">
+                  <input
+                    type="checkbox"
+                    name="active"
+                    checked={newStaff.active}
+                    onChange={handleNewStaffChange}
+                    className="mr-2"
+                  />
+                  <label className="text-sm font-medium text-gray-700">
+                    Kích hoạt
+                  </label>
+                </div>
+                <div className="col-span-2 flex justify-end space-x-4">
+                  <button
+                    type="submit"
+                    className="bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition-all text-sm font-medium flex items-center"
+                  >
+                    Thêm Nhân Viên
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddModal(false)}
+                    className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-all text-sm font-medium"
+                  >
+                    Hủy
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Modal chỉnh sửa nhân viên */}
+        {editStaff && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/20 backdrop-blur-md z-50">
+            <div className="relative bg-white rounded-xl p-6 w-full max-w-3xl shadow-xl ring-1 ring-gray-200">
+              <button
+                onClick={handleEditCancel}
+                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              >
+                ×
+              </button>
+              <h2 className="text-2xl font-semibold mb-6">
+                Chỉnh Sửa Nhân Viên
+              </h2>
+              <form
+                onSubmit={handleEditSave}
+                className="grid grid-cols-2 gap-6"
+              >
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Họ
+                  </label>
+                  <input
+                    type="text"
+                    name="firstName"
+                    value={editStaff.firstName}
+                    onChange={handleEditChange}
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Tên
+                  </label>
+                  <input
+                    type="text"
+                    name="lastName"
+                    value={editStaff.lastName}
+                    onChange={handleEditChange}
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    SĐT
+                  </label>
+                  <input
+                    type="text"
+                    name="phoneNumber"
+                    value={editStaff.phoneNumber}
+                    onChange={handleEditChange}
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Ngày Sinh
+                  </label>
+                  <input
+                    type="date"
+                    name="dob"
+                    value={editStaff.dob}
+                    onChange={handleEditChange}
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Địa chỉ
+                  </label>
+                  <input
+                    type="text"
+                    name="address"
+                    value={editStaff.address}
+                    onChange={handleEditChange}
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={editStaff.email}
+                    onChange={handleEditChange}
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                  />
+                </div>
+                <div className="relative">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Mật khẩu
+                  </label>
+                  <input
+                    type={editPasswordVisible ? "text" : "password"}
+                    name="password"
+                    value={editStaff.password}
+                    onChange={handleEditChange}
+                    className="mt-1 w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setEditPasswordVisible(!editPasswordVisible)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3"
+                  >
+                    {editPasswordVisible ? (
+                      <FaEyeSlash size={20} className="text-gray-600" />
+                    ) : (
+                      <FaEye size={20} className="text-gray-600" />
+                    )}
+                  </button>
+                </div>
+                <div className="col-span-2 flex items-center">
+                  <input
+                    type="checkbox"
+                    name="active"
+                    checked={editStaff.active}
+                    onChange={handleEditChange}
+                    className="mr-2"
+                  />
+                  <label className="text-sm font-medium text-gray-700">
+                    Kích hoạt
+                  </label>
+                </div>
+                <div className="col-span-2 flex justify-end space-x-4">
+                  <button
+                    type="submit"
+                    disabled={!isEditChanged()}
+                    className={`font-bold py-2 px-4 rounded-lg ${
+                      !isEditChanged()
+                        ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+                        : "bg-green-500 hover:bg-green-700 text-white"
+                    }`}
+                  >
+                    Lưu
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleEditCancel}
+                    className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg"
+                  >
+                    Hủy
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+        <Outlet />
+      </div>
     </div>
   );
 };

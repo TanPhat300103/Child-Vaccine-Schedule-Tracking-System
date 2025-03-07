@@ -18,7 +18,9 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
   const handleUpdate = (updatedData) => {
     console.log("Gửi API cập nhật với dữ liệu:", updatedData);
     axios
-      .post(`http://localhost:8080/vaccinedetail/update`, updatedData)
+      .post(`http://localhost:8080/vaccinedetail/update`, updatedData, {
+        withCredentials: true,
+      })
       .then((res) => {
         console.log("Cập nhật VaccineDetail thành công:", res.data);
         onDetailUpdated(res.data);
@@ -209,7 +211,12 @@ const VaccineDetail = () => {
 
   const fetchVaccineDetails = () => {
     axios
-      .get(`http://localhost:8080/vaccinedetail/findbyvaccine?id=${vaccineId}`)
+      .get(
+        `http://localhost:8080/vaccinedetail/findbyvaccine?id=${vaccineId}`,
+        {
+          withCredentials: true,
+        }
+      )
       .then((res) => {
         console.log("API fetch VaccineDetail thành công:", res.data);
         setVaccineDetails(res.data);
@@ -222,7 +229,6 @@ const VaccineDetail = () => {
       prev.map((d) => (d.id === updatedDetail.id ? updatedDetail : d))
     );
   };
-
   const handleToggleStatus = (detailId, currentStatus) => {
     console.log(
       "Đang chuyển trạng thái cho detailId:",
@@ -231,7 +237,9 @@ const VaccineDetail = () => {
       currentStatus
     );
     axios
-      .post(`http://localhost:8080/vaccinedetail/active?id=${detailId}`)
+      .post(`http://localhost:8080/vaccinedetail/active?id=${detailId}`, null, {
+        withCredentials: true,
+      })
       .then((res) => {
         console.log("API toggle status thành công:", res.data);
         setVaccineDetails((prev) =>
@@ -253,7 +261,7 @@ const VaccineDetail = () => {
         </h2>
         <div className="mb-4 text-center">
           <NavLink
-            to="/staff/vaccines"
+            to="../vaccines"
             className="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition-all"
           >
             Quay lại Vaccine

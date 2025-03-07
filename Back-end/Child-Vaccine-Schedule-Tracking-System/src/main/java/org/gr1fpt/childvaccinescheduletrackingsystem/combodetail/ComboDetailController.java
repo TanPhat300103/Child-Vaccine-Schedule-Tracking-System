@@ -30,12 +30,6 @@ public class ComboDetailController {
         return comboDetailService.findById(id);
     }
 
-    @DeleteMapping("delete")
-    public void delete(@RequestParam String id)
-    {
-        comboDetailService.delete(id);
-    }
-
     @PostMapping("update")
     public ComboDetail update (@RequestBody ComboDetail comboDetail)
     {
@@ -52,5 +46,10 @@ public class ComboDetailController {
     public java.util.List<ComboDetail> findByVaccineId(@RequestParam String id)
     {
         return comboDetailService.findByVaccineId(id);
+    }
+
+    @DeleteMapping("deletevaccine")
+    public void deleteByVaccine(@RequestParam String id){
+        comboDetailService.deleteByVaccineId(id);
     }
 }

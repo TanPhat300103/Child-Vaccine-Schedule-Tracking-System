@@ -9,7 +9,12 @@ const useVaccineImage = (vaccineId) => {
   useEffect(() => {
     if (!vaccineId) return;
     axios
-      .get(`http://localhost:8080/vaccinedetail/findbyvaccine?id=${vaccineId}`)
+      .get(
+        `http://localhost:8080/vaccinedetail/findbyvaccine?id=${vaccineId}`,
+        {
+          withCredentials: true,
+        }
+      )
       .then((res) => {
         if (res.data && res.data.length > 0) {
           setImg(res.data[0].img);
@@ -159,7 +164,9 @@ const ComboDetail = () => {
     try {
       const apiUrl = `http://localhost:8080/combodetail/findcomboid?id=${vaccineComboId}`;
       console.log(`Requesting API: ${apiUrl}`);
-      const response = await axios.get(apiUrl);
+      const response = await axios.get(apiUrl, {
+        withCredentials: true,
+      });
       console.log("Response received:", response.data);
       setComboDetails(response.data);
     } catch (err) {
@@ -174,7 +181,9 @@ const ComboDetail = () => {
   useEffect(() => {
     if (showAddModal) {
       axios
-        .get("http://localhost:8080/vaccine")
+        .get("http://localhost:8080/vaccine", {
+          withCredentials: true,
+        })
         .then((res) => {
           console.log("Fetch vaccines for modal success:", res.data);
           setAvailableVaccines(res.data);
@@ -222,7 +231,9 @@ const ComboDetail = () => {
           vaccine: { vaccineId },
         };
         console.log("Creating ComboDetail with payload:", payload);
-        return axios.post("http://localhost:8080/combodetail/create", payload);
+        return axios.post("http://localhost:8080/combodetail/create", payload, {
+          withCredentials: true,
+        });
       });
       await Promise.all(promises);
       // Sau khi thêm xong, đóng modal và refresh danh sách combo
