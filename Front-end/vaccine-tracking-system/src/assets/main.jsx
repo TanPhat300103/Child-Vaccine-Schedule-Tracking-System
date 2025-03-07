@@ -31,6 +31,7 @@ import MarketingCampains from "../pages/Manager/MarketingCampains.jsx";
 import VaccineCombos from "../pages/Manager/VaccineCombos.jsx";
 import ComboDetail from "../pages/Manager/ComboDetail.jsx";
 import Bookings from "../pages/Manager/Bookings.jsx";
+import BookingDetail from "../pages/Manager/BookingDetail.jsx";
 import Records from "../pages/Manager/Records.jsx";
 import Feedbacks from "../pages/Manager/Feedbacks.jsx";
 
@@ -144,6 +145,11 @@ const Main = () => {
                   element={<ComboDetail />}
                 />
                 <Route path="bookings" element={<Bookings />} />
+                <Route
+                  path="booking-detail/:bookingId"
+                  element={<BookingDetail />}
+                />
+
                 <Route path="records" element={<Records />} />
                 <Route path="feedbacks" element={<Feedbacks />} />
               </Route>
@@ -169,6 +175,10 @@ const Main = () => {
                 />
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="bookings" element={<Bookings />} />
+                <Route
+                  path="booking-detail/:bookingId"
+                  element={<BookingDetail />}
+                />
                 <Route path="records" element={<Records />} />
                 <Route path="feedbacks" element={<Feedbacks />} />
               </Route>
