@@ -170,7 +170,7 @@ const PaymentVnpay = () => {
     }, 1000);
   };
 
-  const totalAmount = bookingDetails.quantity * bookingDetails.pricePerUnit;
+  const totalAmount = bookingDetails.pricePerUnit;
   const discountedAmount = totalAmount - (totalAmount * discount) / 100;
 
   const handleSubmit = async (e) => {

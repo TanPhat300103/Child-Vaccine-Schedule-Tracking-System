@@ -34,8 +34,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         if (existingCustomer.isPresent()) {
             customer = existingCustomer.get();
             // Nếu muốn cập nhật thông tin từ Google, cập nhật ở đây
-            customer.setFirstName(givenName);
-            customer.setLastName(familyName);
+//            customer.setFirstName(givenName);
+//            customer.setLastName(familyName);
         } else {
             // Nếu chưa tồn tại, tạo mới và lưu vào DB
             customer = new Customer();
