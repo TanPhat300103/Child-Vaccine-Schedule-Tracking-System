@@ -1,7 +1,8 @@
-// src/pages/Staff/Records.jsx
 import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { getMedicalHistory, updateReaction } from "../../apis/api";
+import { FiSearch, FiCalendar, FiFilter, FiEdit, FiX } from "react-icons/fi";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Records = () => {
   const [records, setRecords] = useState([]);
@@ -10,7 +11,7 @@ const Records = () => {
   const [error, setError] = useState(null);
 
   // State cho tìm kiếm
-  const [searchMethod, setSearchMethod] = useState("id"); // "id", "vaccine", "reaction", "ngay"
+  const [searchMethod, setSearchMethod] = useState("id");
   const [searchText, setSearchText] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
@@ -38,7 +39,7 @@ const Records = () => {
     fetchRecords();
   }, []);
 
-  // Áp dụng bộ lọc dựa trên phương thức tìm kiếm và giá trị nhập
+  // Áp dụng bộ lọc
   useEffect(() => {
     let filtered = records;
     if (searchMethod === "ngay") {
@@ -72,10 +73,10 @@ const Records = () => {
 
   // Dropdown options cho phương thức tìm kiếm
   const searchOptions = [
-    { key: "id", label: "Tìm Theo ID" },
-    { key: "vaccine", label: "Tìm Theo Vaccine" },
-    { key: "reaction", label: "Tìm Theo Phản ứng" },
-    { key: "ngay", label: "Tìm Theo Ngày" },
+    { key: "id", label: "ID", icon: <FiSearch /> },
+    { key: "vaccine", label: "Vaccine", icon: <FiFilter /> },
+    { key: "reaction", label: "Phản ứng", icon: <FiFilter /> },
+    { key: "ngay", label: "Ngày tiêm", icon: <FiCalendar /> },
   ];
 
   // Mở modal khi bấm vào thẻ
@@ -96,6 +97,8 @@ const Records = () => {
     if (!selectedRecord) return;
     try {
       await updateReaction(selectedRecord.medicalHistoryId, editedReaction);
+      // Sử dụng toast thay vì alert cho thông báo hiện đại hơn
+      // toast.success("Cập nhật phản ứng thành công!"); - có thể thêm nếu dùng thư viện toast
       alert("Cập nhật phản ứng thành công!");
       fetchRecords();
       closeModal();
@@ -105,134 +108,314 @@ const Records = () => {
     }
   };
 
-  // Render từng thẻ báo cáo
-  const renderRecordCard = (record) => (
-    <div
-      key={record.medicalHistoryId}
-      className="p-4 border rounded-md shadow-sm cursor-pointer min-w-[250px] flex-shrink-0 hover:shadow-lg hover:scale-105 transition-transform duration-300"
-      onClick={() => openModal(record)}
-    >
-      <p className="font-bold">ID: {record.medicalHistoryId}</p>
-      <p className="text-lg text-indigo-600 font-bold">
-        Tên Khách Hàng: {record.child.customer.firstName}{" "}
-        {record.child.customer.lastName}
-      </p>
-      <p className="text-lg">
-        Trẻ em: {record.child.firstName} {record.child.lastName}
-      </p>
-      <p>Vaccine: {record.vaccine.name}</p>
-      <p>Ngày tiêm: {format(new Date(record.date), "dd/MM/yyyy")}</p>
-      <p>Phản ứng: {record.reaction ? record.reaction : "Chưa có"}</p>
+  // Status badge cho phản ứng
+  const ReactionBadge = ({ reaction }) => {
+    if (!reaction) {
+      return (
+        <span className="inline-flex px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-600">
+          Chưa có
+        </span>
+      );
+    }
+    return (
+      <span className="inline-flex px-2 py-1 text-xs rounded-full bg-amber-100 text-amber-700">
+        Có phản ứng
+      </span>
+    );
+  };
+
+  // Skeleton loader cho lúc đang tải
+  const SkeletonLoader = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {[1, 2, 3, 4].map((i) => (
+        <div
+          key={i}
+          className="p-4 border rounded-lg shadow-sm animate-pulse h-48"
+        >
+          <div className="h-4 bg-gray-200 rounded w-1/4 mb-3"></div>
+          <div className="h-6 bg-gray-200 rounded w-3/4 mb-3"></div>
+          <div className="h-4 bg-gray-200 rounded w-2/4 mb-3"></div>
+          <div className="h-4 bg-gray-200 rounded w-3/4 mb-3"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/2 mb-3"></div>
+        </div>
+      ))}
     </div>
   );
 
-  if (loading) return <p>Đang tải báo cáo phản ứng...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
+  // Render từng thẻ báo cáo
+  const renderRecordCard = (record) => (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      key={record.medicalHistoryId}
+      className="p-6 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
+      onClick={() => openModal(record)}
+    >
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <span className="text-xs text-gray-500 font-medium">ID</span>
+          <h4 className="text-sm font-semibold text-gray-800">
+            {record.medicalHistoryId}
+          </h4>
+        </div>
+        <ReactionBadge reaction={record.reaction} />
+      </div>
+
+      <div className="mb-4">
+        <h3 className="text-lg font-bold text-teal-700 mb-1">
+          {record.child.firstName} {record.child.lastName}
+        </h3>
+        <p className="text-sm text-gray-600">
+          <span className="font-medium">Phụ huynh:</span>{" "}
+          {record.child.customer.firstName} {record.child.customer.lastName}
+        </p>
+      </div>
+
+      <div className="text-sm space-y-2">
+        <div className="flex items-center">
+          <div className="w-4 h-4 rounded-full bg-teal-100 flex items-center justify-center mr-2">
+            <span className="text-teal-600 text-xs">●</span>
+          </div>
+          <p className="text-gray-700">
+            <span className="inline-block w-16 font-medium">Vaccine:</span>
+            <span className="text-teal-800">{record.vaccine.name}</span>
+          </p>
+        </div>
+        <div className="flex items-center">
+          <div className="w-4 h-4 rounded-full bg-indigo-100 flex items-center justify-center mr-2">
+            <span className="text-indigo-600 text-xs">●</span>
+          </div>
+          <p className="text-gray-700">
+            <span className="inline-block w-16 font-medium">Ngày:</span>
+            <span>{format(new Date(record.date), "dd/MM/yyyy")}</span>
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-4 pt-4 border-t border-dashed border-gray-200">
+        <div className="flex items-start">
+          <div className="w-4 h-4 rounded-full bg-amber-100 flex items-center justify-center mt-0.5 mr-2">
+            <span className="text-amber-600 text-xs">!</span>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-gray-700">Phản ứng:</p>
+            <p className="text-sm text-gray-600 line-clamp-2">
+              {record.reaction || "Chưa ghi nhận phản ứng"}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="absolute bottom-2 right-2 text-xs text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity">
+        <FiEdit size={14} />
+      </div>
+    </motion.div>
+  );
+
+  if (loading) return <SkeletonLoader />;
+  if (error)
+    return (
+      <div className="p-4 bg-red-50 border-l-4 border-red-400 text-red-700 rounded">
+        <p className="flex items-center">
+          <span className="mr-2">⚠️</span>
+          {error}
+        </p>
+      </div>
+    );
 
   return (
-    <div className="p-4">
-      <h2 className="text-3xl font-bold mb-4">Quản Lý Báo Cáo Phản Ứng</h2>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <header className="mb-8">
+        <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          Báo Cáo Phản Ứng
+        </h2>
+        <p className="text-gray-500">
+          Quản lý và theo dõi phản ứng sau tiêm chủng
+        </p>
+      </header>
 
       {/* Khung tìm kiếm */}
-      <div className="mb-6 p-4 border rounded-md">
-        <div className="flex items-center space-x-4 mb-4">
-          <input
-            type={searchMethod === "ngay" ? "hidden" : "text"}
-            placeholder="Nhập từ khóa..."
-            value={searchMethod === "ngay" ? "" : searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            className="px-3 py-2 border rounded-md flex-1"
-          />
-          <select
-            value={searchMethod}
-            onChange={(e) => {
-              setSearchMethod(e.target.value);
-              setSearchText("");
-              setFromDate("");
-              setToDate("");
-            }}
-            className="px-3 py-2 border rounded-md last"
-          >
-            {searchOptions.map((option) => (
-              <option key={option.key} value={option.key}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-        {searchMethod === "ngay" && (
-          <div className="flex items-center space-x-4">
-            <input
-              type="date"
-              value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
-              className="px-3 py-2 border rounded-md"
-              placeholder="Từ ngày"
-            />
-            <input
-              type="date"
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
-              className="px-3 py-2 border rounded-md"
-              placeholder="Đến ngày"
-            />
+      <div className="mb-8 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex-1">
+            {searchMethod !== "ngay" ? (
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder={`Tìm theo ${
+                    searchOptions.find((opt) => opt.key === searchMethod)
+                      ?.label || ""
+                  }...`}
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200"
+                />
+                <span className="absolute left-3 top-3.5 text-gray-400">
+                  <FiSearch size={18} />
+                </span>
+              </div>
+            ) : (
+              <div className="flex gap-4">
+                <div className="relative flex-1">
+                  <input
+                    type="date"
+                    value={fromDate}
+                    onChange={(e) => setFromDate(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200"
+                  />
+                  <span className="absolute left-3 top-3.5 text-gray-400">
+                    <FiCalendar size={18} />
+                  </span>
+                </div>
+                <div className="relative flex-1">
+                  <input
+                    type="date"
+                    value={toDate}
+                    onChange={(e) => setToDate(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200"
+                  />
+                  <span className="absolute left-3 top-3.5 text-gray-400">
+                    <FiCalendar size={18} />
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
-        )}
+          <div className="w-full md:w-48">
+            <select
+              value={searchMethod}
+              onChange={(e) => {
+                setSearchMethod(e.target.value);
+                setSearchText("");
+                setFromDate("");
+                setToDate("");
+              }}
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent appearance-none bg-white transition-all duration-200"
+            >
+              {searchOptions.map((option) => (
+                <option key={option.key} value={option.key}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
       </div>
 
       {/* Danh sách báo cáo phản ứng */}
       {filteredRecords.length > 0 ? (
-        <div className="flex space-x-4 ">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredRecords.map((record) => renderRecordCard(record))}
         </div>
       ) : (
-        <p>Không có báo cáo phản ứng nào phù hợp.</p>
+        <div className="text-center py-12 bg-gray-50 rounded-lg">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+            <FiSearch size={24} className="text-gray-400" />
+          </div>
+          <p className="text-gray-500">
+            Không có báo cáo phản ứng nào phù hợp.
+          </p>
+        </div>
       )}
 
       {/* Modal chỉnh sửa phản ứng */}
-      {modalVisible && selectedRecord && (
-        <div className="fixed inset-0 bg-opacity-60 backdrop-blur-2xl flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 shadow-2xl max-w-lg w-full relative">
-            <button
-              onClick={closeModal}
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl font-bold"
+      <AnimatePresence>
+        {modalVisible && selectedRecord && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-white rounded-2xl p-8 shadow-xl max-w-lg w-full relative overflow-hidden"
             >
-              &times;
-            </button>
-            <h3 className="text-2xl font-bold mb-4">
-              Chi tiết báo cáo: {selectedRecord.medicalHistoryId}
-            </h3>
-            <p className="mb-2 font-bold">
-              Tên Khách Hàng: {selectedRecord.child.customer.firstName}{" "}
-              {selectedRecord.child.customer.lastName}
-            </p>
-            <p className="mb-2">
-              Trẻ em: {selectedRecord.child.firstName}{" "}
-              {selectedRecord.child.lastName}
-            </p>
-            <p className="mb-2">Vaccine: {selectedRecord.vaccine.name}</p>
-            <p className="mb-2">
-              Ngày tiêm: {format(new Date(selectedRecord.date), "dd/MM/yyyy")}
-            </p>
-            <div className="mb-4">
-              <label className="font-bold block mb-1">Phản Ứng:</label>
-              <textarea
-                value={editedReaction}
-                onChange={(e) => setEditedReaction(e.target.value)}
-                rows="4"
-                className="w-full border rounded px-3 py-2"
-                placeholder="Nhập phản ứng..."
-              />
-            </div>
-            <button
-              onClick={handleSaveReaction}
-              className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded"
-            >
-              Lưu
-            </button>
-          </div>
-        </div>
-      )}
+              {/* Decorative background elements */}
+              <div className="absolute -top-10 -right-10 w-40 h-40 bg-teal-50 rounded-full opacity-50"></div>
+              <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-indigo-50 rounded-full opacity-50"></div>
+
+              <button
+                onClick={closeModal}
+                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 transition-colors duration-200"
+              >
+                <FiX size={18} />
+              </button>
+
+              <div className="relative">
+                <h3 className="text-2xl font-bold text-gray-800 mb-1">
+                  Chi tiết báo cáo
+                </h3>
+                <p className="text-sm text-gray-400 mb-4">
+                  ID: {selectedRecord.medicalHistoryId}
+                </p>
+
+                <div className="space-y-4 mb-6">
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="mb-2">
+                      <h4 className="font-semibold text-teal-700 text-lg mb-1">
+                        {selectedRecord.child.firstName}{" "}
+                        {selectedRecord.child.lastName}
+                      </h4>
+                      <p className="text-sm text-gray-600">
+                        <span className="font-medium">Phụ huynh:</span>{" "}
+                        {selectedRecord.child.customer.firstName}{" "}
+                        {selectedRecord.child.customer.lastName}
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="text-gray-500 mb-1">Vaccine</p>
+                        <p className="font-medium">
+                          {selectedRecord.vaccine.name}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-gray-500 mb-1">Ngày tiêm</p>
+                        <p className="font-medium">
+                          {format(new Date(selectedRecord.date), "dd/MM/yyyy")}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Phản ứng sau tiêm:
+                    </label>
+                    <textarea
+                      value={editedReaction}
+                      onChange={(e) => setEditedReaction(e.target.value)}
+                      rows="4"
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 resize-none"
+                      placeholder="Mô tả phản ứng sau tiêm chủng..."
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end space-x-3">
+                  <button
+                    onClick={closeModal}
+                    className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200"
+                  >
+                    Hủy
+                  </button>
+                  <button
+                    onClick={handleSaveReaction}
+                    className="px-6 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg shadow-sm hover:shadow transition-all duration-200"
+                  >
+                    Lưu thay đổi
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
