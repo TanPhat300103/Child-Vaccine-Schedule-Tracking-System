@@ -1,16 +1,17 @@
 // src/pages/Staff/Bookings.jsx
 import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 import {
   getAllBookings,
   cancelBooking,
   confirmBooking,
   getBookingDetailByBooking,
   rescheduleBooking,
-  // Bỏ phần getPaymentByBookingID vì không cần dùng nữa
 } from "../../apis/api";
 
 const Bookings = () => {
+  const navigate = useNavigate();
   const [bookings, setBookings] = useState([]);
   const [filteredBookings, setFilteredBookings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,15 +24,15 @@ const Bookings = () => {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
 
-  // Các trạng thái: "daHoanThanh" (status === 0) và "daHuy" (status === 1)
-  const [selectedStatus, setSelectedStatus] = useState("daHoanThanh");
+  // Các trạng thái: "daDat" (Đã Đặt), "daHoanThanh" (Đã Hoàn Thành) và "daHuy" (Đã Hủy)
+  const [selectedStatus, setSelectedStatus] = useState("daDat");
 
-  // Modal để hiển thị chi tiết booking
+  // Modal để hiển thị chi tiết booking (cho các trạng thái khác ngoài Đã Đặt)
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [bookingDetails, setBookingDetails] = useState([]);
-
   const [isExpanded, setIsExpanded] = useState(false);
+
   // Lấy danh sách booking từ backend
   const fetchBookings = async () => {
     try {
@@ -78,14 +79,13 @@ const Bookings = () => {
       filtered = filtered.filter((b) => b.totalAmount <= Number(maxPrice));
     }
     // Lọc theo trạng thái đã chọn:
-    filtered = filtered.filter((b) => {
-      if (selectedStatus === "daHoanThanh") {
-        return b.status === 2;
-      } else if (selectedStatus === "daHuy") {
-        return b.status === 3;
-      }
-      return true;
-    });
+    if (selectedStatus === "daDat") {
+      filtered = filtered.filter((b) => b.status === 1);
+    } else if (selectedStatus === "daHoanThanh") {
+      filtered = filtered.filter((b) => b.status === 2);
+    } else if (selectedStatus === "daHuy") {
+      filtered = filtered.filter((b) => b.status === 3);
+    }
     console.log("Filtered bookings:", filtered);
     setFilteredBookings(filtered);
   }, [
@@ -98,7 +98,7 @@ const Bookings = () => {
     selectedStatus,
   ]);
 
-  // Xử lý hành động huỷ booking
+  // Xử lý hành động huỷ booking (cho trạng thái Đã Đặt)
   const handleCancelBooking = async (bookingId) => {
     try {
       console.log("Gọi API cancelBooking cho bookingId:", bookingId);
@@ -110,7 +110,7 @@ const Bookings = () => {
     }
   };
 
-  // Xử lý đặt lại booking
+  // Xử lý đặt lại booking (cho trạng thái Đã Hủy)
   const handleRescheduleBooking = async (bookingId) => {
     try {
       console.log("Gọi API rescheduleBooking cho bookingId:", bookingId);
@@ -122,7 +122,7 @@ const Bookings = () => {
     }
   };
 
-  // Mở modal chi tiết booking và lấy chi tiết của booking đó
+  // Mở modal cho các trạng thái không phải "Đã Đặt"
   const openBookingModal = async (booking) => {
     setSelectedBooking(booking);
     try {
@@ -169,12 +169,23 @@ const Bookings = () => {
     }
   };
 
-  // Render từng thẻ booking với nút Hủy hoặc Đặt Lại tùy theo trạng thái
+  // Xử lý sự kiện click vào thẻ booking
+  const handleBookingClick = (booking) => {
+    // Nếu booking ở trạng thái "Đã Đặt" (status === 1) thì điều hướng sang trang BookingDetail.jsx
+    if (booking.status === 1) {
+      navigate(`/booking-detail/${booking.bookingId}`);
+    } else {
+      // Các trạng thái khác thì mở modal để xem chi tiết (hoặc xử lý khác nếu cần)
+      openBookingModal(booking);
+    }
+  };
+
+  // Render từng thẻ booking với các hành động tương ứng theo trạng thái
   const renderBookingCard = (booking) => (
     <div
       key={booking.bookingId}
       className="p-4 border rounded-md shadow-sm cursor-pointer min-w-[250px] flex-shrink-0 hover:shadow-lg hover:scale-105 transition-transform duration-300"
-      onClick={() => openBookingModal(booking)}
+      onClick={() => handleBookingClick(booking)}
     >
       <p className="font-bold">Mã đặt lịch: {booking.bookingId}</p>
       {booking.customer && (
@@ -184,16 +195,19 @@ const Bookings = () => {
       )}
       <p>Ngày đặt: {format(new Date(booking.bookingDate), "dd/MM/yyyy")}</p>
       <p>Tổng tiền: {booking.totalAmount.toLocaleString()} VNĐ</p>
-      {booking.feedback && (
-        <p className="mt-2 text-sm italic">Feedback: {booking.feedback}</p>
-      )}
       <div className="mt-4">
-        {selectedStatus === "daHuy" && (
+        {booking.status === 3 && (
           <p className="text-red-600 font-bold">Đã Hủy</p>
+        )}
+        {booking.status === 2 && (
+          <p className="text-green-600 font-bold">Đã Hoàn Thành</p>
+        )}
+        {booking.status === 1 && (
+          <p className="text-blue-600 font-bold">Đã Đặt</p>
         )}
       </div>
       <div className="mt-4">
-        {selectedStatus === "daHoanThanh" && (
+        {booking.status === 1 && (
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -204,7 +218,7 @@ const Bookings = () => {
             Hủy
           </button>
         )}
-        {selectedStatus === "daHuy" && (
+        {booking.status === 3 && (
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -219,18 +233,15 @@ const Bookings = () => {
     </div>
   );
 
-  // Chỉ còn 2 trạng thái: Đã Hoàn Thành và Đã Hủy
+  // Cập nhật bộ lọc trạng thái với 3 lựa chọn
   const statusFilters = [
+    { key: "daDat", label: "Đã Đặt", style: "bg-blue-500 hover:bg-blue-600" },
     {
       key: "daHoanThanh",
       label: "Đã Hoàn Thành",
       style: "bg-green-500 hover:bg-green-600",
     },
-    {
-      key: "daHuy",
-      label: "Đã Hủy",
-      style: "bg-red-500 hover:bg-red-600",
-    },
+    { key: "daHuy", label: "Đã Hủy", style: "bg-red-500 hover:bg-red-600" },
   ];
 
   if (loading) return <p>Đang tải thông tin đặt lịch...</p>;
@@ -310,15 +321,15 @@ const Bookings = () => {
         <p>Không có đặt lịch nào phù hợp với tiêu chí tìm kiếm</p>
       )}
 
-      {/* Modal chi tiết booking */}
+      {/* Modal chi tiết booking cho các trạng thái khác "Đã Đặt" */}
       {modalVisible && selectedBooking && (
         <div
           className="fixed inset-0 bg-opacity-60 flex items-center justify-center backdrop-blur-md z-50"
-          onClick={closeModal} // Bấm ngoài modal để đóng
+          onClick={closeModal}
         >
           <div
             className="bg-white rounded-lg p-8 shadow-2xl max-w-2xl w-full relative max-h-[80vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()} // Ngăn không cho bấm vào trong modal đóng modal
+            onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={closeModal}
@@ -387,7 +398,6 @@ const Bookings = () => {
                         )}
                     </div>
                   ))}
-                  {/* Nếu có hơn 3 chi tiết và chưa mở rộng thì hiển thị nút "Xem thêm" */}
                   {!isExpanded && bookingDetails.length > 3 && (
                     <div className="text-center">
                       <button

@@ -264,61 +264,63 @@ const StaffPage = ({ staffName = "Nguyễn Văn A" }) => {
       >
         {/* Header - giữ lại để không thay đổi khi chuyển route */}
         <header className="bg-white shadow-md sticky top-0 z-10">
-  <div className="flex justify-between items-center px-6 py-4 bg-gradient-to-r from-white to-teal-50">
-    {/* Left: Title */}
-    <h1 className="text-xl font-semibold text-gray-800 flex items-center space-x-2">
-      <FaHospital className="w-6 h-6 text-teal-600" />
-      <span>
-        <span className="text-teal-600">MedCare</span> - Bảng điều khiển
-      </span>
-    </h1>
+          <div className="flex justify-between items-center px-6 py-4 bg-gradient-to-r from-white to-teal-50">
+            {/* Left: Title */}
+            <h1 className="text-xl font-semibold text-gray-800 flex items-center space-x-2">
+              <FaHospital className="w-6 h-6 text-teal-600" />
+              <span>
+                <span className="text-teal-600">MedCare</span> - Bảng điều khiển
+              </span>
+            </h1>
 
-    {/* Right: Notification, Profile, and Logout */}
-    <div className="flex items-center space-x-6">
-      {/* Notification */}
-      <div className="relative">
-        <Notification
-          roleId={2}
-          className="p-2 text-gray-500 hover:text-teal-600 hover:bg-teal-100 rounded-full transition-all duration-200 focus:outline-none"
-        />
-      </div>
+            {/* Right: Notification, Profile, and Logout */}
+            <div className="flex items-center space-x-6">
+              {/* Notification */}
+              <div className="relative">
+                <Notification
+                  roleId={2}
+                  className="p-2 text-gray-500 hover:text-teal-600 hover:bg-teal-100 rounded-full transition-all duration-200 focus:outline-none"
+                />
+              </div>
 
-      {/* Profile Dropdown */}
-      <div className="relative group">
-        <button className="flex items-center space-x-3 focus:outline-none">
-          <div className="w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center text-white font-semibold text-lg">
-            {staffName.charAt(0)}
-          </div>
-          <div className="text-left hidden md:block">
-            <p className="text-sm font-medium text-gray-800">{staffName}</p>
-            <p className="text-xs text-gray-500">Nhân viên y tế</p>
-          </div>
-          <FiChevronDown className="w-5 h-5 text-gray-600 group-hover:text-teal-600 transition-colors" />
-        </button>
+              {/* Profile Dropdown */}
+              <div className="relative group">
+                <button className="flex items-center space-x-3 focus:outline-none">
+                  <div className="w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center text-white font-semibold text-lg">
+                    {staffName.charAt(0)}
+                  </div>
+                  <div className="text-left hidden md:block">
+                    <p className="text-sm font-medium text-gray-800">
+                      {staffName}
+                    </p>
+                    <p className="text-xs text-gray-500">Nhân viên y tế</p>
+                  </div>
+                  <FiChevronDown className="w-5 h-5 text-gray-600 group-hover:text-teal-600 transition-colors" />
+                </button>
 
-        {/* Dropdown Menu */}
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-1">
-          <div className="py-2">
-            <Link
-              to="/staff/profile"
-              className="flex items-center px-4 py-2 text-gray-700 hover:bg-teal-50 hover:text-teal-600 transition-colors"
-            >
-              <FiSettings className="w-5 h-5 mr-2" />
-              <span>Hồ sơ</span>
-            </Link>
-            <button
-              onClick={() => navigate("/")}
-              className="flex items-center w-full text-left px-4 py-2 text-gray-700 hover:bg-teal-50 hover:text-teal-600 transition-colors"
-            >
-              <FiLogOut className="w-5 h-5 mr-2" />
-              <span>Đăng xuất</span>
-            </button>
+                {/* Dropdown Menu */}
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-1">
+                  <div className="py-2">
+                    <Link
+                      to="/staff/profile"
+                      className="flex items-center px-4 py-2 text-gray-700 hover:bg-teal-50 hover:text-teal-600 transition-colors"
+                    >
+                      <FiSettings className="w-5 h-5 mr-2" />
+                      <span>Hồ sơ</span>
+                    </Link>
+                    <button
+                      onClick={() => navigate("/")}
+                      className="flex items-center w-full text-left px-4 py-2 text-gray-700 hover:bg-teal-50 hover:text-teal-600 transition-colors"
+                    >
+                      <FiLogOut className="w-5 h-5 mr-2" />
+                      <span>Đăng xuất</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</header>
+        </header>
 
         {/* Nội dung trang */}
         <main className="p-6">

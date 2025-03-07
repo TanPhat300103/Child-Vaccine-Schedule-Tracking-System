@@ -17,9 +17,7 @@ import {
   FaTimes,
   FaChild,
   FaMoneyCheckAlt,
-
 } from "react-icons/fa";
-
 
 const BookingCustomer = () => {
   const [bookings, setBookings] = useState([]);
@@ -87,7 +85,6 @@ const BookingCustomer = () => {
   const handleCardClick = async (booking) => {
     setSelectedBooking(booking);
     try {
-
       // Nếu booking đã có bookingDetails thì không cần fetch lại
       if (!booking.bookingDetails) {
         const details = await getBookingDetailByBooking(booking.bookingId);
@@ -97,7 +94,6 @@ const BookingCustomer = () => {
       } else {
         setBookingDetails(booking.bookingDetails);
       }
-
     } catch (err) {
       setBookingDetails([]);
     }
@@ -131,7 +127,6 @@ const BookingCustomer = () => {
     fetchBookings();
   };
 
-
   const statusLabels = { 0: "Đã Đặt", 2: "Đã Hoàn Thành", 3: "Đã Huỷ" };
 
   const renderBookingCard = (booking) => {
@@ -159,7 +154,6 @@ const BookingCustomer = () => {
           />
         </div>
 
-
         <div className="relative z-10 pl-10 space-y-2">
           <p className="font-semibold text-blue-600 text-lg">
             Mã đặt lịch: {booking.bookingId}
@@ -174,13 +168,12 @@ const BookingCustomer = () => {
           </p>
         </div>
 
-
         {/* Nút hành động */}
         <div className="mt-4 flex space-x-3 z-10 relative">
           {booking.status === 0 && (
             <>
               <NavLink
-                to="/paymentVnpay2"
+                to="/paymentVnpay"
                 onClick={(e) => {
                   e.stopPropagation();
                   handlePaymentClick(booking);
@@ -223,17 +216,14 @@ const BookingCustomer = () => {
               <span className="px-4 py-2 text-gray-500">Chờ Ngày Tiêm</span>
             )}
           {booking.status === 3 && (
-
             <button
               onClick={(e) => handleRescheduleBooking(booking.bookingId, e)}
               className="px-4 py-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-all duration-200"
             >
               Đặt Lại
             </button>
-
           )}
         </div>
-
       </div>
     );
   };
