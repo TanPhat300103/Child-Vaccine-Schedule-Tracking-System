@@ -61,13 +61,10 @@ import { AuthProvider } from "../components/common/AuthContext.jsx";
 import VNPAY from "../pages/Payment/VNPAY.jsx";
 
 import CancelPayment from "../pages/Payment/CancelPayment.jsx";
-
-
-
-
+import PriceVaccine from "../components/homepage/PriceVaccine.jsx";
+import PaymentVnpay from "../pages/Payment/PaymentVNPay.jsx";
 
 // import BookingPage from "../apis/test.jsx";
-
 
 const Main = () => {
   return (
@@ -109,7 +106,7 @@ const Main = () => {
               <Route path="/cart" element={<Cart />} />
               <Route path="/feedback" element={<Feedback />} />
 
-              <Route path="/price-vaccine2" element={<PriceVaccine2 />} />
+              <Route path="/price-vaccine" element={<PriceVaccine />} />
               <Route path="/header" element={<Header />} />
               <Route path="/footer" element={<Footer />} />
               <Route path="/auth" element={<AuthProvider />} />
