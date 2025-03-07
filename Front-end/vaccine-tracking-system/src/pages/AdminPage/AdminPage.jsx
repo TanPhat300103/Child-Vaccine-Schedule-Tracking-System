@@ -35,6 +35,7 @@ const AdminPage = () => {
   const navigate = useNavigate();
   const { userInfo } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  console.log(userInfo);
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
