@@ -24,7 +24,7 @@ const CancelPayment = () => {
       setStatusMessage("Thành công");
       setStatusClass("bg-green-50 text-green-600");
       setHeaderClass("bg-green-600 text-white"); // Set header for success
-    } else if (status === "FAIL") {
+    } else if (status === "FAILED") {
       setStatusMessage("Bị hủy");
       setStatusClass("bg-red-50 text-red-600");
       setHeaderClass("bg-red-600 text-white"); // Set header for failure

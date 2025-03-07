@@ -17,7 +17,9 @@ import {
   FaTimes,
   FaChild,
   FaMoneyCheckAlt,
+
 } from "react-icons/fa";
+
 
 const BookingCustomer = () => {
   const [bookings, setBookings] = useState([]);
@@ -85,6 +87,7 @@ const BookingCustomer = () => {
   const handleCardClick = async (booking) => {
     setSelectedBooking(booking);
     try {
+
       // Nếu booking đã có bookingDetails thì không cần fetch lại
       if (!booking.bookingDetails) {
         const details = await getBookingDetailByBooking(booking.bookingId);
@@ -94,6 +97,7 @@ const BookingCustomer = () => {
       } else {
         setBookingDetails(booking.bookingDetails);
       }
+
     } catch (err) {
       setBookingDetails([]);
     }
@@ -127,6 +131,7 @@ const BookingCustomer = () => {
     fetchBookings();
   };
 
+
   const statusLabels = { 0: "Đã Đặt", 2: "Đã Hoàn Thành", 3: "Đã Huỷ" };
 
   const renderBookingCard = (booking) => {
@@ -154,6 +159,7 @@ const BookingCustomer = () => {
           />
         </div>
 
+
         <div className="relative z-10 pl-10 space-y-2">
           <p className="font-semibold text-blue-600 text-lg">
             Mã đặt lịch: {booking.bookingId}
@@ -167,6 +173,7 @@ const BookingCustomer = () => {
             Tổng tiền: {booking.totalAmount.toLocaleString()} VNĐ
           </p>
         </div>
+
 
         {/* Nút hành động */}
         <div className="mt-4 flex space-x-3 z-10 relative">
@@ -216,14 +223,17 @@ const BookingCustomer = () => {
               <span className="px-4 py-2 text-gray-500">Chờ Ngày Tiêm</span>
             )}
           {booking.status === 3 && (
+
             <button
               onClick={(e) => handleRescheduleBooking(booking.bookingId, e)}
               className="px-4 py-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-all duration-200"
             >
               Đặt Lại
             </button>
+
           )}
         </div>
+
       </div>
     );
   };
@@ -252,12 +262,12 @@ const BookingCustomer = () => {
 
         {/* Bộ lọc trạng thái */}
         <div className="flex justify-center space-x-4 mb-8">
-          {[0, 2, 3].map((status) => (
+          {[1, 2, 3].map((status) => (
             <button
               key={status}
               onClick={() => handleStatusClick(status)}
               className={`px-6 py-3 rounded-full font-semibold text-white shadow-md hover:shadow-lg transition-all duration-300 ${
-                status === 0
+                status === 1
                   ? "bg-blue-500 hover:bg-blue-600"
                   : status === 2
                   ? "bg-green-500 hover:bg-green-600"
