@@ -1,423 +1,357 @@
-import React, { useEffect, useState } from "react";
-import { useLocation, NavLink } from "react-router-dom";
-import { getBookingByCustomerId, getPaymentByBookingID } from "../../apis/api";
-import { format } from "date-fns";
-import { useAuth } from "../../components/common/AuthContext.jsx";
+import { useState, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import "../CustomerPage/BookingCustomer.css";
 import {
-  CreditCard,
   Calendar,
+  DollarSign,
+  ChevronDown,
+  ChevronUp,
+  User,
+  BookOpen,
+  CreditCard,
   CheckCircle,
-  Clock,
-  Search,
-  ArrowUpDown,
-  Stethoscope,
-  PiggyBank,
-  FileText,
-  Calendar as CalendarIcon,
+  XCircle,
+  Download,
 } from "lucide-react";
+import { useAuth } from "../../components/common/AuthContext";
+import { FaMoneyCheckAlt } from "react-icons/fa";
 
-const PaymentCustomer = () => {
-  const [selectedPaymentStatus, setSelectedPaymentStatus] = useState(true);
+function PaymentCustomer() {
+  const navigate = useNavigate();
+  const { userInfo } = useAuth();
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortOrder, setSortOrder] = useState("desc");
-  const { userInfo } = useAuth();
+  const [activeTab, setActiveTab] = useState("payments");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [expandedPaymentId, setExpandedPaymentId] = useState(null);
+  const [bookings, setBookings] = useState([]);
+  const [filterStatus, setFilterStatus] = useState("all"); // Bộ lọc trạng thái thanh toán
 
-  const location = useLocation();
-  const customerId = location.state?.customerId || userInfo.userId;
-
-  const fetchPayments = async () => {
-    try {
-      const bookings = await getBookingByCustomerId(customerId);
-      const paymentsData = await Promise.all(
-        bookings.map((booking) => getPaymentByBookingID(booking.bookingId))
-      );
-      const validPayments = paymentsData.filter((payment) => payment);
-      setPayments(validPayments);
-    } catch (err) {
-      setError("Không thể lấy thông tin thanh toán");
-    } finally {
-      setLoading(false);
-    }
+  const handlePayment = (paymentId) => {
+    navigate(`/payment-process/${paymentId}`);
+  };
+  const handlePaymentClick = (booking) => {
+    const bookingData = {
+      bookingId: booking.bookingId,
+      bookingDate: booking.bookingDate,
+      totalAmount: booking.totalAmount,
+    };
+    localStorage.setItem("bookingData", JSON.stringify(bookingData));
+  };
+  const handleDownload = (paymentId) => {
+    // Placeholder cho chức năng tải hóa đơn
+    alert(`Tải xuống hóa đơn #${paymentId} dưới dạng PDF...`);
   };
 
   useEffect(() => {
-    if (customerId) {
-      fetchPayments();
+    const fetchData = async () => {
+      if (!userInfo?.userId) {
+        setError("Không tìm thấy ID người dùng");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const bookingsResponse = await fetch(
+          `http://localhost:8080/booking/findbycustomer?customerId=${userInfo.userId}`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+        if (!bookingsResponse.ok)
+          throw new Error("Không tìm thấy danh sách booking");
+        const bookingsData = await bookingsResponse.json();
+        setBookings(bookingsData);
+
+        const paymentsResponse = await fetch(
+          `http://localhost:8080/payment/getbycustomerid?customerId=${userInfo.userId}`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+        if (!paymentsResponse.ok)
+          throw new Error("Không tìm thấy danh sách hóa đơn");
+        const paymentsData = await paymentsResponse.json();
+        console.log("Payments data:", paymentsData);
+
+        const sortedPayments = paymentsData.sort(
+          (a, b) => new Date(a.date) - new Date(b.date)
+        );
+        setPayments(sortedPayments);
+      } catch (err) {
+        setError("Lỗi khi lấy dữ liệu: " + err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [userInfo]);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    if (tab === "profile") {
+      navigate("/profile");
+    } else if (tab === "children") {
+      navigate("/profile");
+    } else if (tab === "bookings") {
+      setIsDropdownOpen(true);
+    } else if (tab === "payments") {
     }
-  }, [customerId]);
+  };
 
-  const filteredPayments = payments
-    .filter((p) => p.status === selectedPaymentStatus)
-    .filter(
-      (p) =>
-        p.paymentId.toString().includes(searchTerm) ||
-        (p.marketingCampaign &&
-          p.marketingCampaign.name
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()))
-    )
-    .sort((a, b) => {
-      const dateA = new Date(a.date);
-      const dateB = new Date(b.date);
-      return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
-    });
+  const handleBookingSelect = (selectedBookingId) => {
+    navigate(`/booking-detail/${selectedBookingId}`);
+    setIsDropdownOpen(false);
+  };
 
-  const totalAmount = filteredPayments.reduce(
-    (sum, payment) => sum + payment.total,
-    0
-  );
+  const togglePaymentDetail = (paymentId) => {
+    setExpandedPaymentId((prev) => (prev === paymentId ? null : paymentId));
+  };
+
+  const filteredPayments = payments.filter((payment) => {
+    if (filterStatus === "all") return true;
+    return filterStatus === "paid" ? payment.status : !payment.status;
+  });
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
-        <div className="text-center">
-          <div className="inline-block w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-blue-600 font-medium">
-            Đang tải thông tin thanh toán...
-          </p>
-        </div>
+      <div className="mypayment-loading">
+        <div className="mypayment-loading-spinner"></div>
+        <p>Đang tải danh sách hóa đơn...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-red-50 to-orange-50">
-        <div className="bg-white p-8 rounded-lg shadow-lg text-center max-w-md">
-          <div className="w-16 h-16 mx-auto mb-4 text-red-500">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </div>
-          <h3 className="text-xl font-bold text-red-700 mb-2">Đã xảy ra lỗi</h3>
-          <p className="text-gray-600">{error}</p>
-          <button
-            onClick={() => fetchPayments()}
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all"
-          >
-            Thử lại
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (payments.length === 0) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
-        <div className="bg-white p-8 rounded-lg shadow-lg text-center max-w-md">
-          <div className="w-16 h-16 mx-auto mb-4 text-blue-500">
-            <CreditCard size={64} />
-          </div>
-          <h3 className="text-xl font-bold text-blue-700 mb-2">
-            Chưa có thanh toán
-          </h3>
-          <p className="text-gray-600">Bạn chưa có lịch sử thanh toán nào</p>
-          <NavLink
-            to="/services"
-            className="mt-4 inline-block px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all"
-          >
-            Đặt lịch khám ngay
-          </NavLink>
-        </div>
+      <div className="mypayment-error">
+        <div className="mypayment-error-icon">❌</div>
+        <p>{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen p-6">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6">
-            <div className="flex items-center mb-4 md:mb-0">
-              <div className="bg-blue-100 p-3 rounded-lg mr-4">
-                <CreditCard className="text-blue-600" size={24} />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-800">
-                  Lịch sử thanh toán
-                </h1>
-                <p className="text-gray-500">
-                  Quản lý và theo dõi các thanh toán của bạn
-                </p>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Tìm theo mã thanh toán..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full sm:w-64"
-                />
-                <Search
-                  className="absolute left-3 top-2.5 text-gray-400"
-                  size={18}
-                />
-              </div>
-
-              <button
-                onClick={() =>
-                  setSortOrder(sortOrder === "desc" ? "asc" : "desc")
-                }
-                className="flex items-center justify-center px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors"
+    <div className="mypayment-container">
+      <div className="mypayment-content">
+        <div className="mypayment-main">
+          <div className="mypayment-section">
+            <h2 className="mypayment-section-title">Danh Sách Hóa Đơn</h2>
+            <div className="mypayment-filter">
+              <label>Lọc theo trạng thái: </label>
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
               >
-                <ArrowUpDown size={18} className="mr-2" />
-                <span>{sortOrder === "desc" ? "Mới nhất" : "Cũ nhất"}</span>
-              </button>
+                <option value="all">Tất cả</option>
+                <option value="paid">Đã thanh toán</option>
+                <option value="unpaid">Chưa thanh toán</option>
+              </select>
             </div>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-4 text-white shadow-md">
-              <div className="flex items-center">
-                <div className="bg-white/20 p-3 rounded-lg">
-                  <FileText className="text-white" size={20} />
-                </div>
-                <div className="ml-3">
-                  <p className="text-blue-100">Tổng thanh toán</p>
-                  <h3 className="text-2xl font-bold">{payments.length}</h3>
-                </div>
+            {filteredPayments.length > 0 ? (
+              <div className="mypayment-table-wrapper">
+                <table className="mypayment-table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Hóa đơn</th>
+                      <th>Ngày</th>
+                      <th>Tổng tiền</th>
+                      <th>Trạng thái</th>
+                      <th>Phương thức</th>
+                      <th>Thao tác</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredPayments.map((payment, index) => {
+                      const isExpanded =
+                        payment.paymentId === expandedPaymentId;
+                      const statusClass = payment.status
+                        ? "active"
+                        : "inactive";
+                      const dueDate = new Date(payment.date);
+                      dueDate.setDate(dueDate.getDate() + 7); // Giả lập ngày đến hạn
+                      return (
+                        <>
+                          <tr
+                            key={payment.paymentId}
+                            className={`mypayment-row ${statusClass}`}
+                            onClick={() =>
+                              togglePaymentDetail(payment.paymentId)
+                            }
+                          >
+                            <td>{index + 1}</td>
+                            <td>Hóa đơn #{payment.paymentId}</td>
+                            <td>
+                              {new Date(payment.date).toLocaleDateString(
+                                "vi-VN"
+                              )}
+                            </td>
+                            <td>{payment.total.toLocaleString("vi-VN")} VNĐ</td>
+                            <td>
+                              <span
+                                className={`mypayment-status ${statusClass}`}
+                              >
+                                {payment.status
+                                  ? "Đã thanh toán"
+                                  : "Chưa thanh toán"}
+                              </span>
+                            </td>
+                            <td>
+                              {payment.method ? "Chuyển khoản" : "Tại quầy"}
+                            </td>
+                            <td>
+                              {!payment.status && (
+                                <NavLink
+                                  to="/paymentVnpay"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handlePaymentClick(payment.booking);
+                                  }}
+                                  className="flex-1 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg flex justify-center items-center font-medium transition-all hover:from-blue-600 hover:to-blue-700"
+                                >
+                                  <FaMoneyCheckAlt className="mr-2" /> Thanh
+                                  Toán
+                                </NavLink>
+                              )}
+                              <button
+                                className="mypayment-download-btn"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDownload(payment.paymentId);
+                                }}
+                              >
+                                <Download size={16} />
+                              </button>
+                            </td>
+                          </tr>
+                          {isExpanded && (
+                            <tr className="mypayment-expanded-row">
+                              <td colSpan="7">
+                                <div className="mypayment-card-details">
+                                  <div className="mypayment-detail-section">
+                                    <h4>Thông Tin Booking</h4>
+                                    <div className="mypayment-detail-item">
+                                      <span className="mypayment-detail-label">
+                                        Booking ID:
+                                      </span>
+                                      <span className="mypayment-detail-value">
+                                        {payment.booking.bookingId}
+                                      </span>
+                                    </div>
+                                    <div className="mypayment-detail-item">
+                                      <span className="mypayment-detail-label">
+                                        Ngày Booking:
+                                      </span>
+                                      <span className="mypayment-detail-value">
+                                        {new Date(
+                                          payment.booking.bookingDate
+                                        ).toLocaleDateString("vi-VN")}
+                                      </span>
+                                    </div>
+                                  </div>
+                                  <div className="mypayment-detail-section">
+                                    <h4>Thông Tin Thanh Toán</h4>
+                                    <div className="mypayment-detail-item">
+                                      <span className="mypayment-detail-label">
+                                        Hóa đơn ID:
+                                      </span>
+                                      <span className="mypayment-detail-value">
+                                        {payment.paymentId}
+                                      </span>
+                                    </div>
+                                    <div className="mypayment-detail-item">
+                                      <span className="mypayment-detail-label">
+                                        Ngày thanh toán:
+                                      </span>
+                                      <span className="mypayment-detail-value">
+                                        {payment.status
+                                          ? new Date(
+                                              payment.date
+                                            ).toLocaleDateString("vi-VN")
+                                          : "----"}
+                                      </span>
+                                    </div>
+                                    <div className="mypayment-detail-item">
+                                      <span className="mypayment-detail-label">
+                                        Tổng tiền:
+                                      </span>
+                                      <span className="mypayment-detail-value">
+                                        {payment.total.toLocaleString("vi-VN")}{" "}
+                                        VNĐ
+                                      </span>
+                                    </div>
+                                    <div className="mypayment-detail-item">
+                                      <span className="mypayment-detail-label">
+                                        Phương thức:
+                                      </span>
+                                      <span className="mypayment-detail-value">
+                                        {payment.method
+                                          ? "Chuyển khoản"
+                                          : "Tại quầy"}
+                                      </span>
+                                    </div>
+                                    <div className="mypayment-detail-item">
+                                      <span className="mypayment-detail-label">
+                                        Trạng thái:
+                                      </span>
+                                      <span
+                                        className={`mypayment-status ${statusClass}`}
+                                      >
+                                        {payment.status
+                                          ? "Đã thanh toán"
+                                          : "Chưa thanh toán"}
+                                      </span>
+                                    </div>
+                                    <div className="mypayment-detail-item">
+                                      <span className="mypayment-detail-label">
+                                        Mã giao dịch:
+                                      </span>
+                                      <span className="mypayment-detail-value">
+                                        {payment.transactionId || "Không có"}
+                                      </span>
+                                    </div>
+                                    <div className="mypayment-detail-item">
+                                      <span className="mypayment-detail-label">
+                                        Chiến dịch tiếp thị:
+                                      </span>
+                                      <span className="mypayment-detail-value">
+                                        {payment.marketingCampaign &&
+                                        payment.marketingCampaign.coupon
+                                          ? payment.marketingCampaign.coupon
+                                          : "Không có"}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          )}
+                        </>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
-            </div>
-
-            <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-4 text-white shadow-md">
-              <div className="flex items-center">
-                <div className="bg-white/20 p-3 rounded-lg">
-                  <CheckCircle className="text-white" size={20} />
-                </div>
-                <div className="ml-3">
-                  <p className="text-green-100">Đã thanh toán</p>
-                  <h3 className="text-2xl font-bold">
-                    {payments.filter((p) => p.status === true).length}
-                  </h3>
-                </div>
+            ) : (
+              <div className="mypayment-no-payments">
+                <div className="mypayment-no-data-icon">💳</div>
+                <p>Không có hóa đơn nào.</p>
               </div>
-            </div>
-
-            <div className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl p-4 text-white shadow-md">
-              <div className="flex items-center">
-                <div className="bg-white/20 p-3 rounded-lg">
-                  <PiggyBank className="text-white" size={20} />
-                </div>
-                <div className="ml-3">
-                  <p className="text-purple-100">
-                    Tổng tiền (
-                    {selectedPaymentStatus
-                      ? "đã thanh toán"
-                      : "chưa thanh toán"}
-                    )
-                  </p>
-                  <h3 className="text-2xl font-bold">
-                    {totalAmount.toLocaleString()} VNĐ
-                  </h3>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Tab Buttons */}
-          <div className="flex flex-wrap gap-3 mb-6">
-            <button
-              onClick={() => setSelectedPaymentStatus(true)}
-              className={`px-5 py-2.5 rounded-lg font-medium transition-all flex items-center
-                ${
-                  selectedPaymentStatus === true
-                    ? "bg-blue-500 text-white shadow-md"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-            >
-              <CheckCircle size={18} className="mr-2" />
-              Đã Thanh Toán ({payments.filter((p) => p.status === true).length})
-            </button>
-            <button
-              onClick={() => setSelectedPaymentStatus(false)}
-              className={`px-5 py-2.5 rounded-lg font-medium transition-all flex items-center
-                ${
-                  selectedPaymentStatus === false
-                    ? "bg-orange-500 text-white shadow-md"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-            >
-              <Clock size={18} className="mr-2" />
-              Chưa Thanh Toán (
-              {payments.filter((p) => p.status === false).length})
-            </button>
+            )}
           </div>
         </div>
-
-        {/* Payments List */}
-        {filteredPayments.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPayments.map((payment) => (
-              <div
-                key={payment.paymentId}
-                className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
-              >
-                <div
-                  className={`p-4 ${
-                    payment.status ? "bg-green-500" : "bg-orange-500"
-                  } text-white`}
-                >
-                  <div className="flex justify-between items-center">
-                    <h3 className="font-bold">
-                      Mã thanh toán: #{payment.paymentId}
-                    </h3>
-                    {payment.status ? (
-                      <span className="bg-green-400 text-white text-xs font-medium px-2.5 py-1 rounded-full flex items-center">
-                        <CheckCircle size={12} className="mr-1" />
-                        Đã thanh toán
-                      </span>
-                    ) : (
-                      <span className="bg-orange-400 text-white text-xs font-medium px-2.5 py-1 rounded-full flex items-center">
-                        <Clock size={12} className="mr-1" />
-                        Chưa thanh toán
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="p-5">
-                  <div className="space-y-3">
-                    <div className="flex items-start">
-                      <Calendar
-                        size={18}
-                        className="text-gray-500 mt-0.5 mr-3 flex-shrink-0"
-                      />
-                      <div>
-                        <p className="text-sm text-gray-500">Ngày thanh toán</p>
-                        <p className="font-medium">
-                          {format(new Date(payment.date), "dd/MM/yyyy")}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start">
-                      <PiggyBank
-                        size={18}
-                        className="text-gray-500 mt-0.5 mr-3 flex-shrink-0"
-                      />
-                      <div>
-                        <p className="text-sm text-gray-500">Tổng tiền</p>
-                        <p className="font-bold text-blue-600">
-                          {payment.total.toLocaleString()} VNĐ
-                        </p>
-                      </div>
-                    </div>
-
-                    {payment.booking && (
-                      <div className="flex items-start">
-                        <CalendarIcon
-                          size={18}
-                          className="text-gray-500 mt-0.5 mr-3 flex-shrink-0"
-                        />
-                        <div>
-                          <p className="text-sm text-gray-500">Ngày đặt lịch</p>
-                          <p className="font-medium">
-                            {format(
-                              new Date(payment.booking.bookingDate),
-                              "dd/MM/yyyy"
-                            )}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {payment.marketingCampaign && (
-                      <div className="flex items-start">
-                        <Stethoscope
-                          size={18}
-                          className="text-gray-500 mt-0.5 mr-3 flex-shrink-0"
-                        />
-                        <div>
-                          <p className="text-sm text-gray-500">Chiến dịch</p>
-                          <p className="font-medium">
-                            {payment.marketingCampaign.name}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="mt-6">
-                    {payment.status === false ? (
-                      <NavLink
-                        to="/paymentVnpay"
-                        className="inline-flex items-center justify-center w-full px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 font-medium"
-                        onClick={() => {
-                          const bookingData = {
-                            paymentId: payment.paymentId,
-                            bookingId: payment.booking.bookingId,
-                            totalAmount: payment.booking.totalAmount,
-                            bookingDate: payment.booking.bookingDate,
-                          };
-                          localStorage.setItem(
-                            "bookingData",
-                            JSON.stringify(bookingData)
-                          );
-                        }}
-                      >
-                        <CreditCard className="mr-2" size={18} />
-                        Thanh Toán Ngay
-                      </NavLink>
-                    ) : (
-                      <div className="flex items-center justify-center w-full px-4 py-3 bg-green-100 text-green-700 rounded-lg font-medium">
-                        <CheckCircle className="mr-2" size={18} />
-                        Đã Thanh Toán
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="bg-white rounded-2xl shadow-lg p-10 text-center">
-            <div className="w-16 h-16 mx-auto mb-4 text-gray-300">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-            </div>
-            <h3 className="text-xl font-bold text-gray-700 mb-2">
-              Không tìm thấy giao dịch
-            </h3>
-            <p className="text-gray-500">
-              Không có giao dịch nào phù hợp với trạng thái "
-              {selectedPaymentStatus ? "Đã Thanh Toán" : "Chưa Thanh Toán"}"
-              {searchTerm && ` và từ khóa "${searchTerm}"`}
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );
-};
+}
 
 export default PaymentCustomer;

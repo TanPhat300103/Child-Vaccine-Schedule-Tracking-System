@@ -1,0 +1,635 @@
+/* BookingDetailPage.css - Modern & Creative Design with Sidebar and Dropdown */
+
+/* Import Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Variables */
+:root {
+  --primary: #5e60ce; /* Tím đậm */
+  --primary-light: #48cae4; /* Xanh ngọc */
+  --secondary: #f72585; /* Hồng neon */
+  --background: #f0f4f8; /* Nền nhạt */
+  --card-bg: #ffffff; /* Nền card */
+  --text-dark: #1a1a3d; /* Đen đậm */
+  --text-light: #6b7280; /* Xám nhạt */
+  --success: #06d6a0; /* Xanh xác nhận - Đã tiêm */
+  --danger: #ef233c; /* Đỏ - Đã hủy */
+  --pending: #ffa500; /* Vàng - Chưa tiêm */
+  --shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.15);
+  --border-radius: 12px;
+  --transition: all 0.3s ease;
+}
+
+/* Global Styles */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--background);
+  margin: 0;
+  padding: 0;
+}
+
+/* Container */
+.bookingdetail-container {
+  max-width: 1300px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+/* Header */
+.bookingdetail-header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  border-radius: var(--border-radius);
+  padding: 30px;
+  box-shadow: var(--shadow);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.bookingdetail-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent 70%);
+  transform: rotate(20deg);
+}
+
+.bookingdetail-header-info {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  z-index: 1;
+  position: relative;
+}
+
+.bookingdetail-avatar {
+  width: 70px;
+  height: 70px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.bookingdetail-header-text h1 {
+  margin: 0 0 10px;
+  font-size: 28px;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.bookingdetail-header-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bookingdetail-header-details p {
+  margin: 0;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Content */
+.bookingdetail-content {
+  display: flex;
+  gap: 40px;
+  margin-top: 30px;
+}
+
+/* Sidebar */
+.bookingdetail-sidebar {
+  width: 280px;
+  background: linear-gradient(180deg, var(--card-bg), rgba(240, 244, 248, 0.8));
+  border-radius: var(--border-radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  flex-shrink: 0;
+  position: sticky;
+  top: 100px;
+  height: fit-content;
+  max-height: calc(100vh - 120px);
+}
+
+.bookingdetail-sidebar-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  color: var(--text-dark);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  background: var(--card-bg);
+  position: relative;
+}
+
+.bookingdetail-sidebar-item:hover {
+  background: rgba(94, 96, 206, 0.1);
+  transform: translateX(5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.bookingdetail-sidebar-item.active {
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(94, 96, 206, 0.2);
+}
+
+.bookingdetail-sidebar-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.bookingdetail-sidebar-placeholder {
+  width: 18px;
+  height: 18px;
+  visibility: hidden;
+}
+
+.bookingdetail-dropdown-toggle {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.bookingdetail-dropdown {
+  margin-top: 5px;
+  background: var(--card-bg);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 10px;
+  animation: slideDown 0.3s ease;
+}
+
+/* CSS cho dropdown item */
+.bookingdetail-dropdown-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 15px;
+  font-size: 14px;
+  color: var(--text-dark);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: var(--transition);
+}
+
+.bookingdetail-dropdown-item:hover {
+  background: rgba(94, 96, 206, 0.1);
+}
+
+.bookingdetail-dropdown-item.selected {
+  background: linear-gradient(90deg, var(--primary-light), var(--primary));
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Main Content */
+.bookingdetail-main {
+  flex: 1;
+  padding: 0 10px;
+}
+
+.bookingdetail-section {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 30px;
+  box-shadow: var(--shadow);
+}
+
+.bookingdetail-section-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 25px;
+  border-bottom: 2px solid var(--primary-light);
+  padding-bottom: 10px;
+}
+
+/* Timeline */
+.bookingdetail-details-list {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* Timeline line */
+.bookingdetail-details-list::before {
+  content: '';
+  position: absolute;
+  left: 48px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, var(--primary), var(--primary-light));
+  z-index: 0;
+}
+
+.bookingdetail-date-group {
+  position: relative;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.bookingdetail-date-label {
+  position: sticky;
+  top: 20px;
+  width: 80px;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary));
+  color: #fff;
+  border-radius: 20px;
+  padding: 8px 15px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+
+.bookingdetail-date-items {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.bookingdetail-card {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+.bookingdetail-card.active {
+  border-left: 5px solid var(--success);
+}
+
+.bookingdetail-card.inactive {
+  border-left: 5px solid var(--danger);
+}
+
+.bookingdetail-card.pending {
+  border-left: 5px solid var(--pending);
+}
+
+.bookingdetail-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
+}
+
+.bookingdetail-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--text-light);
+  cursor: pointer;
+}
+
+.bookingdetail-card-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+}
+
+.bookingdetail-card-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.bookingdetail-card-icon.active {
+  color: var(--success);
+}
+
+.bookingdetail-card-icon.inactive {
+  color: var(--danger);
+}
+
+.bookingdetail-card-icon.pending {
+  color: var(--pending);
+}
+
+.bookingdetail-card-info h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.bookingdetail-card-date {
+  margin: 5px 0 0;
+  font-size: 14px;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.bookingdetail-card-status {
+  margin: 5px 0 0;
+  font-size: 14px;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.bookingdetail-card-administered {
+  margin: 5px 0 0;
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+.bookingdetail-toggle-btn {
+  background: none;
+  border: none;
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.bookingdetail-toggle-btn:hover {
+  color: var(--primary);
+}
+
+.bookingdetail-card-details {
+  margin-top: 15px;
+  padding: 15px;
+  background: rgba(240, 244, 248, 0.5);
+  border-radius: 8px;
+}
+
+.bookingdetail-detail-section {
+  margin-bottom: 15px;
+}
+
+.bookingdetail-detail-section h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--text-light);
+  padding-bottom: 5px;
+}
+
+.bookingdetail-detail-item {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+  font-size: 14px;
+}
+
+.bookingdetail-detail-label {
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.bookingdetail-detail-value {
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+/* Reaction Update Form */
+.bookingdetail-reaction-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.bookingdetail-reaction-display {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.bookingdetail-reaction-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.bookingdetail-reaction-input {
+  padding: 10px;
+  border: 2px solid var(--text-light);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-dark);
+  background: #fff;
+  transition: var(--transition);
+  height: 60px;
+  resize: vertical;
+}
+
+.bookingdetail-reaction-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 8px rgba(94, 96, 206, 0.3);
+  outline: none;
+}
+
+.bookingdetail-reaction-edit-btn {
+  background: linear-gradient(90deg, var(--primary-light), var(--primary));
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 15px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.bookingdetail-reaction-edit-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.bookingdetail-reaction-save-btn {
+  background: var(--success);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 15px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: var(--transition);
+}
+
+.bookingdetail-reaction-save-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Status */
+.bookingdetail-status {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.bookingdetail-status.active {
+  background: var(--success);
+  color: #fff;
+}
+
+.bookingdetail-status.inactive {
+  background: var(--danger);
+  color: #fff;
+}
+
+.bookingdetail-status.pending {
+  background: var(--pending);
+  color: #fff;
+}
+
+/* No Details */
+.bookingdetail-no-details {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-light);
+}
+
+.bookingdetail-no-data-icon {
+  font-size: 50px;
+  margin-bottom: 20px;
+}
+
+/* Loading & Error */
+.bookingdetail-loading {
+  text-align: center;
+  padding: 60px;
+  color: var(--text-light);
+}
+
+.bookingdetail-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--primary);
+  border-top: 4px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+.bookingdetail-error {
+  text-align: center;
+  padding: 60px;
+  color: var(--danger);
+}
+
+.bookingdetail-error-icon {
+  font-size: 50px;
+  margin-bottom: 20px;
+}
+
+/* Animation */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .bookingdetail-content {
+    flex-direction: column;
+  }
+
+  .bookingdetail-sidebar {
+    width: 100%;
+    position: static;
+  }
+
+  .bookingdetail-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bookingdetail-header-info {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .bookingdetail-avatar {
+    margin-bottom: 15px;
+  }
+
+  .bookingdetail-card-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .bookingdetail-card-icon-wrapper {
+    margin-right: 0;
+  }
+
+  .bookingdetail-date-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .bookingdetail-date-label {
+    position: static;
+    width: auto;
+  }
+
+  .bookingdetail-details-list::before {
+    left: 24px;
+  }
+
+  .bookingdetail-reaction-display {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .bookingdetail-reaction-section {
+    align-items: flex-start;
+  }
+}

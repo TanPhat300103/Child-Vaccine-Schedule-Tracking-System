@@ -550,12 +550,7 @@ const BookVaccine = () => {
                   </span>
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* Bottom Section */}
-          <div className="lg:col-span-3">
-            <div className="bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-2xl font-bold text-gray-800 mb-6">
                 Thông tin trẻ em
               </h2>
@@ -627,21 +622,22 @@ const BookVaccine = () => {
                 }}
                 className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none mb-6 w-full md:w-auto"
               />
+              <button
+                disabled={!isFormValid()} // Disable button nếu form không hợp lệ
+                onClick={handleSubmit} // Gọi handleSubmit khi nhấn nút
+                className={`w-full py-4 rounded-lg text-white font-bold text-lg transition-all ${
+                  isFormValid()
+                    ? "bg-blue-500 hover:bg-blue-600"
+                    : "bg-gray-300 cursor-not-allowed"
+                }`}
+              >
+                Đặt lịch tiêm
+              </button>
             </div>
           </div>
+          {/* Bottom Section */}
+          <div className="lg:col-span-3"></div>
         </div>
-
-        <button
-          disabled={!isFormValid()} // Disable button nếu form không hợp lệ
-          onClick={handleSubmit} // Gọi handleSubmit khi nhấn nút
-          className={`w-full py-4 rounded-lg text-white font-bold text-lg transition-all ${
-            isFormValid()
-              ? "bg-blue-500 hover:bg-blue-600"
-              : "bg-gray-300 cursor-not-allowed"
-          }`}
-        >
-          Đặt lịch tiêm
-        </button>
       </div>
       <Footer></Footer>
     </div>
