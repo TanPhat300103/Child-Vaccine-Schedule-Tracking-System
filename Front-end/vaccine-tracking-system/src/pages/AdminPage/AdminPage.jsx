@@ -34,11 +34,16 @@ const AdminPage = () => {
   const location = useLocation();
   const { userInfo } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [vaccineOpen, setVaccineOpen] = useState(false);
   const [showHeader, setShowHeader] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
+    // Nếu thu gọn sidebar thì đóng menu vaccine luôn
+    if (!isCollapsed) {
+      setVaccineOpen(false);
+    }
   };
 
   // Tự động ẩn/hiện header khi cuộn trang (giống StaffPage)
@@ -58,7 +63,7 @@ const AdminPage = () => {
     };
   }, [lastScrollY]);
 
-  // Kiểm tra đường dẫn hiện tại để active menu Vaccine nếu cần
+  // Active cho menu Vaccine: nếu URL bắt đầu bằng /admin/vaccines hoặc /admin/vaccine-combos
   const isVaccineActive =
     location.pathname.startsWith("/admin/vaccines") ||
     location.pathname.startsWith("/admin/vaccine-combos");
@@ -193,61 +198,55 @@ const AdminPage = () => {
                 {!isCollapsed && <span className="ml-3">Lịch hẹn tiêm</span>}
               </NavLink>
             </li>
-            <li className="relative group">
+            <li className="relative">
               <div
+                onClick={() => setVaccineOpen(!vaccineOpen)}
                 className={`flex ${
                   isCollapsed ? "justify-center" : "items-center"
                 } p-3 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
-                  isVaccineActive ? "bg-teal-600" : "hover:bg-teal-600"
+                  isVaccineActive || vaccineOpen
+                    ? "bg-teal-600"
+                    : "hover:bg-teal-600"
                 }`}
               >
                 <RiSyringeLine className="w-5 h-5" />
                 {!isCollapsed && (
                   <>
                     <span className="ml-3">Vaccine</span>
-                    <FiChevronDown className="ml-auto w-4 h-4" />
+                    <FiChevronDown
+                      className={`ml-auto w-4 h-4 transition-transform ${
+                        vaccineOpen ? "rotate-180" : ""
+                      }`}
+                    />
                   </>
                 )}
               </div>
-              {isCollapsed ? (
-                <ul className="absolute top-1/2 left-full transform -translate-y-1/2 ml-2 bg-teal-700 rounded-lg shadow-lg transition-opacity duration-200 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto z-30">
+              {vaccineOpen && (
+                <ul className={`${isCollapsed ? "ml-0" : "ml-8"} space-y-1`}>
                   <li>
                     <NavLink
                       to="/admin/vaccines"
-                      className="flex items-center py-2 px-3 text-sm font-medium rounded-lg hover:bg-teal-600 transition-colors"
+                      className={({ isActive }) =>
+                        `flex items-center py-2 px-3 text-sm font-medium rounded-lg transition-colors ${
+                          isActive ? "bg-teal-600" : "hover:bg-teal-600"
+                        }`
+                      }
                     >
                       <FiShield className="w-4 h-4 mr-2" />
-                      Quản lý Vaccine
+                      {!isCollapsed && "Quản lý Vaccine"}
                     </NavLink>
                   </li>
                   <li>
                     <NavLink
                       to="/admin/vaccine-combos"
-                      className="flex items-center py-2 px-3 text-sm font-medium rounded-lg hover:bg-teal-600 transition-colors"
+                      className={({ isActive }) =>
+                        `flex items-center py-2 px-3 text-sm font-medium rounded-lg transition-colors ${
+                          isActive ? "bg-teal-600" : "hover:bg-teal-600"
+                        }`
+                      }
                     >
                       <FiBox className="w-4 h-4 mr-2" />
-                      Gói Vaccine
-                    </NavLink>
-                  </li>
-                </ul>
-              ) : (
-                <ul className="mt-1 ml-8 space-y-1 hidden group-hover:block">
-                  <li>
-                    <NavLink
-                      to="/admin/vaccines"
-                      className="flex items-center py-2 px-3 text-sm font-medium rounded-lg hover:bg-teal-600 transition-colors"
-                    >
-                      <FiShield className="w-4 h-4 mr-2" />
-                      Quản lý Vaccine
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink
-                      to="/admin/vaccine-combos"
-                      className="flex items-center py-2 px-3 text-sm font-medium rounded-lg hover:bg-teal-600 transition-colors"
-                    >
-                      <FiBox className="w-4 h-4 mr-2" />
-                      Gói Vaccine
+                      {!isCollapsed && "Gói Vaccine"}
                     </NavLink>
                   </li>
                 </ul>
@@ -331,7 +330,7 @@ const AdminPage = () => {
             </div>
           )}
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/admin")}
             className="ml-auto text-teal-300 hover:text-white"
           >
             <FiLogOut className="w-5 h-5" />
@@ -351,7 +350,7 @@ const AdminPage = () => {
             showHeader ? "translate-y-0" : "-translate-y-full"
           }`}
         >
-          <div className="bg-gradient-to-r from-teal-500 to-teal-700 text-white rounded-b-2xl shadow-md p-4">
+          <div className="bg-gradient-to-r from-teal-500 to-teal-700 text-white rounded-b-2xl shadow-md p-3">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between">
               {/* Thông tin bên trái */}
               <div className="mb-4 md:mb-0">
