@@ -137,6 +137,11 @@ public class PaymentService {
         if(!method){
         payment.setStatus(true);
             applicationEventPublisher.publishEvent(payment);
+            //sau khi thanh toan thi gui thong bao cho customer
+            Notification notification = new Notification();
+            notification.setCustomer(payment.getBooking().getCustomer());
+            notification.setMessage("Đã thanh toán xong. Bạn có góp ý gì cho chúng tôi không? ");
+            notificationService.createNotificationAfterPayment(notification);
         }
         else
         {
@@ -145,11 +150,7 @@ public class PaymentService {
         }
         // nêu method là true có nghĩa là dùng vnpay để thanh toán
 
-        //sau khi thanh toan thi gui thong bao cho customer
-        Notification notification = new Notification();
-        notification.setCustomer(payment.getBooking().getCustomer());
-        notification.setMessage("Đã thanh toán xong. Bạn có góp ý gì cho chúng tôi không? ");
-        notificationService.createNotificationAfterPayment(notification);
+
 
 
         return  paymentRepository.save(payment);
