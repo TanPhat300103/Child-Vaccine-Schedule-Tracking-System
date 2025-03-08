@@ -3,7 +3,6 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import App from "./App.jsx";
 import "./index.css";
-import "../i18n/i18n.jsx"; // nhập cấu hình i18n
 
 // Import các trang khác
 import Home from "./Home.jsx";
@@ -69,8 +68,7 @@ import PaymentVnpay from "../pages/Payment/PaymentVNPay.jsx";
 import Overview from "../components/common/OverviewPage.jsx";
 import PaymentReturnPage from "../pages/Payment/PaymentReturnPage.jsx";
 import BookingDetailPage from "../pages/CustomerPage/BookingDetailPage.jsx";
-import HeaderIndex from "../components/common/HeaderIndex.jsx";
-import HeaderHome from "../components/common/HeaderHome.jsx";
+
 import ComboVaccine from "../components/homepage/ComboVaccine.jsx";
 
 // import BookingPage from "../apis/test.jsx";
@@ -117,8 +115,7 @@ const Main = () => {
 
               <Route path="/price-vaccine" element={<PriceVaccine />} />
               <Route path="/header" element={<Header />} />
-              <Route path="/header-index" element={<HeaderIndex />} />
-              <Route path="/header-home" element={<HeaderHome />} />
+
               <Route path="/footer" element={<Footer />} />
               <Route path="/auth" element={<AuthProvider />} />
               <Route path="/overview" element={<Overview />} />

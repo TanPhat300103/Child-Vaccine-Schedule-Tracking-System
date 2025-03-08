@@ -436,7 +436,11 @@ const PriceVaccine = () => {
                         onClick={() => openModal(vaccine)}
                       >
                         <img
-                          src="https://news.asu.edu/sites/default/files/35327061344_d199614bd8_k.jpg"
+                          src={
+                            vaccine.img
+                              ? vaccine.img
+                              : "https://news.asu.edu/sites/default/files/35327061344_d199614bd8_k.jpg"
+                          }
                           alt={vaccine.name}
                           className="w-full h-full object-cover"
                         />
@@ -538,7 +542,11 @@ const PriceVaccine = () => {
           <div className="bg-white p-0 rounded-xl shadow-2xl w-full max-w-3xl mx-4 overflow-hidden">
             <div className="relative h-64 bg-blue-600">
               <img
-                src="https://news.asu.edu/sites/default/files/35327061344_d199614bd8_k.jpg"
+                src={
+                  vaccine.img
+                    ? vaccine.img
+                    : "https://news.asu.edu/sites/default/files/35327061344_d199614bd8_k.jpg"
+                }
                 alt={vaccineData?.vaccine.name}
                 className="w-full h-full object-cover opacity-80"
               />

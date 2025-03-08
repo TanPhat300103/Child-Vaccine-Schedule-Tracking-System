@@ -601,7 +601,7 @@ const BookVaccine = () => {
                 <p className="text-center text-gray-600">No child</p>
               )}
               <button
-                onClick={() => navigate(`/add-child`)} // Thêm trẻ mới
+                onClick={() => navigate(`/customer/add-child`)} // Thêm trẻ mới
                 className="mb-6 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
               >
                 + Thêm trẻ

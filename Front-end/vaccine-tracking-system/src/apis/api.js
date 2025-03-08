@@ -213,7 +213,10 @@ export const getVaccineComboDetailByVaccineId = async (vaccineComboId) => {
       }
     );
 
-    console.log("📡 API Response (getCustomerID):", response.data);
+    console.log(
+      "📡 API Response (getVaccineComboDetailByVaccineId):",
+      response.data
+    );
     return response.data;
   } catch (error) {
     console.error("Lỗi khi lấy customer ID:", error);
