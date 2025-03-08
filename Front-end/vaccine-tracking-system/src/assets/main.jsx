@@ -34,6 +34,7 @@ import Bookings from "../pages/Manager/Bookings.jsx";
 import BookingDetail from "../pages/Manager/BookingDetail.jsx";
 import Records from "../pages/Manager/Records.jsx";
 import Feedbacks from "../pages/Manager/Feedbacks.jsx";
+import Payments from "../pages/Manager/Payments.jsx";
 
 import AdminPage from "../pages/AdminPage/AdminPage.jsx";
 import Staffs from "../pages/AdminPage/Staffs.jsx";
@@ -160,6 +161,7 @@ const Main = () => {
 
                 <Route path="records" element={<Records />} />
                 <Route path="feedbacks" element={<Feedbacks />} />
+                <Route path="payments" element={<Payments />} />
               </Route>
 
               {/* Route /admin: giữ đầy đủ child route theo HEAD */}
@@ -189,6 +191,7 @@ const Main = () => {
                 />
                 <Route path="records" element={<Records />} />
                 <Route path="feedbacks" element={<Feedbacks />} />
+                <Route path="payments" element={<Payments />} />
               </Route>
             </Routes>
           </CartProvider>
