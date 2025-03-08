@@ -60,5 +60,8 @@ public class NotificationService {
         else throw new CustomException("ID Notification not found", HttpStatus.BAD_REQUEST);
     }
 
+    public Notification getNotificationById(int id) {
+        return notificationRepository.findById(String.valueOf(id)).orElseThrow(() -> new CustomException("Notification ID" + id + " not found", HttpStatus.BAD_REQUEST));
+    }
 
 }

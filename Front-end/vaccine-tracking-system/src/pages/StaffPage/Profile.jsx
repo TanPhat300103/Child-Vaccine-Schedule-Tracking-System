@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Outlet } from "react-router-dom";
-import { FaNotesMedical, FaSyringe } from "react-icons/fa";
-import { FiCalendar, FiUsers, FiAlertTriangle } from "react-icons/fi";
+import { FaNotesMedical, FaSyringe, FaUserMd } from "react-icons/fa";
+import {
+  FiCalendar,
+  FiUsers,
+  FiAlertTriangle,
+  FiChevronDown,
+  FiChevronUp,
+} from "react-icons/fi";
 import { useAuth } from "../../components/common/AuthContext.jsx";
 
 const StaffProfile = ({ initialStaffData }) => {
@@ -43,33 +49,36 @@ const StaffProfile = ({ initialStaffData }) => {
       setStaffData(updatedData);
       setOriginalData(updatedData);
       setFormChanged(false);
-      setNotification({ type: "success", message: "Chỉnh sửa thành công" });
+      setNotification({ type: "success", message: "Cập nhật thành công!" });
+      setTimeout(() => setNotification(null), 3000); // Auto-dismiss after 3s
     } catch (error) {
-      setNotification({ type: "error", message: "Chỉnh sửa thất bại" });
+      setNotification({ type: "error", message: "Cập nhật thất bại!" });
+      setTimeout(() => setNotification(null), 3000);
     }
   };
 
   if (!formData) return null;
 
   return (
-    <div className="mt-6 bg-white rounded-xl shadow-md p-6">
-      <h2 className="text-xl font-bold mb-4">Hồ sơ của tôi</h2>
+    <div className="bg-white rounded-2xl shadow-md p-6 mt-6 transform transition-all animate-fadeIn">
+      <h2 className="text-2xl font-semibold text-teal-600 mb-4 flex items-center">
+        <FaUserMd className="mr-2" /> Hồ Sơ Nhân Viên
+      </h2>
       {notification && (
         <div
-          className={`mb-4 p-2 rounded ${
+          className={`mb-4 p-3 rounded-xl flex items-center ${
             notification.type === "success"
-              ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800"
+              ? "bg-teal-50 text-teal-700"
+              : "bg-red-50 text-red-700"
           }`}
         >
-          {notification.message}
+          <span>{notification.message}</span>
         </div>
       )}
-      <form>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Mã nhân viên - không cho chỉnh sửa */}
+      <form className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-600">
               Mã nhân viên
             </label>
             <input
@@ -77,12 +86,11 @@ const StaffProfile = ({ initialStaffData }) => {
               name="staffId"
               value={formData.staffId || ""}
               disabled
-              className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none"
+              className="mt-1 w-full p-3 bg-gray-100 border border-gray-200 rounded-xl text-gray-500 focus:outline-none"
             />
           </div>
-          {/* Họ */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-600">
               Họ
             </label>
             <input
@@ -90,12 +98,11 @@ const StaffProfile = ({ initialStaffData }) => {
               name="firstName"
               value={formData.firstName || ""}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-teal-500"
+              className="mt-1 w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-300 focus:border-teal-500 transition-all"
             />
           </div>
-          {/* Tên */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-600">
               Tên
             </label>
             <input
@@ -103,12 +110,11 @@ const StaffProfile = ({ initialStaffData }) => {
               name="lastName"
               value={formData.lastName || ""}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-teal-500"
+              className="mt-1 w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-300 focus:border-teal-500 transition-all"
             />
           </div>
-          {/* Số điện thoại */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-600">
               Số điện thoại
             </label>
             <input
@@ -116,12 +122,11 @@ const StaffProfile = ({ initialStaffData }) => {
               name="phone"
               value={formData.phone || ""}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-teal-500"
+              className="mt-1 w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-300 focus:border-teal-500 transition-all"
             />
           </div>
-          {/* Ngày sinh */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-600">
               Ngày sinh
             </label>
             <input
@@ -129,12 +134,11 @@ const StaffProfile = ({ initialStaffData }) => {
               name="dob"
               value={formData.dob || ""}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-teal-500"
+              className="mt-1 w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-300 focus:border-teal-500 transition-all"
             />
           </div>
-          {/* Địa chỉ */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-600">
               Địa chỉ
             </label>
             <input
@@ -142,12 +146,11 @@ const StaffProfile = ({ initialStaffData }) => {
               name="address"
               value={formData.address || ""}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-teal-500"
+              className="mt-1 w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-300 focus:border-teal-500 transition-all"
             />
           </div>
-          {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-600">
               Email
             </label>
             <input
@@ -155,19 +158,18 @@ const StaffProfile = ({ initialStaffData }) => {
               name="mail"
               value={formData.mail || ""}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-teal-500"
+              className="mt-1 w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-300 focus:border-teal-500 transition-all"
             />
           </div>
-          {/* Giới tính */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-600">
               Giới tính
             </label>
             <select
               name="gender"
               value={formData.gender || ""}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-teal-500"
+              className="mt-1 w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-300 focus:border-teal-500 transition-all"
             >
               <option value="">Chọn giới tính</option>
               <option value="male">Nam</option>
@@ -175,9 +177,8 @@ const StaffProfile = ({ initialStaffData }) => {
               <option value="other">Khác</option>
             </select>
           </div>
-          {/* Mật khẩu */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-600">
               Mật khẩu
             </label>
             <input
@@ -185,22 +186,22 @@ const StaffProfile = ({ initialStaffData }) => {
               name="password"
               value={formData.password || ""}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-teal-500"
+              className="mt-1 w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-300 focus:border-teal-500 transition-all"
             />
           </div>
         </div>
-        <div className="mt-4">
+        <div className="flex justify-end">
           <button
             type="button"
             onClick={handleSave}
             disabled={!formChanged}
-            className={`px-4 py-2 rounded-md text-white transition-colors ${
+            className={`px-6 py-2 rounded-xl text-white font-medium transition-all ease-in-out ${
               formChanged
-                ? "bg-teal-600 hover:bg-teal-700"
-                : "bg-gray-400 cursor-not-allowed"
+                ? "bg-teal-500 hover:bg-teal-600 hover:shadow-md"
+                : "bg-gray-300 cursor-not-allowed"
             }`}
           >
-            Lưu
+            Lưu Thay Đổi
           </button>
         </div>
       </form>
@@ -210,9 +211,6 @@ const StaffProfile = ({ initialStaffData }) => {
 
 const Profile = () => {
   const { userInfo } = useAuth();
-
-  // take data
-  console.log("user id ldada: ", userInfo.userId);
   const staffId = userInfo.userId;
 
   const [staffData, setStaffData] = useState(null);
@@ -221,28 +219,22 @@ const Profile = () => {
   const [showStaffProfile, setShowStaffProfile] = useState(false);
 
   useEffect(() => {
-    if (!staffId) return; // Chỉ thực hiện khi có staffId
+    if (!staffId) return;
 
     const fetchStaffData = async () => {
       setLoading(true);
-      console.log("staffId: ", staffId);
       try {
         const response = await fetch(
           `http://localhost:8080/staff/findid?id=${staffId}`,
           {
             method: "GET",
-            credentials: "include", // Đảm bảo cookie được gửi đi
+            credentials: "include",
           }
         );
-
-        if (!response.ok) {
-          throw new Error("Lỗi khi lấy dữ liệu staff");
-        }
+        if (!response.ok) throw new Error("Lỗi khi lấy dữ liệu nhân viên");
         const data = await response.json();
-        console.log(data);
         setStaffData(data);
       } catch (error) {
-        console.error(error);
         setError(error.message);
       }
       setLoading(false);
@@ -251,106 +243,95 @@ const Profile = () => {
     fetchStaffData();
   }, [staffId]);
 
-  if (loading) return <div>Đang tải dữ liệu...</div>;
-  if (error) return <div className="text-red-600 p-4">{error}</div>;
-  if (!staffData) return <div>Không có dữ liệu</div>;
+  if (loading)
+    return (
+      <div className="text-center text-gray-600 py-12">Đang tải dữ liệu...</div>
+    );
+  if (error) return <div className="text-red-600 p-4 text-center">{error}</div>;
+  if (!staffData)
+    return (
+      <div className="text-gray-600 p-4 text-center">Không có dữ liệu</div>
+    );
 
   return (
-    <>
-      <div className="mb-6 bg-white rounded-xl shadow-md overflow-hidden">
-        <div className="md:flex">
-          <div className="p-8">
-            <div className="uppercase tracking-wide text-sm text-teal-600 font-semibold">
-              Trung tâm quản lý y tế
+    <div className="min-h-screen bg-gray-100">
+      <div className="max-w-7xl mx-auto">
+        {/* Dashboard Stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-teal-400 hover:shadow-lg transition-all ease-in-out">
+            <div className="flex items-center">
+              <div className="p-3 rounded-full bg-teal-50 text-teal-600">
+                <FiCalendar className="h-8 w-8" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">
+                  Lịch hẹn hôm nay
+                </p>
+                <p className="text-2xl font-semibold text-gray-800">24</p>
+              </div>
             </div>
-            <h2 className="mt-1 text-2xl font-semibold text-gray-900">
-              Chào mừng, {staffData.firstName + " " + staffData.lastName}!
-            </h2>
-            <p className="mt-2 text-gray-600">
-              Chào mừng bạn đến với hệ thống quản lý tiêm chủng. Hãy xem các
-              thông tin quan trọng trong ngày hôm nay.
-            </p>
           </div>
-          <div className="md:shrink-0 bg-teal-500 md:w-48 flex items-center justify-center">
-            <FaNotesMedical className="h-24 w-24 text-white" />
+          <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-green-400 hover:shadow-lg transition-all ease-in-out">
+            <div className="flex items-center">
+              <div className="p-3 rounded-full bg-green-50 text-green-600">
+                <FiUsers className="h-8 w-8" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">
+                  Tổng bệnh nhân
+                </p>
+                <p className="text-2xl font-semibold text-gray-800">1,248</p>
+              </div>
+            </div>
           </div>
+          <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-blue-400 hover:shadow-lg transition-all ease-in-out">
+            <div className="flex items-center">
+              <div className="p-3 rounded-full bg-blue-50 text-blue-600">
+                <FaSyringe className="h-8 w-8" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">
+                  Vaccine có sẵn
+                </p>
+                <p className="text-2xl font-semibold text-gray-800">32</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-red-400 hover:shadow-lg transition-all ease-in-out">
+            <div className="flex items-center">
+              <div className="p-3 rounded-full bg-red-50 text-red-600">
+                <FiAlertTriangle className="h-8 w-8" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">
+                  Báo cáo phản ứng
+                </p>
+                <p className="text-2xl font-semibold text-gray-800">7</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Toggle Staff Profile */}
+        <div className="mb-6">
+          <button
+            onClick={() => setShowStaffProfile(!showStaffProfile)}
+            className="flex items-center space-x-2 bg-teal-500 text-white px-6 py-3 rounded-xl hover:bg-teal-600 transition-all ease-in-out shadow-md"
+          >
+            <span>{showStaffProfile ? "Ẩn hồ sơ" : "Xem hồ sơ"}</span>
+            {showStaffProfile ? <FiChevronUp /> : <FiChevronDown />}
+          </button>
+        </div>
+
+        {/* Staff Profile Section */}
+        {showStaffProfile && <StaffProfile initialStaffData={staffData} />}
+
+        {/* Outlet for Nested Routes */}
+        <div className="bg-white rounded-2xl shadow-md p-6">
+          <Outlet />
         </div>
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500 hover:shadow-lg transition-shadow">
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-blue-100 text-blue-600">
-              <FiCalendar className="h-8 w-8" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">
-                Lịch hẹn hôm nay
-              </p>
-              <p className="text-2xl font-semibold text-gray-900">24</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500 hover:shadow-lg transition-shadow">
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-green-100 text-green-600">
-              <FiUsers className="h-8 w-8" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">
-                Tổng bệnh nhân
-              </p>
-              <p className="text-2xl font-semibold text-gray-900">1,248</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-purple-500 hover:shadow-lg transition-shadow">
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-purple-100 text-purple-600">
-              <FaSyringe className="h-8 w-8" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">
-                Vaccine có sẵn
-              </p>
-              <p className="text-2xl font-semibold text-gray-900">32</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-red-500 hover:shadow-lg transition-shadow">
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-red-100 text-red-600">
-              <FiAlertTriangle className="h-8 w-8" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">
-                Báo cáo phản ứng
-              </p>
-              <p className="text-2xl font-semibold text-gray-900">7</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="mb-6">
-        <button
-          type="button"
-          onClick={() => setShowStaffProfile(!showStaffProfile)}
-          className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors"
-        >
-          {showStaffProfile ? "Ẩn hồ sơ của tôi" : "Hiện hồ sơ của tôi"}
-        </button>
-      </div>
-
-      {showStaffProfile && <StaffProfile initialStaffData={staffData} />}
-
-      <div className="bg-white rounded-xl shadow-md p-6">
-        <Outlet />
-      </div>
-    </>
+    </div>
   );
 };
 

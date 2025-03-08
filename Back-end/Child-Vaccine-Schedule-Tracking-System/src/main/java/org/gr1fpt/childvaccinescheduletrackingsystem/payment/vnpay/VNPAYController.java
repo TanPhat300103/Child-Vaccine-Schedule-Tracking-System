@@ -1,6 +1,8 @@
 package org.gr1fpt.childvaccinescheduletrackingsystem.payment.vnpay;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.gr1fpt.childvaccinescheduletrackingsystem.notification.Notification;
+import org.gr1fpt.childvaccinescheduletrackingsystem.notification.NotificationService;
 import org.gr1fpt.childvaccinescheduletrackingsystem.payment.Payment;
 import org.gr1fpt.childvaccinescheduletrackingsystem.payment.PaymentRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.payment.PaymentService;
@@ -33,6 +35,9 @@ public class VNPAYController  {
 
       @Autowired
     PaymentRepository paymentRepository;
+
+      @Autowired
+      NotificationService notificationService;
 
     @GetMapping("/vnpay")
     public RedirectView getVnpay(@RequestParam String id, @RequestParam int price, String bankCode) throws UnsupportedEncodingException {
@@ -76,20 +81,26 @@ public class VNPAYController  {
         System.out.println(paymentId);
         System.out.println("trang thai: " + isSuccess);
 
-        // Cập nhật trạng thái thanh toán vào database
+        // Cập nhật trạng thái thanh toán vào database + gửi hoóa đơn vào mail + tạo notification
         if (isSuccess) {
             Payment payment = paymentService.getPaymentById(paymentId);
             payment.setTransactionId(vnp_TransactionNo);
             payment.setStatus(true);
             applicationEventPublisher.publishEvent(payment);
+
+            Notification notification = new Notification();
+            notification.setCustomer(payment.getBooking().getCustomer());
+            notification.setMessage("Đã thanh toán xong. Bạn có góp ý gì cho chúng tôi không? ");
+            notificationService.createNotificationAfterPayment(notification);
             paymentRepository.save(payment);
         } else {
             Payment payment = paymentService.getPaymentById(paymentId);
             payment.setStatus(false);
-
             //Tháo coupon và set price về lại giá gốc
+            if (payment.getMarketingCampaign() != null) {
             payment.setTotal(payment.getTotal()/(100-payment.getMarketingCampaign().getDiscount())*100);
             payment.setMarketingCampaign(null);
+            }
             paymentRepository.save(payment);
         }
 

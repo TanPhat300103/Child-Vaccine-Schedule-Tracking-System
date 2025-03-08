@@ -63,7 +63,11 @@ public class MarketingCampaignService {
     }
 
     public MarketingCampaign findByCoupon(String coupon){
-        return marketingCampaignRepository.findByCoupon(coupon);
+        MarketingCampaign marketingCampaign = marketingCampaignRepository.findByCoupon(coupon);
+        if(marketingCampaign == null){
+            throw new CustomException("Campain is not found", HttpStatus.NOT_FOUND);
+        }
+        return marketingCampaign;
     }
 
 }

@@ -7,14 +7,16 @@ import {
   FaUserMd,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { slides, benefits, process } from "../stores/homedata.jsx";
-import PriceVaccine from "../components/homepage/PriceVaccine.jsx";
+
 import AgeVaccine from "../components/homepage/AgeVaccine.jsx";
 import Footer from "../components/common/Footer";
 import { useCart } from "../components/homepage/AddCart.jsx"; // Đảm bảo đúng đường dẫn đến CartContext
 import { getChildByCustomerId, getCustomerId } from "../apis/api.js";
 import { useAuth } from "../components/common/AuthContext.jsx";
+import PriceVaccine from "../components/homepage/PriceVaccine.jsx";
+import ComboVaccine from "../components/homepage/ComboVaccine.jsx";
 
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -28,31 +30,39 @@ const Home = () => {
   const { userInfo } = useAuth();
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [proFileData, setProFileData] = useState(null);
+  const location = useLocation();
+
   useEffect(() => {
-    // Kiểm tra xem người dùng đã đăng nhập chưa
-    const data = fetch("http://localhost:8080/auth/myprofile", {
-      method: "GET",
-      credentials: "include", // Gửi cookie/session
-    })
-      .then((response) => {
-        if (response.status === 401) {
-          setIsAuthenticated(false);
-        }
-      })
-      .catch((error) => {
-        setIsAuthenticated(false);
+    const checkAuthentication = async () => {
+      const response = await fetch("http://localhost:8080/auth/myprofile", {
+        method: "GET",
+        credentials: "include", // Gửi cookie/session
       });
-    setProFileData(data);
-    console.log("my profile data: ", proFileData);
+      if (response.status === 401) {
+        setIsAuthenticated(false);
+        navigate("/login"); // Redirect if not authenticated
+      }
+    };
+
+    checkAuthentication();
   }, []);
+
   // take data
   console.log("user id la: ", userInfo.authorities[0].authority);
 
   const cartItemCount = useMemo(() => {
-    return Object.values(cart).reduce((total, vaccine) => total + 1, 0);
+    return Object.values(cart).reduce(
+      (total, vaccine) => total + vaccine.quantity,
+      0
+    );
   }, [cart]);
-  localStorage.setItem("userId", userInfo.userId);
 
+  localStorage.setItem("userId", userInfo.userId);
+  const handleCartClick = () => {
+    navigate("/book-vaccine", {
+      state: { cartItems: cart }, // Truyền cart vào state
+    });
+  };
   useEffect(() => {
     if (userInfo) {
       if (userInfo.authorities[0].authority === "ROLE_CUSTOMER") {
@@ -149,33 +159,38 @@ const Home = () => {
           {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             {/* Navbar */}
-            {["Trang chủ", "Đặt lịch", "Gói tiêm", "Liên lạc"].map((item) => (
-              <motion.a
-                key={item}
-                onClick={() => {
-                  if (item === "Gói tiêm") {
-                    scrollVaccinePricing(); // Cuộn đến phần VaccinePricingTable
-                  }
-                  if (item === "Liên lạc") {
-                    scrollToFooter(); // Cuộn đến Footer
-                  }
-                  if (item === "Đặt lịch") {
-                    navigate("/customer/booking");
-                  }
-                  if (item === "Trang chủ") {
-                    window.scrollTo({
-                      top: 0,
-                      behavior: "smooth", // Cuộn mượt mà lên đầu trang
-                    });
-                  }
-                }}
-                whileHover={{ scale: 1.05 }}
-                className="text-gray-700 hover:text-blue-600 transition-colors relative group cursor-pointer"
-              >
-                {item}
-                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform " />
-              </motion.a>
-            ))}{" "}
+            {["Trang chủ", "Đặt lịch", "Gói tiêm", "Liên lạc", "Overview"].map(
+              (item) => (
+                <motion.a
+                  key={item}
+                  onClick={() => {
+                    if (item === "Gói tiêm") {
+                      scrollVaccinePricing(); // Cuộn đến phần VaccinePricingTable
+                    }
+                    if (item === "Liên lạc") {
+                      scrollToFooter(); // Cuộn đến Footer
+                    }
+                    if (item === "Đặt lịch") {
+                      navigate("/book-vaccine");
+                    }
+                    if (item === "Overview") {
+                      navigate("/overview");
+                    }
+                    if (item === "Trang chủ") {
+                      window.scrollTo({
+                        top: 0,
+                        behavior: "smooth", // Cuộn mượt mà lên đầu trang
+                      });
+                    }
+                  }}
+                  whileHover={{ scale: 1.05 }}
+                  className="text-gray-700 hover:text-blue-600 transition-colors relative group cursor-pointer"
+                >
+                  {item}
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform " />
+                </motion.a>
+              )
+            )}{" "}
             {/* User */}
             <div className="relative">
               <button
@@ -185,82 +200,88 @@ const Home = () => {
                 <FaUser className="text-white" size={20} />
               </button>
               {isOpen && (
-  <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
-    {/* Phần đầu: Thông tin người dùng */}
-    <div className="p-4 bg-gray-50 border-b border-gray-200">
-      <div className="flex items-center space-x-3">
-        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">
-          T
-        </div>
-        <div>
-  <h3 className="text-sm font-medium text-gray-800">
-    Chào{' '}
-    <span className="text-blue-600 font-semibold">
-      {customerData.firstName} {customerData.lastName}
-    </span>
-    ,
-  </h3>
-</div>
-      </div>
-    </div>
+                <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
+                  {/* Phần đầu: Thông tin người dùng */}
+                  <div className="p-4 bg-gray-50 border-b border-gray-200">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">
+                        T
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-800">
+                          Chào{" "}
+                          <span className="text-blue-600 font-semibold">
+                            {customerData.firstName} {customerData.lastName}
+                          </span>
+                          ,
+                        </h3>
+                      </div>
+                    </div>
+                  </div>
 
-    {/* Danh sách các mục */}
-    <nav className="py-2">
-      {/* Mục người dùng chính */}
-      <a
-        onClick={() => navigate("/customer")}
-        className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-200 cursor-pointer"
-      >
-        <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold mr-3">
-          N
-        </div>
-        <span className="text-sm font-medium">Hồ sơ của tôi</span>
-      </a>
+                  {/* Danh sách các mục */}
+                  <nav className="py-2">
+                    {/* Mục người dùng chính */}
+                    <a
+                      onClick={() => navigate("/customer")}
+                      className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-200 cursor-pointer"
+                    >
+                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold mr-3">
+                        N
+                      </div>
+                      <span className="text-sm font-medium">Hồ sơ của tôi</span>
+                    </a>
 
-      {/* Loop qua danh sách con (childData) - Không có badge màu đỏ */}
-      {childData.map((child) => (
-        <a
-          key={child.childId}
-          onClick={() => navigate(`/customer/child/${child.childId}`)}
-          className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-200 cursor-pointer"
-        >
-          <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold mr-3">
-            N
-          </div>
-          <span className="text-sm font-medium">Hồ sơ của {child.firstName} {child.lastName}</span>
-        </a>
-      ))}
+                    {/* Loop qua danh sách con (childData) - Không có badge màu đỏ */}
+                    {childData.map((child) => (
+                      <a
+                        key={child.childId}
+                        onClick={() =>
+                          navigate(`/customer/child/${child.childId}`)
+                        }
+                        className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-200 cursor-pointer"
+                      >
+                        <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold mr-3">
+                          N
+                        </div>
+                        <span className="text-sm font-medium">
+                          Hồ sơ của {child.firstName} {child.lastName}
+                        </span>
+                      </a>
+                    ))}
 
-      {/* Thêm hồ sơ mới */}
-      <a
-        onClick={() => navigate("/customer/add-child")}
-        className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-200 cursor-pointer"
-      >
-        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold mr-3">
-          +
-        </div>
-        <span className="text-sm font-medium">Thêm hồ sơ mới cho con</span>
-      </a>
+                    {/* Thêm hồ sơ mới */}
+                    <a
+                      onClick={() => navigate("/customer/add-child")}
+                      className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-200 cursor-pointer"
+                    >
+                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold mr-3">
+                        +
+                      </div>
+                      <span className="text-sm font-medium">
+                        Thêm hồ sơ mới cho con
+                      </span>
+                    </a>
 
-      {/* Đăng xuất */}
-      <a
-        onClick={() => navigate("/")}
-        className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-200 cursor-pointer border-t border-gray-200"
-      >
-        <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center text-red-600 font-bold mr-3">
-          X
-        </div>
-        <span className="text-sm font-medium">Đăng xuất</span>
-      </a>
-    </nav>
-  </div>
-)}
+                    {/* Đăng xuất */}
+                    <a
+                      onClick={() => navigate("/")}
+                      className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition duration-200 cursor-pointer border-t border-gray-200"
+                    >
+                      <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center text-red-600 font-bold mr-3">
+                        X
+                      </div>
+                      <span className="text-sm font-medium">Đăng xuất</span>
+                    </a>
+                  </nav>
+                </div>
+              )}
             </div>
             {/* Icon Cart */}
             <motion.div
               whileHover={{ scale: 1.05 }}
               className="relative cursor-pointer ml-4"
-              onClick={() => navigate("/cart")}
+              onClick={handleCartClick}
             >
               <FaShoppingCart
                 size={24}
@@ -327,6 +348,19 @@ const Home = () => {
             </div>
           ))}
         </motion.div>
+
+        {/* Dots for Slide Navigation */}
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-6">
+          {slides.map((_, index) => (
+            <div
+              key={index}
+              onClick={() => setCurrentSlide(index)} // Set current slide on click
+              className={`w-5 h-5 rounded-full cursor-pointer ${
+                currentSlide === index ? "bg-blue-600" : "bg-gray-400"
+              } transition-colors duration-300`}
+            />
+          ))}
+        </div>
       </motion.section>
 
       {/* Benefit */}
@@ -418,7 +452,7 @@ const Home = () => {
       <AgeVaccine></AgeVaccine>
 
       {/* Combo Vaccine */}
-      {/* <ComboVaccine></ComboVaccine> */}
+      <ComboVaccine></ComboVaccine>
 
       {/* Price Vaccine */}
       <motion.section className="py-20 bg-white" ref={vaccinePricingRef}>

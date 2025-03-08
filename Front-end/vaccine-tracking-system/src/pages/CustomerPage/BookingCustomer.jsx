@@ -1,374 +1,138 @@
-import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
-import {
-  getBookingByCustomerId,
-  getBookingDetailByBooking,
-  cancelBooking,
-  rescheduleBooking,
-} from "../../apis/api";
-import { format } from "date-fns";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
-import isSameDay from "date-fns/isSameDay";
+import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import "../CustomerPage/BookingCustomerSchedule.css";
+import { BookOpen, Calendar } from "lucide-react";
 import { useAuth } from "../../components/common/AuthContext";
-import {
-  FaSyringe,
-  FaCalendarAlt,
-  FaTimes,
-  FaChild,
-  FaMoneyCheckAlt,
-} from "react-icons/fa";
 
-const BookingCustomer = () => {
+function BookingCustomer() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { userInfo } = useAuth();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [bookingDetails, setBookingDetails] = useState([]);
-  const [selectedBooking, setSelectedBooking] = useState(null);
-  const [selectedStatus, setSelectedStatus] = useState(0);
-  const [showCalendarModal, setShowCalendarModal] = useState(false);
-  const { userInfo } = useAuth();
-  console.log(userInfo);
 
-  // Hàm helper: Tính trạng thái hiển thị dựa trên booking.status và bookingDetails
-  const recategorizedStatus = (booking) => {
-    if (booking.status === 2) {
-      if (booking.bookingDetails && booking.bookingDetails.length > 0) {
-        const fullyAdministered = booking.bookingDetails.every(
-          (detail) => detail.administeredDate !== null
-        );
-        return fullyAdministered ? 2 : 0;
-      }
-      // Nếu chưa có bookingDetails hoặc mảng rỗng, xem như chưa hoàn thành
-      return 0;
-    }
-    return booking.status;
-  };
-
-  // Cập nhật API: Với mỗi booking có status === 2, fetch booking details ngay khi load trang
-  const fetchBookings = async () => {
-    try {
-      const customerId = userInfo?.userId || "C001";
-      const data = await getBookingByCustomerId(customerId);
-      // Với mỗi booking có status = 2, fetch booking details và gán vào booking.bookingDetails
-      const updatedData = await Promise.all(
-        data.map(async (booking) => {
-          if (booking.status === 2) {
-            try {
-              const details = await getBookingDetailByBooking(
-                booking.bookingId
-              );
-              return { ...booking, bookingDetails: details };
-            } catch (err) {
-              return { ...booking, bookingDetails: [] };
-            }
-          }
-          return booking;
-        })
-      );
-      setBookings(updatedData);
-    } catch (err) {
-      setError("Không thể lấy thông tin đặt lịch");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const queryParams = new URLSearchParams(location.search);
+  const initialTab = queryParams.get("tab") || "bookings";
+  const [activeTab, setActiveTab] = useState(initialTab);
 
   useEffect(() => {
-    fetchBookings();
+    const fetchData = async () => {
+      if (!userInfo?.userId) {
+        setError("Không tìm thấy ID người dùng");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const bookingsResponse = await fetch(
+          `http://localhost:8080/booking/findbycustomer?customerId=${userInfo.userId}`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+        if (!bookingsResponse.ok)
+          throw new Error("Không tìm thấy thông tin booking");
+        const bookingsData = await bookingsResponse.json();
+        setBookings(bookingsData);
+      } catch (err) {
+        setError("Lỗi khi lấy thông tin: " + err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, [userInfo]);
 
-  const handleStatusClick = (status) => setSelectedStatus(status);
-
-  // Khi người dùng nhấn vào thẻ booking, nếu cần cập nhật chi tiết thì vẫn có thể fetch lại
-  const handleCardClick = async (booking) => {
-    setSelectedBooking(booking);
-    try {
-      // Nếu booking đã có bookingDetails thì không cần fetch lại
-      if (!booking.bookingDetails) {
-        const details = await getBookingDetailByBooking(booking.bookingId);
-        setBookingDetails(details);
-        // Cập nhật booking object để sử dụng cho modal
-        booking.bookingDetails = details;
-      } else {
-        setBookingDetails(booking.bookingDetails);
-      }
-    } catch (err) {
-      setBookingDetails([]);
-    }
-    setModalVisible(true);
-  };
-
-  const closeModal = () => {
-    setModalVisible(false);
-    setBookingDetails([]);
-    setSelectedBooking(null);
-  };
-
-  const handleCancelBooking = async (bookingId, e) => {
-    e.stopPropagation();
-    await cancelBooking(bookingId);
-    fetchBookings();
-  };
-
-  const handlePaymentClick = (booking) => {
-    const bookingData = {
-      bookingId: booking.bookingId,
-      bookingDate: booking.bookingDate,
-      totalAmount: booking.totalAmount,
-    };
-    localStorage.setItem("bookingData", JSON.stringify(bookingData));
-  };
-
-  const handleRescheduleBooking = async (bookingId, e) => {
-    e.stopPropagation();
-    await rescheduleBooking(bookingId);
-    fetchBookings();
-  };
-
-  const statusLabels = { 0: "Đã Đặt", 2: "Đã Hoàn Thành", 3: "Đã Huỷ" };
-
-  const renderBookingCard = (booking) => {
-    // Dùng recategorizedStatus để xác định trạng thái hiển thị
-    const displayStatus = recategorizedStatus(booking);
+  if (loading) {
     return (
-      <div
-        key={booking.bookingId}
-        className="p-5 bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer relative overflow-hidden"
-        onClick={() => handleCardClick(booking)}
-      >
-        {/* Nền gradient nhẹ */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-green-50 opacity-50"></div>
-
-        {/* Icon trạng thái */}
-        <div className="absolute top-4 left-4">
-          <FaSyringe
-            className={`text-2xl ${
-              displayStatus === 0
-                ? "text-blue-500"
-                : displayStatus === 2
-                ? "text-green-500"
-                : "text-red-500"
-            } animate-pulse`}
-          />
-        </div>
-
-        <div className="relative z-10 pl-10 space-y-2">
-          <p className="font-semibold text-blue-600 text-lg">
-            Mã đặt lịch: {booking.bookingId}
-          </p>
-          <p className="text-gray-700 flex items-center">
-            <FaCalendarAlt className="mr-2 text-blue-400" />
-            Ngày đặt: {format(new Date(booking.bookingDate), "dd/MM/yyyy")}
-          </p>
-          <p className="text-gray-700 flex items-center">
-            <FaMoneyCheckAlt className="mr-2 text-green-400" />
-            Tổng tiền: {booking.totalAmount.toLocaleString()} VNĐ
-          </p>
-        </div>
-
-        {/* Nút hành động */}
-        <div className="mt-4 flex space-x-3 z-10 relative">
-          {booking.status === 0 && (
-            <>
-              <NavLink
-                to="/paymentVnpay2"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handlePaymentClick(booking);
-                }}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200 flex items-center"
-              >
-                <FaMoneyCheckAlt className="mr-2" /> Thanh Toán
-              </NavLink>
-              <button
-                onClick={(e) => handleCancelBooking(booking.bookingId, e)}
-                className="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-all duration-200"
-              >
-                Huỷ
-              </button>
-            </>
-          )}
-          {booking.status === 2 &&
-            booking.bookingDetails &&
-            booking.bookingDetails.every(
-              (detail) => detail.administeredDate !== null
-            ) && (
-              <NavLink
-                to="/paymentVnpay2"
-                state={{
-                  bookingId: booking.bookingId,
-                  bookingDate: booking.bookingDate,
-                  totalAmount: booking.totalAmount.toLocaleString(),
-                }}
-                onClick={() => handlePaymentClick(booking)}
-                className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded"
-              >
-                Feedback
-              </NavLink>
-            )}
-          {booking.status === 2 &&
-            (!booking.bookingDetails ||
-              !booking.bookingDetails.every(
-                (detail) => detail.administeredDate !== null
-              )) && (
-              <span className="px-4 py-2 text-gray-500">Chờ Ngày Tiêm</span>
-            )}
-          {booking.status === 3 && (
-            <button
-              onClick={(e) => handleRescheduleBooking(booking.bookingId, e)}
-              className="px-4 py-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-all duration-200"
-            >
-              Đặt Lại
-            </button>
-          )}
-        </div>
+      <div className="profile-loading">
+        <div className="profile-loading-spinner"></div>
+        <p>Đang tải thông tin...</p>
       </div>
     );
-  };
+  }
 
-  // Lọc danh sách booking theo trạng thái recategorized:
-  const filteredBookings = bookings.filter(
-    (b) => recategorizedStatus(b) === selectedStatus
-  );
-
-  const bookingDates = bookings.map((b) => new Date(b.bookingDate));
-  const tileClassName = ({ date, view }) =>
-    view === "month" && bookingDates.some((d) => isSameDay(d, date))
-      ? "bg-blue-100 text-blue-700 rounded-full font-semibold"
-      : null;
-
-  if (loading) return <p className="text-gray-600 text-center">Đang tải...</p>;
-  if (error) return <p className="text-red-600 text-center">{error}</p>;
+  if (error) {
+    return (
+      <div className="profile-error">
+        <div className="profile-error-icon">❌</div>
+        <p>{error}</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-6">
-      <div className="max-w-6xl mx-auto">
-        {/* Tiêu đề */}
-        <h1 className="text-3xl font-bold text-blue-700 mb-6 text-center">
-          Quản Lý Lịch Tiêm Chủng
-        </h1>
+    <div className="profile-container">
+      <div className="profile-header">
+        <h1>My Booking</h1>
+      </div>
 
-        {/* Bộ lọc trạng thái */}
-        <div className="flex justify-center space-x-4 mb-8">
-          {[0, 2, 3].map((status) => (
-            <button
-              key={status}
-              onClick={() => handleStatusClick(status)}
-              className={`px-6 py-3 rounded-full font-semibold text-white shadow-md hover:shadow-lg transition-all duration-300 ${
-                status === 0
-                  ? "bg-blue-500 hover:bg-blue-600"
-                  : status === 2
-                  ? "bg-green-500 hover:bg-green-600"
-                  : "bg-red-500 hover:bg-red-600"
-              } ${
-                selectedStatus === status
-                  ? "ring-4 ring-opacity-50 ring-offset-2 ring-blue-300"
-                  : ""
-              }`}
-            >
-              {statusLabels[status]}
-            </button>
-          ))}
-        </div>
-
-        {/* Danh sách booking */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredBookings.map((booking) => renderBookingCard(booking))}
-        </div>
-
-        {/* Nút mở lịch */}
-        <div className="mt-10 text-center">
-          <button
-            onClick={() => setShowCalendarModal(true)}
-            className="px-6 py-3 bg-blue-600 text-white rounded-full shadow-md hover:bg-blue-700 transition-all duration-300 flex items-center mx-auto"
-          >
-            <FaCalendarAlt className="mr-2" /> Xem Lịch Đặt Lịch
-          </button>
-        </div>
-
-        {/* Modal lịch */}
-        {showCalendarModal && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="bg-white rounded-2xl p-8 shadow-xl max-w-lg w-full animate-fadeIn">
-              <button
-                onClick={() => setShowCalendarModal(false)}
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl"
-              >
-                <FaTimes />
-              </button>
-              <h3 className="text-2xl font-bold text-blue-700 mb-6 text-center">
-                Lịch Đặt Tiêm Chủng
-              </h3>
-              <Calendar tileClassName={tileClassName} className="border-none" />
+      <div className="profile-main">
+        {activeTab === "bookings" && (
+          <div className="profile-section" style={{ opacity: 1 }}>
+            <div className="profile-section-header">
+              <h2>My Booking</h2>
             </div>
-          </div>
-        )}
 
-        {/* Modal chi tiết */}
-        {modalVisible && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="bg-white rounded-2xl p-8 shadow-xl max-w-lg w-full animate-fadeIn">
-              <button
-                onClick={closeModal}
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl"
-              >
-                <FaTimes />
-              </button>
-              <h3 className="text-2xl font-bold text-blue-700 mb-6">
-                Chi Tiết Đặt Lịch
-              </h3>
-              {selectedBooking && (
-                <div className="space-y-4">
-                  <p className="text-gray-800">
-                    <strong className="text-blue-600">Mã đặt lịch:</strong>{" "}
-                    {selectedBooking.bookingId}
-                  </p>
-                  <p className="text-gray-800">
-                    <strong className="text-blue-600">Ngày đặt:</strong>{" "}
-                    {format(
-                      new Date(selectedBooking.bookingDate),
-                      "dd/MM/yyyy"
-                    )}
-                  </p>
-                  <p className="text-gray-800">
-                    <strong className="text-blue-600">Tổng tiền:</strong>{" "}
-                    {selectedBooking.totalAmount.toLocaleString()} VNĐ
-                  </p>
-                  <h4 className="text-lg font-semibold text-blue-600 mt-6 flex items-center">
-                    <FaChild className="mr-2" /> Vaccine & Trẻ Em
-                  </h4>
-                  {bookingDetails.map((detail) => (
-                    <div
-                      key={detail.bookingDetailId}
-                      className="p-4 bg-blue-50 rounded-lg border border-blue-100"
-                    >
-                      <p className="text-lg font-semibold text-blue-700">
-                        {detail.child.firstName} {detail.child.lastName}
-                      </p>
-                      <p className="text-gray-700">
-                        <strong className="text-blue-600">Vaccine:</strong>{" "}
-                        {detail.vaccine.name}
-                      </p>
-                      <p className="text-gray-700">
-                        <strong className="text-blue-600">Combo:</strong>{" "}
-                        {detail.vaccineCombo || "Không có"}
-                      </p>
-                      <p className="text-gray-700">
-                        <strong className="text-blue-600">Ngày dự kiến:</strong>{" "}
-                        {format(new Date(detail.scheduledDate), "dd/MM/yyyy")}
-                      </p>
+            {bookings.length > 0 ? (
+              <div className="profile-bookings-grid">
+                {bookings.map((booking) => (
+                  <Link
+                    to={`/booking-detail/${booking.bookingId}`}
+                    key={booking.bookingId}
+                    className="profile-booking-card"
+                    style={{ textDecoration: "none" }}
+                  >
+                    <div className="profile-booking-header">
+                      <div className="profile-booking-info">
+                        <h3>Booking #{booking.bookingId}</h3>
+                        <p className="profile-booking-date">
+                          <Calendar size={14} />
+                          {new Date(booking.bookingDate).toLocaleDateString()}
+                        </p>
+                      </div>
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
+                    <div className="profile-booking-details">
+                      <div className="profile-booking-detail-item">
+                        <span className="profile-booking-detail-label">
+                          Trạng thái:
+                        </span>
+                        <span
+                          className={`profile-status ${
+                            booking.status === 1 ? "active" : "inactive"
+                          }`}
+                        >
+                          {booking.status === 1
+                            ? "Đã xác nhận"
+                            : "Chưa xác nhận"}
+                        </span>
+                      </div>
+                      <div className="profile-booking-detail-item">
+                        <span className="profile-booking-detail-label">
+                          Tổng tiền:
+                        </span>
+                        <span className="profile-booking-detail-value">
+                          {booking.totalAmount.toLocaleString("vi-VN")} VNĐ
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="profile-no-bookings">
+                <div className="profile-no-data-icon">📅</div>
+                <p>Bạn chưa có booking nào. Vui lòng tạo booking để bắt đầu.</p>
+              </div>
+            )}
           </div>
         )}
       </div>
     </div>
   );
-};
+}
 
 export default BookingCustomer;

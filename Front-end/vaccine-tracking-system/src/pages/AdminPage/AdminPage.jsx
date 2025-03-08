@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, Link, useNavigate } from "react-router-dom";
+import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../components/common/AuthContext.jsx";
-
 import {
   FiGrid,
   FiUsers,
   FiCalendar,
-  FiFolder,
   FiChevronDown,
   FiUser,
   FiBarChart2,
@@ -22,7 +20,7 @@ import {
   FiChevronLeft,
   FiChevronRight,
 } from "react-icons/fi";
-import { RiSyringeLine, RiVirusLine, RiHospitalLine } from "react-icons/ri";
+import { RiSyringeLine } from "react-icons/ri";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 
@@ -33,23 +31,54 @@ const AdminPage = () => {
   };
 
   const navigate = useNavigate();
+  const location = useLocation();
   const { userInfo } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [vaccineOpen, setVaccineOpen] = useState(false);
+  const [showHeader, setShowHeader] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
+    // Nếu thu gọn sidebar thì đóng menu vaccine luôn
+    if (!isCollapsed) {
+      setVaccineOpen(false);
+    }
   };
+
+  // Tự động ẩn/hiện header khi cuộn trang (giống StaffPage)
+  const controlHeader = () => {
+    if (window.scrollY > lastScrollY) {
+      setShowHeader(false);
+    } else {
+      setShowHeader(true);
+    }
+    setLastScrollY(window.scrollY);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", controlHeader);
+    return () => {
+      window.removeEventListener("scroll", controlHeader);
+    };
+  }, [lastScrollY]);
+
+  // Active cho menu Vaccine: nếu URL bắt đầu bằng /admin/vaccines hoặc /admin/vaccine-combos
+  const isVaccineActive =
+    location.pathname.startsWith("/admin/vaccines") ||
+    location.pathname.startsWith("/admin/vaccine-combos");
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
       <aside
         className={`
-          ${isCollapsed ? "w-25" : "w-65"}
+          ${isCollapsed ? "w-[100px]" : "w-[260px]"}
           bg-teal-700 text-white flex flex-col sticky top-0 h-screen overflow-y-auto
           transition-all duration-300 ease-in-out
         `}
       >
-        {/* Phần trên: Logo/Tiêu đề + nút toggle */}
+        {/* Top: Logo/Tiêu đề + nút toggle */}
         <div className="p-4 border-b border-teal-600 flex items-center justify-between">
           {!isCollapsed && (
             <div className="flex flex-col items-center">
@@ -72,14 +101,21 @@ const AdminPage = () => {
 
         {/* Navigation */}
         <nav className="flex-1 px-2 py-6">
+          {/* Trang chủ */}
           <div className="mb-4">
-            <Link
+            <NavLink
               to="/home"
-              className="flex items-center px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-500 transition-colors text-sm font-medium shadow-sm"
+              className={({ isActive }) =>
+                `flex ${
+                  isCollapsed ? "justify-center" : "items-center"
+                } px-4 py-2 rounded-lg transition-colors text-sm font-medium shadow-sm ${
+                  isActive ? "bg-teal-600" : "hover:bg-teal-500"
+                }`
+              }
             >
               <FiHome className="w-5 h-5" />
               {!isCollapsed && <span className="ml-2">Trang chủ</span>}
-            </Link>
+            </NavLink>
           </div>
 
           {!isCollapsed && (
@@ -92,31 +128,49 @@ const AdminPage = () => {
 
           <ul className="space-y-1 mb-6">
             <li>
-              <Link
+              <NavLink
                 to="/admin/dashboard"
-                className="flex items-center p-3 text-sm font-medium rounded-lg hover:bg-teal-600 transition-colors"
+                className={({ isActive }) =>
+                  `flex ${
+                    isCollapsed ? "justify-center" : "items-center"
+                  } p-3 text-sm font-medium rounded-lg transition-colors ${
+                    isActive ? "bg-teal-600" : "hover:bg-teal-600"
+                  }`
+                }
               >
                 <FiGrid className="w-5 h-5" />
                 {!isCollapsed && <span className="ml-3">Bảng điều khiển</span>}
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link
+              <NavLink
                 to="/admin/staffs"
-                className="flex items-center p-3 text-sm font-medium rounded-lg hover:bg-teal-600 transition-colors"
+                className={({ isActive }) =>
+                  `flex ${
+                    isCollapsed ? "justify-center" : "items-center"
+                  } p-3 text-sm font-medium rounded-lg transition-colors ${
+                    isActive ? "bg-teal-600" : "hover:bg-teal-600"
+                  }`
+                }
               >
                 <FiUser className="w-5 h-5" />
                 {!isCollapsed && <span className="ml-3">Nhân viên Y tế</span>}
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link
+              <NavLink
                 to="/admin/customers"
-                className="flex items-center p-3 text-sm font-medium rounded-lg hover:bg-teal-600 transition-colors"
+                className={({ isActive }) =>
+                  `flex ${
+                    isCollapsed ? "justify-center" : "items-center"
+                  } p-3 text-sm font-medium rounded-lg transition-colors ${
+                    isActive ? "bg-teal-600" : "hover:bg-teal-600"
+                  }`
+                }
               >
                 <FiUsers className="w-5 h-5" />
                 {!isCollapsed && <span className="ml-3">Bệnh nhân</span>}
-              </Link>
+              </NavLink>
             </li>
           </ul>
 
@@ -130,57 +184,90 @@ const AdminPage = () => {
 
           <ul className="space-y-1 mb-6">
             <li>
-              <Link
+              <NavLink
                 to="/admin/bookings"
-                className="flex items-center p-3 text-sm font-medium rounded-lg hover:bg-teal-600 transition-colors"
+                className={({ isActive }) =>
+                  `flex ${
+                    isCollapsed ? "justify-center" : "items-center"
+                  } p-3 text-sm font-medium rounded-lg transition-colors ${
+                    isActive ? "bg-teal-600" : "hover:bg-teal-600"
+                  }`
+                }
               >
                 <FiCalendar className="w-5 h-5" />
                 {!isCollapsed && <span className="ml-3">Lịch hẹn tiêm</span>}
-              </Link>
+              </NavLink>
             </li>
-            <li className="relative group">
-              <div className="flex items-center p-3 text-sm font-medium rounded-lg hover:bg-teal-600 transition-colors cursor-pointer">
+            <li className="relative">
+              <div
+                onClick={() => setVaccineOpen(!vaccineOpen)}
+                className={`flex ${
+                  isCollapsed ? "justify-center" : "items-center"
+                } p-3 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
+                  isVaccineActive || vaccineOpen
+                    ? "bg-teal-600"
+                    : "hover:bg-teal-600"
+                }`}
+              >
                 <RiSyringeLine className="w-5 h-5" />
                 {!isCollapsed && (
                   <>
                     <span className="ml-3">Vaccine</span>
-                    <FiChevronDown className="ml-auto w-4 h-4" />
+                    <FiChevronDown
+                      className={`ml-auto w-4 h-4 transition-transform ${
+                        vaccineOpen ? "rotate-180" : ""
+                      }`}
+                    />
                   </>
                 )}
               </div>
-              {!isCollapsed && (
-                <ul className="mt-1 ml-8 space-y-1 hidden group-hover:block">
+              {vaccineOpen && (
+                <ul className={`${isCollapsed ? "ml-0" : "ml-8"} space-y-1`}>
                   <li>
-                    <Link
+                    <NavLink
                       to="/admin/vaccines"
-                      className="flex items-center py-2 px-3 text-sm font-medium rounded-lg hover:bg-teal-600 transition-colors"
+                      className={({ isActive }) =>
+                        `flex items-center py-2 px-3 text-sm font-medium rounded-lg transition-colors ${
+                          isActive ? "bg-teal-600" : "hover:bg-teal-600"
+                        }`
+                      }
                     >
                       <FiShield className="w-4 h-4 mr-2" />
-                      Quản lý Vaccine
-                    </Link>
+                      {!isCollapsed && "Quản lý Vaccine"}
+                    </NavLink>
                   </li>
                   <li>
-                    <Link
+                    <NavLink
                       to="/admin/vaccine-combos"
-                      className="flex items-center py-2 px-3 text-sm font-medium rounded-lg hover:bg-teal-600 transition-colors"
+                      className={({ isActive }) =>
+                        `flex items-center py-2 px-3 text-sm font-medium rounded-lg transition-colors ${
+                          isActive ? "bg-teal-600" : "hover:bg-teal-600"
+                        }`
+                      }
                     >
                       <FiBox className="w-4 h-4 mr-2" />
-                      Gói Vaccine
-                    </Link>
+                      {!isCollapsed && "Gói Vaccine"}
+                    </NavLink>
                   </li>
                 </ul>
               )}
             </li>
             <li>
-              <Link
+              <NavLink
                 to="/admin/records"
-                className="flex items-center p-3 text-sm font-medium rounded-lg hover:bg-teal-600 transition-colors"
+                className={({ isActive }) =>
+                  `flex ${
+                    isCollapsed ? "justify-center" : "items-center"
+                  } p-3 text-sm font-medium rounded-lg transition-colors ${
+                    isActive ? "bg-teal-600" : "hover:bg-teal-600"
+                  }`
+                }
               >
                 <FiActivity className="w-5 h-5" />
                 {!isCollapsed && (
                   <span className="ml-3">Biểu hiện sau tiêm</span>
                 )}
-              </Link>
+              </NavLink>
             </li>
           </ul>
 
@@ -194,24 +281,36 @@ const AdminPage = () => {
 
           <ul className="space-y-1">
             <li>
-              <Link
+              <NavLink
                 to="/admin/feedbacks"
-                className="flex items-center p-3 text-sm font-medium rounded-lg hover:bg-teal-600 transition-colors"
+                className={({ isActive }) =>
+                  `flex ${
+                    isCollapsed ? "justify-center" : "items-center"
+                  } p-3 text-sm font-medium rounded-lg transition-colors ${
+                    isActive ? "bg-teal-600" : "hover:bg-teal-600"
+                  }`
+                }
               >
                 <FiMessageSquare className="w-5 h-5" />
                 {!isCollapsed && (
                   <span className="ml-3">Phản hồi bệnh nhân</span>
                 )}
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link
+              <NavLink
                 to="/admin/marketing-campains"
-                className="flex items-center p-3 text-sm font-medium rounded-lg hover:bg-teal-600 transition-colors"
+                className={({ isActive }) =>
+                  `flex ${
+                    isCollapsed ? "justify-center" : "items-center"
+                  } p-3 text-sm font-medium rounded-lg transition-colors ${
+                    isActive ? "bg-teal-600" : "hover:bg-teal-600"
+                  }`
+                }
               >
                 <FiBarChart2 className="w-5 h-5" />
                 {!isCollapsed && <span className="ml-3">Chiến dịch Y tế</span>}
-              </Link>
+              </NavLink>
             </li>
           </ul>
         </nav>
@@ -231,7 +330,7 @@ const AdminPage = () => {
             </div>
           )}
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/admin")}
             className="ml-auto text-teal-300 hover:text-white"
           >
             <FiLogOut className="w-5 h-5" />
@@ -239,68 +338,68 @@ const AdminPage = () => {
         </div>
       </aside>
 
-      {/* Main content */}
+      {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        {/* HEADER */}
+        {/* Header giống StaffPage */}
         <header
-          className="
-            sticky top-0 z-10
-            mx-5 mt-5
-            rounded-xl
-            shadow-md
-            bg-gradient-to-r from-teal-500 to-teal-700
-            text-white p-3
-          "
+          style={{
+            left: isCollapsed ? "calc(100px + 20px)" : "calc(260px + 20px)",
+            right: "20px",
+          }}
+          className={`fixed top-0 z-10 transition-transform duration-300 ${
+            showHeader ? "translate-y-0" : "-translate-y-full"
+          }`}
         >
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between">
-            {/* Thông tin bên trái */}
-            <div className="mb-4 md:mb-0">
-              <h1 className=" text-2xl font-extrabold">
-                Trang Quản Trị Trung Tâm Tiêm Chủng
-              </h1>
-              <p className="text-teal-100 text-base mt-1">
-                {format(new Date(), "EEEE, dd/MM/yyyy", { locale: vi })}
-              </p>
-              <p className="text-yellow-100 text-xl font-bold">
-                {adminData.firstName} {adminData.lastName}
-              </p>
-            </div>
-
-            {/* Icon bên phải */}
-            <div className="flex items-center space-x-3">
-              <button className="p-2 rounded-full bg-teal-600 hover:bg-teal-500 transition duration-150">
-                <FiHelpCircle className="w-5 h-5" />
-              </button>
-              <button className="p-2 rounded-full bg-teal-600 hover:bg-teal-500 transition duration-150 relative">
-                <FiMessageSquare className="w-5 h-5" />
-                <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
-              </button>
-              <button className="p-2 rounded-full bg-teal-600 hover:bg-teal-500 transition duration-150 relative">
-                <FiAlertTriangle className="w-5 h-5" />
-                <span className="absolute top-0 right-0 w-2 h-2 bg-yellow-500 rounded-full"></span>
-              </button>
-              <button className="p-2 rounded-full bg-teal-600 hover:bg-teal-500 transition duration-150">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
-                  />
-                </svg>
-              </button>
+          <div className="bg-gradient-to-r from-teal-500 to-teal-700 text-white rounded-b-2xl shadow-md p-3">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+              {/* Thông tin bên trái */}
+              <div className="mb-4 md:mb-0">
+                <h1 className="text-2xl font-extrabold">
+                  Trang Quản Trị Trung Tâm Tiêm Chủng
+                </h1>
+                <p className="text-teal-100 text-base mt-1">
+                  {format(new Date(), "EEEE, dd/MM/yyyy", { locale: vi })}
+                </p>
+                <p className="text-yellow-100 text-xl font-bold">
+                  {adminData.firstName} {adminData.lastName}
+                </p>
+              </div>
+              {/* Icon bên phải */}
+              <div className="flex items-center space-x-3">
+                <button className="p-2 rounded-full bg-teal-600 hover:bg-teal-500 transition duration-150">
+                  <FiHelpCircle className="w-5 h-5" />
+                </button>
+                <button className="p-2 rounded-full bg-teal-600 hover:bg-teal-500 transition duration-150 relative">
+                  <FiMessageSquare className="w-5 h-5" />
+                  <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                </button>
+                <button className="p-2 rounded-full bg-teal-600 hover:bg-teal-500 transition duration-150 relative">
+                  <FiAlertTriangle className="w-5 h-5" />
+                  <span className="absolute top-0 right-0 w-2 h-2 bg-yellow-500 rounded-full"></span>
+                </button>
+                <button className="p-2 rounded-full bg-teal-600 hover:bg-teal-500 transition duration-150">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
         </header>
 
         {/* Nội dung chính */}
-        <main className="max-w-7xl mx-auto px-6 py-8">
+        <main className="max-w-7xl mx-auto px-6 py-8 mt-24">
           <Outlet />
         </main>
 
@@ -316,4 +415,5 @@ const AdminPage = () => {
     </div>
   );
 };
+
 export default AdminPage;

@@ -204,6 +204,22 @@ export const getVaccineDetailByVaccineId = async (vaccineId) => {
     return null;
   }
 };
+export const getVaccineComboDetailByVaccineId = async (vaccineComboId) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/combodetail/findcomboid?id=${vaccineComboId}`,
+      {
+        params: { vaccineComboId },
+      }
+    );
+
+    console.log("📡 API Response (getCustomerID):", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy customer ID:", error);
+    return null;
+  }
+};
 export const getVaccinesByAge = async (ageMin, ageMax) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/vaccine/findbyage`, {
@@ -922,6 +938,7 @@ export const confirmBooking = async (bookingId) => {
   try {
     const response = await axios.post(
       `${API_BASE_URL}/bookingdetail/confirmdate?id=${bookingId}`,
+      null,
       { withCredentials: true } // Added here
     );
     console.log("API Response (confirmBooking):", response.data);

@@ -28,7 +28,7 @@ const CustomSlider = styled(Slider)(`
   }
 `);
 
-const PriceVaccine = () => {
+const PriceVaccineGuest = () => {
   const [pricePackages, setPricePackages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
@@ -317,26 +317,7 @@ const PriceVaccine = () => {
                                       </div>
 
                                       {/* Nút chọn ở phía bên phải */}
-                                      <div className="flex justify-end mt-4">
-                                        <button
-                                          onClick={(e) =>
-                                            handleSelectVaccine(e, vaccine)
-                                          }
-                                          className={`px-6 py-2 rounded-lg border-2 transition-colors duration-300 ${
-                                            selectedPackage.includes(
-                                              vaccine.vaccineId
-                                            )
-                                              ? "bg-[#5D90D4] text-white border-[#5D90D4]"
-                                              : "bg-gray-100 text-[#1A365D] hover:bg-[#2C5DA3] hover:text-white border-gray-300 hover:border-[#2C5DA3]"
-                                          }`}
-                                        >
-                                          {selectedPackage.includes(
-                                            vaccine.vaccineId
-                                          )
-                                            ? "Đã chọn"
-                                            : "Chọn"}
-                                        </button>
-                                      </div>
+                                      <div className="flex justify-end mt-4"></div>
                                     </div>
                                   </div>
                                 </div>
@@ -451,4 +432,4 @@ const PriceVaccine = () => {
   );
 };
 
-export default PriceVaccine;
+export default PriceVaccineGuest;

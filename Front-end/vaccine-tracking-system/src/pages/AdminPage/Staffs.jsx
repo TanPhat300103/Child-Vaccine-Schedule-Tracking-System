@@ -8,12 +8,7 @@ import {
   FaEye,
   FaEyeSlash,
 } from "react-icons/fa";
-import {
-  getStaffs,
-  createStaff,
-  updateStaff,
-  deleteStaff,
-} from "../../apis/api";
+import { getStaffs, createStaff, updateStaff } from "../../apis/api";
 
 const Staffs = () => {
   // Danh sách nhân viên
@@ -88,17 +83,19 @@ const Staffs = () => {
     e.stopPropagation();
     console.log("Gửi API cập nhật trạng thái active cho:", staffId);
     fetch(`http://localhost:8080/staff/active?id=${staffId}`, {
-      method: "DELETE",
+      method: "POST",
       credentials: "include",
-      withCredentials: true,
     })
-      .then((response) => response.json())
-      .then((updatedStaff) => {
-        setStaffList((prev) =>
-          prev.map((staff) =>
-            staff.staffId === updatedStaff.staffId ? updatedStaff : staff
-          )
-        );
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        // Vì API trả về rỗng nên dùng response.text()
+        return response.text();
+      })
+      .then(() => {
+        // Sau khi cập nhật, làm mới danh sách nhân viên
+        fetchStaffList();
       })
       .catch((error) => console.error("API Active lỗi:", error));
   };
@@ -163,25 +160,6 @@ const Staffs = () => {
   const handleEditCancel = () => {
     setEditStaff(null);
     setOriginalEditStaff(null);
-  };
-
-  // Xóa nhân viên
-  const handleDeleteStaff = async (staffId) => {
-    setMessage("");
-    if (window.confirm("Bạn có chắc chắn muốn xóa nhân viên này?")) {
-      try {
-        const { success, message: respMessage } = await deleteStaff(staffId);
-        if (success) {
-          setMessage("Xóa nhân viên thành công!");
-          fetchStaffList();
-        } else {
-          setMessage(respMessage || "Không thể xóa nhân viên.");
-        }
-      } catch (err) {
-        console.error("Error deleting staff:", err);
-        setMessage("Có lỗi xảy ra khi xóa nhân viên.");
-      }
-    }
   };
 
   // Xử lý input cho modal tạo mới nhân viên
@@ -350,15 +328,6 @@ const Staffs = () => {
                   >
                     <FaPowerOff />
                     <span>{staff.active ? "Ngưng" : "Kích hoạt"}</span>
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteStaff(staff.staffId);
-                    }}
-                    className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-all"
-                  >
-                    Delete
                   </button>
                 </div>
               </div>

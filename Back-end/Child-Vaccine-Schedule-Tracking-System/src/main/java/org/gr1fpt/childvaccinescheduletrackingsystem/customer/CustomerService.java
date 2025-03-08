@@ -58,6 +58,11 @@ public class CustomerService {
     }
 
     public Customer update(Customer customer) {
+        if(customerRepository.findByEmail(customer.getEmail()) .isPresent()) {
+            Customer customer1 = customerRepository.findByEmail(customer.getEmail()).get();
+            if(!customer1.getCustomerId().equals(customer.getCustomerId()))
+                throw new CustomException("Email is exist ",HttpStatus.BAD_REQUEST);
+        }
         if (customerRepository.existsById(customer.getCustomerId())) {
             return customerRepository.save(customer);
         } else {

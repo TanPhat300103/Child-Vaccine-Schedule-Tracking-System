@@ -5,7 +5,7 @@ import { useCart } from "./AddCart";
 import { useNavigate } from "react-router-dom";
 import { getVaccinesByAge } from "../../apis/api";
 
-const AgeVaccine = () => {
+const AgeVaccineGuest = () => {
   const [selectedAge, setSelectedAge] = useState("0-2");
   const [agePackages, setAgePackages] = useState({
     "0-2": [],
@@ -121,18 +121,6 @@ const AgeVaccine = () => {
                   >
                     Xem chi tiết
                   </button>
-                  <button
-                    onClick={(e) => handleSelectVaccine(e, vaccine)} // Xử lý chọn vaccine mà không mở modal
-                    className={`px-4 py-2 rounded-lg transition-colors ${
-                      selectedPackage.includes(vaccine.vaccineId)
-                        ? "bg-[#5D90D4] text-white"
-                        : "bg-gray-100 text-[#1A365D] hover:bg-[#2C5DA3] hover:text-white"
-                    }`}
-                  >
-                    {selectedPackage.includes(vaccine.vaccineId)
-                      ? "Đã chọn"
-                      : "Chọn"}
-                  </button>
                 </div>
               </div>
             </div>
@@ -143,4 +131,4 @@ const AgeVaccine = () => {
   );
 };
 
-export default AgeVaccine;
+export default AgeVaccineGuest;

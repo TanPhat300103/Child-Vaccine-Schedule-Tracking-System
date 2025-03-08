@@ -1,24 +1,82 @@
-import React, { useEffect, useState } from "react";
-import { signInWithGoogle } from "../../config/firebase.js";
-import { FcGoogle } from "react-icons/fc";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { FaSyringe, FaHospital } from "react-icons/fa";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getUsers } from "../../apis/api.js";
 import { useAuth } from "../../components/common/AuthContext.jsx";
+import { FcGoogle } from "react-icons/fc";
+import { HiEye, HiEyeOff } from "react-icons/hi";
+import { FaHospital } from "react-icons/fa";
+import { RiSyringeLine } from "react-icons/ri";
 
 const Login = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [isOtpSent, setIsOtpSent] = useState(false);
+  const [isOtpVerified, setIsOtpVerified] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const navigate = useNavigate();
   const { checkLoginStatus } = useAuth();
+  const otpRefs = useRef([]);
 
-  //check validate phone and password
+  // Xử lý đăng nhập
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:8080/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        credentials: "include",
+        body: new URLSearchParams({
+          username: phoneNumber,
+          password,
+        }).toString(),
+      });
+
+      if (response.ok) {
+        console.log("Login successful - Updating status...");
+        await checkLoginStatus();
+        navigate("/home");
+      } else if (!phoneNumber) {
+        setError("Số điện thoại là bắt buộc");
+      } else if (!/^0\d{9}$/.test(phoneNumber)) {
+        setError("Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0");
+      }
+
+      if (!password) {
+        setError("Mật khẩu là bắt buộc");
+      } else if (password.length < 6) {
+        setError("Mật khẩu phải có ít nhất 6 ký tự");
+      } else if (!/[a-z]/.test(password)) {
+        setError("Mật khẩu phải có ít nhất một chữ cái thường");
+      } else if (!/[A-Z]/.test(password)) {
+        setError("Mật khẩu phải có ít nhất một chữ cái hoa");
+      } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+        setError("Mật khẩu phải có ít nhất một ký tự đặc biệt");
+      } else {
+        const errorText = await response.text();
+        throw new Error(errorText || "Đã xảy ra lỗi khi đăng nhập");
+      }
+    } catch (err) {
+      setError(err.message);
+      console.error("Lỗi đăng nhập:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   const validateForm = () => {
     const newErrors = {};
     if (!phoneNumber) {
@@ -38,241 +96,572 @@ const Login = () => {
     } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
       newErrors.password = "Mật khẩu phải có ít nhất một ký tự đặc biệt";
     }
-    setErrors(newErrors);
+    setError(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+  // Xử lý đăng nhập bằng Google
+  const handleGoogleLogin = () => {
+    setIsLoading(true);
+    setError("");
+    window.location.href = "http://localhost:8080/oauth2/authorization/google";
+  };
 
-  //Submit and handle API
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   const response = await fetch("http://localhost:8080/login", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/x-www-form-urlencoded",
-  //     },
-  //     credentials: "include",
-  //     body: new URLSearchParams({
-  //       username: phoneNumber,
-  //       password,
-  //     }).toString(),
-  //   });
-  //   console.log("response: ", response);
-  //   if (validateForm()) {
-  //     setIsLoading(true);
-  //     try {
-  //       const users = await getUsers();
-  //       const user = users.find(
-  //         (user) =>
-  //           user.phoneNumber === phoneNumber && user.password === password
-  //       );
-
-  //       if (user) {
-  //         console.log("User data:", user);
-  //         localStorage.setItem("userId", user.customerId);
-  //         console.log(
-  //           "UserId đã được lưu vào localStorage:",
-  //           localStorage.getItem("userId")
-  //         );
-
-  //         toast.success("Đăng nhập thành công");
-  //         navigate("/book-vaccine");
-  //       } else {
-  //         setErrors({ phoneNumber: "Số điện thoại hoặc Mật khẩu không đúng" });
-  //         toast.error("Số điện thoại hoặc mật khẩu không đúng");
-  //       }
-  //     } catch (error) {
-  //       console.error("Login failed:", error);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   }
-  // };
-
-  // Xử lý đăng nhập
-  const handleSubmit = async (e) => {
+  // Gửi yêu cầu OTP
+  const handleForgotPasswordSubmit = async (e) => {
     e.preventDefault();
-    setErrors("");
+    setError("");
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8080/login", {
+      const response = await fetch("http://localhost:8080/otp/send", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        credentials: "include",
-        body: new URLSearchParams({
-          username: phoneNumber,
-          password,
-        }).toString(),
+        body: new URLSearchParams({ email }).toString(),
       });
-      console.log("response login data", response);
 
-      if (response.ok) {
-        console.log("Login successful - Updating status...");
-        await checkLoginStatus();
-        navigate("/home");
-      } else if (response.status === 401) {
-        setErrors("Số điện thoại hoặc mật khẩu không đúng");
+      const result = await response.text();
+      if (response.ok && result === "OTP sent successfully") {
+        setIsOtpSent(true);
+        setResendCooldown(60);
       } else {
-        const errorText = await response.text();
-        throw new Error(errorText || "Đã xảy ra lỗi khi đăng nhập");
+        setError(result || "Không thể gửi OTP, vui lòng thử lại");
       }
     } catch (err) {
-      setErrors(err.message);
-      console.error("Lỗi đăng nhập:", err);
+      setError("Đã xảy ra lỗi khi gửi OTP");
+      console.error("Lỗi gửi OTP:", err);
     } finally {
       setIsLoading(false);
     }
   };
 
-  //Login with Google
-  const handleGoogleLogin = async () => {
+  // Xử lý resend OTP
+  const handleResendOtp = async () => {
+    if (resendCooldown > 0) return;
     setIsLoading(true);
+    setError("");
+
     try {
-      await signInWithGoogle();
-      toast.success("Đăng nhập thành công");
-      navigate("/home");
-    } catch (error) {
-      toast.error("Số điện thoại hoặc mật khẩu không đúng");
+      const response = await fetch("http://localhost:8080/otp/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({ email }).toString(),
+      });
+
+      const result = await response.text();
+      if (response.ok && result === "OTP sent successfully") {
+        setResendCooldown(60);
+        setError("OTP đã được gửi lại");
+      } else {
+        setError(result || "Không thể gửi OTP, vui lòng thử lại");
+      }
+    } catch (err) {
+      setError("Đã xảy ra lỗi khi gửi OTP");
+      console.error("Lỗi gửi OTP:", err);
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Xử lý xác nhận OTP
+  const handleOtpSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    const otpValue = otp.join("");
+    try {
+      const response = await fetch(
+        `http://localhost:8080/otp/verify?email=${encodeURIComponent(
+          email
+        )}&otp=${otpValue}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        }
+      );
+
+      const result = await response.text();
+      if (response.ok && result === "OTP verified successfully") {
+        setIsOtpVerified(true);
+      } else {
+        setError(result || "Mã OTP không hợp lệ hoặc đã hết hạn");
+      }
+    } catch (err) {
+      setError("Đã xảy ra lỗi khi xác nhận OTP");
+      console.error("Lỗi xác nhận OTP:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Xử lý đặt lại mật khẩu
+  const handleResetPasswordSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    if (newPassword !== confirmPassword) {
+      setError("Mật khẩu mới và xác nhận mật khẩu không khớp");
+      setIsLoading(false);
+      return;
+    }
+
+    const otpValue = otp.join("");
+    try {
+      const response = await fetch("http://localhost:8080/otp/reset-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          email,
+          otp: otpValue,
+          newPassword,
+        }).toString(),
+      });
+
+      const result = await response.text();
+      if (response.ok && result === "Password reset successfully") {
+        setError("Đặt lại mật khẩu thành công, vui lòng đăng nhập lại");
+        setTimeout(() => {
+          setIsForgotPassword(false);
+          setIsOtpSent(false);
+          setIsOtpVerified(false);
+          setEmail("");
+          setOtp(["", "", "", "", "", ""]);
+          setNewPassword("");
+          setConfirmPassword("");
+        }, 2000);
+      } else {
+        setError(result || "Không thể đặt lại mật khẩu, vui lòng thử lại");
+      }
+    } catch (err) {
+      setError("Đã xảy ra lỗi khi đặt lại mật khẩu");
+      console.error("Lỗi đặt lại mật khẩu:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Xử lý thay đổi giá trị trong ô OTP
+  const handleOtpChange = (e, index) => {
+    const value = e.target.value;
+    if (/^\d$/.test(value) || value === "") {
+      const newOtp = [...otp];
+      newOtp[index] = value;
+      setOtp(newOtp);
+
+      if (value !== "" && index < 5) {
+        otpRefs.current[index + 1].focus();
+      }
+    }
+  };
+
+  // Xử lý phím Backspace
+  const handleOtpKeyDown = (e, index) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      otpRefs.current[index - 1].focus();
+    }
+  };
+
+  // Đếm ngược resend cooldown
+  useEffect(() => {
+    if (resendCooldown > 0) {
+      const timer = setInterval(() => {
+        setResendCooldown((prev) => prev - 1);
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [resendCooldown]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      {/* Background */}
-      <div className="absolute inset-0 z-0 opacity-10">
-        <div className="grid grid-cols-6 gap-4 h-full">
-          {[...Array(24)].map((_, i) => (
-            <div key={i} className="flex items-center justify-center">
-              {i % 2 === 0 ? (
-                <FaSyringe className="text-blue-500 text-4xl" />
-              ) : (
-                <FaHospital className="text-blue-400 text-4xl" />
-              )}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-teal-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md">
+        <div className="bg-white shadow-2xl rounded-2xl overflow-hidden">
+          {/* Header Logo */}
+          <div className="bg-gradient-to-r from-teal-500 to-blue-500 py-6 px-8 text-center">
+            <div className="flex justify-center items-center space-x-2 mb-3">
+              <RiSyringeLine className="text-white text-3xl" />
+              <FaHospital className="text-white text-3xl" />
             </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Logo */}
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-2xl relative z-10">
-        <div>
-          <img
-            src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=100&h=100"
-            alt="Logo"
-            className="mx-auto h-16 w-16 rounded-full"
-          />
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Trình Theo Dõi Lịch Tiêm Chủng
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Theo Dõi Hành Trình Tiêm Chủng Của Con Bạn
-          </p>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm space-y-4">
-            {/* Phone Number */}
-            <div>
-              <label htmlFor="phoneNumber" className="sr-only">
-                Số điện thoại
-              </label>
-              <input
-                id="phoneNumber"
-                name="phoneNumber"
-                type="text"
-                autoComplete="phoneNumber"
-                required
-                className={`appearance-none rounded-lg relative block w-full px-3 py-2 border ${
-                  errors.phoneNumber ? "border-red-300" : "border-gray-300"
-                } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
-                placeholder="Nhập số điện thoại "
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-              />
-              {errors.phoneNumber && (
-                <p className="mt-2 text-sm text-red-600">
-                  {errors.phoneNumber}
-                </p>
-              )}
-            </div>
-            {/* Password */}
-            <div className="relative">
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type={showPassword ? "text" : "password"}
-                autoComplete="current-password"
-                required
-                className={`appearance-none rounded-lg relative block w-full px-3 py-2 border ${
-                  errors.password ? "border-red-300" : "border-gray-300"
-                } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
-                placeholder="Mật khẩu"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <button
-                type="button"
-                className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? (
-                  <AiOutlineEyeInvisible className="h-5 w-5 text-gray-400" />
-                ) : (
-                  <AiOutlineEye className="h-5 w-5 text-gray-400" />
-                )}
-              </button>
-              {errors.password && (
-                <p className="mt-2 text-sm text-red-600">{errors.password}</p>
-              )}
-            </div>
-          </div>
-          {/* Forgot password */}
-          <div className="flex items-center justify-between">
-            <div className="text-sm">
-              <button
-                className="font-medium text-blue-600 hover:text-blue-500"
-                onClick={() => navigate("/forgot-password")}
-              >
-                Quên mật khẩu?
-              </button>
-            </div>
+            <h1 className="text-white font-bold text-2xl">
+              Trung tâm Tiêm chủng
+            </h1>
           </div>
 
-          <div className="space-y-4">
-            <button
-              type="submit"
-              disabled={isLoading}
-              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${
-                isLoading ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
-              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200`}
-            >
-              {isLoading ? "Đang xử lý..." : "Đăng nhập"}
-            </button>
+          {/* Form Container */}
+          <div className="py-8 px-8">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+              {!isForgotPassword
+                ? "Đăng nhập"
+                : isOtpVerified
+                ? "Đặt lại mật khẩu"
+                : isOtpSent
+                ? "Xác nhận OTP"
+                : "Quên mật khẩu"}
+            </h2>
 
-            <button
-              type="button"
-              onClick={handleGoogleLogin}
-              className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
-            >
-              <FcGoogle className="h-5 w-5 mr-2" />
-              Đăng nhập bằng Google
-            </button>
+            {/* Error message */}
+            {error && (
+              <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-md">
+                <p className="text-red-600 text-sm">{error}</p>
+              </div>
+            )}
+
+            {/* Login Form */}
+            {!isForgotPassword ? (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Số điện thoại
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      required
+                      disabled={isLoading}
+                      className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      placeholder="Nhập số điện thoại"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Mật khẩu
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      disabled={isLoading}
+                      className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      placeholder="Nhập mật khẩu"
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <HiEyeOff className="h-5 w-5 text-gray-400" />
+                      ) : (
+                        <HiEye className="h-5 w-5 text-gray-400" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-white bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-600 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-all font-medium"
+                  >
+                    {isLoading ? (
+                      <>
+                        <svg
+                          className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Đang đăng nhập...
+                      </>
+                    ) : (
+                      "Đăng nhập"
+                    )}
+                  </button>
+                </div>
+
+                <div>
+                  <button
+                    type="button"
+                    onClick={handleGoogleLogin}
+                    disabled={isLoading}
+                    className="w-full flex justify-center items-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all font-medium text-gray-700"
+                  >
+                    <FcGoogle className="h-5 w-5 mr-2" />
+                    {isLoading ? "Đang xử lý..." : "Đăng nhập bằng Google"}
+                  </button>
+                </div>
+
+                <div className="text-center">
+                  <button
+                    type="button"
+                    onClick={() => setIsForgotPassword(true)}
+                    disabled={isLoading}
+                    className="text-teal-600 hover:text-teal-800 text-sm font-medium transition-colors"
+                  >
+                    Quên mật khẩu?
+                  </button>
+                </div>
+              </form>
+            ) : !isOtpSent ? (
+              <form onSubmit={handleForgotPasswordSubmit} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email của bạn
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    disabled={isLoading}
+                    className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                    placeholder="Nhập email của bạn"
+                  />
+                </div>
+
+                <div>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-white bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-600 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-all font-medium"
+                  >
+                    {isLoading ? (
+                      <>
+                        <svg
+                          className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Đang gửi...
+                      </>
+                    ) : (
+                      "Gửi OTP"
+                    )}
+                  </button>
+                </div>
+
+                <div className="text-center">
+                  <button
+                    type="button"
+                    onClick={() => setIsForgotPassword(false)}
+                    disabled={isLoading}
+                    className="text-teal-600 hover:text-teal-800 text-sm font-medium transition-colors"
+                  >
+                    Quay lại đăng nhập
+                  </button>
+                </div>
+              </form>
+            ) : !isOtpVerified ? (
+              <form onSubmit={handleOtpSubmit} className="space-y-6">
+                <div className="text-center">
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Nhập mã OTP đã gửi đến email của bạn
+                  </label>
+                  <p className="text-sm text-gray-500 mb-4">
+                    Vui lòng kiểm tra hộp thư đến và spam
+                  </p>
+                  <div className="flex justify-center items-center space-x-2 sm:space-x-3">
+                    {otp.map((digit, index) => (
+                      <input
+                        key={index}
+                        type="text"
+                        maxLength="1"
+                        value={digit}
+                        onChange={(e) => handleOtpChange(e, index)}
+                        onKeyDown={(e) => handleOtpKeyDown(e, index)}
+                        ref={(el) => (otpRefs.current[index] = el)}
+                        disabled={isLoading}
+                        className="w-12 h-12 sm:w-14 sm:h-14 text-center text-xl font-semibold border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-white bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-600 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-all font-medium"
+                  >
+                    {isLoading ? (
+                      <>
+                        <svg
+                          className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Đang xác nhận...
+                      </>
+                    ) : (
+                      "Xác nhận"
+                    )}
+                  </button>
+                </div>
+
+                <div className="text-center">
+                  <button
+                    type="button"
+                    onClick={handleResendOtp}
+                    disabled={isLoading || resendCooldown > 0}
+                    className={`text-sm font-medium transition-colors ${
+                      resendCooldown > 0
+                        ? "text-gray-400 cursor-not-allowed"
+                        : "text-teal-600 hover:text-teal-800"
+                    }`}
+                  >
+                    {resendCooldown > 0
+                      ? `Gửi lại OTP (${resendCooldown}s)`
+                      : "Gửi lại OTP"}
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <form onSubmit={handleResetPasswordSubmit} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Mật khẩu mới
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showNewPassword ? "text" : "password"}
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      required
+                      disabled={isLoading}
+                      className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      placeholder="Nhập mật khẩu mới"
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                    >
+                      {showNewPassword ? (
+                        <HiEyeOff className="h-5 w-5 text-gray-400" />
+                      ) : (
+                        <HiEye className="h-5 w-5 text-gray-400" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Xác nhận mật khẩu mới
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                      disabled={isLoading}
+                      className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      placeholder="Xác nhận mật khẩu mới"
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                    >
+                      {showConfirmPassword ? (
+                        <HiEyeOff className="h-5 w-5 text-gray-400" />
+                      ) : (
+                        <HiEye className="h-5 w-5 text-gray-400" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-white bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-600 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-all font-medium"
+                  >
+                    {isLoading ? (
+                      <>
+                        <svg
+                          className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Đang cập nhật...
+                      </>
+                    ) : (
+                      "Cập nhật mật khẩu"
+                    )}
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
-        </form>
-        <div className="text-center">
-          <button
-            type="button"
-            className="font-medium text-blue-600 hover:text-blue-500 text-sm bg-transparent border-none cursor-pointer"
-            onClick={() => navigate("/register")}
-          >
-            Chưa có tài khoản? Hãy đăng ký ngay
-          </button>
         </div>
       </div>
     </div>
