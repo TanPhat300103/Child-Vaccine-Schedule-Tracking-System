@@ -16,6 +16,8 @@ import {
   FaChartLine,
 } from "react-icons/fa";
 import { useCart } from "../homepage/AddCart";
+import { LogOut } from "lucide-react";
+import { useAuth } from "./AuthContext";
 
 const HeaderHome = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -26,6 +28,7 @@ const HeaderHome = () => {
     lastName: "",
   });
   const { cart, addToCart, removeFromCart } = useCart();
+  const { logout } = useAuth();
   const [childData, setChildData] = useState([]);
   const navigate = useNavigate();
   const cartItemCount = useMemo(() => {
@@ -39,6 +42,14 @@ const HeaderHome = () => {
     navigate("/book-vaccine", {
       state: { cartItems: cart }, // Truyền cart vào state
     });
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    setIsUserMenuOpen(false);
+    setCustomerData(null);
+
+    navigate("/");
   };
   // Handle scroll effect
   useEffect(() => {
@@ -314,10 +325,7 @@ const HeaderHome = () => {
 
                       {/* Logout */}
                       <button
-                        onClick={() => {
-                          navigate("/");
-                          setIsUserMenuOpen(false);
-                        }}
+                        onClick={handleLogout}
                         className="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-red-50 transition duration-200 border-t border-gray-100 mt-1"
                       >
                         <div className="w-9 h-9 bg-red-100 rounded-full flex items-center justify-center text-red-600 mr-3">

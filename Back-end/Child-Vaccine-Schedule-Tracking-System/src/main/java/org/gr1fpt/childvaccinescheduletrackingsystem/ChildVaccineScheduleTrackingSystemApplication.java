@@ -12,7 +12,7 @@ public class ChildVaccineScheduleTrackingSystemApplication {
     public static void main(String[] args) {
 
    ApplicationContext context = SpringApplication.run(ChildVaccineScheduleTrackingSystemApplication.class, args);
-//        System.out.println("FPT hello");
+        System.out.println("FPT hello");
 //        CustomerService action = context.getBean(CustomerService.class);
 //
 //        System.out.println("Test Get All: ");

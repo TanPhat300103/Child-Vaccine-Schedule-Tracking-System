@@ -623,29 +623,6 @@ const PriceVaccineGuest = () => {
                       </p>
                     </div>
                   </div>
-
-                  <div className="mt-6">
-                    <button
-                      onClick={(e) => {
-                        handleSelectVaccine(e, selectedVaccine);
-                        closeModal();
-                      }}
-                      className={`w-full px-4 py-3 rounded-lg text-center font-medium transition-all ${
-                        selectedPackage.includes(selectedVaccine.vaccineId)
-                          ? "bg-green-600 text-white shadow-md hover:bg-green-700"
-                          : "bg-blue-600 text-white shadow-md hover:bg-blue-700"
-                      }`}
-                    >
-                      {selectedPackage.includes(selectedVaccine.vaccineId) ? (
-                        <>
-                          <FaCheckCircle className="inline mr-2" /> Đã chọn vắc
-                          xin
-                        </>
-                      ) : (
-                        "Chọn vắc xin này"
-                      )}
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
