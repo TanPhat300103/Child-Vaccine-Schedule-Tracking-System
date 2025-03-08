@@ -1,6 +1,6 @@
 // StaffPage.jsx
 import React, { useState, useEffect } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate, NavLink } from "react-router-dom";
 import {
   FiHome,
   FiUsers,
@@ -102,38 +102,51 @@ const StaffPage = () => {
 
       {!loading && !error && staffData && (
         <div className="flex min-h-screen bg-gray-50">
-          {/* Sidebar */}
+          {/* Sidebar với viền bên phải */}
           <aside
             className={`${
               sidebarOpen ? "w-72" : "w-20"
-            } bg-gradient-to-b from-teal-600 to-teal-800 text-white transition-all duration-300 ease-in-out fixed h-screen z-20`}
+            } bg-gradient-to-b from-teal-600 to-teal-800 text-white transition-all duration-300 ease-in-out fixed h-screen z-20 `}
           >
-            {/* Logo and Brand */}
-            <div className="flex items-center justify-between p-4 border-b border-teal-500">
-              <div className="flex items-center">
-                <FaHospital
-                  className={`text-white w-8 h-8 ${!sidebarOpen && "mx-auto"}`}
-                />
-                {sidebarOpen && (
+            {/* Logo & Brand: chỉ hiển thị khi sidebar mở */}
+            {sidebarOpen && (
+              <div className="flex items-center justify-between p-4 border-b border-teal-500">
+                <div className="flex items-center">
+                  <FaHospital className="text-white w-8 h-8" />
                   <h1 className="ml-3 text-xl font-bold">MedCare Admin</h1>
-                )}
+                </div>
+                <button
+                  onClick={toggleSidebar}
+                  className="text-teal-200 hover:text-white focus:outline-none"
+                >
+                  <FiX size={24} />
+                </button>
               </div>
-              <button
-                onClick={toggleSidebar}
-                className="text-teal-200 hover:text-white focus:outline-none"
-              >
-                {sidebarOpen ? <FiX size={24} /> : <FiMenu size={24} />}
-              </button>
-            </div>
+            )}
+            {/* Khi sidebar thu gọn, chỉ hiển thị nút toggle ở góc trên */}
+            {!sidebarOpen && (
+              <div className="flex items-center justify-end p-4 border-b border-teal-500">
+                <button
+                  onClick={toggleSidebar}
+                  className="text-teal-200 hover:text-white focus:outline-none"
+                >
+                  <FiMenu size={24} />
+                </button>
+              </div>
+            )}
 
             {/* Navigation */}
             <nav className="mt-6">
               <ul className="space-y-2 px-3">
                 {/* Trang chủ */}
                 <li>
-                  <Link
+                  <NavLink
                     to="/staff"
-                    className="flex items-center px-4 py-3 text-teal-100 hover:bg-teal-700 rounded-lg transition-all duration-200 group"
+                    className={({ isActive }) =>
+                      `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
+                        isActive ? "bg-teal-600" : "hover:bg-teal-700"
+                      }`
+                    }
                   >
                     <FiHome
                       className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
@@ -144,14 +157,18 @@ const StaffPage = () => {
                         Trang chủ
                       </span>
                     )}
-                  </Link>
+                  </NavLink>
                 </li>
 
                 {/* Quản lý khách hàng */}
                 <li>
-                  <Link
+                  <NavLink
                     to="/staff/customers"
-                    className="flex items-center px-4 py-3 text-teal-100 hover:bg-teal-700 rounded-lg transition-all duration-200 group"
+                    className={({ isActive }) =>
+                      `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
+                        isActive ? "bg-teal-600" : "hover:bg-teal-700"
+                      }`
+                    }
                   >
                     <FiUsers
                       className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
@@ -164,14 +181,18 @@ const StaffPage = () => {
                         Quản lý khách hàng
                       </span>
                     )}
-                  </Link>
+                  </NavLink>
                 </li>
 
                 {/* Lịch đăng ký tiêm */}
                 <li>
-                  <Link
+                  <NavLink
                     to="/staff/bookings"
-                    className="flex items-center px-4 py-3 text-teal-100 hover:bg-teal-700 rounded-lg transition-all duration-200 group"
+                    className={({ isActive }) =>
+                      `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
+                        isActive ? "bg-teal-600" : "hover:bg-teal-700"
+                      }`
+                    }
                   >
                     <FiCalendar
                       className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
@@ -184,14 +205,18 @@ const StaffPage = () => {
                         Lịch đăng ký tiêm
                       </span>
                     )}
-                  </Link>
+                  </NavLink>
                 </li>
 
                 {/* Báo cáo phản ứng */}
                 <li>
-                  <Link
+                  <NavLink
                     to="/staff/records"
-                    className="flex items-center px-4 py-3 text-teal-100 hover:bg-teal-700 rounded-lg transition-all duration-200 group"
+                    className={({ isActive }) =>
+                      `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
+                        isActive ? "bg-teal-600" : "hover:bg-teal-700"
+                      }`
+                    }
                   >
                     <FiAlertTriangle
                       className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
@@ -204,14 +229,18 @@ const StaffPage = () => {
                         Báo cáo phản ứng
                       </span>
                     )}
-                  </Link>
+                  </NavLink>
                 </li>
 
                 {/* Phản hồi */}
                 <li>
-                  <Link
+                  <NavLink
                     to="/staff/feedbacks"
-                    className="flex items-center px-4 py-3 text-teal-100 hover:bg-teal-700 rounded-lg transition-all duration-200 group"
+                    className={({ isActive }) =>
+                      `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
+                        isActive ? "bg-teal-600" : "hover:bg-teal-700"
+                      }`
+                    }
                   >
                     <FiMessageSquare
                       className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
@@ -222,14 +251,18 @@ const StaffPage = () => {
                         Phản hồi
                       </span>
                     )}
-                  </Link>
+                  </NavLink>
                 </li>
 
                 {/* Marketing */}
                 <li>
-                  <Link
+                  <NavLink
                     to="/staff/marketing-campains"
-                    className="flex items-center px-4 py-3 text-teal-100 hover:bg-teal-700 rounded-lg transition-all duration-200 group"
+                    className={({ isActive }) =>
+                      `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
+                        isActive ? "bg-teal-600" : "hover:bg-teal-700"
+                      }`
+                    }
                   >
                     <FiBarChart2
                       className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
@@ -240,27 +273,42 @@ const StaffPage = () => {
                         Marketing
                       </span>
                     )}
-                  </Link>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/staff/payments"
+                    className={({ isActive }) =>
+                      `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
+                        isActive ? "bg-teal-600" : "hover:bg-teal-700"
+                      }`
+                    }
+                  >
+                    <FiBarChart2
+                      className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
+                    />
+                    {sidebarOpen && (
+                      <span className="ml-3">Quản Lý Hóa Đơn</span>
+                    )}
+                    {!sidebarOpen && (
+                      <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                        Marketing
+                      </span>
+                    )}
+                  </NavLink>
                 </li>
 
-                {/* Vaccine với submenu */}
-                <li>
-                  <div
-                    onClick={toggleVaccineMenu}
-                    className="flex items-center justify-between px-4 py-3 text-teal-100 hover:bg-teal-700 rounded-lg transition-all duration-200 cursor-pointer group"
-                  >
-                    <div className="flex items-center">
-                      <FaSyringe
-                        className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
-                      />
-                      {sidebarOpen && <span className="ml-3">Vaccine</span>}
-                    </div>
+                {/* Menu Vaccine */}
+                <li className="group">
+                  <div className="relative flex items-center px-4 py-3 text-teal-100 hover:bg-teal-700 rounded-lg transition-all duration-200 cursor-pointer">
+                    <FaSyringe
+                      className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
+                    />
                     {sidebarOpen && (
-                      <FiChevronDown
-                        className={`w-5 h-5 transition-transform duration-200 ${
-                          vaccineMenuOpen ? "rotate-180" : ""
-                        }`}
-                      />
+                      <>
+                        <span className="ml-3">Vaccine</span>
+                        <FiChevronDown className="ml-auto w-5 h-5" />
+                      </>
                     )}
                     {!sidebarOpen && (
                       <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
@@ -268,60 +316,60 @@ const StaffPage = () => {
                       </span>
                     )}
                   </div>
-
-                  {(vaccineMenuOpen || !sidebarOpen) && (
-                    <ul
-                      className={`mt-2 space-y-1 ${
-                        sidebarOpen ? "pl-10" : "pl-0"
-                      }`}
-                    >
-                      <li>
-                        <Link
-                          to="/staff/vaccines"
-                          className="flex items-center px-4 py-2 text-teal-100 hover:bg-teal-700 rounded-lg transition-all duration-200 group"
-                        >
-                          <FiShield
-                            className={`w-5 h-5 ${!sidebarOpen && "mx-auto"}`}
-                          />
-                          {sidebarOpen && (
-                            <span className="ml-2">Quản lý vaccine</span>
-                          )}
-                          {!sidebarOpen && (
-                            <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
-                              Quản lý vaccine
-                            </span>
-                          )}
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/staff/vaccine-combos"
-                          className="flex items-center px-4 py-2 text-teal-100 hover:bg-teal-700 rounded-lg transition-all duration-200 group"
-                        >
-                          <FiBox
-                            className={`w-5 h-5 ${!sidebarOpen && "mx-auto"}`}
-                          />
-                          {sidebarOpen && (
-                            <span className="ml-2">Vaccine combo</span>
-                          )}
-                          {!sidebarOpen && (
-                            <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-teal-800 text-teal-100 text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
-                              Vaccine combo
-                            </span>
-                          )}
-                        </Link>
-                      </li>
-                    </ul>
-                  )}
+                  {/* Submenu Vaccine luôn hiển thị khi hover, đẩy các mục bên dưới xuống */}
+                  <ul
+                    className={`${
+                      sidebarOpen ? "mt-2 pl-10" : ""
+                    } hidden group-hover:block`}
+                  >
+                    <li>
+                      <NavLink
+                        to="/staff/vaccines"
+                        className={({ isActive }) =>
+                          `flex items-center px-4 py-2 text-teal-100 rounded-lg transition-all duration-200 ${
+                            isActive ? "bg-teal-600" : "hover:bg-teal-700"
+                          }`
+                        }
+                      >
+                        <FiShield
+                          className={`w-5 h-5 ${!sidebarOpen && "mx-auto"}`}
+                        />
+                        {sidebarOpen && (
+                          <span className="ml-2">Quản lý vaccine</span>
+                        )}
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink
+                        to="/staff/vaccine-combos"
+                        className={({ isActive }) =>
+                          `flex items-center px-4 py-2 text-teal-100 rounded-lg transition-all duration-200 ${
+                            isActive ? "bg-teal-600" : "hover:bg-teal-700"
+                          }`
+                        }
+                      >
+                        <FiBox
+                          className={`w-5 h-5 ${!sidebarOpen && "mx-auto"}`}
+                        />
+                        {sidebarOpen && (
+                          <span className="ml-2">Vaccine combo</span>
+                        )}
+                      </NavLink>
+                    </li>
+                  </ul>
                 </li>
               </ul>
             </nav>
 
-            {/* Bottom Section */}
+            {/* Bottom Section (Settings) */}
             <div className="absolute bottom-0 w-full p-4 border-t border-teal-500">
-              <Link
+              <NavLink
                 to="/staff/settings"
-                className="flex items-center px-4 py-3 text-teal-100 hover:bg-teal-700 rounded-lg transition-all duration-200 group"
+                className={({ isActive }) =>
+                  `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
+                    isActive ? "bg-teal-600" : "hover:bg-teal-700"
+                  }`
+                }
               >
                 <FiSettings
                   className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
@@ -332,9 +380,76 @@ const StaffPage = () => {
                     Cài đặt
                   </span>
                 )}
-              </Link>
+              </NavLink>
             </div>
           </aside>
+
+          {/* Header */}
+          <header
+            style={{
+              left: sidebarOpen ? "calc(18rem + 20px)" : "calc(5rem + 20px)",
+              right: "20px",
+            }}
+            className={`fixed top-0 z-10 transition-transform duration-300 ${
+              showHeader ? "translate-y-0" : "-translate-y-full"
+            }`}
+          >
+            <div className="bg-gradient-to-r from-teal-500 to-teal-700 text-white rounded-b-lg shadow-md p-3 ">
+              <div className="flex items-center justify-between">
+                {/* Left Section: Greeting (logo & icon removed) */}
+                <div>
+                  <h1 className="text-2xl font-semibold">
+                    Xin chào, {staffData.firstName} {staffData.lastName}!
+                  </h1>
+                  <p className="mt-2 text-teal-100">
+                    Bảng điều khiển nhân viên - Trung tâm tiêm chủng
+                  </p>
+                </div>
+
+                {/* Right Section: Notification, Profile Dropdown */}
+                <div className="flex items-center space-x-4">
+                  <div className="relative">
+                    <Notification
+                      roleId={2}
+                      className="p-2 text-white hover:text-teal-200 hover:bg-teal-600 rounded-full transition-all duration-200 focus:outline-none"
+                    />
+                  </div>
+                  <div className="relative group">
+                    <button className="flex items-center space-x-3 focus:outline-none">
+                      <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-teal-600 font-semibold text-lg border border-teal-300">
+                        {staffData.firstName.charAt(0)}
+                      </div>
+                      <div className="text-left hidden md:block">
+                        <p className="text-sm font-medium text-white">
+                          {staffData.firstName} {staffData.lastName}
+                        </p>
+                        <p className="text-xs text-teal-100">Nhân viên y tế</p>
+                      </div>
+                      <FiChevronDown className="w-5 h-5 text-white group-hover:text-teal-200 transition-colors" />
+                    </button>
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-1">
+                      <div className="py-2">
+                        <Link
+                          to="/staff"
+                          className="flex items-center px-4 py-2 text-gray-700 hover:bg-teal-50 hover:text-teal-600 transition-colors"
+                        >
+                          <FiSettings className="w-5 h-5 mr-2" />
+                          <span>Hồ sơ</span>
+                        </Link>
+                        <button
+                          onClick={() => navigate("/")}
+                          className="flex items-center w-full text-left px-4 py-2 text-gray-700 hover:bg-teal-50 hover:text-teal-600 transition-colors"
+                        >
+                          <FiLogOut className="w-5 h-5 mr-2" />
+                          <span>Đăng xuất</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </header>
 
           {/* Main Content */}
           <div
@@ -342,90 +457,6 @@ const StaffPage = () => {
               sidebarOpen ? "ml-72" : "ml-20"
             }`}
           >
-            {/* Header: thêm style để cách sidebar và có margin phải 20px */}
-            <header
-              style={{
-                left: sidebarOpen ? "calc(18rem + 20px)" : "calc(5rem + 20px)",
-                right: "20px",
-              }}
-              className={`fixed top-0 z-10 transition-transform duration-300 ${
-                showHeader ? "translate-y-0" : "-translate-y-full"
-              }`}
-            >
-              <div className="bg-gradient-to-r from-teal-500 to-teal-700 text-white rounded-b-lg shadow-md p-3">
-                <div className="flex items-center justify-between">
-                  {/* Left Section: Logo + Greeting */}
-                  <div className="flex items-center space-x-4">
-                    {/* Logo */}
-                    <div className="flex items-center justify-center">
-                      <FaHospital className="w-12 h-12 text-white" />
-                    </div>
-                    {/* Greeting & Description */}
-                    <div>
-                      <h1 className="text-2xl font-semibold">
-                        Xin chào, {staffData.firstName} {staffData.lastName}!
-                      </h1>
-                      <p className="mt-2 text-teal-100">
-                        Bảng điều khiển nhân viên - Trung tâm tiêm chủng
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Right Section: Notification, Profile Dropdown và Icon Profile cũ */}
-                  <div className="flex items-center space-x-4">
-                    {/* Notification */}
-                    <div className="relative">
-                      <Notification
-                        roleId={2}
-                        className="p-2 text-white hover:text-teal-200 hover:bg-teal-600 rounded-full transition-all duration-200 focus:outline-none"
-                      />
-                    </div>
-                    {/* Profile Dropdown */}
-                    <div className="relative group">
-                      <button className="flex items-center space-x-3 focus:outline-none">
-                        {/* Avatar với màu nền thay đổi: bg-white với chữ và viền màu teal */}
-                        <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-teal-600 font-semibold text-lg border border-teal-300">
-                          {staffData.firstName.charAt(0)}
-                        </div>
-                        <div className="text-left hidden md:block">
-                          <p className="text-sm font-medium text-white">
-                            {staffData.firstName} {staffData.lastName}
-                          </p>
-                          <p className="text-xs text-teal-100">
-                            Nhân viên y tế
-                          </p>
-                        </div>
-                        <FiChevronDown className="w-5 h-5 text-white group-hover:text-teal-200 transition-colors" />
-                      </button>
-
-                      {/* Dropdown Menu */}
-                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-1">
-                        <div className="py-2">
-                          <Link
-                            to="/staff/profile"
-                            className="flex items-center px-4 py-2 text-gray-700 hover:bg-teal-50 hover:text-teal-600 transition-colors"
-                          >
-                            <FiSettings className="w-5 h-5 mr-2" />
-                            <span>Hồ sơ</span>
-                          </Link>
-                          <button
-                            onClick={() => navigate("/")}
-                            className="flex items-center w-full text-left px-4 py-2 text-gray-700 hover:bg-teal-50 hover:text-teal-600 transition-colors"
-                          >
-                            <FiLogOut className="w-5 h-5 mr-2" />
-                            <span>Đăng xuất</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    {/* Icon Profile cũ */}
-                    <FaNotesMedical className="h-12 w-12 opacity-80" />
-                  </div>
-                </div>
-              </div>
-            </header>
-
-            {/* Nội dung trang */}
             <main className="pt-36">
               <Outlet />
             </main>
@@ -435,5 +466,4 @@ const StaffPage = () => {
     </>
   );
 };
-
 export default StaffPage;
