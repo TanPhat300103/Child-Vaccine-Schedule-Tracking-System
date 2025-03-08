@@ -31,7 +31,6 @@ const ComboVaccine = () => {
   const [selectedCombo, setSelectedCombo] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [expandedCombo, setExpandedCombo] = useState(null);
-  const [ageFilter, setAgeFilter] = useState("");
   const [priceRange, setPriceRange] = useState([0, 5000000]);
   const [selectedOrigin, setSelectedOrigin] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
@@ -43,8 +42,21 @@ const ComboVaccine = () => {
       try {
         setLoading(true);
         // In a real app, replace with actual API call
-        // const data = await getVaccineCombos();
-        const data = [
+        const data = await fetch("http://localhost:8080/vaccinecombo", {
+          method: "GET",
+          credentials: "include",
+        })
+          .then((response) => response.json()) // chuyển đổi dữ liệu trả về thành JSON
+          .then((data) => {
+            console.log("dataaccine: ", data); // xử lý dữ liệu ở đây
+          })
+          .catch((error) => {
+            console.error("Error:", error); // xử lý lỗi nếu có
+          });
+        const dataFromApi = await data.json();
+        console.log("datafromapi", dataFromApi);
+
+        data = [
           {
             id: "combo-1",
             name: "Combo tiêm chủng cơ bản cho trẻ dưới 1 tuổi",
@@ -52,8 +64,7 @@ const ComboVaccine = () => {
               "Bảo vệ trẻ khỏi 6 bệnh truyền nhiễm nguy hiểm phổ biến trong năm đầu đời",
             price: 2500000,
             discount: 15,
-            ageMin: 0,
-            ageMax: 1,
+
             origin: "WHO",
             popularity: 95,
             vaccines: [
@@ -96,8 +107,7 @@ const ComboVaccine = () => {
               "Bảo vệ trẻ khỏi 8 bệnh truyền nhiễm nguy hiểm trong giai đoạn mầm non",
             price: 3500000,
             discount: 10,
-            ageMin: 1,
-            ageMax: 5,
+
             origin: "CDC",
             popularity: 88,
             vaccines: [
@@ -147,8 +157,7 @@ const ComboVaccine = () => {
               "Bảo vệ trẻ trong giai đoạn trưởng thành với các vắc xin quan trọng",
             price: 4200000,
             discount: 5,
-            ageMin: 9,
-            ageMax: 18,
+
             origin: "USA",
             popularity: 75,
             vaccines: [
@@ -191,8 +200,7 @@ const ComboVaccine = () => {
               "Bảo vệ trẻ khỏi các bệnh lây lan phổ biến trong mùa lạnh",
             price: 1800000,
             discount: 12,
-            ageMin: 0,
-            ageMax: 12,
+
             origin: "France",
             popularity: 82,
             vaccines: [
@@ -228,8 +236,7 @@ const ComboVaccine = () => {
               "Bảo vệ trẻ khỏi các bệnh đặc hữu tại vùng nhiệt đới và các điểm du lịch",
             price: 5000000,
             discount: 8,
-            ageMin: 2,
-            ageMax: 18,
+
             origin: "Germany",
             popularity: 65,
             vaccines: [
@@ -290,12 +297,6 @@ const ComboVaccine = () => {
       combo.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       combo.description.toLowerCase().includes(searchQuery.toLowerCase());
 
-    let ageMatch = true;
-    if (ageFilter) {
-      const [min, max] = ageFilter.split("-").map(Number);
-      ageMatch = combo.ageMin >= min && combo.ageMax <= max;
-    }
-
     let priceMatch =
       combo.price >= priceRange[0] && combo.price <= priceRange[1];
 
@@ -304,16 +305,7 @@ const ComboVaccine = () => {
       originMatch = combo.origin === selectedOrigin;
     }
 
-    let categoryMatch = true;
-    if (activeCategory === "infant") {
-      categoryMatch = combo.ageMax <= 2;
-    } else if (activeCategory === "child") {
-      categoryMatch = combo.ageMin >= 2 && combo.ageMax <= 9;
-    } else if (activeCategory === "teen") {
-      categoryMatch = combo.ageMin >= 9;
-    }
-
-    return nameMatch && ageMatch && priceMatch && originMatch && categoryMatch;
+    return nameMatch && priceMatch && originMatch && categoryMatch;
   });
 
   // Handle combo selection
@@ -357,11 +349,6 @@ const ComboVaccine = () => {
   };
 
   // Get age range icon based on age
-  const getAgeIcon = (min, max) => {
-    if (max <= 2) return "👶";
-    if (min >= 2 && max <= 9) return "🧒";
-    return "👦";
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-blue-50">
@@ -407,35 +394,6 @@ const ComboVaccine = () => {
                 </h2>
 
                 {/* Age Range Filter */}
-                <div className="mb-8">
-                  <h3 className="text-md font-medium text-gray-700 mb-4 flex items-center">
-                    <Users className="mr-2 h-4 w-4 text-blue-600" />
-                    Độ tuổi phù hợp
-                  </h3>
-                  <div className="space-y-2">
-                    {[
-                      { value: "", label: "Tất cả độ tuổi" },
-                      { value: "0-2", label: "0 - 2 tuổi", icon: "👶" },
-                      { value: "2-9", label: "2 - 9 tuổi", icon: "🧒" },
-                      { value: "9-18", label: "9 - 18 tuổi", icon: "👦" },
-                    ].map((option) => (
-                      <div
-                        key={option.value}
-                        className={`flex items-center p-3 rounded-lg cursor-pointer transition-colors ${
-                          ageFilter === option.value
-                            ? "bg-blue-100 border border-blue-300"
-                            : "bg-gray-50 border border-gray-200 hover:bg-gray-100"
-                        }`}
-                        onClick={() => setAgeFilter(option.value)}
-                      >
-                        {option.icon && (
-                          <span className="mr-2">{option.icon}</span>
-                        )}
-                        <span className="text-gray-700">{option.label}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
 
                 {/* Price Range Slider */}
                 <div className="mb-8">
@@ -485,7 +443,6 @@ const ComboVaccine = () => {
                 {/* Reset Filters */}
                 <button
                   onClick={() => {
-                    setAgeFilter("");
                     setPriceRange([0, 5000000]);
                     setSelectedOrigin("");
                     setSearchQuery("");
@@ -573,7 +530,6 @@ const ComboVaccine = () => {
                     </p>
                     <button
                       onClick={() => {
-                        setAgeFilter("");
                         setPriceRange([0, 5000000]);
                         setSelectedOrigin("");
                         setSearchQuery("");
@@ -604,14 +560,7 @@ const ComboVaccine = () => {
                                 className="w-full h-full object-cover"
                               />
                               {/* Age Badge */}
-                              <div className="absolute top-4 left-4">
-                                <span className="px-3 py-2 bg-white/80 backdrop-blur-sm rounded-full text-sm font-medium text-gray-700 flex items-center">
-                                  {getAgeIcon(combo.ageMin, combo.ageMax)}
-                                  <span className="ml-1">
-                                    {combo.ageMin}-{combo.ageMax} tuổi
-                                  </span>
-                                </span>
-                              </div>
+
                               {/* Discount Badge */}
                               {combo.discount > 0 && (
                                 <div className="absolute top-4 right-4">
@@ -784,18 +733,7 @@ const ComboVaccine = () => {
                                 className="w-full h-64 object-cover"
                               />
                               {/* Age Badge */}
-                              <div className="absolute top-4 left-4">
-                                <span className="px-3 py-2 bg-white/80 backdrop-blur-sm rounded-full text-sm font-medium text-gray-700 flex items-center">
-                                  {getAgeIcon(
-                                    selectedCombo.ageMin,
-                                    selectedCombo.ageMax
-                                  )}
-                                  <span className="ml-1">
-                                    {selectedCombo.ageMin}-
-                                    {selectedCombo.ageMax} tuổi
-                                  </span>
-                                </span>
-                              </div>
+
                               {/* Discount Badge */}
                               {selectedCombo.discount > 0 && (
                                 <div className="absolute top-4 right-4">
@@ -860,15 +798,6 @@ const ComboVaccine = () => {
                               </div>
                               <div className="flex items-center">
                                 <Calendar className="h-5 w-5 text-blue-600 mr-3" />
-                                <div>
-                                  <p className="text-sm text-gray-500">
-                                    Độ tuổi phù hợp
-                                  </p>
-                                  <p className="font-medium">
-                                    {selectedCombo.ageMin} -{" "}
-                                    {selectedCombo.ageMax} tuổi
-                                  </p>
-                                </div>
                               </div>
                               <div className="flex items-center">
                                 <Award className="h-5 w-5 text-blue-600 mr-3" />

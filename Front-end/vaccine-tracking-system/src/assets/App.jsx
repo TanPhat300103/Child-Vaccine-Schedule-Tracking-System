@@ -1,22 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FaSyringe, FaUserMd } from "react-icons/fa";
-import { motion } from "framer-motion";
+import {
+  FaBoxOpen,
+  FaCalendarAlt,
+  FaHome,
+  FaPhoneAlt,
+  FaSyringe,
+  FaUserMd,
+} from "react-icons/fa";
+import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { slides, benefits, process } from "../stores/homedata.jsx";
-import PriceVaccine from "../components/homepage/PriceVaccine.jsx";
-import AgeVaccine from "../components/homepage/AgeVaccine.jsx";
 import Footer from "../components/common/Footer";
-import ComboVaccine from "../components/homepage/ComboVaccine.jsx";
-import AgeVaccineGuest from "../components/homepage/AgeVaccineGuest.jsx";
 import PriceVaccineGuest from "../components/homepage/PriceVaccineGuest.jsx";
-import HeaderIndex from "../components/common/HeaderIndex.jsx";
+import AgeVaccine2 from "../components/homepage/AgeVaccine2.jsx";
 
 const App = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const vaccinePricingRef = useRef(null);
   const footerRef = useRef(null);
   const navigate = useNavigate();
-
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   //move slides
   useEffect(() => {
     const timer = setInterval(() => {
@@ -45,11 +49,154 @@ const App = () => {
     }
   };
 
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const navItems = [
+    { name: "Trang chủ", icon: <FaHome />, action: () => navigate("/") },
+    {
+      name: "Đặt lịch",
+      icon: <FaCalendarAlt />,
+      action: () => navigate("/login"),
+    },
+    { name: "Gói tiêm", icon: <FaBoxOpen />, action: scrollVaccinePricing },
+    { name: "Liên lạc", icon: <FaPhoneAlt />, action: scrollToFooter },
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       {/* Header */}
-      <HeaderIndex></HeaderIndex>
+      <motion.header
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ type: "spring", stiffness: 100, damping: 20 }}
+        className={`fixed w-full z-50 transition-all duration-300 ${
+          isScrolled
+            ? "py-2 bg-white shadow-lg"
+            : "py-4 bg-white/95 backdrop-blur-sm"
+        }`}
+      >
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between">
+            {/* Logo */}
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              onClick={() => navigate("/")}
+              className="flex items-center space-x-2 cursor-pointer"
+            >
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center transform -rotate-6 hover:rotate-0 transition-all duration-300">
+                <span className="text-white text-xl font-bold">V</span>
+              </div>
+              <span className="text-xl font-extrabold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
+                VaccineCare
+              </span>
+            </motion.div>
 
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center space-x-8">
+              {navItems.map((item, index) => (
+                <motion.button
+                  key={index}
+                  onClick={item.action}
+                  className="group flex items-center space-x-1.5 text-gray-700 hover:text-blue-600 transition-colors"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <span className="text-blue-500 group-hover:text-blue-600 transition-colors">
+                    {item.icon}
+                  </span>
+                  <span className="font-medium">{item.name}</span>
+                  <span className="block h-0.5 w-0 group-hover:w-full transition-all duration-300 bg-blue-600" />
+                </motion.button>
+              ))}
+            </nav>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="p-2 text-gray-700 focus:outline-none"
+              >
+                <div className="w-6 flex flex-col items-center space-y-1.5">
+                  <span
+                    className={`block h-0.5 w-full bg-gray-700 transform transition-all duration-300 ${
+                      isMobileMenuOpen ? "rotate-45 translate-y-2" : ""
+                    }`}
+                  ></span>
+                  <span
+                    className={`block h-0.5 w-full bg-gray-700 transition-all duration-300 ${
+                      isMobileMenuOpen ? "opacity-0" : "opacity-100"
+                    }`}
+                  ></span>
+                  <span
+                    className={`block h-0.5 w-full bg-gray-700 transform transition-all duration-300 ${
+                      isMobileMenuOpen ? "-rotate-45 -translate-y-2" : ""
+                    }`}
+                  ></span>
+                </div>
+              </button>
+            </div>
+
+            {/* User Actions & Icons */}
+            <div className="hidden md:flex items-center space-x-6">
+              {/* Login and Register buttons */}
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                onClick={() => navigate("/login")}
+                className="text-blue-600 hover:text-blue-700 transition-colors"
+              >
+                Đăng nhập
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                onClick={() => navigate("/register")}
+                className="text-blue-600 hover:text-blue-700 transition-colors"
+              >
+                Đăng ký
+              </motion.button>
+            </div>
+          </div>
+
+          {/* Mobile Menu */}
+          <AnimatePresence>
+            {isMobileMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="md:hidden mt-4 overflow-hidden"
+              >
+                <div className="py-2 space-y-2 border-t border-gray-100">
+                  {navItems.map((item, index) => (
+                    <motion.button
+                      key={index}
+                      onClick={() => {
+                        item.action();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-blue-50 transition-colors rounded-lg"
+                      whileHover={{ x: 5 }}
+                    >
+                      <span className="text-blue-500">{item.icon}</span>
+                      <span className="font-medium">{item.name}</span>
+                    </motion.button>
+                  ))}
+
+                  <div className="flex items-center justify-between px-4 py-4 border-t border-gray-100"></div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </motion.header>
       {/* Banner */}
       <motion.section className="relative h-screen overflow-hidden">
         <motion.div
@@ -191,10 +338,7 @@ const App = () => {
       </motion.section>
 
       {/* Age Vaccine */}
-      <AgeVaccineGuest></AgeVaccineGuest>
-
-      {/* Age Vaccine */}
-      <ComboVaccine></ComboVaccine>
+      <AgeVaccine2></AgeVaccine2>
       {/* Price Vaccine */}
       <motion.section className="py-20 bg-white" ref={vaccinePricingRef}>
         <PriceVaccineGuest></PriceVaccineGuest>
