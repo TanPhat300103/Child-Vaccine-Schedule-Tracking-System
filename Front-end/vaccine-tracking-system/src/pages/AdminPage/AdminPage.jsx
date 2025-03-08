@@ -93,7 +93,7 @@ const AdminPage = () => {
         <nav className="flex-1 px-2 py-6">
           <div className="mb-4">
             <NavLink
-              to="/home"
+              to="/"
               className={({ isActive }) =>
                 `flex ${
                   isCollapsed ? "justify-center" : "items-center"

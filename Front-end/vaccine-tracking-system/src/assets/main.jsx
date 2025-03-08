@@ -173,6 +173,7 @@ const Main = () => {
 
               {/* Route /admin: giữ đầy đủ child route theo HEAD */}
               <Route path="/admin" element={<AdminPage />}>
+                <Route index element={<Dashboard />} />
                 <Route path="customers" element={<Customers />} />
                 <Route path="childs/:customerId" element={<Childs />} />
                 <Route path="staffs" element={<Staffs />} />
