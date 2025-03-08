@@ -1,5 +1,6 @@
 package org.gr1fpt.childvaccinescheduletrackingsystem.notification;
 
+import org.gr1fpt.childvaccinescheduletrackingsystem.booking.BookingDTO;
 import org.gr1fpt.childvaccinescheduletrackingsystem.exception.CustomException;
 import org.gr1fpt.childvaccinescheduletrackingsystem.role.RoleService;
 import org.gr1fpt.childvaccinescheduletrackingsystem.vaccine.Vaccine;
@@ -62,4 +63,5 @@ public class NotificationService {
     public Notification getNotificationById(int id) {
         return notificationRepository.findById(String.valueOf(id)).orElseThrow(() -> new CustomException("Notification ID" + id + " not found", HttpStatus.BAD_REQUEST));
     }
+
 }

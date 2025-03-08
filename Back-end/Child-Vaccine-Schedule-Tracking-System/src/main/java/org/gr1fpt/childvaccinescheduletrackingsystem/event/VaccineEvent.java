@@ -30,6 +30,5 @@ public class VaccineEvent {
         notification.setTittle("Out of Stock Vaccine");
         notification.setMessage("Vaccine "+vaccineDetail.getVaccine().getName() + " has been out of stock: "+vaccineDetail.getQuantity());
         notificationService.saveNotification(notification);
-
     }
 }
