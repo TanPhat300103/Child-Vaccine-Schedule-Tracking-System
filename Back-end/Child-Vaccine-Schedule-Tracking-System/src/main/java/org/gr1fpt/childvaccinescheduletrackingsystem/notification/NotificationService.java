@@ -1,5 +1,6 @@
 package org.gr1fpt.childvaccinescheduletrackingsystem.notification;
 
+import org.gr1fpt.childvaccinescheduletrackingsystem.booking.BookingDTO;
 import org.gr1fpt.childvaccinescheduletrackingsystem.exception.CustomException;
 import org.gr1fpt.childvaccinescheduletrackingsystem.role.RoleService;
 import org.gr1fpt.childvaccinescheduletrackingsystem.vaccine.Vaccine;
@@ -58,4 +59,6 @@ public class NotificationService {
         }
         else throw new CustomException("ID Notification not found", HttpStatus.BAD_REQUEST);
     }
+
+
 }

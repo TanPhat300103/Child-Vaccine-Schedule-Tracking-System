@@ -142,6 +142,8 @@ public class BookingDetailService {
         if(flag) {
             eventPublisher.publishEvent(bookingDetail.getBooking().getBookingId());
         }
+
+        //Tự tạo thông báo cho khách hàng khi hoàn thành 1 mũi tiêm
         return bookingDetail;
     }
 
