@@ -38,4 +38,6 @@ public class Notification {
     private Date date;
 
 
+    @Column(name = "isRead")
+    boolean isRead = false;
 }

@@ -41,4 +41,9 @@ public class NotificationController {
     public void deleteNotification(@RequestParam int id) {
          notificationService.deleteNotification(id);
     }
+
+    @GetMapping("findid")
+    public Notification getNotificationById(@RequestParam int id) {
+        return notificationService.getNotificationById(id);
+    }
 }
