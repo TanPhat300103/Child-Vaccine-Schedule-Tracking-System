@@ -168,4 +168,3 @@ const BookingDetail = () => {
 };
 
 export default BookingDetail;
-add;

@@ -256,21 +256,6 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <header className="bg-gradient-to-r from-teal-500 to-teal-700 text-white rounded-2xl shadow-md p-6 mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-semibold">
-                Xin chào, {staffData.firstName} {staffData.lastName}!
-              </h1>
-              <p className="mt-2 text-teal-100">
-                Bảng điều khiển nhân viên - Trung tâm tiêm chủng
-              </p>
-            </div>
-            <FaNotesMedical className="h-16 w-16 opacity-80" />
-          </div>
-        </header>
-
         {/* Dashboard Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-teal-400 hover:shadow-lg transition-all ease-in-out">
