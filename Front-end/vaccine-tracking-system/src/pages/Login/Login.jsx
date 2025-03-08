@@ -5,6 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import { FaHospital } from "react-icons/fa";
 import { RiSyringeLine } from "react-icons/ri";
+import { toast, ToastContainer } from "react-toastify";
 
 const Login = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -49,13 +50,13 @@ const Login = () => {
       if (response.ok) {
         console.log("Login successful - Updating status...");
         await checkLoginStatus();
+        toast.success("Đăng nhập thành công!");
         navigate("/home");
       } else if (!phoneNumber) {
         setError("Số điện thoại là bắt buộc");
       } else if (!/^0\d{9}$/.test(phoneNumber)) {
         setError("Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0");
       }
-
       if (!password) {
         setError("Mật khẩu là bắt buộc");
       } else if (password.length < 6) {
@@ -67,42 +68,21 @@ const Login = () => {
       } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
         setError("Mật khẩu phải có ít nhất một ký tự đặc biệt");
       } else {
-        const errorText = await response.text();
-        throw new Error(errorText || "Đã xảy ra lỗi khi đăng nhập");
+        throw new Error("Tài khoản hoặc mật khẩu không đúng");
       }
     } catch (err) {
-      setError(err.message);
+      setError("Tài khoản hoặc mật khẩu không đúng");
       console.error("Lỗi đăng nhập:", err);
     } finally {
       setIsLoading(false);
     }
   };
-  const validateForm = () => {
-    const newErrors = {};
-    if (!phoneNumber) {
-      newErrors.phoneNumber = "Số điện thoại là bắt buộc";
-    } else if (!/^0\d{9}$/.test(phoneNumber)) {
-      newErrors.phoneNumber =
-        "Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0";
-    }
-    if (!password) {
-      newErrors.password = "Mật khẩu là bắt buộc";
-    } else if (password.length < 6) {
-      newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự";
-    } else if (!/[a-z]/.test(password)) {
-      newErrors.password = "Mật khẩu phải có ít nhất một chữ cái thường";
-    } else if (!/[A-Z]/.test(password)) {
-      newErrors.password = "Mật khẩu phải có ít nhất một chữ cái hoa";
-    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-      newErrors.password = "Mật khẩu phải có ít nhất một ký tự đặc biệt";
-    }
-    setError(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+
   // Xử lý đăng nhập bằng Google
   const handleGoogleLogin = () => {
     setIsLoading(true);
     setError("");
+    toast.success("Đăng nhập thành công!");
     window.location.href = "http://localhost:8080/oauth2/authorization/google";
   };
 

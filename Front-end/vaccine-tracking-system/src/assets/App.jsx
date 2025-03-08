@@ -9,6 +9,7 @@ import Footer from "../components/common/Footer";
 import ComboVaccine from "../components/homepage/ComboVaccine.jsx";
 import AgeVaccineGuest from "../components/homepage/AgeVaccineGuest.jsx";
 import PriceVaccineGuest from "../components/homepage/PriceVaccineGuest.jsx";
+import HeaderIndex from "../components/common/HeaderIndex.jsx";
 
 const App = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -47,68 +48,7 @@ const App = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       {/* Header */}
-      <motion.header
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className={`fixed w-full z-50 transition-all duration-300 bg-white shadow-md`}
-      >
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          {/* Vaccine Care */}
-          <motion.div
-            initial={{ x: -100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            className="text-2xl font-bold text-blue-600 cursor-pointer"
-          >
-            VaccineCare
-          </motion.div>
-          {/* Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            {/* Navbar */}
-            {["Trang chủ", "Đặt lịch", "Gói tiêm", "Liên lạc"].map((item) => (
-              <motion.a
-                key={item}
-                onClick={() => {
-                  if (item === "Gói tiêm") {
-                    scrollVaccinePricing();
-                  }
-                  if (item === "Liên lạc") {
-                    scrollToFooter();
-                  }
-                  if (item === "Đặt lịch") {
-                    navigate("/login");
-                  }
-                  if (item === "Trang chủ") {
-                    window.scrollTo({
-                      top: 0,
-                      behavior: "smooth", // Cuộn mượt mà lên đầu trang
-                    });
-                  }
-                }}
-                whileHover={{ scale: 1.05 }}
-                className="text-gray-700 hover:text-blue-600 transition-colors relative group cursor-pointer"
-              >
-                {item}
-                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform " />
-              </motion.a>
-            ))}{" "}
-            {/* Login and signup */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              className="px-4 py-2 text-blue-600 border border-blue-600 rounded-full hover:bg-blue-50 transition-colors"
-              onClick={() => navigate("/login")}
-            >
-              Đăng nhập
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
-              onClick={() => navigate("/register")}
-            >
-              Đăng ký
-            </motion.button>
-          </nav>
-        </div>
-      </motion.header>
+      <HeaderIndex></HeaderIndex>
 
       {/* Banner */}
       <motion.section className="relative h-screen overflow-hidden">
@@ -141,7 +81,7 @@ const App = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="bg-blue-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-blue-700 transition-colors duration-300 animate-pulse"
-                    onClick={() => navigate("/book-vaccine")}
+                    onClick={() => navigate("/login")}
                   >
                     Đăng ký tiêm
                   </motion.button>
