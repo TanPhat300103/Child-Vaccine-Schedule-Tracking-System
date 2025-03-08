@@ -18,19 +18,15 @@ const Footer = () => {
               <div className="contact-items">
                 <div className="contact-item">
                   <Phone className="contact-icon" />
-                  <span>+84 367921030.</span>
+                  <span>+84 123 456 789</span>
                 </div>
                 <div className="contact-item">
                   <Mail className="contact-icon" />
-                  <span>hanptse184261@fpt.edu.vn.</span>
-                </div>
-                <div className="contact-item">
-                  <Mail className="contact-icon" />
-                  <span>khangqhse184031@fpt.edu.vn.</span>
+                  <span>info@vaccinationcenter.com</span>
                 </div>
                 <div className="contact-item">
                   <MapPin className="contact-icon" />
-                  <span>Biên Hòa, Đồng Nai.</span>
+                  <span>123 Đường Sức Khỏe, TP.HCM</span>
                 </div>
               </div>
             </div>
@@ -41,15 +37,15 @@ const Footer = () => {
                 <ul>
                   <li>
                     <ArrowRight className="link-icon" />
-                    <a href="/services/vaccine">Tiêm chủng vaccine.</a>
+                    <a href="/services/vaccine">Tiêm chủng vaccine</a>
                   </li>
                   <li>
                     <ArrowRight className="link-icon" />
-                    <a href="/services/health-check">Kiểm tra sức khỏe.</a>
+                    <a href="/services/health-check">Kiểm tra sức khỏe</a>
                   </li>
                   <li>
                     <ArrowRight className="link-icon" />
-                    <a href="/services/consult">Tư vấn y tế.</a>
+                    <a href="/services/consult">Tư vấn y tế</a>
                   </li>
                 </ul>
               </div>
@@ -59,15 +55,15 @@ const Footer = () => {
                 <ul>
                   <li>
                     <ArrowRight className="link-icon" />
-                    <a href="/faq">Câu hỏi thường gặp.</a>
+                    <a href="/faq">Câu hỏi thường gặp</a>
                   </li>
                   <li>
                     <ArrowRight className="link-icon" />
-                    <a href="/schedule">Lịch tiêm chủng.</a>
+                    <a href="/schedule">Lịch tiêm chủng</a>
                   </li>
                   <li>
                     <ArrowRight className="link-icon" />
-                    <a href="/policy">Chính sách bảo mật.</a>
+                    <a href="/policy">Chính sách bảo mật</a>
                   </li>
                 </ul>
               </div>
@@ -90,7 +86,7 @@ const Footer = () => {
 
         <div className="footer-bottom">
           <div className="footer-copyright">
-            <p >© 2025 Trung Tâm Tiêm Chủng. Đã đăng ký bản quyền.</p>
+            <p>© 2025 Trung Tâm Tiêm Chủng. Đã đăng ký bản quyền.</p>
           </div>
 
           <div className="footer-social">

@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { updateUser, fetchChildren, fetchCustomer } from "../../apis/api";
 import { format } from "date-fns";
 import Header from "../../components/common/Header";
+// import Footer from "../../components/common/Footer_1";
 
 import {
   FiCalendar,
