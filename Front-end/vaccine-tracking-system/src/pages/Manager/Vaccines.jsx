@@ -29,14 +29,6 @@ const Vaccines = () => {
     ageMax: 0,
     active: true,
   });
-  const [newVaccineDetail, setNewVaccineDetail] = useState({
-    entryDate: null,
-    expiredDate: null,
-    img: "",
-    day: 0,
-    tolerance: 0,
-    quantity: 0,
-  });
   const [newVaccineError, setNewVaccineError] = useState(null);
 
   // Fetch vaccines từ API
@@ -114,6 +106,7 @@ const Vaccines = () => {
       .catch((err) => console.error("Lỗi khi cập nhật trạng thái:", err));
   };
 
+  // Xử lý tạo vaccine mới (chỉ với thông tin cơ bản)
   const handleCreateVaccine = (e) => {
     e.preventDefault();
     console.log("Creating vaccine:", newVaccine);
@@ -123,64 +116,25 @@ const Vaccines = () => {
       })
       .then((res) => {
         console.log("Vaccine created successfully:", res.data);
-        const createdVaccine = res.data;
-        const vaccineDetailData = {
-          vaccine: createdVaccine,
-          entryDate: newVaccineDetail.entryDate,
-          expiredDate: newVaccineDetail.expiredDate,
-          status: true,
-          img: newVaccineDetail.img,
-          day: Number(newVaccineDetail.day) || 0,
-          tolerance: Number(newVaccineDetail.tolerance) || 0,
-          quantity: Number(newVaccineDetail.quantity) || 0,
-        };
-        axios
-          .post(
-            "http://localhost:8080/vaccinedetail/create",
-            vaccineDetailData,
-            {
-              withCredentials: true,
-            }
-          )
-          .then((resDetail) => {
-            console.log("Vaccine detail created successfully:", resDetail.data);
-            setShowCreateModal(false);
-            setNewVaccine({
-              name: "",
-              doseNumber: 0,
-              price: 0,
-              description: "",
-              country: "",
-              ageMin: 0,
-              ageMax: 0,
-              active: true,
-            });
-            setNewVaccineDetail({
-              entryDate: null,
-              expiredDate: null,
-              img: "",
-              day: 0,
-              tolerance: 0,
-              quantity: 0,
-            });
-            setNewVaccineError(null);
-            fetchVaccines();
-          })
-          .catch((err) => console.error("Lỗi khi tạo Vaccine Detail:", err));
+        setShowCreateModal(false);
+        setNewVaccine({
+          name: "",
+          doseNumber: 0,
+          price: 0,
+          description: "",
+          country: "",
+          ageMin: 0,
+          ageMax: 0,
+          active: true,
+        });
+        setNewVaccineError(null);
+        fetchVaccines();
       })
       .catch((err) => {
         console.error("Lỗi khi tạo Vaccine:", err);
         setNewVaccineError(
           err.message || "Đã xảy ra lỗi khi tạo. Vui lòng thử lại!"
         );
-        setNewVaccineDetail({
-          entryDate: null,
-          expiredDate: null,
-          img: "",
-          day: 0,
-          tolerance: 0,
-          quantity: 0,
-        });
       });
   };
 
@@ -522,7 +476,7 @@ const Vaccines = () => {
           )}
         </div>
 
-        {/* Modal Tạo mới Vaccine */}
+        {/* Modal Tạo mới Vaccine (chỉ với thông tin cơ bản) */}
         {showCreateModal && (
           <div className="fixed inset-0 flex items-center justify-center z-50">
             <div
@@ -659,121 +613,6 @@ const Vaccines = () => {
                         setNewVaccine({
                           ...newVaccine,
                           ageMax: Number(e.target.value),
-                        })
-                      }
-                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
-                      placeholder="0"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Ngày nhập <span className="text-red-500">*</span>
-                    </label>
-                    <DatePicker
-                      selected={newVaccineDetail.entryDate}
-                      onChange={(date) =>
-                        setNewVaccineDetail({
-                          ...newVaccineDetail,
-                          entryDate: date,
-                        })
-                      }
-                      dateFormat="dd/MM/yyyy"
-                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
-                      placeholderText="Chọn ngày nhập"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Ngày hết hạn <span className="text-red-500">*</span>
-                    </label>
-                    <DatePicker
-                      selected={newVaccineDetail.expiredDate}
-                      onChange={(date) =>
-                        setNewVaccineDetail({
-                          ...newVaccineDetail,
-                          expiredDate: date,
-                        })
-                      }
-                      dateFormat="dd/MM/yyyy"
-                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
-                      placeholderText="Chọn ngày hết hạn"
-                      required
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    URL Hình ảnh
-                  </label>
-                  <input
-                    type="text"
-                    name="img"
-                    value={newVaccineDetail.img}
-                    onChange={(e) =>
-                      setNewVaccineDetail({
-                        ...newVaccineDetail,
-                        img: e.target.value,
-                      })
-                    }
-                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
-                    placeholder="Dán URL hình ảnh (tùy chọn)"
-                  />
-                </div>
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Số ngày <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      name="day"
-                      value={newVaccineDetail.day}
-                      onChange={(e) =>
-                        setNewVaccineDetail({
-                          ...newVaccineDetail,
-                          day: Number(e.target.value),
-                        })
-                      }
-                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
-                      placeholder="0"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Dung sai <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      name="tolerance"
-                      value={newVaccineDetail.tolerance}
-                      onChange={(e) =>
-                        setNewVaccineDetail({
-                          ...newVaccineDetail,
-                          tolerance: Number(e.target.value),
-                        })
-                      }
-                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
-                      placeholder="0"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Số lượng <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      name="quantity"
-                      value={newVaccineDetail.quantity}
-                      onChange={(e) =>
-                        setNewVaccineDetail({
-                          ...newVaccineDetail,
-                          quantity: Number(e.target.value),
                         })
                       }
                       className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
