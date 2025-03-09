@@ -63,7 +63,7 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
             <span className="font-medium">Số lượng:</span> {detail.quantity}
           </p>
         </div>
-        {/* Nút trạng thái và nút chỉnh sửa trên cùng một dòng */}
+        {/* Nút trạng thái và nút chỉnh sửa */}
         <div className="flex justify-end mt-3 space-x-2">
           <button
             onClick={handleToggleStatus}
@@ -100,7 +100,7 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
                   day: Number(e.target.day.value) || 0,
                   tolerance: Number(e.target.tolerance.value) || 0,
                   quantity: Number(e.target.quantity.value) || 0,
-                  img: imageUrl || null, // Nếu không nhập URL thì sẽ set là null
+                  img: imageUrl || null,
                 };
                 handleUpdate(updatedDetail);
               }}
@@ -204,6 +204,16 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
 const VaccineDetail = () => {
   const { vaccineId } = useParams();
   const [vaccineDetails, setVaccineDetails] = useState([]);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [newDetail, setNewDetail] = useState({
+    entryDate: "",
+    expiredDate: "",
+    day: 0,
+    tolerance: 0,
+    quantity: 0,
+    img: "",
+  });
+  const [createError, setCreateError] = useState(null);
 
   useEffect(() => {
     fetchVaccineDetails();
@@ -229,6 +239,7 @@ const VaccineDetail = () => {
       prev.map((d) => (d.id === updatedDetail.id ? updatedDetail : d))
     );
   };
+
   const handleToggleStatus = (detailId, currentStatus) => {
     console.log(
       "Đang chuyển trạng thái cho detailId:",
@@ -253,6 +264,46 @@ const VaccineDetail = () => {
       );
   };
 
+  // Xử lý tạo mới Vaccine Detail
+  const handleCreateDetail = (e) => {
+    e.preventDefault();
+    const payload = {
+      vaccine: { vaccineId: vaccineId },
+      entryDate: newDetail.entryDate,
+      expiredDate: newDetail.expiredDate,
+      day: Number(newDetail.day) || 0,
+      tolerance: Number(newDetail.tolerance) || 0,
+      quantity: Number(newDetail.quantity) || 0,
+      img: newDetail.img || null,
+      status: true,
+    };
+    axios
+      .post("http://localhost:8080/vaccinedetail/create", payload, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        console.log("Vaccine Detail created successfully:", res.data);
+        setShowCreateModal(false);
+        setNewDetail({
+          entryDate: "",
+          expiredDate: "",
+          day: 0,
+          tolerance: 0,
+          quantity: 0,
+          img: "",
+        });
+        setCreateError(null);
+        fetchVaccineDetails();
+      })
+      .catch((err) => {
+        console.error("Lỗi khi tạo Vaccine Detail:", err);
+        setCreateError(
+          err.message ||
+            "Đã xảy ra lỗi khi tạo Vaccine Detail. Vui lòng thử lại!"
+        );
+      });
+  };
+
   return (
     <div className="p-6 bg-gradient-to-b from-blue-50 to-white min-h-screen">
       <div className="max-w-7xl mx-auto">
@@ -267,6 +318,126 @@ const VaccineDetail = () => {
             Quay lại Vaccine
           </NavLink>
         </div>
+        <div className="mb-6 text-center">
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-all"
+          >
+            Tạo mới Vaccine Detail
+          </button>
+        </div>
+        {/* Modal tạo mới Vaccine Detail */}
+        {showCreateModal && (
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <div
+              className="absolute inset-0 backdrop-blur-md"
+              onClick={() => setShowCreateModal(false)}
+            ></div>
+            <div className="relative bg-white p-6 rounded-xl shadow-xl w-full max-w-md max-h-[80vh] overflow-y-auto transform transition-all animate-fadeIn">
+              <h3 className="text-2xl font-bold text-blue-700 mb-4">
+                Tạo mới Vaccine Detail
+              </h3>
+              <form onSubmit={handleCreateDetail} className="space-y-4">
+                <label className="block">
+                  Ngày nhập:
+                  <input
+                    type="date"
+                    value={newDetail.entryDate}
+                    onChange={(e) =>
+                      setNewDetail({
+                        ...newDetail,
+                        entryDate: e.target.value,
+                      })
+                    }
+                    className="w-full p-2 border rounded-lg mt-1"
+                    required
+                  />
+                </label>
+                <label className="block">
+                  Ngày hết hạn:
+                  <input
+                    type="date"
+                    value={newDetail.expiredDate}
+                    onChange={(e) =>
+                      setNewDetail({
+                        ...newDetail,
+                        expiredDate: e.target.value,
+                      })
+                    }
+                    className="w-full p-2 border rounded-lg mt-1"
+                    required
+                  />
+                </label>
+                <label className="block">
+                  Số ngày:
+                  <input
+                    type="number"
+                    value={newDetail.day}
+                    onChange={(e) =>
+                      setNewDetail({ ...newDetail, day: e.target.value })
+                    }
+                    className="w-full p-2 border rounded-lg mt-1"
+                    required
+                  />
+                </label>
+                <label className="block">
+                  Dung sai:
+                  <input
+                    type="number"
+                    value={newDetail.tolerance}
+                    onChange={(e) =>
+                      setNewDetail({ ...newDetail, tolerance: e.target.value })
+                    }
+                    className="w-full p-2 border rounded-lg mt-1"
+                    required
+                  />
+                </label>
+                <label className="block">
+                  Số lượng:
+                  <input
+                    type="number"
+                    value={newDetail.quantity}
+                    onChange={(e) =>
+                      setNewDetail({ ...newDetail, quantity: e.target.value })
+                    }
+                    className="w-full p-2 border rounded-lg mt-1"
+                    required
+                  />
+                </label>
+                <label className="block">
+                  URL Hình ảnh:
+                  <input
+                    type="text"
+                    value={newDetail.img}
+                    onChange={(e) =>
+                      setNewDetail({ ...newDetail, img: e.target.value })
+                    }
+                    className="w-full p-2 border rounded-lg mt-1"
+                    placeholder="Nhập URL hình ảnh (nếu có)"
+                  />
+                </label>
+                {createError && (
+                  <p className="text-red-500 text-sm">{createError}</p>
+                )}
+                <div className="flex justify-end space-x-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowCreateModal(false)}
+                    className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-all"
+                  >
+                    Hủy
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all"
+                  >
+                    Tạo
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
         {vaccineDetails.length === 0 ? (
           <p className="text-center text-gray-500 text-lg">
             Không tìm thấy Vaccine Detail nào
