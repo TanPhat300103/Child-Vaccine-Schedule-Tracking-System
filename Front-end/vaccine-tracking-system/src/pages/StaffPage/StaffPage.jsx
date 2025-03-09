@@ -21,7 +21,7 @@ import {
   FiLogOut,
   FiSettings,
 } from "react-icons/fi";
-import { FaHospital, FaSyringe } from "react-icons/fa";
+import { FaHospital, FaSyringe, FaCashRegister } from "react-icons/fa";
 import Notification from "../../components/common/Notification";
 import { useAuth } from "../../components/common/AuthContext.jsx";
 
@@ -158,10 +158,12 @@ const StaffPage = () => {
                     <FiHome
                       className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
                     />
-                    {sidebarOpen && <span className="ml-3">Trang chủ</span>}
+                    {sidebarOpen && (
+                      <span className="ml-3">Hồ Sơ Nhân Viên</span>
+                    )}
                     {!sidebarOpen && (
                       <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
-                        Trang chủ
+                        Hồ Sơ Nhân Viên
                       </span>
                     )}
                   </NavLink>
@@ -183,11 +185,11 @@ const StaffPage = () => {
                       className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
                     />
                     {sidebarOpen && (
-                      <span className="ml-3">Quản lý khách hàng</span>
+                      <span className="ml-3">Quản Lý Khách Hàng</span>
                     )}
                     {!sidebarOpen && (
                       <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
-                        Quản lý khách hàng
+                        Quản Lý Khách Hàng
                       </span>
                     )}
                   </NavLink>
@@ -209,11 +211,11 @@ const StaffPage = () => {
                       className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
                     />
                     {sidebarOpen && (
-                      <span className="ml-3">Lịch đăng ký tiêm</span>
+                      <span className="ml-3">Lịch Đăng Ký Tiêm</span>
                     )}
                     {!sidebarOpen && (
                       <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
-                        Lịch đăng ký tiêm
+                        Lịch Đăng Ký Tiêm
                       </span>
                     )}
                   </NavLink>
@@ -235,11 +237,11 @@ const StaffPage = () => {
                       className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
                     />
                     {sidebarOpen && (
-                      <span className="ml-3">Báo cáo phản ứng</span>
+                      <span className="ml-3">Báo Cáo Phản Ứng</span>
                     )}
                     {!sidebarOpen && (
                       <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
-                        Báo cáo phản ứng
+                        Báo Cáo Phản Ứng
                       </span>
                     )}
                   </NavLink>
@@ -260,10 +262,10 @@ const StaffPage = () => {
                     <FiMessageSquare
                       className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
                     />
-                    {sidebarOpen && <span className="ml-3">Phản hồi</span>}
+                    {sidebarOpen && <span className="ml-3">Phản Hồi</span>}
                     {!sidebarOpen && (
                       <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
-                        Phản hồi
+                        Phản Hồi
                       </span>
                     )}
                   </NavLink>
@@ -284,10 +286,12 @@ const StaffPage = () => {
                     <FiBarChart2
                       className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
                     />
-                    {sidebarOpen && <span className="ml-3">Marketing</span>}
+                    {sidebarOpen && (
+                      <span className="ml-3">Chiến Dịch Marketing</span>
+                    )}
                     {!sidebarOpen && (
                       <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
-                        Marketing
+                        Chiến Dịch Marketing
                       </span>
                     )}
                   </NavLink>
@@ -303,7 +307,7 @@ const StaffPage = () => {
                       }`
                     }
                   >
-                    <FiBarChart2
+                    <FaCashRegister
                       className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
                     />
                     {sidebarOpen && (
@@ -361,7 +365,7 @@ const StaffPage = () => {
                           className={`w-5 h-5 ${!sidebarOpen && "mx-auto"}`}
                         />
                         {sidebarOpen && (
-                          <span className="ml-2">Quản lý vaccine</span>
+                          <span className="ml-2">Quản Lý vaccine</span>
                         )}
                       </NavLink>
                     </li>
@@ -380,7 +384,7 @@ const StaffPage = () => {
                           className={`w-5 h-5 ${!sidebarOpen && "mx-auto"}`}
                         />
                         {sidebarOpen && (
-                          <span className="ml-2">Vaccine combo</span>
+                          <span className="ml-2">Gói Vaccine</span>
                         )}
                       </NavLink>
                     </li>

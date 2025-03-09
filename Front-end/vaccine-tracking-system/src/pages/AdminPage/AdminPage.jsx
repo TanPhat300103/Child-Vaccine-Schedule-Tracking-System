@@ -22,6 +22,7 @@ import {
 import { RiSyringeLine } from "react-icons/ri";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
+import { FaCashRegister } from "react-icons/fa";
 
 const AdminPage = () => {
   const adminData = {
@@ -123,10 +124,10 @@ const AdminPage = () => {
                 }
               >
                 <FiGrid className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`} />
-                {sidebarOpen && <span className="ml-3">Bảng điều khiển</span>}
+                {sidebarOpen && <span className="ml-3">Bảng Điều Khiển</span>}
                 {!sidebarOpen && (
                   <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
-                    Bảng điều khiển
+                    Bảng Điều Khiển
                   </span>
                 )}
               </NavLink>
@@ -145,10 +146,10 @@ const AdminPage = () => {
                 }
               >
                 <FiUser className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`} />
-                {sidebarOpen && <span className="ml-3">Nhân viên Y tế</span>}
+                {sidebarOpen && <span className="ml-3">Quản Lý Nhân viên</span>}
                 {!sidebarOpen && (
                   <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
-                    Nhân viên Y tế
+                    Quản Lý Nhân viên
                   </span>
                 )}
               </NavLink>
@@ -167,10 +168,12 @@ const AdminPage = () => {
                 }
               >
                 <FiUsers className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`} />
-                {sidebarOpen && <span className="ml-3">Bệnh nhân</span>}
+                {sidebarOpen && (
+                  <span className="ml-3">Quản Lý Khách Hàng</span>
+                )}
                 {!sidebarOpen && (
                   <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
-                    Bệnh nhân
+                    Quản Lý Khách Hàng
                   </span>
                 )}
               </NavLink>
@@ -199,10 +202,10 @@ const AdminPage = () => {
                 <FiCalendar
                   className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
                 />
-                {sidebarOpen && <span className="ml-3">Lịch đăng ký tiêm</span>}
+                {sidebarOpen && <span className="ml-3">Lịch Đăng Ký Tiêm</span>}
                 {!sidebarOpen && (
                   <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
-                    Lịch đăng ký tiêm
+                    Lịch Đăng Ký Tiêm
                   </span>
                 )}
               </NavLink>
@@ -252,7 +255,7 @@ const AdminPage = () => {
                       className={`w-5 h-5 ${!sidebarOpen && "mx-auto"}`}
                     />
                     {sidebarOpen && (
-                      <span className="ml-2">Quản lý Vaccine</span>
+                      <span className="ml-2">Quản Lý Vaccine</span>
                     )}
                   </NavLink>
                 </li>
@@ -289,12 +292,10 @@ const AdminPage = () => {
                 <FiActivity
                   className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
                 />
-                {sidebarOpen && (
-                  <span className="ml-3">Biểu hiện sau tiêm</span>
-                )}
+                {sidebarOpen && <span className="ml-3">Báo Cáo Phản Ứng</span>}
                 {!sidebarOpen && (
                   <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
-                    Biểu hiện sau tiêm
+                    Báo Cáo Phản Ứng
                   </span>
                 )}
               </NavLink>
@@ -323,12 +324,10 @@ const AdminPage = () => {
                 <FiMessageSquare
                   className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
                 />
-                {sidebarOpen && (
-                  <span className="ml-3">Phản hồi bệnh nhân</span>
-                )}
+                {sidebarOpen && <span className="ml-3">Phản Hồi</span>}
                 {!sidebarOpen && (
                   <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
-                    Phản hồi bệnh nhân
+                    Phản Hồi
                   </span>
                 )}
               </NavLink>
@@ -349,10 +348,12 @@ const AdminPage = () => {
                 <FiBarChart2
                   className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
                 />
-                {sidebarOpen && <span className="ml-3">Chiến dịch Y tế</span>}
+                {sidebarOpen && (
+                  <span className="ml-3">Chiến Dịch Marketing</span>
+                )}
                 {!sidebarOpen && (
                   <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
-                    Chiến dịch Y tế
+                    Chiến Dịch Marketing
                   </span>
                 )}
               </NavLink>
@@ -370,7 +371,7 @@ const AdminPage = () => {
                   }`
                 }
               >
-                <FiBarChart2
+                <FaCashRegister
                   className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
                 />
                 {sidebarOpen && <span className="ml-3">Quản Lý Hóa Đơn</span>}
