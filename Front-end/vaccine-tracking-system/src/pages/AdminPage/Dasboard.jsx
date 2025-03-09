@@ -66,6 +66,13 @@ const aggregatePayments = (payments, fromDate, toDate) => {
 };
 
 // Component con cho card số liệu thống kê
+// Hàm formatPrice nếu chưa có
+const formatPrice = (price) =>
+  new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(price);
+
 const StatCard = ({ title, value, prevValue, icon }) => {
   const percentageChange =
     prevValue === 0
@@ -73,36 +80,43 @@ const StatCard = ({ title, value, prevValue, icon }) => {
         ? 100
         : 0
       : ((value - prevValue) / prevValue) * 100;
-
   const isIncrease = percentageChange >= 0;
-
-  // Format phần trăm: nếu > 999.9%, hiển thị dạng "999.9%+"
   const formattedPercentage =
     Math.abs(percentageChange) > 999.9
       ? "999.9%+"
       : `${Math.abs(percentageChange).toFixed(1)}%`;
 
   return (
-    <div className="bg-white rounded-xl shadow p-5 flex items-center hover:shadow-lg transition-all duration-300 border-l-4 border-teal-500 min-w-0">
-      <div className="bg-teal-100 p-3 rounded-full mr-4">{icon}</div>
-      <div className="flex-1 min-w-0">
-        <h4 className="text-gray-500 font-medium text-sm truncate">{title}</h4>
-        <div className="flex items-center mt-2">
-          <span
-            className={`text-xl font-bold ${
-              isIncrease ? "text-green-600" : "text-red-600"
-            }`}
-          >
-            {isIncrease ? "+" : ""}
-            {formattedPercentage}
-          </span>
-          <span
-            className={`ml-1 ${
-              isIncrease ? "text-green-600" : "text-red-600"
-            } text-lg`}
-          >
-            {isIncrease ? "▲" : "▼"}
-          </span>
+    <div className="relative group">
+      <div className="bg-white rounded-xl shadow p-5 flex items-center hover:shadow-lg transition-all duration-300 border-l-4 border-teal-500 min-w-0">
+        <div className="bg-teal-100 p-3 rounded-full mr-4">{icon}</div>
+        <div className="flex-1 min-w-0">
+          <h4 className="text-gray-500 font-medium text-sm truncate">
+            {title}
+          </h4>
+          <div className="flex items-center mt-2">
+            <span
+              className={`text-xl font-bold ${
+                isIncrease ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {isIncrease ? "+" : ""}
+              {formattedPercentage}
+            </span>
+            <span
+              className={`ml-1 ${
+                isIncrease ? "text-green-600" : "text-red-600"
+              } text-lg`}
+            >
+              {isIncrease ? "▲" : "▼"}
+            </span>
+          </div>
+        </div>
+      </div>
+      {/* Dropdown hiển thị số tiền của từng khoảng thời gian */}
+      <div className="absolute left-0 mt-2 w-full bg-white shadow-lg rounded-xl p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="text-sm text-gray-700">
+          {title}: {formatPrice(value)}
         </div>
       </div>
     </div>
