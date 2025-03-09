@@ -1,43 +1,211 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate, NavLink } from "react-router-dom";
-import "../CustomerPage/BookingDetailPage.css";
-import {
-  Calendar,
-  Shield,
-  DollarSign,
-  ChevronDown,
-  ChevronUp,
-  Syringe,
-  User,
-  BookOpen,
-  CreditCard,
-  CheckCircle,
-  XCircle,
-  Save,
-  PlusCircle,
-} from "lucide-react";
-import { useAuth } from "../../components/common/AuthContext";
-import Header from "../../components/common/Header";
+import React, { useEffect, useState } from "react";
+import { useNavigate, NavLink, useLocation, Outlet } from "react-router-dom";
 import Footer from "../../components/common/Footer";
-import { FiCalendar, FiLogOut, FiPlusCircle, FiUser } from "react-icons/fi";
+import { toast } from "react-toastify";
+import { updateUser, fetchChildren, fetchCustomer } from "../../apis/api";
+import { format } from "date-fns";
+import Header from "../../components/common/Header";
+import {
+  FiCalendar,
+  FiMail,
+  FiPhone,
+  FiHome,
+  FiLock,
+  FiEye,
+  FiEyeOff,
+  FiUser as FiUserOutline,
+  FiUser,
+  FiLogOut,
+  FiPlusCircle,
+} from "react-icons/fi";
+import { FaMars, FaVenus, FaChild } from "react-icons/fa";
 import { AiOutlineHistory } from "react-icons/ai";
+import { useAuth } from "../../components/common/AuthContext";
 
-function BookingDetailPage() {
-  const { bookingId } = useParams();
-  const navigate = useNavigate();
-  const { userInfo } = useAuth();
-  const [booking, setBooking] = useState(null);
-  const [bookingDetails, setBookingDetails] = useState([]);
-  const [bookings, setBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [expandedDetailId, setExpandedDetailId] = useState(null);
-  const [activeTab, setActiveTab] = useState("bookings");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [editingReaction, setEditingReaction] = useState(null);
-  const [reactionNote, setReactionNote] = useState("");
+// Hàm so sánh dữ liệu form và dữ liệu gốc
+const isFormChanged = (formData, originalData) => {
+  if (!originalData) return false;
+  for (let key in formData) {
+    if (formData[key] !== originalData[key]) {
+      return true;
+    }
+  }
+  return false;
+};
+
+const BookingDetailPage = () => {
+  const [customer, setCustomer] = useState(null);
   const [children, setChildren] = useState([]);
+  const [showAllChildren, setShowAllChildren] = useState(false);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const location = useLocation();
+  const isExactPath = location.pathname === "/customer";
+  const [error, setError] = useState(null);
+
+  // Lưu dữ liệu gốc để kiểm tra khi thay đổi
+  const [originalData, setOriginalData] = useState(null);
+  const [isChanged, setIsChanged] = useState(false);
+  const { state } = useLocation();
+  const { vaccineIds, vaccineComboIds, childId, bookingDate } = state || {};
+
+  console.log("Vaccine IDs:", vaccineIds);
+  console.log("Vaccine Combo IDs:", vaccineComboIds);
+  console.log("Child ID:", childId);
+  console.log("Booking Date:", bookingDate);
+
+  // Form data
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    dob: "",
+    gender: "false", // mặc định nữ
+    email: "",
+    phoneNumber: "",
+    address: "",
+    password: "",
+  });
+
+  const { userInfo } = useAuth();
+  console.log("userinfo: ", userInfo);
   const customerId = userInfo?.userId;
+
+  // Khi customer thay đổi => set lại formData và originalData
+  useEffect(() => {
+    if (customer) {
+      const newForm = {
+        firstName: customer.firstName || "",
+        lastName: customer.lastName || "",
+        dob: customer.dob
+          ? new Date(customer.dob).toISOString().split("T")[0]
+          : "",
+        gender: customer.gender ? "true" : "false",
+        email: customer.email || "",
+        phoneNumber: customer.phoneNumber || "",
+        address: customer.address || "",
+        password: customer.password || "",
+      };
+      setFormData(newForm);
+      setOriginalData(newForm);
+    }
+  }, [customer]);
+
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [proFileData, setProFileData] = useState(null);
+
+  useEffect(() => {
+    // Kiểm tra xem người dùng đã đăng nhập chưa
+    const checkAuth = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/auth/myprofile", {
+          method: "GET",
+          credentials: "include",
+        });
+        if (response.status === 401) {
+          setIsAuthenticated(false);
+          navigate("/login"); // Chuyển hướng nếu không đăng nhập
+        } else {
+          const data = await response.json();
+          setProFileData(data);
+          console.log("My profile data: ", data);
+        }
+      } catch (error) {
+        setIsAuthenticated(false);
+        navigate("/login");
+        console.error("Error checking auth:", error);
+      }
+    };
+    checkAuth();
+  }, [navigate]);
+
+  // Theo dõi thay đổi form để bật tắt nút lưu
+  useEffect(() => {
+    setIsChanged(isFormChanged(formData, originalData));
+  }, [formData, originalData]);
+
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  // Toggle giới tính bằng icon
+  const toggleGender = () => {
+    setFormData((prev) => ({
+      ...prev,
+      gender: prev.gender === "true" ? "false" : "true",
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    formData.gender = formData.gender === "true";
+    setIsLoading(true);
+    try {
+      const result = await updateUser(formData);
+      if (result.success) {
+        toast.success(result.message);
+        setOriginalData({ ...formData });
+        setIsChanged(false);
+        navigate("/customer");
+      } else {
+        toast.error(
+          result.message ||
+            "Cập nhật thất bại. Vui lòng kiểm tra lại thông tin."
+        );
+        setErrors({ submit: result.message || "Cập nhật thất bại" });
+      }
+    } catch (error) {
+      console.error("Update failed:", error);
+      toast.error("Đã có lỗi xảy ra. Vui lòng thử lại.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const loadData = async () => {
+      if (!customerId) {
+        setError("Không tìm thấy ID khách hàng");
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+      try {
+        // Gọi API để lấy dữ liệu khách hàng và danh sách trẻ em
+        await Promise.all([
+          loadCustomerData(customerId),
+          loadChildrenData(customerId),
+        ]);
+      } catch (err) {
+        setError(
+          "Không thể tải dữ liệu: " + (err.message || "Lỗi không xác định")
+        );
+        console.error("Lỗi tải dữ liệu:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, [customerId]);
+
+  const loadCustomerData = async (customerId) => {
+    try {
+      const data = await fetchCustomer(customerId);
+      setCustomer(data);
+    } catch (error) {
+      toast.error("Không thể lấy thông tin khách hàng.");
+      console.error("Error fetching customer:", error);
+    }
+  };
+
   const loadChildrenData = async (customerId) => {
     try {
       const response = await fetchChildren(customerId);
@@ -54,199 +222,40 @@ function BookingDetailPage() {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!userInfo?.userId) {
-        setError("Không tìm thấy ID người dùng");
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const bookingsResponse = await fetch(
-          `http://localhost:8080/booking/findbycustomer?customerId=${userInfo.userId}`,
-          {
-            method: "GET",
-            credentials: "include",
-          }
-        );
-        if (!bookingsResponse.ok)
-          throw new Error("Không tìm thấy danh sách booking");
-        const bookingsData = await bookingsResponse.json();
-        setBookings(bookingsData);
-
-        const detailsResponse = await fetch(
-          `http://localhost:8080/bookingdetail/findbybooking?id=${bookingId}`,
-          {
-            method: "GET",
-            credentials: "include",
-          }
-        );
-        if (!detailsResponse.ok)
-          throw new Error("Không tìm thấy chi tiết booking");
-        const detailsData = await detailsResponse.json();
-        console.log("Booking details data:", detailsData);
-
-        const sortedDetails = detailsData.sort(
-          (a, b) => new Date(a.scheduledDate) - new Date(b.scheduledDate)
-        );
-        setBookingDetails(sortedDetails);
-
-        if (detailsData.length > 0) {
-          setBooking(detailsData[0].booking);
-        }
-      } catch (err) {
-        setError("Lỗi khi lấy dữ liệu: " + err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [bookingId, userInfo]);
-
-  const groupByDate = (details) => {
-    const grouped = {};
-    details.forEach((detail) => {
-      const date = new Date(detail.scheduledDate).toLocaleDateString("vi-VN", {
-        day: "2-digit",
-        month: "2-digit",
-      });
-      if (!grouped[date]) {
-        grouped[date] = [];
-      }
-      grouped[date].push(detail);
-    });
-    return grouped;
-  };
-
-  const groupedDetails = groupByDate(bookingDetails);
-
-  const toggleDetail = (detailId) => {
-    setExpandedDetailId((prev) => (prev === detailId ? null : detailId));
-    setEditingReaction(null);
-  };
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen((prev) => !prev);
-  };
-
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-    if (tab === "profile") {
-      navigate("/profile");
-    } else if (tab === "children") {
-      navigate("/profile");
-    } else if (tab === "bookings") {
-      setIsDropdownOpen(true);
-    } else if (tab === "payments") {
-      navigate("/my-payment");
-    }
-  };
-
-  const handleBookingSelect = (selectedBookingId) => {
-    navigate(`/booking-detail/${selectedBookingId}`);
-    setIsDropdownOpen(false);
-  };
-
-  const startEditingReaction = (detailId, currentReaction) => {
-    setEditingReaction(detailId);
-    setReactionNote(currentReaction || "");
-  };
-
-  const handleReactionChange = (e) => {
-    setReactionNote(e.target.value);
-  };
-
-  const updateReaction = async (detailId) => {
-    try {
-      const response = await fetch(
-        `http://localhost:8080/bookingdetail/updatereaction?id=${detailId}&reaction=${encodeURIComponent(
-          reactionNote
-        )}`,
-        {
-          method: "POST",
-          credentials: "include",
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Lỗi khi cập nhật trạng thái sau tiêm");
-      }
-
-      const updatedDetail = await response.json();
-      setBookingDetails((prev) =>
-        prev.map((detail) =>
-          detail.bookingDetailId === detailId
-            ? { ...detail, reactionNote: updatedDetail.reactionNote }
-            : detail
-        )
-      );
-      setEditingReaction(null);
-    } catch (err) {
-      setError("Lỗi khi cập nhật trạng thái: " + err.message);
-    }
-  };
-
-  const getStatusText = (status) => {
-    switch (status) {
-      case 1:
-        return "Chưa tiêm";
-      case 2:
-        return "Đã tiêm";
-      case 3:
-        return "Đã hủy";
-      default:
-        return "Không xác định";
-    }
-  };
-
-  const getStatusClass = (status) => {
-    switch (status) {
-      case 1:
-        return "pending";
-      case 2:
-        return "active";
-      case 3:
-        return "inactive";
-      default:
-        return "";
-    }
+  const refreshChildren = () => {
+    loadChildrenData(customerId);
   };
 
   if (loading) {
     return (
-      <div className="bookingdetail-loading">
-        <div className="bookingdetail-loading-spinner"></div>
-        <p>Đang tải chi tiết booking...</p>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-xl text-gray-600">Đang tải dữ liệu...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="bookingdetail-error">
-        <div className="bookingdetail-error-icon">❌</div>
-        <p>{error}</p>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-xl text-red-500">{error}</div>
       </div>
     );
   }
 
-  if (!booking) {
+  if (!formData) {
     return (
-      <div className="bookingdetail-error">
-        <div className="bookingdetail-error-icon">⚠️</div>
-        <p>Không tìm thấy thông tin booking.</p>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-xl text-gray-700">
+          Không tìm thấy thông tin khách hàng
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
-      <Header></Header>
-      {/* Banner giống UI mong muốn */}
-
-      {/* Main content với Sidebar và Booking List */}
+    <div className="min-h-screen bg-gray-100">
+      {/* Top Bar */}
+      <Header />
       <div className="container mx-auto px-1 py-30 flex flex-col md:flex-row gap-6">
         {/* Sidebar */}
         <aside className="w-full md:w-1/4 bg-white border border-teal-200 rounded-xl shadow-md p-5 flex flex-col">
@@ -379,9 +388,7 @@ function BookingDetailPage() {
         </aside>
 
         {/* Right Content Area */}
-
-        <main className="w-full md:flex-1 bg-gradient-to-b from-blue-50 to-white text-blue-800 border border-blue-200 rounded-lg shadow-md flex flex-col justify-between">
-          {" "}
+        <main className="w-auto md:w-10/10 bg-gradient-to-b from-blue-50 to-white text-blue-800 border border-blue-200 rounded-lg shadow-md flex flex-col justify-between">
           <div className="bookingdetail-container">
             <div className="bookingdetail-content">
               <div className="bookingdetail-main">
@@ -623,9 +630,9 @@ function BookingDetailPage() {
           </div>
         </main>
       </div>
-      <Footer></Footer>
+      <Footer />
     </div>
   );
-}
+};
 
 export default BookingDetailPage;

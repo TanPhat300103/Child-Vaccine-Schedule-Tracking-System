@@ -1,392 +1,478 @@
-import React, { useEffect, useState } from "react";
-import { FaCreditCard, FaMoneyBill, FaSpinner } from "react-icons/fa";
-import { BsBank2 } from "react-icons/bs";
-import { MdLocalHospital, MdOutlineDiscount } from "react-icons/md";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../components/common/AuthContext";
 import { getMarketing, getPaymentByBookingID } from "../../apis/api";
+import Footer from "../../components/common/Footer";
+import Header from "../../components/common/Header";
+
+// Import icons
+import {
+  CreditCard,
+  CheckCircle,
+  ChevronRight,
+  ArrowRight,
+  Percent,
+  Receipt,
+} from "lucide-react";
+import { FaHandPaper, FaMoneyBill, FaSpinner } from "react-icons/fa";
 
 const PaymentVnpay = () => {
   const [paymentMethod, setPaymentMethod] = useState("direct");
   const [couponCode, setCouponCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [Error, setErrors] = useState(false);
-  const [customerData, setCustomerData] = useState(null);
+  const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
+  const [errors, setErrors] = useState({});
   const [paymentData, setPaymentData] = useState(null);
   const [marketingData, setMarketingData] = useState([]);
   const [selectedBank, setSelectedBank] = useState("");
   const [discount, setDiscount] = useState(0);
   const [coupon, setCoupon] = useState(null);
+  const [isCouponValid, setIsCouponValid] = useState(false);
+
   const navigate = useNavigate();
   const { userInfo } = useAuth();
-  function getBookingData() {
-    const storedData = localStorage.getItem("bookingData"); // Lấy dữ liệu từ localStorage
-    const userName = localStorage.getItem("userName"); // Lấy dữ liệu từ localStorage
 
+  // Get booking data from localStorage
+  const getBookingData = () => {
+    const storedData = localStorage.getItem("bookingData");
     if (storedData) {
-      return JSON.parse(storedData); // Chuyển đổi dữ liệu JSON thành đối tượng JavaScript
+      return JSON.parse(storedData);
     } else {
-      console.log("Không có dữ liệu trong localStorage");
-      return null; // Trả về null nếu không có dữ liệu
+      console.log("No data in localStorage");
+      return null;
     }
-  }
-  console.log("usurinfo: ", userInfo);
+  };
+
   const bookingDataFromStorage = getBookingData();
-  console.log("Dữ liệu lấy từ localStorage:", bookingDataFromStorage);
 
   const bookingDetails = {
-    customerName: localStorage.getItem("userName"),
-    bookingDate: bookingDataFromStorage.bookingDate,
+    bookingId: bookingDataFromStorage?.bookingId || "",
+    customerName: localStorage.getItem("userName") || "",
+    bookingDate: bookingDataFromStorage?.bookingDate || "",
     vaccineType: "Viêm gan B",
     quantity: 2,
-    pricePerUnit: bookingDataFromStorage.totalAmount,
+    totalAmount: bookingDataFromStorage?.totalAmount || 0,
   };
 
   const banks = [
     {
       value: "Vietcombank",
-      label: "VCB",
-      icon: "https://hienlaptop.com/wp-content/uploads/2024/12/logo-vietcombank-vector-11.png",
-    },
-    {
-      value: "Techcombank",
-      label: "TCB",
-      icon: "https://plus.vtc.edu.vn/wp-content/uploads/2020/09/techcombank.png",
-    },
-    {
-      value: "Bidv",
-      label: "BIDV",
-      icon: "https://diadiembank.com/wp-content/uploads/2024/11/icon-bidv-smartbanking.svg",
-    },
-    {
-      value: "VPBank",
-      label: "VPBank",
-      icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd&AQ6RwsYuDPp1ZlmeUwSBcdMZFmNFgcDplEDxJcig&s",
-    },
-    {
-      value: "MBBank",
-      label: "MBBank",
-      icon: "https://www.mbbank.com.vn/images/logo.png",
-    },
-    {
-      value: "TPBank",
-      label: "TPBank",
-      icon: "https://cdn.haitrieu.com/wp-content/uploads/2022/02/Icon-TPBank.png",
+      label: "Vietcombank",
+      code: "VCB",
     },
     {
       value: "NCB",
       label: "NCB",
-      icon: "https://uudai.ncb-bank.vn/images/common/logo_loading.png",
+      code: "NCB",
+    },
+    {
+      value: "Techcombank",
+      label: "Techcombank",
+      code: "TCB",
+    },
+    {
+      value: "Bidv",
+      label: "BIDV",
+      code: "BIDV",
+    },
+    {
+      value: "VPBank",
+      label: "VPBank",
+      code: "VPB",
+    },
+    {
+      value: "MBBank",
+      label: "MB Bank",
+      code: "MB",
+    },
+    {
+      value: "TPBank",
+      label: "TPBank",
+      code: "TPB",
     },
     {
       value: "Agribank",
       label: "Agribank",
-      icon: "https://www.inlogo.vn/wp-content/uploads/2023/04/logo-agribank.png",
-    },
-    {
-      value: "Eximbank",
-      label: "Eximbank",
-      icon: "https://image.sggp.org.vn/w1000/Uploaded/2025/nkdkswkqoc/original/2012/01/images406537_1.jpg.webp",
-    },
-    {
-      value: "Scb",
-      label: "SCB",
-      icon: "https://cdn.haitrieu.com/wp-content/uploads/2022/02/Icon-SCB.png",
+      code: "AGR",
     },
   ];
+
+  // Fetch marketing data
   useEffect(() => {
     const fetchMarketing = async () => {
       try {
         const data = await getMarketing();
-        console.log("data: ", data);
         setMarketingData(data);
-        console.log("marketing data: ", marketingData);
       } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu vắc xin:", error.message);
+        console.error("Error fetching marketing data:", error.message);
       }
     };
     fetchMarketing();
   }, []);
+
+  // Fetch payment data
   useEffect(() => {
-    console.log("marketingData đã được cập nhật: ", marketingData);
-  }, [marketingData]); // Log khi marketingData thay đổi
+    if (bookingDataFromStorage?.bookingId) {
+      const fetchPaymentData = async () => {
+        try {
+          const data = await getPaymentByBookingID(
+            bookingDataFromStorage.bookingId
+          );
+          setPaymentData(data);
+        } catch (error) {
+          console.error("Error fetching payment data:", error.message);
+        }
+      };
+      fetchPaymentData();
+    }
+  }, [bookingDataFromStorage]);
+
+  // Form validation
   const validateForm = () => {
     const newErrors = {};
 
-    // Kiểm tra nếu ngày đặt lịch không được để trống
-    if (true) {
+    if (paymentMethod === "online" && !selectedBank) {
+      newErrors.bank = "Vui lòng chọn ngân hàng";
     }
-
-    // // Kiểm tra các trường khác
-    // if (!formData.vaccineId.length && !formData.vaccineComboId.length) {
-    //   newErrors.vaccineId = "Vui lòng chọn vắc-xin hoặc combo vắc-xin";
-    // }
-    // if (!formData.childId) newErrors.childId = "Vui lòng chọn trẻ";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  useEffect(() => {
-    const fetchMarketingId = async () => {
-      try {
-        const data = await getPaymentByBookingID(
-          bookingDataFromStorage.bookingId
-        );
-        console.log("datapayment: ", data.paymentId);
-        setPaymentData(data);
-        console.log("setPaymentData: ", paymentData);
-      } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu vắc xin:", error.message);
-      }
-    };
-    fetchMarketingId();
-  }, []);
 
+  // Handle coupon validation
   const handleCouponValidation = () => {
-    setIsLoading(true);
+    if (!couponCode.trim()) {
+      toast.error("Vui lòng nhập mã giảm giá");
+      return;
+    }
+
+    setIsValidatingCoupon(true);
+
     const foundCoupon = marketingData.find(
       (item) => item.coupon === couponCode
     );
 
-    if (foundCoupon) {
-      // Nếu tìm thấy coupon, áp dụng discount
-      setDiscount(foundCoupon.discount);
-      console.log("foundcounpon: ", foundCoupon.discount);
-      setCoupon(foundCoupon.coupon);
-    } else {
-      // Nếu không tìm thấy coupon hợp lệ
-      setDiscount(0);
-      alert("Mã giảm giá không hợp lệ!");
-    }
     setTimeout(() => {
-      if (couponCode === foundCoupon.coupon) {
+      if (foundCoupon) {
         setDiscount(foundCoupon.discount);
+        setCoupon(foundCoupon.coupon);
+        setIsCouponValid(true);
+        toast.success(
+          `Áp dụng mã giảm giá ${foundCoupon.discount}% thành công!`
+        );
       } else {
         setDiscount(0);
-        alert("Mã giảm giá không hợp lệ!");
+        setIsCouponValid(false);
+        toast.error("Mã giảm giá không hợp lệ!");
       }
-      setIsLoading(false);
-    }, 1000);
+      setIsValidatingCoupon(false);
+    }, 800);
   };
 
-  const totalAmount = bookingDetails.pricePerUnit;
-  const discountedAmount = totalAmount - (totalAmount * discount) / 100;
+  const totalAmount = bookingDetails.totalAmount || 0;
+  const discountAmount = Math.round((totalAmount * discount) / 100);
+  const finalAmount = totalAmount - discountAmount;
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitting form...");
-    if (validateForm()) {
-      setIsLoading(true);
-      const loadingToast = toast.loading("Đang đặt lịch, vui lòng chờ...");
-      console.log("Loading form...");
-      try {
-        const params = {
-          paymentId: paymentData.paymentId,
-          coupon: coupon,
-          method: paymentMethod === "online" ? "TRUE" : "FALSE",
-          bank: selectedBank,
-        };
-        console.log("param: ", params);
-        // Chuyển object params thành query string đúng chuẩn
-        const queryString = new URLSearchParams(params).toString();
 
-        // Tạo URL chuẩn
-        const url = `http://localhost:8080/payment/update?${queryString}`;
+    if (!validateForm()) {
+      return;
+    }
 
-        console.log("Generated URL:", url);
+    setIsLoading(true);
+    const loadingToast = toast.loading("Đang xử lý thanh toán...");
 
-        // Gọi API
-        const result = await fetch(url, {
-          method: "POST",
-          credentials: "include",
-        });
-        const data = await result.json();
-        const { VNPAYURL } = data;
-        console.log("vnpayurl: ", VNPAYURL);
-        console.log("API Response:", data);
+    try {
+      const params = {
+        paymentId: paymentData?.paymentId,
+        coupon: coupon,
+        method: paymentMethod === "online" ? "TRUE" : "FALSE",
+        bank: selectedBank,
+      };
 
-        if (paymentMethod === "online") {
-          // Điều hướng tới trang /vnpay
-          window.location.href = VNPAYURL;
-        } else if (data.message === "COD") {
-          // Kiểm tra thành công
-          toast.update(loadingToast, {
-            render: "Đặt lịch thành công!",
-            type: "success",
-            isLoading: false,
-            autoClose: 3000,
-          });
+      const queryString = new URLSearchParams(params).toString();
+      const url = `http://localhost:8080/payment/update?${queryString}`;
 
-          // Navigate to /customer
+      const result = await fetch(url, {
+        method: "POST",
+        credentials: "include",
+      });
 
-          window.location.href = "/customer/payment";
-        } else {
-          toast.update(loadingToast, {
-            render: data.message || "Đặt lịch thất bại. Vui lòng thử lại.",
-            type: "error",
-            isLoading: false,
-            autoClose: 3000,
-          });
-        }
-      } catch (error) {
-        console.error("Lỗi khi gửi dữ liệu:", error);
+      const data = await result.json();
+
+      if (paymentMethod === "online") {
+        window.location.href = data.VNPAYURL;
+      } else if (data.message === "COD") {
         toast.update(loadingToast, {
-          render: "Đã có lỗi xảy ra. Vui lòng thử lại.",
+          render: "Đặt lịch thành công!",
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+        });
+
+        window.location.href = "/customer/payment";
+      } else {
+        toast.update(loadingToast, {
+          render: data.message || "Đặt lịch thất bại. Vui lòng thử lại.",
           type: "error",
           isLoading: false,
           autoClose: 3000,
         });
-      } finally {
-        setIsLoading(false);
       }
+    } catch (error) {
+      console.error("Error submitting payment:", error);
+      toast.update(loadingToast, {
+        render: "Đã có lỗi xảy ra. Vui lòng thử lại.",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-        <div className="bg-blue-600 p-6 text-white">
-          <div className="flex items-center">
-            <MdLocalHospital className="text-3xl mr-2" />
-            <h1 className="text-2xl font-bold">Thanh Toán Tiêm Chủng</h1>
-          </div>
-        </div>
+    <div className="min-h-screen bg-gray-50">
+      <Header />
 
-        <div className="p-8">
-          <div className="space-y-6">
-            <div className="border-b pb-6">
-              <h2 className="text-xl font-semibold mb-4">Thông Tin Đặt Lịch</h2>
-              <div className="grid grid-cols-1 gap-4">
+      <main className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-3 gap-8 ">
+        {/* Left Column - Booking Information */}
+        <div className="lg:col-span-2 mt-15">
+          <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-blue-600 py-4 px-6">
+              <h1 className="text-xl font-semibold text-white flex items-center">
+                <FaHandPaper className="mr-2" />
+                Thông Tin Hóa Đơn
+              </h1>
+            </div>
+
+            <div className="p-6 space-y-6">
+              {/* Booking Details */}
+              <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <p className="text-gray-600">Khách hàng:</p>
-                  <p className="font-medium">{bookingDetails.customerName}</p>
+                  <p className="text-gray-500 text-sm mb-1">Mã Booking:</p>
+                  <p className="font-medium text-gray-900">
+                    {bookingDetails.bookingId || "1-B4"}
+                  </p>
                 </div>
                 <div>
-                  <p className="text-gray-600">Ngày đặt:</p>
-                  <p className="font-medium">{bookingDetails.bookingDate}</p>
+                  <p className="text-gray-500 text-sm mb-1">Ngày Booking:</p>
+                  <p className="font-medium text-gray-900">
+                    {bookingDetails.bookingDate}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-500 text-sm mb-1">Tên Khách Hàng:</p>
+                  <p className="font-medium text-gray-900">
+                    {bookingDetails.customerName}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-500 text-sm mb-1">Tổng Tiền:</p>
+                  <p className="font-medium text-red-500">
+                    {totalAmount.toLocaleString()} VND
+                  </p>
+                </div>
+              </div>
+
+              {/* Coupon Section */}
+              <div className="border-t border-gray-100 pt-6">
+                <h2 className="text-lg font-medium mb-4">
+                  Phương Thức Thanh Toán
+                </h2>
+
+                <div className="mb-6">
+                  <p className="text-gray-500 text-sm mb-3">
+                    Mã Coupon (nếu có):
+                  </p>
+                  <div className="flex space-x-2">
+                    <div className="relative flex-1">
+                      <input
+                        type="text"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value)}
+                        placeholder="Nhập mã giảm giá"
+                        className={`w-full p-3 border ${
+                          isCouponValid ? "border-green-500" : "border-gray-300"
+                        } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-10`}
+                      />
+                      {isCouponValid && (
+                        <CheckCircle
+                          className="absolute right-3 top-3 text-green-500"
+                          size={20}
+                        />
+                      )}
+                    </div>
+                    <button
+                      onClick={handleCouponValidation}
+                      disabled={isValidatingCoupon}
+                      className="bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center whitespace-nowrap"
+                    >
+                      {isValidatingCoupon ? (
+                        <FaSpinner className="animate-spin mr-2" size={18} />
+                      ) : (
+                        <Percent size={18} className="mr-2" />
+                      )}
+                      Áp Dụng
+                    </button>
+                  </div>
+
+                  {isCouponValid && (
+                    <div className="mt-3 p-3 bg-green-50 border border-green-100 rounded-lg flex items-center">
+                      <CheckCircle size={18} className="text-green-500 mr-2" />
+                      <span className="text-green-700">
+                        Mã giảm giá "T4" đã được áp dụng! Giảm {discount}%
+                      </span>
+                    </div>
+                  )}
                 </div>
 
+                {/* Payment Method Selection */}
                 <div>
-                  <p className="text-gray-600">Số lượng:</p>
-                  <p className="font-medium">{bookingDetails.quantity}</p>
+                  <p className="text-gray-500 text-sm mb-3">
+                    Chọn Phương Thức Thanh Toán:
+                  </p>
+
+                  <div className="space-y-3">
+                    <label
+                      className={`flex items-center p-4 border rounded-xl cursor-pointer ${
+                        paymentMethod === "online"
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-200"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="online"
+                        checked={paymentMethod === "online"}
+                        onChange={() => setPaymentMethod("online")}
+                        className="form-radio text-blue-600 mr-3 h-5 w-5"
+                      />
+                      <CreditCard className="text-blue-600 mr-3" size={24} />
+                      <div>
+                        <p className="font-medium">Thanh Toán Qua Ngân Hàng</p>
+                        <p className="text-sm text-gray-500">
+                          Chuyển khoản qua VNPAY
+                        </p>
+                      </div>
+                    </label>
+                  </div>
+
+                  {paymentMethod === "online" && (
+                    <div className="mt-4">
+                      <p className="text-gray-500 text-sm mb-3">
+                        Chọn Ngân Hàng:
+                      </p>
+                      <select
+                        className={`w-full p-3 border ${
+                          errors.bank ? "border-red-500" : "border-gray-300"
+                        } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
+                        value={selectedBank}
+                        onChange={(e) => setSelectedBank(e.target.value)}
+                      >
+                        <option value="">-- Chọn ngân hàng --</option>
+                        {banks.map((bank) => (
+                          <option key={bank.value} value={bank.value}>
+                            {bank.label} ({bank.code})
+                          </option>
+                        ))}
+                      </select>
+                      {errors.bank && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.bank}
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
+          </div>
+        </div>
 
-            <div className="border-b pb-6">
-              <h2 className="text-xl font-semibold mb-4">Mã Giảm Giá</h2>
-              <div className="flex space-x-2">
-                <input
-                  type="text"
-                  value={couponCode}
-                  onChange={(e) => setCouponCode(e.target.value)}
-                  placeholder="Nhập mã giảm giá"
-                  className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
+        {/* Right Column - Payment Summary */}
+        <div>
+          <div className="bg-white rounded-2xl shadow-sm overflow-hidden sticky top-24">
+            <div className="bg-blue-600 py-4 px-6">
+              <h2 className="text-xl font-semibold text-white flex items-center">
+                <Receipt className="mr-2" />
+                Tóm Tắt Thanh Toán
+              </h2>
+            </div>
+
+            <div className="p-6">
+              <div className="space-y-4">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Tổng Hóa Đơn:</span>
+                  <span className="font-medium">
+                    {totalAmount.toLocaleString()} VND
+                  </span>
+                </div>
+
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Phần Trăm Giảm:</span>
+                  <span className="font-medium">{discount}%</span>
+                </div>
+
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Giảm Giá:</span>
+                  <span className="font-medium text-red-500">
+                    -{discountAmount.toLocaleString()} VND
+                  </span>
+                </div>
+
+                <div className="pt-4 border-t">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-900 font-semibold">
+                      Thanh Tiền:
+                    </span>
+                    <span className="text-xl font-bold text-blue-600">
+                      {finalAmount.toLocaleString()} VND
+                    </span>
+                  </div>
+                </div>
+
+                <div className="pt-4">
+                  <div className="p-4 bg-blue-50 rounded-lg flex items-start">
+                    <CheckCircle
+                      className="text-blue-500 mr-3 mt-1 flex-shrink-0"
+                      size={20}
+                    />
+                    <p className="text-blue-700 text-sm">
+                      Vui lòng kiểm tra kỹ thông tin trước khi thanh toán.
+                    </p>
+                  </div>
+                </div>
+
                 <button
-                  onClick={handleCouponValidation}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center"
+                  onClick={handleSubmit}
+                  disabled={isLoading}
+                  className="w-full bg-blue-600 text-white py-4 rounded-xl hover:bg-blue-700 transition-colors flex items-center justify-center mt-4"
                 >
                   {isLoading ? (
-                    <FaSpinner className="animate-spin" />
+                    <>
+                      <Spinner className="animate-spin mr-2" size={20} />
+                      <span>Đang xử lý...</span>
+                    </>
                   ) : (
-                    <MdOutlineDiscount />
+                    <>
+                      <span>Xác Nhận Thanh Toán</span>
+                      <ChevronRight size={20} className="ml-1" />
+                    </>
                   )}
-                  <span className="ml-2">Áp dụng</span>
                 </button>
               </div>
             </div>
-
-            <div className="border-b pb-6">
-              <h2 className="text-xl font-semibold mb-4">
-                Phương Thức Thanh Toán
-              </h2>
-              <div className="space-y-4">
-                <label className="flex items-center space-x-3">
-                  <input
-                    type="radio"
-                    value="direct"
-                    checked={paymentMethod === "direct"}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="form-radio text-blue-600"
-                  />
-                  <FaMoneyBill className="text-green-600" />
-                  <span>Thanh toán trực tiếp</span>
-                </label>
-                <label className="flex items-center space-x-3">
-                  <input
-                    type="radio"
-                    value="online"
-                    checked={paymentMethod === "online"}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="form-radio text-blue-600"
-                  />
-                  <FaCreditCard className="text-blue-600" />
-                  <span>Thanh toán online</span>
-                </label>
-
-                {paymentMethod === "online" && (
-                  <div className="mt-4">
-                    <select
-                      className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      value={selectedBank}
-                      onChange={(e) => setSelectedBank(e.target.value)}
-                    >
-                      {banks.map((bank) => (
-                        <option key={bank.value} value={bank.value}>
-                          <img
-                            src={bank.icon}
-                            alt={bank.label}
-                            className="inline-block mr-2 w-6 h-6"
-                          />
-                          {bank.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="bg-blue-50 p-6 rounded-lg">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-gray-600">Tổng tiền:</span>
-                <span className="font-medium">
-                  {totalAmount.toLocaleString()}đ
-                </span>
-              </div>
-              {discount > 0 && (
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-gray-600">Giảm giá ({discount}%):</span>
-                  <span className="font-medium text-green-600">
-                    -{((totalAmount * discount) / 100).toLocaleString()}đ
-                  </span>
-                </div>
-              )}
-              <div className="flex justify-between items-center text-xl font-bold">
-                <span>Thành tiền:</span>
-                <span className="text-blue-600">
-                  {discountedAmount.toLocaleString()}đ
-                </span>
-              </div>
-            </div>
-
-            <button
-              onClick={handleSubmit}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <FaSpinner className="animate-spin mr-2" />
-              ) : (
-                <BsBank2 className="mr-2" />
-              )}
-              Xác Nhận Thanh Toán
-            </button>
           </div>
         </div>
-      </div>
+      </main>
+
+      <Footer />
     </div>
   );
 };

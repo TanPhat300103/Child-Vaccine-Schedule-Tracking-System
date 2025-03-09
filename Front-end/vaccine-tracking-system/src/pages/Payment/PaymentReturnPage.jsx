@@ -102,7 +102,7 @@ function PaymentReturnPage() {
           <p className="error-message">
             Đã xảy ra lỗi khi xử lý giao dịch của bạn.
           </p>
-          <a href="/" className="paymentreturnpage-button primary-button">
+          <a href="/home" className="paymentreturnpage-button primary-button">
             <FaHome className="button-icon" /> Quay lại trang chủ
           </a>
         </div>
@@ -229,7 +229,10 @@ function PaymentReturnPage() {
 
           <div className="receipt-footer">
             <div className="receipt-actions">
-              <a href="/" className="paymentreturnpage-button primary-button">
+              <a
+                href="/home"
+                className="paymentreturnpage-button primary-button"
+              >
                 <FaHome className="button-icon" /> Quay lại trang chủ
               </a>
               {paymentResult.status === "SUCCESS" ? (
@@ -241,7 +244,7 @@ function PaymentReturnPage() {
                 </button>
               ) : (
                 <a
-                  href={paymentProcessUrl}
+                  href="/paymentVnpay"
                   className="paymentreturnpage-button secondary-button"
                 >
                   <FaRedo className="button-icon" /> Quay lại trang thanh toán

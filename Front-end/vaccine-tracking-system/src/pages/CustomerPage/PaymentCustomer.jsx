@@ -38,6 +38,7 @@ function PaymentCustomer() {
       totalAmount: booking.totalAmount,
     };
     localStorage.setItem("bookingData", JSON.stringify(bookingData));
+    navigate("/paymentVNpay");
   };
 
   // Hàm xử lý tải xuống hóa đơn

@@ -543,9 +543,7 @@ const PriceVaccine = () => {
             <div className="relative h-64 bg-blue-600">
               <img
                 src={
-                  vaccine.img
-                    ? vaccine.img
-                    : "https://news.asu.edu/sites/default/files/35327061344_d199614bd8_k.jpg"
+                  "https://news.asu.edu/sites/default/files/35327061344_d199614bd8_k.jpg"
                 }
                 alt={vaccineData?.vaccine.name}
                 className="w-full h-full object-cover opacity-80"

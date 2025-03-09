@@ -1,27 +1,92 @@
-import React, { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect, useMemo } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import "../CustomerPage/BookingCustomer.css";
 import {
-  Calendar,
-  Clock,
-  Check,
-  AlertCircle,
-  FileText,
-  ChevronRight,
   User,
-  Baby,
+  BookOpen,
+  CreditCard,
+  Calendar,
+  Star,
+  X,
   Syringe,
-  Filter,
 } from "lucide-react";
 import { useAuth } from "../../components/common/AuthContext";
 
-const BookingCustomer = () => {
+function BookingCustomer() {
   const navigate = useNavigate();
-  const location = useLocation();
   const { userInfo } = useAuth();
+  const [customer, setCustomer] = useState(null);
   const [bookings, setBookings] = useState([]);
+  const [feedbacks, setFeedbacks] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filterStatus, setFilterStatus] = useState("all");
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [selectedBookingId, setSelectedBookingId] = useState(null);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const [editRating, setEditRating] = useState(0);
+  const [editComment, setEditComment] = useState("");
+  const [editFeedbackId, setEditFeedbackId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [ratingFilter, setRatingFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("date-desc");
+  const ratingA = null;
+  const ratingB = null;
+
+  // Hàm xử lý filtered và sorted bookings
+  const filteredBookings = useMemo(() => {
+    let result = [...bookings];
+
+    // Search filter
+    if (searchTerm) {
+      result = result.filter(
+        (booking) =>
+          booking.bookingId.toString().includes(searchTerm) ||
+          new Date(booking.bookingDate)
+            .toLocaleDateString()
+            .includes(searchTerm)
+      );
+    }
+
+    // Status filter
+    if (statusFilter !== "all") {
+      result = result.filter(
+        (booking) => booking.status === parseInt(statusFilter)
+      );
+    }
+
+    // Rating filter
+    if (ratingFilter !== "all") {
+      result = result.filter((booking) => {
+        const feedback = feedbacks[booking.bookingId];
+        return feedback && feedback.ranking === parseInt(ratingFilter);
+      });
+    }
+
+    // Sorting
+    result.sort((a, b) => {
+      switch (sortBy) {
+        case "date-asc":
+          return new Date(a.bookingDate) - new Date(b.bookingDate);
+        case "date-desc":
+          return new Date(b.bookingDate) - new Date(a.bookingDate);
+        case "rating-asc":
+          ratingA = feedbacks[a.bookingId]?.ranking || 0;
+          ratingB = feedbacks[b.bookingId]?.ranking || 0;
+          return ratingA - ratingB;
+        case "rating-desc":
+          ratingA = feedbacks[a.bookingId]?.ranking || 0;
+          ratingB = feedbacks[b.bookingId]?.ranking || 0;
+          return ratingB - ratingA;
+        default:
+          return 0;
+      }
+    });
+
+    return result;
+  }, [bookings, feedbacks, searchTerm, statusFilter, ratingFilter, sortBy]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,6 +97,18 @@ const BookingCustomer = () => {
       }
 
       try {
+        const customerResponse = await fetch(
+          `http://localhost:8080/customer/findid?id=${userInfo.userId}`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+        if (!customerResponse.ok)
+          throw new Error("Không tìm thấy thông tin khách hàng");
+        const customerData = await customerResponse.json();
+        setCustomer(customerData);
+
         const bookingsResponse = await fetch(
           `http://localhost:8080/booking/findbycustomer?customerId=${userInfo.userId}`,
           {
@@ -43,6 +120,26 @@ const BookingCustomer = () => {
           throw new Error("Không tìm thấy thông tin booking");
         const bookingsData = await bookingsResponse.json();
         setBookings(bookingsData);
+
+        const feedbackPromises = bookingsData.map((booking) =>
+          fetch(
+            `http://localhost:8080/feedback/getbybooking?bookingId=${booking.bookingId}`,
+            {
+              method: "GET",
+              credentials: "include",
+            }
+          )
+            .then((res) => (res.ok ? res.json() : null))
+            .catch(() => null)
+        );
+        const feedbackResults = await Promise.all(feedbackPromises);
+        const feedbackMap = {};
+        bookingsData.forEach((booking, index) => {
+          if (feedbackResults[index]) {
+            feedbackMap[booking.bookingId] = feedbackResults[index];
+          }
+        });
+        setFeedbacks(feedbackMap);
       } catch (err) {
         setError("Lỗi khi lấy thông tin: " + err.message);
       } finally {
@@ -53,52 +150,106 @@ const BookingCustomer = () => {
     fetchData();
   }, [userInfo]);
 
-  const filteredBookings = bookings.filter((booking) => {
-    if (filterStatus === "all") return true;
-    return filterStatus === "confirmed"
-      ? booking.status === 1
-      : booking.status !== 1;
-  });
-
-  const getStatusColor = (status) => {
-    return status === 1
-      ? "bg-emerald-100 text-emerald-800"
-      : "bg-amber-100 text-amber-800";
+  const handleFeedbackClick = (bookingId) => {
+    setSelectedBookingId(bookingId);
+    setRating(0);
+    setComment("");
+    setShowFeedbackModal(true);
   };
 
-  const getStatusText = (status) => {
-    return status === 1 ? "Đã xác nhận" : "Chờ xác nhận";
+  const handleRatingClick = (bookingId) => {
+    setSelectedBookingId(bookingId);
+    setEditRating(feedbacks[bookingId]?.ranking || 0);
+    setEditComment(feedbacks[bookingId]?.comment || "");
+    setEditFeedbackId(feedbacks[bookingId]?.id || null);
+    setShowDetailModal(true);
+  };
+
+  const handleSubmitFeedback = async () => {
+    if (!selectedBookingId || rating === 0) return;
+
+    const feedbackData = {
+      booking: { bookingId: selectedBookingId },
+      ranking: rating,
+      comment: comment || "none",
+    };
+
+    try {
+      const response = await fetch("http://localhost:8080/feedback/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(feedbackData),
+      });
+
+      if (response.ok) {
+        const newFeedback = await response.json();
+        setFeedbacks((prev) => ({ ...prev, [selectedBookingId]: newFeedback }));
+        setShowFeedbackModal(false);
+      } else {
+        alert("Lỗi khi gửi feedback");
+      }
+    } catch (err) {
+      alert("Lỗi khi gửi feedback: " + err.message);
+    }
+  };
+
+  const handleUpdateFeedback = async () => {
+    if (!selectedBookingId || editRating === 0) return;
+
+    const feedbackData = {
+      id: editFeedbackId,
+      booking: { bookingId: selectedBookingId },
+      ranking: editRating,
+      comment: editComment || "none",
+    };
+
+    try {
+      const response = await fetch("http://localhost:8080/feedback/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(feedbackData),
+      });
+
+      if (response.ok) {
+        const updatedFeedback = await response.json();
+        setFeedbacks((prev) => ({
+          ...prev,
+          [selectedBookingId]: updatedFeedback,
+        }));
+        setShowDetailModal(false);
+      } else {
+        const errorData = await response.json();
+        alert(
+          "Lỗi khi cập nhật feedback: " + (errorData.message || "Bad Request")
+        );
+      }
+    } catch (err) {
+      alert("Lỗi khi cập nhật feedback: " + err.message);
+    }
   };
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-        <div className="w-16 h-16 border-4 border-t-blue-600 border-blue-200 rounded-full animate-spin"></div>
-        <p className="mt-4 text-gray-700 font-medium">Đang tải thông tin...</p>
+      <div className="profile-loading">
+        <div className="profile-loading-spinner"></div>
+        <p>Đang tải thông tin...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-        <div className="w-16 h-16 flex items-center justify-center rounded-full bg-red-100 text-red-500">
-          <AlertCircle size={32} />
-        </div>
-        <p className="mt-4 text-gray-700 font-medium">{error}</p>
-        <button
-          onClick={() => navigate("/")}
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          Về trang chủ
-        </button>
+      <div className="profile-error">
+        <div className="profile-error-icon">❌</div>
+        <p>{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero section with wave */}
+    <div>
       <div className="relative bg-gradient-to-r from-blue-600 to-indigo-600 text-white overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <svg width="100%" height="100%" fill="none">
@@ -156,117 +307,281 @@ const BookingCustomer = () => {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        {/* Filter controls */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 bg-white p-4 rounded-lg shadow-sm">
-          <h2 className="text-lg font-semibold text-gray-800 flex items-center">
-            <Calendar size={20} className="mr-2 text-blue-600" />
-            Danh sách lịch tiêm
-          </h2>
-
-          <div className="mt-3 md:mt-0 flex items-center">
-            <Filter size={16} className="mr-2 text-gray-500" />
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-            >
-              <option value="all">Tất cả lịch tiêm</option>
-              <option value="confirmed">Đã xác nhận</option>
-              <option value="pending">Chờ xác nhận</option>
-            </select>
-          </div>
-        </div>
-
-        {filteredBookings.length > 0 ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filteredBookings.map((booking) => (
-              <Link
-                to={`/booking-detail/${booking.bookingId}`}
-                key={booking.bookingId}
-                className="block bg-white rounded-lg shadow hover:shadow-md transition-shadow overflow-hidden border border-gray-100 hover:border-blue-200"
-              >
-                <div className="p-5">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center">
-                      <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full flex items-center">
-                        <Calendar size={12} className="mr-1" />
-                        {new Date(booking.bookingDate).toLocaleDateString(
-                          "vi-VN",
-                          { day: "2-digit", month: "2-digit", year: "numeric" }
-                        )}
-                      </span>
+      <div className="profile-container">
+        <div className="profile-content">
+          <div className="profile-main">
+            <div className="profile-section" style={{ opacity: 1 }}>
+              {/* Search and Filter Bar with Tailwind CSS */}
+              {bookings.length > 0 && (
+                <div className="mb-6 bg-white shadow-sm rounded-lg p-4">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    {/* Search Input */}
+                    <div className="flex-1">
+                      <div className="relative">
+                        <input
+                          type="text"
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          placeholder="Tìm kiếm theo ID hoặc ngày..."
+                          className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                        <svg
+                          className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                          />
+                        </svg>
+                      </div>
                     </div>
-                    <span
-                      className={`px-2.5 py-1 rounded-full text-xs font-semibold flex items-center ${getStatusColor(
-                        booking.status
-                      )}`}
-                    >
-                      {booking.status === 1 ? (
-                        <Check size={12} className="mr-1" />
-                      ) : (
-                        <Clock size={12} className="mr-1" />
-                      )}
-                      {getStatusText(booking.status)}
-                    </span>
-                  </div>
 
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                    Lịch tiêm #{booking.bookingId}
-                  </h3>
+                    {/* Filters */}
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      {/* Status Filter */}
+                      <select
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                        className="px-3 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      >
+                        <option value="all">Tất cả trạng thái</option>
+                        <option value="1">Đã xác nhận</option>
+                        <option value="0">Chưa xác nhận</option>
+                      </select>
 
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-start text-sm">
-                      <Baby className="h-4 w-4 text-gray-500 mt-0.5 mr-2" />
-                      <span className="text-gray-500">
-                        Khoa Tiêm chủng và Theo dõi Sức khỏe Trẻ em
-                      </span>
-                    </div>
-                    <div className="flex items-start text-sm">
-                      <User className="h-4 w-4 text-gray-500 mt-0.5 mr-2" />
-                      <span className="text-gray-500">
-                        Phụ huynh: {userInfo?.fullName || "Chưa cập nhật"}
-                      </span>
-                    </div>
-                  </div>
+                      {/* Rating Filter */}
+                      <select
+                        value={ratingFilter}
+                        onChange={(e) => setRatingFilter(e.target.value)}
+                        className="px-3 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      >
+                        <option value="all">Tất cả đánh giá</option>
+                        <option value="5">5 sao</option>
+                        <option value="4">4 sao</option>
+                        <option value="3">3 sao</option>
+                        <option value="2">2 sao</option>
+                        <option value="1">1 sao</option>
+                      </select>
 
-                  <div className="pt-3 border-t border-gray-100 flex justify-between items-center">
-                    <span className="font-semibold text-gray-900">
-                      {booking.totalAmount.toLocaleString("vi-VN")} VNĐ
-                    </span>
-                    <div className="flex items-center text-blue-600 text-sm font-medium">
-                      Xem chi tiết
-                      <ChevronRight size={16} className="ml-1" />
+                      {/* Sort By */}
                     </div>
                   </div>
                 </div>
-              </Link>
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center bg-white rounded-lg shadow p-8 text-center">
-            <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-blue-100">
-              <Calendar size={32} className="text-blue-600" />
+              )}
+
+              {/* Bookings Display */}
+              {filteredBookings.length > 0 ? (
+                <div className="profile-bookings-grid">
+                  {filteredBookings.map((booking) => (
+                    <div
+                      key={booking.bookingId}
+                      className="profile-booking-card"
+                    >
+                      <div className="profile-booking-header">
+                        <div className="profile-booking-info">
+                          <h3>Booking #{booking.bookingId}</h3>
+                          <p className="profile-booking-date">
+                            <Calendar size={14} />
+                            {new Date(booking.bookingDate).toLocaleDateString()}
+                          </p>
+                        </div>
+                        {feedbacks[booking.bookingId] && (
+                          <div
+                            className="profile-booking-rating"
+                            onClick={() => handleRatingClick(booking.bookingId)}
+                          >
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <Star
+                                key={star}
+                                size={16}
+                                className={
+                                  star <= feedbacks[booking.bookingId].ranking
+                                    ? "star-filled"
+                                    : "star-empty"
+                                }
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <div className="profile-booking-details">
+                        <div className="profile-booking-detail-item">
+                          <span className="profile-booking-detail-label">
+                            Trạng thái:
+                          </span>
+                          <span
+                            className={`profile-status ${
+                              booking.status === 1 ? "active" : "inactive"
+                            }`}
+                          >
+                            {booking.status === 1
+                              ? "Đã xác nhận"
+                              : "Chưa xác nhận"}
+                          </span>
+                        </div>
+                        <div className="profile-booking-detail-item">
+                          <span className="profile-booking-detail-label">
+                            Tổng tiền:
+                          </span>
+                          <span className="profile-booking-detail-value">
+                            {booking.totalAmount.toLocaleString("vi-VN")} VNĐ
+                          </span>
+                        </div>
+                      </div>
+                      <div className="profile-booking-actions">
+                        <Link
+                          to={`/booking-detail/${booking.bookingId}`}
+                          className="profile-booking-detail-btn"
+                        >
+                          Xem chi tiết
+                        </Link>
+                        {!feedbacks[booking.bookingId] && (
+                          <button
+                            className="profile-feedback-btn"
+                            onClick={() =>
+                              handleFeedbackClick(booking.bookingId)
+                            }
+                          >
+                            Viết đánh giá
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="profile-no-bookings">
+                  <div className="profile-no-data-icon">📅</div>
+                  <p>
+                    {bookings.length === 0
+                      ? "Bạn chưa có booking nào. Vui lòng tạo booking để bắt đầu."
+                      : "Không tìm thấy booking phù hợp với bộ lọc."}
+                  </p>
+                </div>
+              )}
             </div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">
-              Chưa có lịch tiêm nào
-            </h3>
-            <p className="text-gray-500 mb-6">
-              Bạn chưa có lịch tiêm chủng nào. Hãy đặt lịch để theo dõi sức khỏe
-              của trẻ.
-            </p>
-            <button
-              onClick={() => navigate("/new-booking")}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
-            >
-              <Syringe size={16} className="mr-2" />
-              Đặt lịch tiêm ngay
-            </button>
+          </div>
+        </div>
+
+        {/* Feedback Modal (Viết đánh giá) */}
+        {showFeedbackModal && (
+          <div className="feedback-modal-overlay">
+            <div className="feedback-modal">
+              <div className="feedback-modal-header">
+                <h3>Đánh giá Booking #{selectedBookingId}</h3>
+                <button
+                  className="feedback-modal-close"
+                  onClick={() => setShowFeedbackModal(false)}
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="feedback-modal-body">
+                <div className="feedback-rating">
+                  <label>Xếp hạng:</label>
+                  <div className="star-rating">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        size={24}
+                        className={
+                          star <= rating ? "star-filled" : "star-empty"
+                        }
+                        onClick={() => setRating(star)}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div className="feedback-comment">
+                  <label>Bình luận:</label>
+                  <textarea
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder="Nhập bình luận của bạn (tùy chọn)"
+                  />
+                </div>
+              </div>
+              <div className="feedback-modal-footer">
+                <button
+                  className="feedback-submit-btn"
+                  onClick={handleSubmitFeedback}
+                >
+                  Gửi đánh giá
+                </button>
+                <button
+                  className="feedback-cancel-btn"
+                  onClick={() => setShowFeedbackModal(false)}
+                >
+                  Hủy
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Feedback Detail Modal (Xem và chỉnh sửa đánh giá) */}
+        {showDetailModal && (
+          <div className="feedback-modal-overlay">
+            <div className="feedback-modal">
+              <div className="feedback-modal-header">
+                <h3>Chỉnh sửa đánh giá Booking #{selectedBookingId}</h3>
+                <button
+                  className="feedback-modal-close"
+                  onClick={() => setShowDetailModal(false)}
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="feedback-modal-body">
+                <div className="feedback-rating">
+                  <label>Xếp hạng:</label>
+                  <div className="star-rating">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        size={24}
+                        className={
+                          star <= editRating ? "star-filled" : "star-empty"
+                        }
+                        onClick={() => setEditRating(star)}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div className="feedback-comment">
+                  <label>Bình luận:</label>
+                  <textarea
+                    value={editComment}
+                    onChange={(e) => setEditComment(e.target.value)}
+                    placeholder="Nhập bình luận của bạn (tùy chọn)"
+                  />
+                </div>
+              </div>
+              <div className="feedback-modal-footer">
+                <button
+                  className="feedback-submit-btn"
+                  onClick={handleUpdateFeedback}
+                >
+                  Cập nhật
+                </button>
+                <button
+                  className="feedback-cancel-btn"
+                  onClick={() => setShowDetailModal(false)}
+                >
+                  Hủy
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>
     </div>
   );
-};
+}
 
 export default BookingCustomer;

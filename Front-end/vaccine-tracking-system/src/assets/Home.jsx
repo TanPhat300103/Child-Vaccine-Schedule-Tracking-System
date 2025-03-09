@@ -1,10 +1,16 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
+
 import {
+  FaBullhorn,
+  FaBars,
   FaBell,
   FaBoxOpen,
   FaCalendarAlt,
+  FaCalendarCheck,
   FaChartLine,
+  FaChild,
   FaHome,
+  FaInfo,
   FaPhoneAlt,
   FaPlusCircle,
   FaShoppingCart,
@@ -49,7 +55,7 @@ const Home = () => {
   const [childData, setChildData] = useState([]);
   const navigate = useNavigate();
   const UserId = localStorage.getItem("userId");
-  console.log("user id la: ", userInfo.authorities[0].authority);
+
   localStorage.setItem("userId", userInfo.userId);
   // cart
   const cartItemCount = useMemo(() => {
@@ -58,7 +64,11 @@ const Home = () => {
       0
     );
   }, [cart]);
-
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [translateX, setTranslateX] = useState(0);
+  const feedbackContainerRef = useRef(null);
+  const animationRef = useRef(null);
+  const [notifications, setNotifications] = useState([]);
   const handleCartClick = () => {
     navigate("/book-vaccine", {
       state: { cartItems: cart }, // Truyền cart vào state
@@ -100,7 +110,6 @@ const Home = () => {
     await logout();
     setIsUserMenuOpen(false);
     setCustomerData(null);
-
     navigate("/");
   };
 
@@ -126,7 +135,88 @@ const Home = () => {
       );
     }
   }, [customerData]);
+  // Fetch feedback từ API
+  useEffect(() => {
+    const fetchFeedbacks = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/feedback", {
+          method: "GET",
+          credentials: "include",
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setFeedbacks(data);
+        }
+      } catch (error) {
+        console.error("Error fetching feedbacks:", error);
+      }
+    };
 
+    fetchFeedbacks();
+  }, []);
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/notification", {
+          method: "GET",
+          credentials: "include",
+        });
+        if (response.ok) {
+          const data = await response.json();
+          // Lọc thông báo có roleId = 1 hoặc role.roleId = 1
+          console.log("notification: ", data[21].role.roleId);
+          const filteredNotifications = data.filter(
+            (notification) => notification.role?.roleId?.toString() === "1"
+          );
+
+          // Sắp xếp theo ngày giảm dần
+          filteredNotifications.sort(
+            (a, b) => new Date(b.date) - new Date(a.date)
+          );
+          setNotifications(filteredNotifications);
+        }
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
+  // Auto slide cho feedback
+  useEffect(() => {
+    if (feedbacks.length > 0) {
+      const timer = setInterval(() => {
+        setCurrentFeedbackSlide((prev) => (prev + 1) % feedbacks.length);
+      }, 5000); // Thay đổi slide mỗi 5 giây
+      return () => clearInterval(timer);
+    }
+  }, [feedbacks.length]);
+  useEffect(() => {
+    if (feedbacks.length === 0 || !feedbackContainerRef.current) return;
+
+    const containerWidth = feedbackContainerRef.current.scrollWidth / 2;
+    const speed = 1; // Tốc độ scroll (px per frame)
+
+    const animate = () => {
+      setTranslateX((prev) => {
+        const newX = prev - speed;
+        // Reset về 0 khi đi hết nửa đầu của container (vì đã nhân đôi data)
+        if (Math.abs(newX) >= containerWidth) {
+          return 0;
+        }
+        return newX;
+      });
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    animationRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [feedbacks]);
   // take api childByCustomerId
   useEffect(() => {
     const fetchChild = async () => {
@@ -149,7 +239,7 @@ const Home = () => {
   }, []);
 
   //scroll to pricing
-  const scrollVaccinePricing = () => {
+  const scrollToVaccinePricing = () => {
     if (vaccinePricingRef.current) {
       vaccinePricingRef.current.scrollIntoView({
         behavior: "smooth",
@@ -177,7 +267,33 @@ const Home = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
+  const getLatestCampaign = () => {
+    const campaigns = notifications.filter(
+      (notification) => notification.role && notification.role.roleId === 1
+    );
+    if (campaigns.length > 0) {
+      return campaigns[0]; // Lấy chiến dịch gần nhất
+    }
+    return null;
+  };
+  const renderStars = (ranking) => {
+    return (
+      <div className="flex">
+        {[...Array(5)].map((_, index) => (
+          <svg
+            key={index}
+            className={`w-5 h-5 ${
+              index < ranking ? "text-yellow-400" : "text-gray-300"
+            }`}
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          </svg>
+        ))}
+      </div>
+    );
+  };
   // Get customer data
   useEffect(() => {
     const fetchCustomer = async () => {
@@ -207,17 +323,29 @@ const Home = () => {
   }, [UserId]);
 
   const navItems = [
-    { name: "Trang chủ", icon: <FaHome />, action: () => navigate("/home") },
     {
-      name: "Đặt lịch",
-      icon: <FaCalendarAlt />,
+      name: "Trang chủ",
+      icon: <FaSyringe className="text-lg" />,
+      action: () => navigate("/home"),
+    },
+    {
+      name: "Đặt lịch tiêm",
+      icon: <FaCalendarCheck className="text-lg" />,
       action: () => navigate("/book-vaccine"),
     },
-    { name: "Gói tiêm", icon: <FaBoxOpen />, action: scrollVaccinePricing },
-    { name: "Liên lạc", icon: <FaPhoneAlt />, action: scrollToFooter },
     {
-      name: "Xem lịch",
-      icon: <FaChartLine />,
+      name: "Gói vaccine",
+      icon: <FaUserMd className="text-lg" />,
+      action: scrollToVaccinePricing,
+    },
+    {
+      name: "Liên hệ",
+      icon: <FaInfo className="text-lg" />,
+      action: scrollToFooter,
+    },
+    {
+      name: "Theo dõi",
+      icon: <FaChartLine className="text-lg" />,
       action: () => navigate("/overview"),
     },
   ];
@@ -231,79 +359,75 @@ const Home = () => {
       {" "}
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
         {/* Header */}
-        <motion.header
-          initial={{ y: -100 }}
-          animate={{ y: 0 }}
-          transition={{ type: "spring", stiffness: 100, damping: 20 }}
+        <header
           className={`fixed w-full z-50 transition-all duration-300 ${
             isScrolled
               ? "py-2 bg-white shadow-lg"
-              : "py-4 bg-white/95 backdrop-blur-sm"
+              : "py-3 bg-white/95 backdrop-blur-sm"
           }`}
         >
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between">
               {/* Logo */}
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                onClick={() => navigate("/home")}
-                className="flex items-center space-x-2 cursor-pointer"
+              <div
+                onClick={() => {
+                  navigate("/home");
+                  closeAllMenus();
+                }}
+                className="flex items-center space-x-2 cursor-pointer group"
               >
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center transform -rotate-6 hover:rotate-0 transition-all duration-300">
-                  <span className="text-white text-xl font-bold">V</span>
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-teal-400 rounded-full flex items-center justify-center transform transition-all duration-300 group-hover:scale-105 shadow-md">
+                  <FaSyringe className="text-white text-lg" />
                 </div>
-                <span className="text-xl font-extrabold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
-                  VaccineCare
-                </span>
-              </motion.div>
+                <div className="flex flex-col">
+                  <span className="text-lg font-bold text-blue-700">
+                    VaccineCare
+                  </span>
+                  <span className="text-xs text-blue-500 -mt-1">
+                    Trung Tâm Tiêm Chủng
+                  </span>
+                </div>
+              </div>
 
               {/* Desktop Navigation */}
-              <nav className="hidden md:flex items-center space-x-8">
+              <nav className="hidden md:flex items-center space-x-6">
                 {navItems.map((item, index) => (
-                  <motion.button
+                  <button
                     key={index}
-                    onClick={item.action}
-                    className="group flex items-center space-x-1.5 text-gray-700 hover:text-blue-600 transition-colors"
-                    whileHover={{ scale: 1.05 }}
+                    onClick={() => {
+                      item.action();
+                      closeAllMenus();
+                    }}
+                    className="group flex flex-col items-center text-gray-700 hover:text-blue-600 transition-colors"
                   >
-                    <span className="text-blue-500 group-hover:text-blue-600 transition-colors">
+                    <div className="p-2 rounded-full group-hover:bg-blue-50 transition-colors">
                       {item.icon}
+                    </div>
+                    <span className="text-sm font-medium mt-1">
+                      {item.name}
                     </span>
-                    <span className="font-medium">{item.name}</span>
-                    <span className="block h-0.5 w-0 group-hover:w-full transition-all duration-300 bg-blue-600" />
-                  </motion.button>
+                    <span className="block h-0.5 w-0 group-hover:w-full transition-all duration-300 bg-blue-600 mt-1" />
+                  </button>
                 ))}
               </nav>
 
-              {/* Mobile menu button */}
+              {/* Mobile Menu Button */}
               <div className="md:hidden">
                 <button
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="p-2 text-gray-700 focus:outline-none"
+                  className="p-2 rounded-lg bg-blue-50 text-blue-600 focus:outline-none hover:bg-blue-100 transition-colors"
+                  aria-label="Toggle mobile menu"
                 >
-                  <div className="w-6 flex flex-col items-center space-y-1.5">
-                    <span
-                      className={`block h-0.5 w-full bg-gray-700 transform transition-all duration-300 ${
-                        isMobileMenuOpen ? "rotate-45 translate-y-2" : ""
-                      }`}
-                    ></span>
-                    <span
-                      className={`block h-0.5 w-full bg-gray-700 transition-all duration-300 ${
-                        isMobileMenuOpen ? "opacity-0" : "opacity-100"
-                      }`}
-                    ></span>
-                    <span
-                      className={`block h-0.5 w-full bg-gray-700 transform transition-all duration-300 ${
-                        isMobileMenuOpen ? "-rotate-45 -translate-y-2" : ""
-                      }`}
-                    ></span>
-                  </div>
+                  {isMobileMenuOpen ? (
+                    <FaTimes className="text-lg" />
+                  ) : (
+                    <FaBars className="text-lg" />
+                  )}
                 </button>
               </div>
 
               {/* User Actions & Icons */}
-              <div className="hidden md:flex items-center space-x-6">
-                {/* Cart Icon */}
+              <div className="hidden md:flex items-center space-x-4">
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   onClick={handleCartClick}
@@ -317,247 +441,282 @@ const Home = () => {
                     </span>
                   )}
                 </motion.button>
-
                 {/* Notification Icon */}
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  onClick={() => navigate("/bell")}
-                  className="relative p-2 text-blue-600 hover:text-blue-700 transition-colors"
-                  aria-label="Notifications"
+                <button
+                  onClick={() => {
+                    navigate("/bell");
+                    closeAllMenus();
+                  }}
+                  className="relative p-2 bg-blue-50 rounded-full hover:bg-blue-100 text-blue-600 transition-colors"
+                  aria-label="Thông báo"
                 >
-                  <FaBell size={20} />
-                  <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                    1
+                  <FaBell className="text-lg" />
+                  {/* Notification badge */}
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
+                    2
                   </span>
-                </motion.button>
+                </button>
 
-                {/* User Avatar */}
+                {/* User Profile */}
                 <div className="relative">
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
+                  <button
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="relative"
-                    aria-label="User menu"
+                    className="flex items-center space-x-2 bg-blue-50 hover:bg-blue-100 rounded-full pr-4 pl-1 py-1 transition-colors"
                   >
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center text-white font-bold shadow-md">
+                    <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-teal-400 rounded-full flex items-center justify-center text-white font-bold shadow-sm">
                       {profileInitial}
                     </div>
-                    <span
-                      className={`absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500 border-2 border-white ${
-                        isUserMenuOpen ? "bg-blue-500" : ""
-                      }`}
-                    ></span>
-                  </motion.button>
+                    <span className="font-medium text-blue-700 text-sm">
+                      {customerData?.firstName?.length > 0
+                        ? `${customerData.firstName}`
+                        : "Tài khoản"}
+                    </span>
+                  </button>
 
                   {/* User Dropdown Menu */}
-                  <AnimatePresence>
-                    {isUserMenuOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 400,
-                          damping: 40,
-                        }}
-                        className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50"
-                      >
-                        {/* Header section */}
-                        <div className="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 border-b border-gray-100">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center text-white font-bold shadow-sm">
-                              {profileInitial}
-                            </div>
-                            <div>
-                              <h3 className="text-sm font-medium text-gray-600">
-                                Xin chào,
-                              </h3>
-                              <p className="text-base font-semibold text-blue-700">
-                                {customerData?.firstName}{" "}
-                                {customerData?.lastName}
-                              </p>
-                            </div>
+                  {isUserMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden">
+                      {/* Header section */}
+                      <div className="p-4 bg-gradient-to-r from-blue-50 to-teal-50 border-b border-gray-100">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-teal-400 rounded-full flex items-center justify-center text-white font-bold shadow-sm">
+                            {profileInitial}
+                          </div>
+                          <div>
+                            <h3 className="text-sm font-medium text-gray-600">
+                              Xin chào,
+                            </h3>
+                            <p className="text-base font-semibold text-blue-700">
+                              {customerData?.firstName} {customerData?.lastName}
+                            </p>
                           </div>
                         </div>
+                      </div>
 
-                        {/* Menu items */}
-                        <nav className="py-2">
-                          {/* Main profile */}
+                      {/* Menu items */}
+                      <nav className="py-2">
+                        {/* Main profile */}
+                        <button
+                          onClick={() => {
+                            navigate("/customer");
+                            closeAllMenus();
+                          }}
+                          className="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 transition duration-200"
+                        >
+                          <div className="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mr-3">
+                            <FaUserCircle className="text-lg" />
+                          </div>
+                          <span className="text-sm font-medium">
+                            Hồ sơ của tôi
+                          </span>
+                        </button>
+
+                        {/* Child profiles */}
+                        {childData.map((child) => (
                           <button
+                            key={child.childId}
                             onClick={() => {
-                              navigate("/customer");
-                              setIsUserMenuOpen(false);
+                              navigate(`/customer/child/${child.childId}`);
+                              closeAllMenus();
                             }}
                             className="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 transition duration-200"
                           >
-                            <div className="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mr-3">
-                              <FaUserCircle size={18} />
+                            <div className="w-9 h-9 bg-teal-100 rounded-full flex items-center justify-center text-teal-600 mr-3">
+                              <FaChild className="text-lg" />
                             </div>
                             <span className="text-sm font-medium">
-                              Hồ sơ của tôi
+                              Hồ sơ của {child.firstName} {child.lastName}
                             </span>
                           </button>
+                        ))}
 
-                          {/* Child profiles */}
-                          {childData.map((child) => (
-                            <button
-                              key={child.childId}
-                              onClick={() => {
-                                navigate(`/customer/child/${child.childId}`);
-                                setIsUserMenuOpen(false);
-                              }}
-                              className="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 transition duration-200"
-                            >
-                              <div className="w-9 h-9 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 mr-3">
-                                {child.firstName.charAt(0).toUpperCase()}
-                              </div>
-                              <span className="text-sm font-medium">
-                                Hồ sơ của {child.firstName} {child.lastName}
-                              </span>
-                            </button>
-                          ))}
+                        {/* Add new child profile */}
+                        <button
+                          onClick={() => {
+                            navigate("/customer/add-child");
+                            closeAllMenus();
+                          }}
+                          className="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 transition duration-200"
+                        >
+                          <div className="w-9 h-9 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 mr-3">
+                            <FaPlusCircle className="text-lg" />
+                          </div>
+                          <span className="text-sm font-medium">
+                            Thêm hồ sơ mới cho con
+                          </span>
+                        </button>
 
-                          {/* Add new child profile */}
-                          <button
-                            onClick={() => {
-                              navigate("/customer/add-child");
-                              setIsUserMenuOpen(false);
-                            }}
-                            className="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 transition duration-200"
-                          >
-                            <div className="w-9 h-9 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 mr-3">
-                              <FaPlusCircle size={16} />
-                            </div>
-                            <span className="text-sm font-medium">
-                              Thêm hồ sơ mới cho con
-                            </span>
-                          </button>
-
-                          {/* Logout */}
-                          <button
-                            onClick={handleLogout}
-                            className="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-red-50 transition duration-200 border-t border-gray-100 mt-1"
-                          >
-                            <div className="w-9 h-9 bg-red-100 rounded-full flex items-center justify-center text-red-600 mr-3">
-                              <FaSignOutAlt size={16} />
-                            </div>
-                            <span className="text-sm font-medium">
-                              Đăng xuất
-                            </span>
-                          </button>
-                        </nav>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                        {/* Logout */}
+                        <button
+                          onClick={handleLogout}
+                          className="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-red-50 transition duration-200 border-t border-gray-100 mt-1"
+                        >
+                          <div className="w-9 h-9 bg-red-100 rounded-full flex items-center justify-center text-red-600 mr-3">
+                            <FaSignOutAlt className="text-lg" />
+                          </div>
+                          <span className="text-sm font-medium">Đăng xuất</span>
+                        </button>
+                      </nav>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
             {/* Mobile Menu */}
-            <AnimatePresence>
-              {isMobileMenuOpen && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="md:hidden mt-4 overflow-hidden"
-                >
-                  <div className="py-2 space-y-2 border-t border-gray-100">
+            {isMobileMenuOpen && (
+              <div className="md:hidden mt-4">
+                <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                  {/* Navigation Items */}
+                  <div className="grid grid-cols-3 gap-2 p-4 border-b border-gray-100">
                     {navItems.map((item, index) => (
-                      <motion.button
+                      <button
                         key={index}
                         onClick={() => {
                           item.action();
-                          setIsMobileMenuOpen(false);
+                          closeAllMenus();
                         }}
-                        className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-blue-50 transition-colors rounded-lg"
-                        whileHover={{ x: 5 }}
+                        className="flex flex-col items-center p-3 rounded-lg hover:bg-blue-50 transition-colors"
                       >
-                        <span className="text-blue-500">{item.icon}</span>
-                        <span className="font-medium">{item.name}</span>
-                      </motion.button>
+                        <div className="w-10 h-10 flex items-center justify-center bg-blue-100 rounded-full text-blue-600 mb-2">
+                          {item.icon}
+                        </div>
+                        <span className="text-xs font-medium text-gray-700">
+                          {item.name}
+                        </span>
+                      </button>
                     ))}
+                  </div>
 
-                    <div className="flex items-center justify-between px-4 py-4 border-t border-gray-100">
-                      {/* Mobile Cart Icon */}
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        onClick={() => {
-                          navigate("/cart");
-                          setIsMobileMenuOpen(false);
-                        }}
-                        className="flex flex-col items-center space-y-1"
-                      >
-                        <div className="p-2 bg-blue-100 rounded-full text-blue-600">
-                          <FaShoppingCart size={18} />
-                        </div>
-                        <span className="text-xs font-medium text-gray-600">
-                          Giỏ hàng
-                        </span>
-                      </motion.button>
+                  {/* User Profile Section */}
+                  <div className="p-4 bg-gradient-to-r from-blue-50 to-teal-50">
+                    <div className="flex items-center space-x-3 mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-teal-400 rounded-full flex items-center justify-center text-white font-bold shadow-sm">
+                        {profileInitial}
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-600">
+                          Xin chào,
+                        </h3>
+                        <p className="text-base font-semibold text-blue-700">
+                          {customerData?.firstName} {customerData?.lastName}
+                        </p>
+                      </div>
+                    </div>
 
-                      {/* Mobile Notification Icon */}
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        onClick={() => {
-                          navigate("/bell");
-                          setIsMobileMenuOpen(false);
-                        }}
-                        className="flex flex-col items-center space-y-1 relative"
-                      >
-                        <div className="p-2 bg-blue-100 rounded-full text-blue-600 relative">
-                          <FaBell size={18} />
-                          <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                            1
-                          </span>
-                        </div>
-                        <span className="text-xs font-medium text-gray-600">
-                          Thông báo
-                        </span>
-                      </motion.button>
-
-                      {/* Mobile User Icon */}
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
+                    {/* Action buttons */}
+                    <div className="grid grid-cols-4 gap-2">
+                      <button
                         onClick={() => {
                           navigate("/customer");
-                          setIsMobileMenuOpen(false);
+                          closeAllMenus();
                         }}
-                        className="flex flex-col items-center space-y-1"
+                        className="flex flex-col items-center"
                       >
-                        <div className="p-2 bg-blue-100 rounded-full text-blue-600">
-                          <FaUserCircle size={18} />
+                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mb-1">
+                          <FaUserCircle className="text-lg" />
                         </div>
-                        <span className="text-xs font-medium text-gray-600">
+                        <span className="text-xs font-medium text-gray-700">
                           Hồ sơ
                         </span>
-                      </motion.button>
+                      </button>
 
-                      {/* Mobile Logout Icon */}
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
+                      <button
                         onClick={() => {
-                          navigate("/");
-                          setIsMobileMenuOpen(false);
+                          navigate("/customer/add-child");
+                          closeAllMenus();
                         }}
-                        className="flex flex-col items-center space-y-1"
+                        className="flex flex-col items-center"
                       >
-                        <div className="p-2 bg-red-100 rounded-full text-red-600">
-                          <FaSignOutAlt size={18} />
+                        <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 mb-1">
+                          <FaPlusCircle className="text-lg" />
                         </div>
-                        <span className="text-xs font-medium text-gray-600">
-                          Đăng xuất
+                        <span className="text-xs font-medium text-gray-700">
+                          Thêm con
                         </span>
-                      </motion.button>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          navigate("/bell");
+                          closeAllMenus();
+                        }}
+                        className="flex flex-col items-center relative"
+                      >
+                        <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 mb-1">
+                          <FaBell className="text-lg" />
+                          <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
+                            2
+                          </span>
+                        </div>
+                        <span className="text-xs font-medium text-gray-700">
+                          Thông báo
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          navigate("/cart");
+                          closeAllMenus();
+                        }}
+                        className="flex flex-col items-center"
+                      >
+                        <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center text-teal-600 mb-1">
+                          <FaShoppingCart className="text-lg" />
+                        </div>
+                        <span className="text-xs font-medium text-gray-700">
+                          Giỏ hàng
+                        </span>
+                      </button>
                     </div>
+
+                    {/* Child profiles section */}
+                    {childData.length > 0 && (
+                      <div className="mt-4 pt-4 border-t border-gray-200">
+                        <h4 className="text-sm font-semibold text-gray-600 mb-3">
+                          Hồ sơ con của bạn:
+                        </h4>
+                        <div className="space-y-2">
+                          {childData.map((child) => (
+                            <button
+                              key={child.childId}
+                              onClick={() => {
+                                navigate(`/customer/child/${child.childId}`);
+                                closeAllMenus();
+                              }}
+                              className="w-full flex items-center p-2 rounded-lg bg-white hover:bg-teal-50 transition-colors"
+                            >
+                              <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center text-teal-600 mr-3">
+                                <FaChild className="text-lg" />
+                              </div>
+                              <span className="text-sm font-medium text-gray-700">
+                                {child.firstName} {child.lastName}
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Logout button */}
+                    <button
+                      onClick={() => {
+                        navigate("/");
+                        closeAllMenus();
+                      }}
+                      className="w-full flex items-center justify-center space-x-2 mt-4 p-3 rounded-lg bg-red-50 hover:bg-red-100 transition-colors"
+                    >
+                      <FaSignOutAlt className="text-red-600" />
+                      <span className="font-medium text-red-600">
+                        Đăng xuất
+                      </span>
+                    </button>
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                </div>
+              </div>
+            )}
           </div>
-        </motion.header>
+        </header>
         {/* Banner */}
         <motion.section className="relative h-screen overflow-hidden">
           <motion.div
@@ -713,33 +872,142 @@ const Home = () => {
               viewport={{ once: true }}
               className="text-3xl font-bold text-center mb-12"
             >
-              Quy Trình Tiêm Chủng
+              Phụ Huynh Nói Gì
             </motion.h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              {process.map((item, index) => (
+
+            {feedbacks.length > 0 ? (
+              <div className="overflow-hidden">
                 <motion.div
-                  key={index}
-                  initial={{ y: 50, opacity: 0 }}
+                  ref={feedbackContainerRef}
+                  style={{ x: translateX }}
+                  className="flex gap-6 whitespace-nowrap"
+                >
+                  {feedbacks.map((feedback, index) => (
+                    <div
+                      key={`${feedback.id}-${index}`}
+                      className="flex-shrink-0 w-[400px]"
+                    >
+                      <div className="bg-white p-6 rounded-xl shadow-lg h-full">
+                        <div className="flex items-center mb-4">
+                          <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                            {feedback.booking.customer.firstName.charAt(0)}
+                          </div>
+                          <div>
+                            <h3 className="text-base font-semibold">
+                              {feedback.booking.customer.firstName}{" "}
+                              {feedback.booking.customer.lastName}
+                            </h3>
+                            <p className="text-xs text-gray-500">
+                              Ngày đặt: {feedback.booking.bookingDate}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="mb-3">
+                          {renderStars(feedback.ranking)}
+                        </div>
+                        <p className="text-gray-600 text-sm italic">
+                          "{feedback.comment}"
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </motion.div>
+              </div>
+            ) : (
+              <p className="text-center text-gray-600">Chưa có đánh giá nào</p>
+            )}
+          </div>
+        </section>
+        {/* Latest News */}
+        <motion.section className="py-20 bg-white">
+          <div className="container mx-auto px-4">
+            <motion.h2
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              className="text-3xl font-bold text-center mb-12 text-gray-800"
+            >
+              Tin Tức Mới Nhất
+            </motion.h2>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Hiển thị 2 thông báo gần nhất */}
+              {notifications.slice(0, 2).map((notification, index) => (
+                <motion.div
+                  key={notification.id}
+                  initial={{ y: 20, opacity: 0 }}
                   whileInView={{ y: 0, opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.2 }}
-                  className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all"
+                  className="p-6 rounded-xl bg-gradient-to-br from-white to-blue-50 shadow-lg hover:shadow-xl transition-shadow duration-300"
                 >
-                  <motion.div
-                    animate={{ y: [0, -10, 0] }}
-                    transition={{ repeat: Infinity, duration: 2 }}
-                    className="text-4xl mb-4"
-                  >
-                    {item.icon}
-                  </motion.div>
-                  <div className="text-2xl font-bold mb-2">{`Bước ${item.step}`}</div>
-                  <h3 className="text-xl font-semibold mb-4">{item.title}</h3>
-                  <p className="text-gray-600">{item.description}</p>
+                  <div className="flex items-center mb-4">
+                    <FaBullhorn className="text-blue-600 text-2xl mr-3" />
+                    <h3 className="text-xl font-semibold text-gray-800">
+                      {notification.tittle}
+                    </h3>
+                  </div>
+                  <p className="text-gray-600 mb-4">{notification.message}</p>
+                  <p className="text-sm text-gray-500">
+                    Ngày: {notification.date}
+                  </p>
                 </motion.div>
               ))}
             </div>
+
+            {/* Thiết kế lại Chiến dịch Marketing Gần Nhất */}
+            {getLatestCampaign() && (
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.4 }}
+                className="mt-12 p-6 rounded-xl bg-gradient-to-r from-blue-100 via-teal-50 to-green-50 shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center">
+                    {/* Icon tiêm chủng hoặc trẻ em */}
+                    <FaSyringe className="text-teal-600 text-3xl mr-4" />
+                    <h3 className="text-2xl font-semibold text-teal-800">
+                      Chiến Dịch Tiêm Chủng Gần Nhất
+                    </h3>
+                  </div>
+                  {/* Badge nổi bật */}
+                  <span className="bg-green-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                    Mới
+                  </span>
+                </div>
+
+                {/* Tiêu đề chiến dịch */}
+                <p className="text-xl font-medium text-blue-700 mb-3 bg-blue-50 p-3 rounded-lg">
+                  {getLatestCampaign().tittle}
+                </p>
+
+                {/* Nội dung chiến dịch */}
+                <p className="text-gray-700 mb-4 leading-relaxed">
+                  {getLatestCampaign().message}
+                </p>
+
+                {/* Thông tin bổ sung */}
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-gray-500">
+                    Ngày:{" "}
+                    <span className="font-medium">
+                      {getLatestCampaign().date}
+                    </span>
+                  </p>
+                  {/* Nút kêu gọi hành động */}
+                  <button className="bg-teal-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-teal-700 transition-colors duration-300">
+                    Tìm Hiểu Thêm
+                  </button>
+                </div>
+
+                {/* Hình ảnh minh họa nhỏ */}
+                <div className="mt-4 flex justify-end"></div>
+              </motion.div>
+            )}
           </div>
-        </section>
+        </motion.section>
         {/* Footer */}
         <section ref={footerRef}>
           <Footer />
