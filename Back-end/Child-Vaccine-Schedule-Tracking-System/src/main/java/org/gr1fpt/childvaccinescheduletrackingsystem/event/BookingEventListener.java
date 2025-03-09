@@ -87,10 +87,10 @@ public class BookingEventListener {
         List<BookingDetail> list = bookingDetailService.findByBooking(bookingDetail.getBooking().getBookingId());
 
         String vaccine = bookingDetail.getVaccine().getVaccineId();
-        Date date_temp = bookingDetail.getAdministeredDate();;
+        Date date_temp = bookingDetail.getAdministeredDate();
         for(BookingDetail bd : list){
             if(bd.getVaccine().getVaccineId().equals(vaccine) && !bd.getBookingDetailId().equals(bookingDetail.getBookingDetailId()) && bd.getStatus()==1){
-                List<VaccineDetail> vaccineDetail = vaccineDetailRepository.findByVaccine_VaccineId(bd.getVaccine().getVaccineId());
+                List<VaccineDetail> vaccineDetail = vaccineDetailRepository.findByVaccine_VaccineIdAndStatusTrue(bd.getVaccine().getVaccineId());
                 int day = vaccineDetail.get(0).getDay();
                 LocalDate newScheduleDate = date_temp.toLocalDate().plusDays(day);
                 bd.setScheduledDate(Date.valueOf(newScheduleDate));

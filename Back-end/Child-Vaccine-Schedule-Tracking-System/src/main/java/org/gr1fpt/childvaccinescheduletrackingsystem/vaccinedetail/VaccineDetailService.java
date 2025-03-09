@@ -1,5 +1,6 @@
 package org.gr1fpt.childvaccinescheduletrackingsystem.vaccinedetail;
 
+import jakarta.xml.bind.SchemaOutputResolver;
 import org.gr1fpt.childvaccinescheduletrackingsystem.exception.CustomException;
 import org.gr1fpt.childvaccinescheduletrackingsystem.notification.Notification;
 import org.gr1fpt.childvaccinescheduletrackingsystem.role.Role;
@@ -55,7 +56,7 @@ public class VaccineDetailService {
     }
 
     public VaccineDetail useNearestVaccineDetail(String vaccineId) {
-        List<VaccineDetail> vaccineDetails = vaccineDetailRepository.findByVaccine_VaccineIdAndQuantityGreaterThanOrderByExpiredDateAsc(vaccineId, 0);
+        List<VaccineDetail> vaccineDetails = vaccineDetailRepository.findByVaccine_VaccineIdAndQuantityGreaterThanAndStatusTrueOrderByExpiredDateAsc(vaccineId, 0);
         if (vaccineDetails.isEmpty()) {
             throw new CustomException("No available VaccineDetail for Vaccine ID: " + vaccineId, HttpStatus.BAD_REQUEST);
         }
@@ -64,7 +65,6 @@ public class VaccineDetailService {
         if(nearestVaccineDetail.getQuantity()<10){
             System.out.println("Nearest VaccineDetail Quantity less than 10");
             eventPublisher.publishEvent(nearestVaccineDetail);
-            //DANG CODE
         }
         return vaccineDetailRepository.save(nearestVaccineDetail);
     }
@@ -72,7 +72,7 @@ public class VaccineDetailService {
     public List<VaccineDetail> searchByVaccineParent (String vaccineId)
     {
         if (vaccineRepository.existsById(vaccineId))
-            return vaccineDetailRepository.findByVaccine_VaccineId(vaccineId);
+            return vaccineDetailRepository.findByVaccine_VaccineIdAndStatusTrue(vaccineId);
         else
             throw new CustomException("Vaccine ID:" + vaccineId + " does not exist", HttpStatus.BAD_REQUEST);
     }

@@ -7,8 +7,11 @@ import java.util.List;
 
 @Repository
 public interface VaccineDetailRepository extends JpaRepository<VaccineDetail, Integer> {
-    List<VaccineDetail> findByVaccine_VaccineIdAndQuantityGreaterThanOrderByExpiredDateAsc(String vaccineId, int quantity);
-    List<VaccineDetail> findByVaccine_VaccineId(String vaccineId);
+    // KHÔNG DĐƯỢC SÀI REPO NÀY NỮA VÌ THIẾU ĐIÊU KIỆN STATUS
+    //    List<VaccineDetail> findByVaccine_VaccineIdAndQuantityGreaterThanOrderByExpiredDateAsc(String vaccineId, int quantity);
+    //    List<VaccineDetail> findByVaccine_VaccineId(String vaccineId);
 
-
+    List<VaccineDetail> findByVaccine_VaccineIdAndStatusTrue(String vaccineId);
+    VaccineDetail findFirstByVaccine_VaccineIdAndStatusTrueOrderByExpiredDateAsc(String vaccineId);
+    List<VaccineDetail> findByVaccine_VaccineIdAndQuantityGreaterThanAndStatusTrueOrderByExpiredDateAsc(String vaccineId, int quantity);
 }
