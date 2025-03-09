@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 // --- Custom hook: sử dụng API findbyvaccine để lấy ảnh ---
 const useVaccineImage = (vaccineId) => {
@@ -277,10 +278,10 @@ const ComboDetail = () => {
           withCredentials: true,
         });
       }
-      alert("Đã thêm tất cả vaccine vào combo thành công!");
+      toast.success("Đã thêm vaccine thành công!", { autoClose: 2000 });
     } catch (err) {
       console.error("Một số vaccine không thể thêm:", err);
-      alert("Một số vaccine không thể thêm vào combo do lỗi server.");
+      toast.error("Một số vaccine không thể thêm vào combo do lỗi server.");
     } finally {
       setAdding(false);
       fetchComboDetails(); // Reload dữ liệu
