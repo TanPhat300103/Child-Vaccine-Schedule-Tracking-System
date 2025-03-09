@@ -156,6 +156,7 @@ const ComboDetail = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [availableVaccines, setAvailableVaccines] = useState([]);
   const [selectedVaccineIds, setSelectedVaccineIds] = useState([]);
+  const [adding, setAdding] = useState(false); // Thêm state để theo dõi quá trình thêm vaccine
 
   // State cho thanh tìm kiếm trong modal
   const [searchType, setSearchType] = useState("name");
@@ -204,7 +205,7 @@ const ComboDetail = () => {
     }
   };
 
-  // Khi mở modal, lấy danh sách vaccine hiện có từ API
+  // Khi mở modal, lấy danh sách vaccine hiện có từ API và lọc
   useEffect(() => {
     if (showAddModal) {
       axios
@@ -213,13 +214,26 @@ const ComboDetail = () => {
         })
         .then((res) => {
           console.log("Fetch vaccines for modal success:", res.data);
-          setAvailableVaccines(res.data);
+          // Lọc vaccine active và không trùng với vaccine trong combo
+          const existingVaccines = comboDetails.map((item) => item.vaccine);
+          const filteredVaccines = res.data.filter(
+            (vaccine) =>
+              vaccine.active &&
+              !existingVaccines.some(
+                (existing) =>
+                  existing.name === vaccine.name &&
+                  existing.doseNumber === vaccine.doseNumber &&
+                  existing.description === vaccine.description &&
+                  existing.country === vaccine.country
+              )
+          );
+          setAvailableVaccines(filteredVaccines);
         })
         .catch((err) =>
           console.error("Error fetching available vaccines:", err)
         );
     }
-  }, [showAddModal]);
+  }, [showAddModal, comboDetails]);
 
   // Lọc danh sách vaccine trong modal theo thanh tìm kiếm
   const filteredAvailableVaccines = availableVaccines.filter((vaccine) => {
@@ -249,26 +263,29 @@ const ComboDetail = () => {
     );
   };
 
-  // Hàm xác nhận thêm vaccine vào combo (gửi từng vaccine đã chọn qua API create của combodetail)
+  // Hàm xác nhận thêm vaccine vào combo
   const handleConfirmAddVaccines = async () => {
+    setAdding(true);
     try {
-      const promises = selectedVaccineIds.map((vaccineId) => {
+      // Xử lý tuần tự từng vaccine một
+      for (const vaccineId of selectedVaccineIds) {
         const payload = {
           vaccineCombo: { vaccineComboId },
           vaccine: { vaccineId },
         };
-        console.log("Creating ComboDetail with payload:", payload);
-        return axios.post("http://localhost:8080/combodetail/create", payload, {
+        await axios.post("http://localhost:8080/combodetail/create", payload, {
           withCredentials: true,
         });
-      });
-      await Promise.all(promises);
-      // Sau khi thêm xong, đóng modal và refresh danh sách combo
+      }
+      alert("Đã thêm tất cả vaccine vào combo thành công!");
+    } catch (err) {
+      console.error("Một số vaccine không thể thêm:", err);
+      alert("Một số vaccine không thể thêm vào combo do lỗi server.");
+    } finally {
+      setAdding(false);
+      fetchComboDetails(); // Reload dữ liệu
       setShowAddModal(false);
       setSelectedVaccineIds([]);
-      fetchComboDetails();
-    } catch (err) {
-      console.error("Error adding vaccines to combo:", err);
     }
   };
 
@@ -379,15 +396,16 @@ const ComboDetail = () => {
                   setSelectedVaccineIds([]);
                 }}
                 className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-all"
+                disabled={adding}
               >
                 Hủy
               </button>
               <button
                 onClick={handleConfirmAddVaccines}
                 className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-all"
-                disabled={selectedVaccineIds.length === 0}
+                disabled={selectedVaccineIds.length === 0 || adding}
               >
-                Thêm
+                {adding ? "Đang thêm..." : "Thêm"}
               </button>
             </div>
           </div>
