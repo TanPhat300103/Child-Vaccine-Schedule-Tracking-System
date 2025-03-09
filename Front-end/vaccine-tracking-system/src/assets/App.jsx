@@ -1,10 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
+  FaBars,
+  FaBell,
   FaBoxOpen,
   FaCalendarAlt,
+  FaCalendarCheck,
+  FaChartLine,
+  FaChild,
   FaHome,
+  FaInfo,
   FaPhoneAlt,
+  FaPlusCircle,
+  FaShoppingCart,
+  FaSignOutAlt,
   FaSyringe,
+  FaUser,
+  FaUserCircle,
   FaUserMd,
 } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
@@ -30,7 +41,7 @@ const App = () => {
   }, []);
 
   //scroll to pricing
-  const scrollVaccinePricing = () => {
+  const scrollToVaccinePricing = () => {
     if (vaccinePricingRef.current) {
       vaccinePricingRef.current.scrollIntoView({
         behavior: "smooth",
@@ -60,143 +71,121 @@ const App = () => {
   }, []);
 
   const navItems = [
-    { name: "Trang chủ", icon: <FaHome />, action: () => navigate("/") },
     {
-      name: "Đặt lịch",
-      icon: <FaCalendarAlt />,
+      name: "Trang chủ",
+      icon: <FaSyringe className="text-lg" />,
+      action: () => navigate("/"),
+    },
+    {
+      name: "Đặt lịch tiêm",
+      icon: <FaCalendarCheck className="text-lg" />,
       action: () => navigate("/login"),
     },
-    { name: "Gói tiêm", icon: <FaBoxOpen />, action: scrollVaccinePricing },
-    { name: "Liên lạc", icon: <FaPhoneAlt />, action: scrollToFooter },
+    {
+      name: "Gói vaccine",
+      icon: <FaUserMd className="text-lg" />,
+      action: scrollToVaccinePricing,
+    },
+    {
+      name: "Liên hệ",
+      icon: <FaInfo className="text-lg" />,
+      action: scrollToFooter,
+    },
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       {/* Header */}
-      <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ type: "spring", stiffness: 100, damping: 20 }}
+      <header
         className={`fixed w-full z-50 transition-all duration-300 ${
           isScrolled
             ? "py-2 bg-white shadow-lg"
-            : "py-4 bg-white/95 backdrop-blur-sm"
+            : "py-3 bg-white/95 backdrop-blur-sm"
         }`}
       >
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              onClick={() => navigate("/")}
-              className="flex items-center space-x-2 cursor-pointer"
+            <div
+              onClick={() => {
+                navigate("/home");
+                closeAllMenus();
+              }}
+              className="flex items-center space-x-2 cursor-pointer group"
             >
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center transform -rotate-6 hover:rotate-0 transition-all duration-300">
-                <span className="text-white text-xl font-bold">V</span>
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-teal-400 rounded-full flex items-center justify-center transform transition-all duration-300 group-hover:scale-105 shadow-md">
+                <FaSyringe className="text-white text-lg" />
               </div>
-              <span className="text-xl font-extrabold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
-                VaccineCare
-              </span>
-            </motion.div>
+              <div className="flex flex-col">
+                <span className="text-lg font-bold text-blue-700">
+                  VaccineCare
+                </span>
+                <span className="text-xs text-blue-500 -mt-1">
+                  Trung Tâm Tiêm Chủng
+                </span>
+              </div>
+            </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
+            <nav className="hidden md:flex items-center space-x-6">
               {navItems.map((item, index) => (
-                <motion.button
+                <button
                   key={index}
-                  onClick={item.action}
-                  className="group flex items-center space-x-1.5 text-gray-700 hover:text-blue-600 transition-colors"
-                  whileHover={{ scale: 1.05 }}
+                  onClick={() => {
+                    item.action();
+                    closeAllMenus();
+                  }}
+                  className="group flex flex-col items-center text-gray-700 hover:text-blue-600 transition-colors"
                 >
-                  <span className="text-blue-500 group-hover:text-blue-600 transition-colors">
+                  <div className="p-2 rounded-full group-hover:bg-blue-50 transition-colors">
                     {item.icon}
-                  </span>
-                  <span className="font-medium">{item.name}</span>
-                  <span className="block h-0.5 w-0 group-hover:w-full transition-all duration-300 bg-blue-600" />
-                </motion.button>
+                  </div>
+                  <span className="text-sm font-medium mt-1">{item.name}</span>
+                  <span className="block h-0.5 w-0 group-hover:w-full transition-all duration-300 bg-blue-600 mt-1" />
+                </button>
               ))}
             </nav>
 
-            {/* Mobile menu button */}
+            {/* Mobile Menu Button */}
             <div className="md:hidden">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2 text-gray-700 focus:outline-none"
+                className="p-2 rounded-lg bg-blue-50 text-blue-600 focus:outline-none hover:bg-blue-100 transition-colors"
+                aria-label="Toggle mobile menu"
               >
-                <div className="w-6 flex flex-col items-center space-y-1.5">
-                  <span
-                    className={`block h-0.5 w-full bg-gray-700 transform transition-all duration-300 ${
-                      isMobileMenuOpen ? "rotate-45 translate-y-2" : ""
-                    }`}
-                  ></span>
-                  <span
-                    className={`block h-0.5 w-full bg-gray-700 transition-all duration-300 ${
-                      isMobileMenuOpen ? "opacity-0" : "opacity-100"
-                    }`}
-                  ></span>
-                  <span
-                    className={`block h-0.5 w-full bg-gray-700 transform transition-all duration-300 ${
-                      isMobileMenuOpen ? "-rotate-45 -translate-y-2" : ""
-                    }`}
-                  ></span>
-                </div>
+                {isMobileMenuOpen ? (
+                  <FaTimes className="text-lg" />
+                ) : (
+                  <FaBars className="text-lg" />
+                )}
               </button>
             </div>
 
             {/* User Actions & Icons */}
-            <div className="hidden md:flex items-center space-x-6">
-              {/* Login and Register buttons */}
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                onClick={() => navigate("/login")}
-                className="text-blue-600 hover:text-blue-700 transition-colors"
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => {
+                  navigate("/login");
+                  closeAllMenus();
+                }}
+                className="px-4 py-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
               >
-                Đăng nhập
-              </motion.button>
-
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                onClick={() => navigate("/register")}
-                className="text-blue-600 hover:text-blue-700 transition-colors"
+                Đăng Nhập
+              </button>
+              <button
+                onClick={() => {
+                  navigate("/register");
+                  closeAllMenus();
+                }}
+                className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
               >
-                Đăng ký
-              </motion.button>
+                Đăng Ký
+              </button>
             </div>
           </div>
-
-          {/* Mobile Menu */}
-          <AnimatePresence>
-            {isMobileMenuOpen && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3 }}
-                className="md:hidden mt-4 overflow-hidden"
-              >
-                <div className="py-2 space-y-2 border-t border-gray-100">
-                  {navItems.map((item, index) => (
-                    <motion.button
-                      key={index}
-                      onClick={() => {
-                        item.action();
-                        setIsMobileMenuOpen(false);
-                      }}
-                      className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-blue-50 transition-colors rounded-lg"
-                      whileHover={{ x: 5 }}
-                    >
-                      <span className="text-blue-500">{item.icon}</span>
-                      <span className="font-medium">{item.name}</span>
-                    </motion.button>
-                  ))}
-
-                  <div className="flex items-center justify-between px-4 py-4 border-t border-gray-100"></div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
-      </motion.header>
+      </header>
+
       {/* Banner */}
       <motion.section className="relative h-screen overflow-hidden">
         <motion.div

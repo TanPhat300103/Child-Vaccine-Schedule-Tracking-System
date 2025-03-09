@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../../components/common/Header";
+import Footer from "../../components/common/Footer";
 
 const CancelPayment = () => {
   const [paymentDetails, setPaymentDetails] = useState(null);
@@ -108,6 +109,7 @@ const CancelPayment = () => {
           </div>
         </div>
       </div>
+      <Footer></Footer>
     </div>
   );
 };

@@ -16,6 +16,13 @@ const AgeVaccine3 = () => {
       try {
         const response = await axios.get("http://localhost:8080/vaccinecombo");
         setCombos(response.data);
+
+        // Chọn combo đầu tiên sau khi dữ liệu đã được tải về
+        if (response.data.length > 0) {
+          const firstCombo = response.data[0];
+          setSelectedCombo(firstCombo);
+          fetchComboDetails(firstCombo.vaccineComboId); // Lấy chi tiết cho combo đầu tiên
+        }
       } catch (err) {
         setError("Không thể tải danh sách combo vaccine");
         console.error("Error fetching vaccine combos:", err);

@@ -279,7 +279,21 @@ const BookVaccine = () => {
   // select vaccines
   const handleVaccineSelect = (vaccine) => {
     console.log("Selected Vaccine ID:", vaccine.vaccineId);
+    // Kiểm tra nếu chưa chọn trẻ
+    if (!selectedChild || !selectedChild.childId) {
+      toast.error("Vui lòng chọn trẻ trước khi chọn vaccine!");
+      return;
+    }
+    const childAge = calculateAge(selectedChild.dob);
+    console.log("Child Age:", childAge);
 
+    // Kiểm tra tuổi của trẻ có nằm trong khoảng ageMin và ageMax của vaccine không
+    if (childAge < vaccine.ageMin || childAge > vaccine.ageMax) {
+      toast.error(
+        `Trẻ ${selectedChild.firstName} ${selectedChild.lastName} (${childAge} tuổi) không phù hợp với vaccine ${vaccine.name} (tuổi từ ${vaccine.ageMin} đến ${vaccine.ageMax}).`
+      );
+      return;
+    }
     // Kiểm tra vaccine đã có trong mảng selectedVaccines chưa
     const isVaccineSelected = selectedVaccines.some(
       (v) => v.vaccineId === vaccine.vaccineId
@@ -394,7 +408,19 @@ const BookVaccine = () => {
       }
     }
   };
-
+  const calculateAge = (dob) => {
+    const birthDate = new Date(dob);
+    const today = new Date(); // Ngày hiện tại (hôm nay là 09/03/2025 theo giả định của bạn)
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+    return age;
+  };
   // calculate total
   const totalPrice = [...selectedVaccines, ...selectedCombos].reduce(
     (sum, item) => {

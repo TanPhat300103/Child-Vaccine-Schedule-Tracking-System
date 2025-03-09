@@ -222,6 +222,7 @@ const Register = () => {
                     name="dob"
                     value={formData.dob}
                     onChange={handleChange}
+                    max={new Date().toISOString().split("T")[0]} // Chặn ngày tương lai
                     className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${
                       errors.dob ? "border-red-500" : "border-gray-300"
                     }`}
@@ -347,38 +348,6 @@ const Register = () => {
                     1 ký tự đặc biệt
                   </p>
                 )}
-              </div>
-
-              {/* Address */}
-              <div>
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
-                  <FaMapMarkerAlt className="text-blue-500" />
-                  Địa Chỉ
-                </label>
-                <textarea
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                  rows="2"
-                  placeholder="Nhập địa chỉ liên hệ"
-                />
-              </div>
-
-              {/* Banking Information */}
-              <div>
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
-                  <FaWallet className="text-blue-500" />
-                  Thông Tin Ngân Hàng (Không bắt buộc)
-                </label>
-                <input
-                  type="text"
-                  name="banking"
-                  value={formData.banking}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                  placeholder="Số tài khoản ngân hàng (nếu có)"
-                />
               </div>
 
               {/* Agree to Terms with beautiful styling */}
