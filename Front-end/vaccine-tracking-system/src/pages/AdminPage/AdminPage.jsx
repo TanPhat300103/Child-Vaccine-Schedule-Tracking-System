@@ -61,8 +61,8 @@ const AdminPage = () => {
     location.pathname.startsWith("/admin/vaccine-combos");
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar với gradient background và viền */}
+    <>
+      {/* Sidebar */}
       <aside
         className={`
           ${isCollapsed ? "w-[100px]" : "w-[260px]"}
@@ -203,7 +203,7 @@ const AdminPage = () => {
                   </>
                 )}
               </div>
-              {/* Submenu Vaccine hiển thị luôn khi hover, chiếm không gian */}
+              {/* Submenu Vaccine */}
               <ul
                 className={`${
                   isCollapsed ? "" : "ml-8"
@@ -400,9 +400,16 @@ const AdminPage = () => {
           isCollapsed ? "ml-[100px]" : "ml-[260px]"
         } transition-all duration-300`}
       >
-        <main className="max-w-7xl mx-auto px-6 py-8 mt-36">
+        {/*
+          CHỖ QUAN TRỌNG:
+          - Bỏ "pt-16" (hoặc giảm giá trị) nếu không muốn chừa khoảng trắng lớn.
+          - Dùng "mt-16" để đẩy toàn bộ main xuống dưới header (thay vì padding).
+          - Nếu vẫn bị che bởi header, tăng giá trị lên, ví dụ mt-20, mt-24...
+        */}
+        <main className="mx-auto w-full">
           <Outlet />
         </main>
+
         <footer className="bg-white border-t border-gray-200 py-4">
           <div className="max-w-7xl mx-auto px-6">
             <p className="text-sm text-gray-500 text-center">
@@ -411,7 +418,7 @@ const AdminPage = () => {
           </div>
         </footer>
       </div>
-    </div>
+    </>
   );
 };
 
