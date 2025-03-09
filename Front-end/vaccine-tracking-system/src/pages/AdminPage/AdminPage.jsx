@@ -15,9 +15,9 @@ import {
   FiHelpCircle,
   FiLogOut,
   FiActivity,
-  FiChevronLeft,
-  FiChevronRight,
   FiAlertTriangle,
+  FiMenu,
+  FiX,
 } from "react-icons/fi";
 import { RiSyringeLine } from "react-icons/ri";
 import { format } from "date-fns";
@@ -32,12 +32,13 @@ const AdminPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { userInfo } = useAuth();
-  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showHeader, setShowHeader] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
   const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
+    setSidebarOpen(!sidebarOpen);
   };
 
   const controlHeader = () => {
@@ -56,324 +57,383 @@ const AdminPage = () => {
     };
   }, [lastScrollY]);
 
+  // Kiểm tra xem có đang ở trang Vaccine không
   const isVaccineActive =
     location.pathname.startsWith("/admin/vaccines") ||
     location.pathname.startsWith("/admin/vaccine-combos");
 
   return (
-    <>
+    <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
       <aside
         className={`
-          ${isCollapsed ? "w-[100px]" : "w-[260px]"}
-          bg-gradient-to-b from-teal-600 to-teal-800 text-white flex flex-col sticky top-0 h-screen overflow-y-auto
-          transition-all duration-300 ease-in-out border border-gray-300
+          fixed top-0 left-0 h-screen z-20
+          transition-all duration-300 ease-in-out
+          ${sidebarOpen ? "w-72" : "w-20"}
+          bg-gradient-to-b from-[#2B6DF5] to-[#3C7EFB]
+          text-white font-bold border border-[#2B6DF5]
         `}
       >
-        <div className="p-4 border-b border-teal-600 flex items-center justify-between">
-          {!isCollapsed && (
-            <div className="flex flex-col items-center">
-              <div className="flex items-center justify-center w-12 h-12 bg-white rounded-full mb-2">
-                <RiSyringeLine className="text-teal-600 w-7 h-7" />
+        {sidebarOpen ? (
+          <div className="flex items-center justify-between p-4 border-b border-[#2B6DF5]">
+            <div className="flex items-center">
+              {/* Vòng tròn icon */}
+              <div className="flex items-center justify-center w-12 h-12 bg-white rounded-full">
+                {/* Thay thế màu #1F6AF2 bằng #2B6DF5 */}
+                <RiSyringeLine className="text-[#2B6DF5] w-7 h-7" />
               </div>
-              <h2 className="text-xl font-bold">VacciCare Admin</h2>
-              <p className="text-teal-200 text-sm">
-                Hệ thống quản lý tiêm chủng
-              </p>
+              <h1 className="ml-3 text-xl font-bold">Quản Trị Viên</h1>
             </div>
-          )}
-          <button
-            onClick={toggleSidebar}
-            className="text-white hover:bg-teal-600 p-2 rounded-full"
-          >
-            {isCollapsed ? <FiChevronRight /> : <FiChevronLeft />}
-          </button>
-        </div>
-
-        <nav className="flex-1 px-2 py-6">
-          <div className="mb-4">
-            <NavLink
-              to="/"
-              className={({ isActive }) =>
-                `flex ${
-                  isCollapsed ? "justify-center" : "items-center"
-                } px-4 py-2 rounded-lg transition-colors text-sm font-medium shadow-sm ${
-                  isActive ? "bg-teal-600" : "hover:bg-teal-500"
-                }`
-              }
+            <button
+              onClick={toggleSidebar}
+              className="text-white hover:text-white/90 focus:outline-none"
             >
-              <FiHome className="w-5 h-5" />
-              {!isCollapsed && <span className="ml-2">Trang chủ</span>}
-            </NavLink>
+              <FiX size={24} />
+            </button>
           </div>
+        ) : (
+          <div className="flex items-center justify-end p-4 border-b border-[#2B6DF5]">
+            <button
+              onClick={toggleSidebar}
+              className="text-white hover:text-white/90 focus:outline-none"
+            >
+              <FiMenu size={24} />
+            </button>
+          </div>
+        )}
 
-          {!isCollapsed && (
-            <div className="mb-2 px-2">
-              <p className="text-xs font-semibold text-teal-300 uppercase tracking-wider">
-                Tổng quan
-              </p>
-            </div>
-          )}
+        <nav className="mt-6">
+          <ul className="space-y-2 px-3">
+            {sidebarOpen && (
+              <li className="px-3">
+                <p className="text-xs font-semibold text-white/90 uppercase tracking-wider">
+                  Tổng quan
+                </p>
+              </li>
+            )}
 
-          <ul className="space-y-1 mb-6">
+            {/* Bảng điều khiển */}
             <li>
               <NavLink
                 to="/admin/dashboard"
                 className={({ isActive }) =>
-                  `flex ${
-                    isCollapsed ? "justify-center" : "items-center"
-                  } p-3 text-sm font-medium rounded-lg transition-colors ${
-                    isActive ? "bg-teal-600" : "hover:bg-teal-600"
+                  `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
+                    isActive
+                      ? "bg-[#2B6DF5]"
+                      : "hover:bg-[#2B75F5] hover:shadow-sm"
                   }`
                 }
               >
-                <FiGrid className="w-5 h-5" />
-                {!isCollapsed && <span className="ml-3">Bảng điều khiển</span>}
+                <FiGrid className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`} />
+                {sidebarOpen && <span className="ml-3">Bảng điều khiển</span>}
+                {!sidebarOpen && (
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                    Bảng điều khiển
+                  </span>
+                )}
               </NavLink>
             </li>
+
+            {/* Nhân viên Y tế */}
             <li>
               <NavLink
                 to="/admin/staffs"
                 className={({ isActive }) =>
-                  `flex ${
-                    isCollapsed ? "justify-center" : "items-center"
-                  } p-3 text-sm font-medium rounded-lg transition-colors ${
-                    isActive ? "bg-teal-600" : "hover:bg-teal-600"
+                  `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
+                    isActive
+                      ? "bg-[#2B6DF5]"
+                      : "hover:bg-[#2B75F5] hover:shadow-sm"
                   }`
                 }
               >
-                <FiUser className="w-5 h-5" />
-                {!isCollapsed && <span className="ml-3">Nhân viên Y tế</span>}
+                <FiUser className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`} />
+                {sidebarOpen && <span className="ml-3">Nhân viên Y tế</span>}
+                {!sidebarOpen && (
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                    Nhân viên Y tế
+                  </span>
+                )}
               </NavLink>
             </li>
+
+            {/* Bệnh nhân */}
             <li>
               <NavLink
                 to="/admin/customers"
                 className={({ isActive }) =>
-                  `flex ${
-                    isCollapsed ? "justify-center" : "items-center"
-                  } p-3 text-sm font-medium rounded-lg transition-colors ${
-                    isActive ? "bg-teal-600" : "hover:bg-teal-600"
+                  `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
+                    isActive
+                      ? "bg-[#2B6DF5]"
+                      : "hover:bg-[#2B75F5] hover:shadow-sm"
                   }`
                 }
               >
-                <FiUsers className="w-5 h-5" />
-                {!isCollapsed && <span className="ml-3">Bệnh nhân</span>}
+                <FiUsers className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`} />
+                {sidebarOpen && <span className="ml-3">Bệnh nhân</span>}
+                {!sidebarOpen && (
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                    Bệnh nhân
+                  </span>
+                )}
               </NavLink>
             </li>
-          </ul>
 
-          {!isCollapsed && (
-            <div className="mb-2 px-2">
-              <p className="text-xs font-semibold text-teal-300 uppercase tracking-wider">
-                Quản lý tiêm chủng
-              </p>
-            </div>
-          )}
+            {sidebarOpen && (
+              <li className="px-3">
+                <p className="text-xs font-semibold text-white/90 uppercase tracking-wider">
+                  Quản lý tiêm chủng
+                </p>
+              </li>
+            )}
 
-          <ul className="space-y-1 mb-6">
+            {/* Lịch hẹn tiêm */}
             <li>
               <NavLink
                 to="/admin/bookings"
                 className={({ isActive }) =>
-                  `flex ${
-                    isCollapsed ? "justify-center" : "items-center"
-                  } p-3 text-sm font-medium rounded-lg transition-colors ${
-                    isActive ? "bg-teal-600" : "hover:bg-teal-600"
+                  `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
+                    isActive
+                      ? "bg-[#2B6DF5]"
+                      : "hover:bg-[#2B75F5] hover:shadow-sm"
                   }`
                 }
               >
-                <FiCalendar className="w-5 h-5" />
-                {!isCollapsed && <span className="ml-3">Lịch hẹn tiêm</span>}
+                <FiCalendar
+                  className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
+                />
+                {sidebarOpen && <span className="ml-3">Lịch hẹn tiêm</span>}
+                {!sidebarOpen && (
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                    Lịch hẹn tiêm
+                  </span>
+                )}
               </NavLink>
             </li>
+
+            {/* Vaccine */}
             <li className="group">
               <div
-                className={`flex ${
-                  isCollapsed ? "justify-center" : "items-center"
-                } p-3 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
-                  isVaccineActive ? "bg-teal-600" : "hover:bg-teal-600"
+                className={`relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer ${
+                  isVaccineActive
+                    ? "bg-[#2B6DF5]"
+                    : "hover:bg-[#2B75F5] hover:shadow-sm"
                 }`}
               >
-                <RiSyringeLine className="w-5 h-5" />
-                {!isCollapsed && (
+                <RiSyringeLine
+                  className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
+                />
+                {sidebarOpen && (
                   <>
                     <span className="ml-3">Vaccine</span>
-                    <FiChevronDown className="ml-auto w-4 h-4" />
+                    <FiChevronDown className="ml-auto w-5 h-5" />
                   </>
                 )}
+                {!sidebarOpen && (
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                    Vaccine
+                  </span>
+                )}
               </div>
-              {/* Submenu Vaccine */}
               <ul
-                className={`${
-                  isCollapsed ? "" : "ml-8"
-                } space-y-1 hidden group-hover:block`}
+                className={`${sidebarOpen ? "mt-2 pl-10" : ""} ${
+                  isVaccineActive ? "block" : "hidden group-hover:block"
+                }`}
               >
                 <li>
                   <NavLink
                     to="/admin/vaccines"
                     className={({ isActive }) =>
-                      `flex items-center py-2 px-3 text-sm font-medium rounded-lg transition-colors ${
-                        isActive ? "bg-teal-600" : "hover:bg-teal-600"
+                      `flex items-center px-4 py-2 text-sm rounded-lg transition-all duration-200 ${
+                        isActive
+                          ? "bg-[#2B6DF5]"
+                          : "hover:bg-[#2B75F5] hover:shadow-sm"
                       }`
                     }
                   >
-                    <FiShield className="w-4 h-4 mr-2" />
-                    Quản lý Vaccine
+                    <FiShield
+                      className={`w-5 h-5 ${!sidebarOpen && "mx-auto"}`}
+                    />
+                    {sidebarOpen && (
+                      <span className="ml-2">Quản lý Vaccine</span>
+                    )}
                   </NavLink>
                 </li>
                 <li>
                   <NavLink
                     to="/admin/vaccine-combos"
                     className={({ isActive }) =>
-                      `flex items-center py-2 px-3 text-sm font-medium rounded-lg transition-colors ${
-                        isActive ? "bg-teal-600" : "hover:bg-teal-600"
+                      `flex items-center px-4 py-2 text-sm rounded-lg transition-all duration-200 ${
+                        isActive
+                          ? "bg-[#2B6DF5]"
+                          : "hover:bg-[#2B75F5] hover:shadow-sm"
                       }`
                     }
                   >
-                    <FiBox className="w-4 h-4 mr-2" />
-                    Gói Vaccine
+                    <FiBox className={`w-5 h-5 ${!sidebarOpen && "mx-auto"}`} />
+                    {sidebarOpen && <span className="ml-2">Gói Vaccine</span>}
                   </NavLink>
                 </li>
               </ul>
             </li>
+
+            {/* Biểu hiện sau tiêm */}
             <li>
               <NavLink
                 to="/admin/records"
                 className={({ isActive }) =>
-                  `flex ${
-                    isCollapsed ? "justify-center" : "items-center"
-                  } p-3 text-sm font-medium rounded-lg transition-colors ${
-                    isActive ? "bg-teal-600" : "hover:bg-teal-600"
+                  `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
+                    isActive
+                      ? "bg-[#2B6DF5]"
+                      : "hover:bg-[#2B75F5] hover:shadow-sm"
                   }`
                 }
               >
-                <FiActivity className="w-5 h-5" />
-                {!isCollapsed && (
+                <FiActivity
+                  className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
+                />
+                {sidebarOpen && (
                   <span className="ml-3">Biểu hiện sau tiêm</span>
+                )}
+                {!sidebarOpen && (
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                    Biểu hiện sau tiêm
+                  </span>
                 )}
               </NavLink>
             </li>
-          </ul>
 
-          {!isCollapsed && (
-            <div className="mb-2 px-2">
-              <p className="text-xs font-semibold text-teal-300 uppercase tracking-wider">
-                Hệ thống
-              </p>
-            </div>
-          )}
+            {sidebarOpen && (
+              <li className="px-3">
+                <p className="text-xs font-semibold text-white/90 uppercase tracking-wider">
+                  Hệ thống
+                </p>
+              </li>
+            )}
 
-          <ul className="space-y-1">
+            {/* Phản hồi bệnh nhân */}
             <li>
               <NavLink
                 to="/admin/feedbacks"
                 className={({ isActive }) =>
-                  `flex ${
-                    isCollapsed ? "justify-center" : "items-center"
-                  } p-3 text-sm font-medium rounded-lg transition-colors ${
-                    isActive ? "bg-teal-600" : "hover:bg-teal-600"
+                  `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
+                    isActive
+                      ? "bg-[#2B6DF5]"
+                      : "hover:bg-[#2B75F5] hover:shadow-sm"
                   }`
                 }
               >
-                <FiMessageSquare className="w-5 h-5" />
-                {!isCollapsed && (
+                <FiMessageSquare
+                  className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
+                />
+                {sidebarOpen && (
                   <span className="ml-3">Phản hồi bệnh nhân</span>
+                )}
+                {!sidebarOpen && (
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                    Phản hồi bệnh nhân
+                  </span>
                 )}
               </NavLink>
             </li>
+
+            {/* Chiến dịch Y tế */}
             <li>
               <NavLink
                 to="/admin/marketing-campains"
                 className={({ isActive }) =>
-                  `flex ${
-                    isCollapsed ? "justify-center" : "items-center"
-                  } p-3 text-sm font-medium rounded-lg transition-colors ${
-                    isActive ? "bg-teal-600" : "hover:bg-teal-600"
+                  `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
+                    isActive
+                      ? "bg-[#2B6DF5]"
+                      : "hover:bg-[#2B75F5] hover:shadow-sm"
                   }`
                 }
               >
-                <FiBarChart2 className="w-5 h-5" />
-                {!isCollapsed && <span className="ml-3">Chiến dịch Y tế</span>}
+                <FiBarChart2
+                  className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
+                />
+                {sidebarOpen && <span className="ml-3">Chiến dịch Y tế</span>}
+                {!sidebarOpen && (
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                    Chiến dịch Y tế
+                  </span>
+                )}
               </NavLink>
             </li>
+
+            {/* Quản Lý Hóa Đơn */}
             <li>
               <NavLink
                 to="/admin/payments"
                 className={({ isActive }) =>
-                  `flex ${
-                    isCollapsed ? "justify-center" : "items-center"
-                  } p-3 text-sm font-medium rounded-lg transition-colors ${
-                    isActive ? "bg-teal-600" : "hover:bg-teal-600"
+                  `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
+                    isActive
+                      ? "bg-[#2B6DF5]"
+                      : "hover:bg-[#2B75F5] hover:shadow-sm"
                   }`
                 }
               >
-                <FiBarChart2 className="w-5 h-5" />
-                {!isCollapsed && <span className="ml-3">Quản Lý Hóa Đơn</span>}
+                <FiBarChart2
+                  className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
+                />
+                {sidebarOpen && <span className="ml-3">Quản Lý Hóa Đơn</span>}
+                {!sidebarOpen && (
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                    Quản Lý Hóa Đơn
+                  </span>
+                )}
               </NavLink>
             </li>
           </ul>
         </nav>
-
-        {/* Thông tin admin */}
-        <div className="p-4 border-t border-teal-600 mt-auto flex items-center">
-          <div className="w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center text-white font-semibold">
-            {adminData.firstName.charAt(0)}
-            {adminData.lastName.charAt(0)}
-          </div>
-          {!isCollapsed && (
-            <div className="ml-3">
-              <p className="text-sm font-medium">
-                {adminData.firstName} {adminData.lastName}
-              </p>
-              <p className="text-xs text-teal-300">Quản trị viên Y tế</p>
-            </div>
-          )}
-          <button
-            onClick={() => navigate("/")}
-            className="ml-auto text-teal-300 hover:text-white"
-          >
-            <FiLogOut className="w-5 h-5" />
-          </button>
-        </div>
       </aside>
 
       {/* Header */}
       <header
         style={{
-          left: isCollapsed ? "calc(100px + 20px)" : "calc(260px + 20px)",
+          left: sidebarOpen ? "calc(18rem + 20px)" : "calc(5rem + 20px)",
           right: "20px",
         }}
         className={`fixed top-0 z-10 transition-transform duration-300 ${
           showHeader ? "translate-y-0" : "-translate-y-full"
         }`}
       >
-        <div className="bg-gradient-to-r from-teal-500 to-teal-700 text-white rounded-b-lg shadow-md p-3 border border-gray-300">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-            <div className="mb-4 md:mb-0">
-              <h1 className="text-2xl font-extrabold">
-                Trang Quản Trị Trung Tâm Tiêm Chủng
-              </h1>
-              <p className="text-teal-100 text-base mt-1">
-                {format(new Date(), "EEEE, dd/MM/yyyy", { locale: vi })}
-              </p>
-              <p className="text-yellow-100 text-xl font-bold">
-                {adminData.firstName} {adminData.lastName}
-              </p>
+        <div
+          className="
+            bg-gradient-to-r
+            from-[#2B6DF5]
+            to-[#3C7EFB]
+            text-white font-bold
+            rounded-b-lg shadow-md
+            p-3 border border-[#2B6DF5]
+          "
+        >
+          <div className="flex items-center justify-between">
+            {/* Left Section: Title */}
+            <div className="flex items-center space-x-4">
+              <h1 className="text-2xl">Trang Quản Trị Trung Tâm Tiêm Chủng</h1>
+              <div>
+                <p className="text-white text-base">
+                  {format(new Date(), "EEEE, dd/MM/yyyy", { locale: vi })}
+                </p>
+                <p className="text-yellow-100 text-xl">
+                  {adminData.firstName} {adminData.lastName}
+                </p>
+              </div>
             </div>
+            {/* Right Section: Các nút chức năng */}
             <div className="flex items-center space-x-3">
-              <button className="p-2 rounded-full bg-teal-600 hover:bg-teal-500 transition duration-150">
+              <button className="p-2 rounded-full bg-[#2B6DF5] hover:bg-[#2B75F5] transition duration-150">
                 <FiHelpCircle className="w-5 h-5" />
               </button>
-              <button className="p-2 rounded-full bg-teal-600 hover:bg-teal-500 transition duration-150 relative">
+              <button className="p-2 rounded-full bg-[#2B6DF5] hover:bg-[#2B75F5] transition duration-150 relative">
                 <FiMessageSquare className="w-5 h-5" />
                 <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
               </button>
-              <button className="p-2 rounded-full bg-teal-600 hover:bg-teal-500 transition duration-150 relative">
+              <button className="p-2 rounded-full bg-[#2B6DF5] hover:bg-[#2B75F5] transition duration-150 relative">
                 <FiAlertTriangle className="w-5 h-5" />
                 <span className="absolute top-0 right-0 w-2 h-2 bg-yellow-500 rounded-full"></span>
               </button>
-              <button className="p-2 rounded-full bg-teal-600 hover:bg-teal-500 transition duration-150">
+              <button className="p-2 rounded-full bg-[#2B6DF5] hover:bg-[#2B75F5] transition duration-150">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-6 w-6"
@@ -389,6 +449,13 @@ const AdminPage = () => {
                   />
                 </svg>
               </button>
+              {/* Nút Logout */}
+              <button
+                onClick={() => navigate("/")}
+                className="p-2 rounded-full bg-[#2B6DF5] hover:bg-[#2B75F5] transition duration-150"
+              >
+                <FiLogOut className="w-5 h-5" />
+              </button>
             </div>
           </div>
         </div>
@@ -396,29 +463,24 @@ const AdminPage = () => {
 
       {/* Main Content */}
       <div
-        className={`flex-1 flex flex-col ${
-          isCollapsed ? "ml-[100px]" : "ml-[260px]"
-        } transition-all duration-300`}
+        className={`flex-1 transition-all duration-300 mt-20 ${
+          sidebarOpen ? "ml-72" : "ml-20"
+        }`}
       >
-        {/*
-          CHỖ QUAN TRỌNG:
-          - Bỏ "pt-16" (hoặc giảm giá trị) nếu không muốn chừa khoảng trắng lớn.
-          - Dùng "mt-16" để đẩy toàn bộ main xuống dưới header (thay vì padding).
-          - Nếu vẫn bị che bởi header, tăng giá trị lên, ví dụ mt-20, mt-24...
-        */}
-        <main className="mx-auto w-full">
+        <main className="mx-auto w-full py-6">
           <Outlet />
         </main>
 
+        {/* Footer */}
         <footer className="bg-white border-t border-gray-200 py-4">
           <div className="max-w-7xl mx-auto px-6">
             <p className="text-sm text-gray-500 text-center">
-              © 2025 VacciCare - Hệ thống quản lý tiêm chủng | Phiên bản 1.0.2
+              © 2025 VaccineCare - Hệ thống quản lý tiêm chủng | Phiên bản 1.0.2
             </p>
           </div>
         </footer>
       </div>
-    </>
+    </div>
   );
 };
 
