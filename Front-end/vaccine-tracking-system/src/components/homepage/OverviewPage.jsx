@@ -16,9 +16,10 @@ import {
   FaRegTimesCircle,
 } from "react-icons/fa";
 
-import "../common/OverviewPage.css";
-import { useAuth } from "./AuthContext";
-import Footer from "./Footer";
+import "../homepage/OverviewPage.css";
+import { useAuth } from "../common/AuthContext";
+import Footer from "../common/Footer";
+import Header from "../common/Header";
 
 function Overview() {
   const navigate = useNavigate();
@@ -311,7 +312,7 @@ function Overview() {
 
   return (
     <div>
-      <header></header>{" "}
+      <Header></Header>{" "}
       <div className="overviewpage-container">
         <div className="overviewpage-header">
           <div className="overviewpage-header-info">

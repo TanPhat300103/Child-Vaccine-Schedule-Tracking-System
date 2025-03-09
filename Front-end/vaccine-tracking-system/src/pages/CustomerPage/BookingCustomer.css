@@ -323,15 +323,21 @@ button {
   font-weight: 500;
 }
 
-.profile-status.active {
-  background-color: var(--success);
+.profile-status.pending {
+  background-color: var(--warning); /* Màu vàng */
   color: var(--white);
 }
 
-.profile-status.inactive {
-  background-color: var(--danger);
+.profile-status.completed {
+  background-color: var(--success); /* Màu xanh lá */
   color: var(--white);
 }
+
+.profile-status.canceled {
+  background-color: var(--danger); /* Màu đỏ */
+  color: var(--white);
+}
+
 
 /* No Bookings */
 .profile-no-bookings {

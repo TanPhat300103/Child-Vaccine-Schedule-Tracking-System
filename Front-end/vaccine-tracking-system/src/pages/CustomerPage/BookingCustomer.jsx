@@ -269,29 +269,6 @@ function BookingCustomer() {
           </svg>
         </div>
 
-        <div className="relative max-w-6xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-          <div className="md:flex md:items-center md:justify-between">
-            <div className="flex-1 min-w-0">
-              <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                Lịch tiêm chủng của con bạn
-              </h1>
-              <p className="mt-2 text-lg text-blue-100">
-                Theo dõi và quản lý lịch trình tiêm chủng để bảo vệ sức khỏe của
-                trẻ
-              </p>
-            </div>
-            <div className="mt-4 flex md:mt-0 md:ml-4">
-              <button
-                onClick={() => navigate("/book-vaccine")}
-                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                <Syringe size={16} className="mr-2" />
-                Đặt lịch tiêm mới
-              </button>
-            </div>
-          </div>
-        </div>
-
         {/* Wave separator */}
         <div className="absolute bottom-0 left-0 right-0">
           <svg
@@ -350,8 +327,9 @@ function BookingCustomer() {
                         className="px-3 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       >
                         <option value="all">Tất cả trạng thái</option>
-                        <option value="1">Đã xác nhận</option>
-                        <option value="0">Chưa xác nhận</option>
+                        <option value="3">Đã hủy</option>
+                        <option value="2">Đã hoàn thành</option>
+                        <option value="1">Đã đặt</option>
                       </select>
 
                       {/* Rating Filter */}
@@ -416,12 +394,18 @@ function BookingCustomer() {
                           </span>
                           <span
                             className={`profile-status ${
-                              booking.status === 1 ? "active" : "inactive"
+                              booking.status === 1
+                                ? "pending"
+                                : booking.status === 2
+                                ? "completed"
+                                : "canceled"
                             }`}
                           >
                             {booking.status === 1
-                              ? "Đã xác nhận"
-                              : "Chưa xác nhận"}
+                              ? "Đã đặt"
+                              : booking.status === 2
+                              ? "Đã hoàn thành"
+                              : "Đã hủy"}
                           </span>
                         </div>
                         <div className="profile-booking-detail-item">
@@ -440,16 +424,17 @@ function BookingCustomer() {
                         >
                           Xem chi tiết
                         </Link>
-                        {!feedbacks[booking.bookingId] && (
-                          <button
-                            className="profile-feedback-btn"
-                            onClick={() =>
-                              handleFeedbackClick(booking.bookingId)
-                            }
-                          >
-                            Viết đánh giá
-                          </button>
-                        )}
+                        {booking.status === 2 &&
+                          !feedbacks[booking.bookingId] && (
+                            <button
+                              className="profile-feedback-btn"
+                              onClick={() =>
+                                handleFeedbackClick(booking.bookingId)
+                              }
+                            >
+                              Viết đánh giá
+                            </button>
+                          )}
                       </div>
                     </div>
                   ))}

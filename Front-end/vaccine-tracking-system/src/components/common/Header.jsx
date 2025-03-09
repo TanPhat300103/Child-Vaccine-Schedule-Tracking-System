@@ -91,9 +91,22 @@ const Header = () => {
       action: scrollToVaccinePricing,
     },
     {
-      name: "Liên hệ",
+      name: "Cẩm nang",
       icon: <FaInfo className="text-lg" />,
-      action: scrollToFooter,
+      dropdown: [
+        {
+          name: "Quy trình tiêm chủng",
+          action: () => navigate("/quytrinh"),
+        },
+        {
+          name: "Những lưu ý trước và sau khi tiêm chủng",
+          action: () => navigate("/luuy"),
+        },
+        {
+          name: "Những câu hỏi thường gặp",
+          action: () => navigate("/cauhoi"),
+        },
+      ],
     },
     {
       name: "Theo dõi",
@@ -145,20 +158,36 @@ const Header = () => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
             {navItems.map((item, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  item.action();
-                  closeAllMenus();
-                }}
-                className="group flex flex-col items-center text-gray-700 hover:text-blue-600 transition-colors"
-              >
-                <div className="p-2 rounded-full group-hover:bg-blue-50 transition-colors">
-                  {item.icon}
-                </div>
-                <span className="text-sm font-medium mt-1">{item.name}</span>
-                <span className="block h-0.5 w-0 group-hover:w-full transition-all duration-300 bg-blue-600 mt-1" />
-              </button>
+              <div key={index} className="relative group">
+                <button
+                  onClick={() => item.action && item.action()}
+                  className="group flex flex-col items-center text-gray-700 hover:text-blue-600 transition-colors"
+                >
+                  <div className="p-2 rounded-full group-hover:bg-blue-50 transition-colors">
+                    {item.icon}
+                  </div>
+                  <span className="text-sm font-medium mt-1">{item.name}</span>
+                  <span className="block h-0.5 w-0 group-hover:w-full transition-all duration-300 bg-blue-600 mt-1" />
+                </button>
+
+                {/* Dropdown cho Cẩm nang */}
+                {item.dropdown && (
+                  <div className="absolute left-0 mt-2 w-40 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                    {item.dropdown.map((subItem, subIndex) => (
+                      <button
+                        key={subIndex}
+                        onClick={() => {
+                          subItem.action();
+                          closeAllMenus();
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                      >
+                        {subItem.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
           </nav>
 

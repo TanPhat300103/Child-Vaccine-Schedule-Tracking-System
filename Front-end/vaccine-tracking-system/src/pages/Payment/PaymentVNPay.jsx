@@ -18,7 +18,7 @@ import {
 import { FaHandPaper, FaMoneyBill, FaSpinner } from "react-icons/fa";
 
 const PaymentVnpay = () => {
-  const [paymentMethod, setPaymentMethod] = useState("direct");
+  const [paymentMethod, setPaymentMethod] = useState(null);
   const [couponCode, setCouponCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
@@ -451,12 +451,23 @@ const PaymentVnpay = () => {
 
                 <button
                   onClick={handleSubmit}
-                  disabled={isLoading}
-                  className="w-full bg-blue-600 text-white py-4 rounded-xl hover:bg-blue-700 transition-colors flex items-center justify-center mt-4"
+                  disabled={
+                    isLoading ||
+                    !paymentMethod ||
+                    (paymentMethod === "online" && !selectedBank)
+                  }
+                  className={`w-full py-4 rounded-xl text-white flex items-center justify-center mt-4 transition-colors 
+    ${
+      isLoading ||
+      !paymentMethod ||
+      (paymentMethod === "online" && !selectedBank)
+        ? "bg-gray-400 cursor-not-allowed"
+        : "bg-blue-600 hover:bg-blue-700"
+    }`}
                 >
                   {isLoading ? (
                     <>
-                      <Spinner className="animate-spin mr-2" size={20} />
+                      <FaSpinner className="animate-spin mr-2" size={20} />
                       <span>Đang xử lý...</span>
                     </>
                   ) : (
@@ -466,6 +477,11 @@ const PaymentVnpay = () => {
                     </>
                   )}
                 </button>
+                {paymentMethod === "online" && !selectedBank && !isLoading && (
+                  <p className="text-red-500 text-sm mt-2 text-center">
+                    Vui lòng chọn ngân hàng để tiếp tục
+                  </p>
+                )}
               </div>
             </div>
           </div>

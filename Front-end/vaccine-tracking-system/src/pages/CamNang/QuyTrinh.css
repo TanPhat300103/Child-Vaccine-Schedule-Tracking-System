@@ -1,0 +1,454 @@
+/* Container chính */
+.vaccination-handbook-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  background: #e6e8ff;
+}
+
+/* Hero Section */
+.handbook-hero {
+  position: relative;
+  padding: 80px 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #eef2ff, #e6e8ff);
+  border-bottom: 1px solid #e2e8f0;
+  overflow: hidden;
+  clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
+}
+
+.back-button {
+  position: absolute;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.back-button:hover {
+  background: #4a5ee5;
+  color: #ffffff;
+  border-color: #4a5ee5;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-size: 48px;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 12px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: linear-gradient(to right, #4a5ee5, #6b7fff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-subtitle {
+  font-size: 18px;
+  color: #64748b;
+  font-weight: 500;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 70% 20%, rgba(74, 94, 229, 0.15), transparent 70%);
+  z-index: 0;
+}
+
+/* Nội dung chính */
+.handbook-main {
+  padding: 60px 0;
+  background: #ffffff;
+  border-radius: 16px;
+  margin-top: -40px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  z-index: 1;
+  position: relative;
+}
+
+/* Phần giới thiệu */
+.intro-section {
+  margin-bottom: 48px;
+  padding: 0 24px;
+}
+
+.section-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 24px;
+}
+
+.intro-quote {
+  position: relative;
+  background: linear-gradient(135deg, #f8f9ff, #e6e8ff);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-left: 4px solid #4a5ee5;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.quote-icon {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  font-size: 40px;
+  color: #4a5ee5;
+  opacity: 0.2;
+}
+
+.intro-quote p {
+  font-size: 16px;
+  font-style: italic;
+  line-height: 1.7;
+  color: #1e293b;
+  margin-bottom: 16px;
+}
+
+.quote-author {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4a5ee5;
+  text-align: right;
+}
+
+/* Các bước (Process Timeline) */
+.steps-section {
+  margin-bottom: 48px;
+  padding: 0 24px;
+}
+
+.process-timeline {
+  position: relative;
+  padding: 40px 0;
+}
+
+.timeline-line {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(to right, #4a5ee5, #e6e8ff);
+  border-radius: 2px;
+}
+
+.timeline-steps {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.timeline-step {
+  flex: 1;
+  text-align: center;
+  position: relative;
+  padding-top: 40px;
+}
+
+.step-marker {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  background: #ffffff;
+  border: 4px solid #4a5ee5;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.timeline-step:hover .step-marker {
+  background: #4a5ee5;
+  border-color: #ffffff;
+}
+
+.step-number {
+  font-size: 16px;
+  font-weight: 700;
+  color: #4a5ee5;
+}
+
+.timeline-step:hover .step-number {
+  color: #ffffff;
+}
+
+.timeline-step h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 16px 0 8px;
+}
+
+.timeline-step p {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.6;
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+/* Phần lưu ý */
+.info-section {
+  margin-bottom: 48px;
+  padding: 0 24px;
+}
+
+.info-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-left: 4px solid #4a5ee5;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-top: 16px;
+}
+
+.info-item {
+  background: #f1f5f9;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.info-item h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 12px;
+}
+
+.info-item ul {
+  list-style: none;
+}
+
+.info-item li {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.6;
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 8px;
+}
+
+.info-item li::before {
+  content: "✓";
+  color: #4a5ee5;
+  font-size: 16px;
+  position: absolute;
+  left: 0;
+}
+
+.info-icon {
+  color: #4a5ee5;
+}
+
+/* Call-to-action (Cải tiến) */
+.cta-section {
+  padding: 60px 24px;
+  background: linear-gradient(135deg, #4a5ee5, #6b7fff);
+  border-radius: 24px;
+  text-align: center;
+  margin: 40px auto 0;
+  max-width: 1000px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.cta-wrapper {
+  position: relative;
+  z-index: 1;
+}
+
+.cta-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 12px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cta-subtitle {
+  font-size: 16px;
+  color: #ffffff;
+  opacity: 0.9;
+  margin-bottom: 24px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  color: #4a5ee5;
+  padding: 14px 32px;
+  border-radius: 50px;
+  font-size: 18px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: none;
+}
+
+.cta-button:hover {
+  background: #f97316;
+  color: #ffffff;
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  animation: rotate 10s linear infinite;
+  z-index: 0;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .vaccination-handbook-container {
+    padding: 0 16px;
+  }
+
+  .handbook-hero {
+    padding: 40px 16px;
+    clip-path: none;
+  }
+
+  .hero-title {
+    font-size: 32px;
+  }
+
+  .hero-subtitle {
+    font-size: 16px;
+  }
+
+  .back-button {
+    left: 16px;
+    padding: 6px 12px;
+  }
+
+  .handbook-main {
+    margin-top: -20px;
+    padding: 40px 0;
+  }
+
+  .intro-quote, .info-card {
+    padding: 20px;
+  }
+
+  .section-title {
+    font-size: 24px;
+  }
+
+  .process-timeline {
+    padding: 20px 0;
+  }
+
+  .timeline-steps {
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+  }
+
+  .timeline-line {
+    display: none;
+  }
+
+  .timeline-step {
+    padding-top: 0;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .step-marker {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    margin: 0 auto 16px;
+  }
+
+  .timeline-step h3 {
+    font-size: 16px;
+  }
+
+  .timeline-step p {
+    max-width: 100%;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cta-section {
+    padding: 40px 16px;
+    margin: 20px auto 0;
+  }
+
+  .cta-title {
+    font-size: 24px;
+  }
+
+  .cta-subtitle {
+    font-size: 14px;
+  }
+
+  .cta-button {
+    padding: 10px 24px;
+    font-size: 16px;
+  }
+}
