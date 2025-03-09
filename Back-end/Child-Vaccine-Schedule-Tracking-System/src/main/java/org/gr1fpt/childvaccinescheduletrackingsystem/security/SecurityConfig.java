@@ -45,7 +45,7 @@ public class SecurityConfig {
                 }))
                 .csrf(csrf -> csrf.disable())  // tắt csrf để đơn giản hóa việc test API
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/customer/create", "/vaccine/findid", "/vaccine/findbyage", "/vaccine/findbycountry", "/vaccine/findbyprice", "/vaccine/findbyname", "/vaccinecombo", "/vaccine", "/vaccinecombo/findid", "/vaccinecombo/findname", "/vaccinedetail", "/vaccinedetail/findbyvaccine", "/combodetail", "/combodetail/findid", "/combodetail/findcomboid", "/combodetail/findvaccineid", "/feedback/**")
+                        .requestMatchers("/customer/create", "/vaccine/findid", "/vaccine/findbyage", "/vaccine/findbycountry", "/vaccine/findbyprice", "/vaccine/findbyname", "/vaccinecombo", "/vaccine", "/vaccinecombo/findid", "/vaccinecombo/findname", "/vaccinedetail", "/vaccinedetail/findbyvaccine", "/combodetail", "/combodetail/findid", "/combodetail/findcomboid", "/combodetail/findvaccineid", "/feedback/**","vaccinecombo","vaccine","findbyvaccine","findcomboid")
                         .permitAll()
 
 

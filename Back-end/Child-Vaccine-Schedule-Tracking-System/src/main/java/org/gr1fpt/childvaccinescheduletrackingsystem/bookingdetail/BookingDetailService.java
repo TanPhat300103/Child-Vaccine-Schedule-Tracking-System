@@ -10,6 +10,7 @@ import org.gr1fpt.childvaccinescheduletrackingsystem.vaccine.VaccineRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.combodetail.ComboDetailService;
 import org.gr1fpt.childvaccinescheduletrackingsystem.medicalhistory.MedicalHistoryService;
 import org.gr1fpt.childvaccinescheduletrackingsystem.vaccinecombo.VaccineComboService;
+import org.gr1fpt.childvaccinescheduletrackingsystem.vaccinedetail.VaccineDetailRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.vaccinedetail.VaccineDetailService;
 import org.gr1fpt.childvaccinescheduletrackingsystem.vaccine.Vaccine;
 import org.gr1fpt.childvaccinescheduletrackingsystem.vaccinecombo.VaccineCombo;
@@ -40,6 +41,8 @@ public class BookingDetailService {
     MedicalHistoryService medicalHistoryService;
     @Autowired
     private BookingRepository bookingRepository;
+    @Autowired
+    VaccineDetailRepository vaccineDetailRepository;
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
@@ -80,7 +83,9 @@ public class BookingDetailService {
             for (int i = 1; i <= dose; i++) {
                 java.sql.Date scheduleDate = booking.getBookingDate();
                 if (dose > 1) {
-                    VaccineDetail vaccineDetail = vaccineDetailService.searchByVaccineParent(vaccineId).getFirst();
+                    //LẤY VACCINE DETAIL ĐẦU BẢNG, NHƯNG CHỈ LẤY CÁI NÀO CÒN QUANTITY NGHĨA LÀ STATUS = TRUE
+                    //ĐAẢM BAO ĐƯỢC LÀ CÁC LÔ VACCINE DETAIL CỦA CUNG 1 VACCINE CHA CÓ QUYỀN ĐƯỢC KHÁC DAY
+                    VaccineDetail vaccineDetail = vaccineDetailRepository.findFirstByVaccine_VaccineIdAndStatusTrueOrderByExpiredDateAsc(vaccineId);
                     if (flag >= 1) {
                         int day = vaccineDetail.getDay() * flag;
                         scheduleDate = java.sql.Date.valueOf(scheduleDate.toLocalDate().plusDays(day));

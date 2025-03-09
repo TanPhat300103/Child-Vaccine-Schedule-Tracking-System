@@ -69,13 +69,15 @@ public class Schedule {
             if(detail.getVaccineCombo()!=null){
                 vaccineName = detail.getVaccineCombo().getName();
             }
-            List<VaccineDetail> list = vaccineDetailRepo.findByVaccine_VaccineIdAndQuantityGreaterThanOrderByExpiredDateAsc(detail.getVaccine().getVaccineId(),0);
+
+            String vaccineId = detail.getVaccine().getVaccineId();
+            List<VaccineDetail> list = vaccineDetailRepo.findByVaccine_VaccineIdAndQuantityGreaterThanAndStatusTrueOrderByExpiredDateAsc(vaccineId,0);
             VaccineDetail vaccineDetail = list.getFirst();
 
             LocalDate scheduledDate = detail.getScheduledDate().toLocalDate();
             LocalDate toleranceDate = scheduledDate.plusDays(vaccineDetail.getTolerance());
 
-            //HỦY LỊCH NẾU VƯỢT QUÁ TOLERANT
+            //HỦY LỊCH NẾU VƯỢT QUÁ TOLERANCE
             // So sánh nếu hôm nay đã vượt quá hạn chót
             if (LocalDate.now().isAfter(toleranceDate) && detail.getStatus()==1) {
                 detail.setStatus(3);
