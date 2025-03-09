@@ -440,7 +440,7 @@ const Payments = () => {
 
       {/* Modal xác nhận thanh toán */}
       {confirmModal.show && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm bg-black bg-opacity-30">
+        <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm bg-opacity-30">
           <div className="bg-white p-6 rounded-xl shadow-2xl max-w-md w-full mx-4 transform transition-all animate-fadeIn">
             <div className="text-center mb-6">
               <div className="bg-teal-100 mx-auto rounded-full p-3 h-16 w-16 flex items-center justify-center mb-4">
@@ -486,7 +486,7 @@ const Payments = () => {
 
       {/* Modal thêm coupon */}
       {couponModal.show && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm bg-black bg-opacity-30">
+        <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm bg-opacity-30">
           <div className="bg-white p-6 rounded-xl shadow-2xl max-w-md w-full mx-4 transform transition-all animate-fadeIn">
             <div className="text-center mb-6">
               <div className="bg-teal-100 mx-auto rounded-full p-3 h-16 w-16 flex items-center justify-center mb-4">
