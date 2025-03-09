@@ -1,0 +1,476 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+/* Reset và kiểu chung */
+
+
+.vaccination-notes-page {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #f5f7fa, #e0e7ff);
+  color: #2d3748;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* Header */
+.page-header {
+  position: relative;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(45deg, #6b48ff, #00ddeb, #6b48ff);
+  background-size: 200% 200%;
+  animation: gradientFlow 15s ease infinite;
+  text-align: center;
+}
+
+.header-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2); /* Giảm độ mờ để không che khuất nội dung */
+  z-index: 0; /* Đặt overlay dưới nội dung */
+}
+
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 25px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50px;
+  text-decoration: none;
+  color: #6b48ff;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  z-index: 2; /* Đảm bảo nút nằm trên overlay */
+}
+
+.back-btn:hover {
+  background: #6b48ff;
+  color: #fff;
+  transform: translateY(-3px);
+}
+
+.header-content {
+  position: relative;
+  z-index: 1; /* Đưa nội dung lên trên overlay */
+}
+
+.header-content h1 {
+  font-size: 50px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 15px;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Thêm bóng để chữ rõ hơn */
+}
+
+.header-content p {
+  font-size: 20px;
+  color: #fff; /* Đổi màu trắng để nổi bật */
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Thêm bóng cho phụ đề */
+}
+
+.header-decoration {
+  margin-top: 20px;
+}
+
+.syringe-icon {
+  color: #fff;
+  opacity: 0.9;
+  animation: pulse 2s infinite;
+}
+
+/* Intro + Main Notes */
+.intro-notes-section {
+  max-width: 1400px;
+  margin: 40px auto;
+  padding: 0 20px;
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.intro-container {
+  flex: 1;
+  min-width: 300px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.intro-container h2 {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.intro-container p {
+  font-size: 16px;
+  color: #4a5568;
+}
+
+.main-notes {
+  flex: 2;
+  min-width: 600px;
+}
+
+.notes-group h2 {
+  font-size: 36px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 30px;
+  background: linear-gradient(45deg, #6b48ff, #00ddeb);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.note-item {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.note-item:hover {
+  transform: translateY(-5px);
+}
+
+.note-icon {
+  color: #6b48ff;
+  margin-bottom: 20px;
+}
+
+.note-item h3 {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.note-item ul {
+  list-style: none;
+  margin-bottom: 15px;
+}
+
+.note-item li {
+  font-size: 14px;
+  margin-bottom: 10px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.note-item li:before {
+  content: '➜';
+  position: absolute;
+  left: 0;
+  color: #00ddeb;
+}
+
+.note-item .example {
+  font-style: italic;
+  color: #718096;
+  font-size: 13px;
+}
+
+/* FAQ + Fun Facts */
+.faq-facts-section {
+  max-width: 1400px;
+  margin: 40px auto;
+  padding: 0 20px;
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.faq-container,
+.facts-container {
+  flex: 1;
+  min-width: 400px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.faq-container h2,
+.facts-container h2 {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #1a202c;
+}
+
+.faq-list .faq-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.faq-icon {
+  color: #00ddeb;
+  flex-shrink: 0;
+}
+
+.faq-item h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.faq-item p {
+  font-size: 14px;
+  color: #4a5568;
+}
+
+.facts-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.fact-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.fact-icon {
+  color: #6b48ff;
+  flex-shrink: 0;
+}
+
+.fact-item p {
+  font-size: 14px;
+  color: #4a5568;
+}
+
+/* Tips */
+.tips-section {
+  max-width: 1400px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.tips-section h2 {
+  font-size: 32px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #1a202c;
+}
+
+.tips-grid {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tip-item {
+  flex: 1;
+  min-width: 250px;
+  max-width: 350px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  transition: all 0.3s ease;
+}
+
+.tip-item:hover {
+  transform: translateY(-5px);
+}
+
+.tip-icon {
+  color: #00ddeb;
+  flex-shrink: 0;
+}
+
+.tip-item p {
+  font-size: 14px;
+  color: #4a5568;
+}
+
+/* Emergency + CTA */
+.emergency-cta-section {
+  max-width: 1400px;
+  margin: 40px auto;
+  padding: 0 20px;
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.emergency-container {
+  flex: 2;
+  min-width: 500px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.emergency-container h2 {
+  font-size: 32px;
+  font-weight: 600;
+  color: #d32f2f;
+  margin-bottom: 20px;
+}
+
+.emergency-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.emergency-icon {
+  color: #d32f2f;
+  flex-shrink: 0;
+  animation: blink 2s infinite;
+}
+
+.emergency-content p {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.emergency-content ul {
+  list-style: none;
+}
+
+.emergency-content li {
+  font-size: 14px;
+  margin-bottom: 10px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.emergency-content li:before {
+  content: '⚠';
+  position: absolute;
+  left: 0;
+  color: #d32f2f;
+}
+
+.emergency-contact {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 18px;
+  color: #d32f2f;
+}
+
+.cta-container {
+  flex: 1;
+  min-width: 300px;
+  background: linear-gradient(135deg, #6b48ff, #00ddeb);
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  color: #fff;
+}
+
+.cta-container h2 {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.cta-container p {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 30px;
+  background: #fff;
+  color: #6b48ff;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+}
+
+.cta-btn:hover {
+  background: #6b48ff;
+  color: #fff;
+  transform: scale(1.05);
+}
+
+/* Animations */
+@keyframes gradientFlow {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .intro-notes-section,
+  .faq-facts-section,
+  .emergency-cta-section {
+    flex-direction: column;
+  }
+  .main-notes,
+  .faq-container,
+  .facts-container,
+  .emergency-container {
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .notes-grid {
+    grid-template-columns: 1fr;
+  }
+  .tips-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+  .tip-item {
+    max-width: 100%;
+  }
+  .header-content h1 {
+    font-size: 40px;
+  }
+  .header-content p {
+    font-size: 16px;
+  }
+}
