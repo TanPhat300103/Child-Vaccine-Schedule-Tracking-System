@@ -67,8 +67,7 @@ const AdminPage = () => {
       {/* Sidebar */}
       <aside
         className={`
-          fixed top-0 left-0 h-screen z-20
-          transition-all duration-300 ease-in-out
+          fixed top-0 left-0 h-screen z-20 transition-all duration-300 ease-in-out
           ${sidebarOpen ? "w-72" : "w-20"}
           bg-gradient-to-b from-[#2B6DF5] to-[#3C7EFB]
           text-white font-bold border border-[#2B6DF5]
@@ -79,7 +78,6 @@ const AdminPage = () => {
             <div className="flex items-center">
               {/* Vòng tròn icon */}
               <div className="flex items-center justify-center w-12 h-12 bg-white rounded-full">
-                {/* Thay thế màu #1F6AF2 bằng #2B6DF5 */}
                 <RiSyringeLine className="text-[#2B6DF5] w-7 h-7" />
               </div>
               <h1 className="ml-3 text-xl font-bold">Quản Trị Viên</h1>
@@ -119,7 +117,7 @@ const AdminPage = () => {
                 className={({ isActive }) =>
                   `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                     isActive
-                      ? "bg-[#2B6DF5]"
+                      ? "bg-[#00C3CB]"
                       : "hover:bg-[#2B75F5] hover:shadow-sm"
                   }`
                 }
@@ -141,7 +139,7 @@ const AdminPage = () => {
                 className={({ isActive }) =>
                   `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                     isActive
-                      ? "bg-[#2B6DF5]"
+                      ? "bg-[#00C3CB]"
                       : "hover:bg-[#2B75F5] hover:shadow-sm"
                   }`
                 }
@@ -163,7 +161,7 @@ const AdminPage = () => {
                 className={({ isActive }) =>
                   `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                     isActive
-                      ? "bg-[#2B6DF5]"
+                      ? "bg-[#00C3CB]"
                       : "hover:bg-[#2B75F5] hover:shadow-sm"
                   }`
                 }
@@ -193,7 +191,7 @@ const AdminPage = () => {
                 className={({ isActive }) =>
                   `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                     isActive
-                      ? "bg-[#2B6DF5]"
+                      ? "bg-[#00C3CB]"
                       : "hover:bg-[#2B75F5] hover:shadow-sm"
                   }`
                 }
@@ -201,10 +199,10 @@ const AdminPage = () => {
                 <FiCalendar
                   className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
                 />
-                {sidebarOpen && <span className="ml-3">Lịch hẹn tiêm</span>}
+                {sidebarOpen && <span className="ml-3">Lịch đăng ký tiêm</span>}
                 {!sidebarOpen && (
                   <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
-                    Lịch hẹn tiêm
+                    Lịch đăng ký tiêm
                   </span>
                 )}
               </NavLink>
@@ -215,7 +213,7 @@ const AdminPage = () => {
               <div
                 className={`relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer ${
                   isVaccineActive
-                    ? "bg-[#2B6DF5]"
+                    ? "bg-[#00C3CB]"
                     : "hover:bg-[#2B75F5] hover:shadow-sm"
                 }`}
               >
@@ -245,7 +243,7 @@ const AdminPage = () => {
                     className={({ isActive }) =>
                       `flex items-center px-4 py-2 text-sm rounded-lg transition-all duration-200 ${
                         isActive
-                          ? "bg-[#2B6DF5]"
+                          ? "bg-[#00C3CB]"
                           : "hover:bg-[#2B75F5] hover:shadow-sm"
                       }`
                     }
@@ -264,7 +262,7 @@ const AdminPage = () => {
                     className={({ isActive }) =>
                       `flex items-center px-4 py-2 text-sm rounded-lg transition-all duration-200 ${
                         isActive
-                          ? "bg-[#2B6DF5]"
+                          ? "bg-[#00C3CB]"
                           : "hover:bg-[#2B75F5] hover:shadow-sm"
                       }`
                     }
@@ -283,7 +281,7 @@ const AdminPage = () => {
                 className={({ isActive }) =>
                   `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                     isActive
-                      ? "bg-[#2B6DF5]"
+                      ? "bg-[#00C3CB]"
                       : "hover:bg-[#2B75F5] hover:shadow-sm"
                   }`
                 }
@@ -317,7 +315,7 @@ const AdminPage = () => {
                 className={({ isActive }) =>
                   `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                     isActive
-                      ? "bg-[#2B6DF5]"
+                      ? "bg-[#00C3CB]"
                       : "hover:bg-[#2B75F5] hover:shadow-sm"
                   }`
                 }
@@ -343,7 +341,7 @@ const AdminPage = () => {
                 className={({ isActive }) =>
                   `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                     isActive
-                      ? "bg-[#2B6DF5]"
+                      ? "bg-[#00C3CB]"
                       : "hover:bg-[#2B75F5] hover:shadow-sm"
                   }`
                 }
@@ -367,7 +365,7 @@ const AdminPage = () => {
                 className={({ isActive }) =>
                   `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                     isActive
-                      ? "bg-[#2B6DF5]"
+                      ? "bg-[#00C3CB]"
                       : "hover:bg-[#2B75F5] hover:shadow-sm"
                   }`
                 }
@@ -399,12 +397,10 @@ const AdminPage = () => {
       >
         <div
           className="
-            bg-gradient-to-r
-            from-[#2B6DF5]
-            to-[#3C7EFB]
+            bg-gradient-to-r from-[#2B6DF5] to-[#3C7EFB]
             text-white font-bold
-            rounded-b-lg shadow-md
-            p-3 border border-[#2B6DF5]
+            rounded-b-lg shadow-md p-3
+            border border-[#2B6DF5]
           "
         >
           <div className="flex items-center justify-between">
@@ -449,7 +445,6 @@ const AdminPage = () => {
                   />
                 </svg>
               </button>
-              {/* Nút Logout */}
               <button
                 onClick={() => navigate("/")}
                 className="p-2 rounded-full bg-[#2B6DF5] hover:bg-[#2B75F5] transition duration-150"

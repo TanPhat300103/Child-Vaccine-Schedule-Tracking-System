@@ -146,10 +146,11 @@ const StaffPage = () => {
                 <li>
                   <NavLink
                     to="/staff"
+                    end
                     className={({ isActive }) =>
                       `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                         isActive
-                          ? "bg-[#2B6DF5]"
+                          ? "bg-[#00C3CB]"
                           : "hover:bg-[#2B75F5] shadow-sm"
                       }`
                     }
@@ -173,7 +174,7 @@ const StaffPage = () => {
                     className={({ isActive }) =>
                       `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                         isActive
-                          ? "bg-[#2B6DF5]"
+                          ? "bg-[#00C3CB]"
                           : "hover:bg-[#2B75F5] shadow-sm"
                       }`
                     }
@@ -199,7 +200,7 @@ const StaffPage = () => {
                     className={({ isActive }) =>
                       `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                         isActive
-                          ? "bg-[#2B6DF5]"
+                          ? "bg-[#00C3CB]"
                           : "hover:bg-[#2B75F5] shadow-sm"
                       }`
                     }
@@ -225,7 +226,7 @@ const StaffPage = () => {
                     className={({ isActive }) =>
                       `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                         isActive
-                          ? "bg-[#2B6DF5]"
+                          ? "bg-[#00C3CB]"
                           : "hover:bg-[#2B75F5] shadow-sm"
                       }`
                     }
@@ -251,7 +252,7 @@ const StaffPage = () => {
                     className={({ isActive }) =>
                       `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                         isActive
-                          ? "bg-[#2B6DF5]"
+                          ? "bg-[#00C3CB]"
                           : "hover:bg-[#2B75F5] shadow-sm"
                       }`
                     }
@@ -275,7 +276,7 @@ const StaffPage = () => {
                     className={({ isActive }) =>
                       `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                         isActive
-                          ? "bg-[#2B6DF5]"
+                          ? "bg-[#00C3CB]"
                           : "hover:bg-[#2B75F5] shadow-sm"
                       }`
                     }
@@ -297,7 +298,7 @@ const StaffPage = () => {
                     className={({ isActive }) =>
                       `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                         isActive
-                          ? "bg-[#2B6DF5]"
+                          ? "bg-[#00C3CB]"
                           : "hover:bg-[#2B75F5] shadow-sm"
                       }`
                     }
@@ -321,7 +322,7 @@ const StaffPage = () => {
                   <div
                     className={`relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer ${
                       isVaccineActive
-                        ? "bg-[#2B6DF5]"
+                        ? "bg-[#00C3CB]"
                         : "hover:bg-[#2B75F5] shadow-sm"
                     }`}
                   >
@@ -351,7 +352,7 @@ const StaffPage = () => {
                         className={({ isActive }) =>
                           `flex items-center px-4 py-2 text-sm rounded-lg transition-all duration-200 ${
                             isActive
-                              ? "bg-[#2B6DF5]"
+                              ? "bg-[#00C3CB]"
                               : "hover:bg-[#2B75F5] shadow-sm"
                           }`
                         }
@@ -370,7 +371,7 @@ const StaffPage = () => {
                         className={({ isActive }) =>
                           `flex items-center px-4 py-2 text-sm rounded-lg transition-all duration-200 ${
                             isActive
-                              ? "bg-[#2B6DF5]"
+                              ? "bg-[#00C3CB]"
                               : "hover:bg-[#2B75F5] shadow-sm"
                           }`
                         }
@@ -394,7 +395,7 @@ const StaffPage = () => {
                 to="/staff/settings"
                 className={({ isActive }) =>
                   `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
-                    isActive ? "bg-[#2B6DF5]" : "hover:bg-[#2B75F5] shadow-sm"
+                    isActive ? "bg-[#00C3CB]" : "hover:bg-[#2B75F5] shadow-sm"
                   }`
                 }
               >
