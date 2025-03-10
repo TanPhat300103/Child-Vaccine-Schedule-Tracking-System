@@ -62,7 +62,7 @@ import PriceVaccine from "../components/homepage/PriceVaccine.jsx";
 import ComboVaccine from "../components/homepage/ComboVaccine.jsx";
 import CauHoi from "../pages/CamNang/CauHoi.jsx";
 import LuuY from "../pages/CamNang/LuuY.jsx";
-
+import Chatbox from "../components/chatbox/chatbox.jsx"
 const Main = () => {
   return (
     <StrictMode>
@@ -113,6 +113,7 @@ const Main = () => {
                 <Route path="add-child" element={<AddChild />} />
                 <Route path="booking" element={<BookingCustomer />} />
                 <Route path="payment" element={<PaymentCustomer />} />
+                
               </Route>
               <Route path="/staff" element={<StaffPage />}>
                 <Route index element={<Profile />} />
@@ -172,6 +173,8 @@ const Main = () => {
               </Route>
             </Routes>
           </CartProvider>
+          {/* CHAT BOX */}
+          <Chatbox />
         </AuthProvider>
       </Router>
     </StrictMode>

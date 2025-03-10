@@ -25,7 +25,7 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
         console.log("Cập nhật VaccineDetail thành công:", res.data);
         onDetailUpdated(res.data);
         setIsModalOpen(false);
-      })
+      })  
       .catch((err) => {
         console.error("Cập nhật VaccineDetail thất bại:", err);
       });
