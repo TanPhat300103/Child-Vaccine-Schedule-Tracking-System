@@ -62,118 +62,117 @@ import PriceVaccine from "../components/homepage/PriceVaccine.jsx";
 import ComboVaccine from "../components/homepage/ComboVaccine.jsx";
 import CauHoi from "../pages/CamNang/CauHoi.jsx";
 import LuuY from "../pages/CamNang/LuuY.jsx";
-import Chatbox from "../components/chatbox/chatbox.jsx";
-import { TranslationProvider } from "../components/translate/TranslationProvider.jsx";
+import Chatbox from "../components/chatbox/chatbox.jsx"
+import NotificationDetail from "../components/notification/notification.jsx";
 const Main = () => {
   return (
     <StrictMode>
       <Router>
         <AuthProvider>
           <CartProvider>
-            <TranslationProvider>
-              <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar
+            <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar
+            />
+            <Routes>
+              <Route path="/" element={<App />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/home" element={<App />} />
+              <Route path="/terms-of-service" element={<TermsOfService />} />
+              <Route path="/privacy-policy" element={<Policy />} />
+              <Route path="/book-vaccine" element={<BookVaccine />} />
+              <Route path="/detail-vaccine" element={<DetailVaccine />} />
+              <Route path="/detail-vaccine2" element={<DetailVaccine2 />} />
+              <Route path="/status-vaccine" element={<StatusVaccine />} />
+              <Route path="/react-vaccine" element={<ReactVaccine />} />
+              <Route path="/react-vaccine2" element={<ReactVaccine2 />} />
+              <Route path="/specific-vaccine" element={<SpecificVaccine />} />
+              <Route path="/specific-combo" element={<SpecificCombo />} />
+              <Route path="/notification/:notificationId" element={<NotificationDetail />} />
+              {/* Các route mới từ main */}
+
+              <Route path="/feedback" element={<Feedback />} />
+              <Route path="/price-vaccine" element={<PriceVaccine />} />
+              <Route path="/header" element={<Header />} />
+              <Route path="/footer" element={<Footer />} />
+              <Route path="/auth" element={<AuthProvider />} />
+              <Route path="/overview" element={<Overview />} />
+              <Route
+                path="/booking-detail/:bookingId"
+                element={<BookingDetailPage />}
               />
-              <Routes>
-                <Route path="/" element={<App />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/home" element={<Home />} />
-                <Route path="/terms-of-service" element={<TermsOfService />} />
-                <Route path="/privacy-policy" element={<Policy />} />
-                <Route path="/book-vaccine" element={<BookVaccine />} />
-                <Route path="/detail-vaccine" element={<DetailVaccine />} />
-                <Route path="/detail-vaccine2" element={<DetailVaccine2 />} />
-                <Route path="/status-vaccine" element={<StatusVaccine />} />
-                <Route path="/react-vaccine" element={<ReactVaccine />} />
-                <Route path="/react-vaccine2" element={<ReactVaccine2 />} />
-                <Route path="/specific-vaccine" element={<SpecificVaccine />} />
-                <Route path="/specific-combo" element={<SpecificCombo />} />
-
-                {/* Các route mới từ main */}
-
-                <Route path="/feedback" element={<Feedback />} />
-                <Route path="/price-vaccine" element={<PriceVaccine />} />
-                <Route path="/header" element={<Header />} />
-                <Route path="/footer" element={<Footer />} />
-                <Route path="/auth" element={<AuthProvider />} />
-                <Route path="/overview" element={<Overview />} />
+              <Route path="/paymentVnpay" element={<PaymentVnpay />} />
+              <Route path="/quytrinh" element={<QuyTrinh />} />
+              <Route path="/cauhoi" element={<CauHoi />} />
+              <Route path="/luuy" element={<LuuY />} />
+              <Route path="/payment-return" element={<PaymentReturnPage />} />
+              <Route path="/combo-vaccine" element={<ComboVaccine />} />
+              <Route path="/customer" element={<CustomerPage />}>
+                <Route path="child/:childId" element={<Child />} />
+                <Route path="add-child" element={<AddChild />} />
+                <Route path="booking" element={<BookingCustomer />} />
+                <Route path="payment" element={<PaymentCustomer />} />
+                
+              </Route>
+              <Route path="/staff" element={<StaffPage />}>
+                <Route index element={<Profile />} />
+                <Route path="customers" element={<Customers />} />
+                <Route path="childs/:customerId" element={<Childs />} />
+                <Route path="vaccines" element={<Vaccines />} />
                 <Route
-                  path="/booking-detail/:bookingId"
-                  element={<BookingDetailPage />}
+                  path="vaccine-detail/:vaccineId"
+                  element={<VaccineDetail />}
                 />
-                <Route path="/paymentVnpay" element={<PaymentVnpay />} />
-                <Route path="/quytrinh" element={<QuyTrinh />} />
-                <Route path="/cauhoi" element={<CauHoi />} />
-                <Route path="/luuy" element={<LuuY />} />
-                <Route path="/payment-return" element={<PaymentReturnPage />} />
-                <Route path="/combo-vaccine" element={<ComboVaccine />} />
-                <Route path="/customer" element={<CustomerPage />}>
-                  <Route path="child/:childId" element={<Child />} />
-                  <Route path="add-child" element={<AddChild />} />
-                  <Route path="booking" element={<BookingCustomer />} />
-                  <Route path="payment" element={<PaymentCustomer />} />
-                </Route>
-                <Route path="/staff" element={<StaffPage />}>
-                  <Route index element={<Profile />} />
-                  <Route path="customers" element={<Customers />} />
-                  <Route path="childs/:customerId" element={<Childs />} />
-                  <Route path="vaccines" element={<Vaccines />} />
-                  <Route
-                    path="vaccine-detail/:vaccineId"
-                    element={<VaccineDetail />}
-                  />
-                  <Route
-                    path="marketing-campains"
-                    element={<MarketingCampains />}
-                  />
-                  <Route path="vaccine-combos" element={<VaccineCombos />} />
-                  <Route
-                    path="combo-detail/:vaccineComboId"
-                    element={<ComboDetail />}
-                  />
-                  <Route path="bookings" element={<Bookings />} />
-                  <Route
-                    path="booking-detail/:bookingId"
-                    element={<BookingDetail />}
-                  />
-                  <Route path="records" element={<Records />} />
-                  <Route path="feedbacks" element={<Feedbacks />} />
-                  <Route path="payments" element={<Payments />} />
-                </Route>
-                <Route path="/admin" element={<AdminPage />}>
-                  <Route index element={<Dashboard />} />
-                  <Route path="customers" element={<Customers />} />
-                  <Route path="childs/:customerId" element={<Childs />} />
-                  <Route path="staffs" element={<Staffs />} />
-                  <Route path="vaccines" element={<Vaccines />} />
-                  <Route
-                    path="vaccine-detail/:vaccineId"
-                    element={<VaccineDetail />}
-                  />
-                  <Route
-                    path="marketing-campains"
-                    element={<MarketingCampains />}
-                  />
-                  <Route path="vaccine-combos" element={<VaccineCombos />} />
-                  <Route
-                    path="combo-detail/:vaccineComboId"
-                    element={<ComboDetail />}
-                  />
-                  <Route path="dashboard" element={<Dashboard />} />
-                  <Route path="bookings" element={<Bookings />} />
-                  <Route
-                    path="booking-detail/:bookingId"
-                    element={<BookingDetail />}
-                  />
-                  <Route path="records" element={<Records />} />
-                  <Route path="feedbacks" element={<Feedbacks />} />
-                  <Route path="payments" element={<Payments />} />
-                </Route>
-              </Routes>
-            </TranslationProvider>
+                <Route
+                  path="marketing-campains"
+                  element={<MarketingCampains />}
+                />
+                <Route path="vaccine-combos" element={<VaccineCombos />} />
+                <Route
+                  path="combo-detail/:vaccineComboId"
+                  element={<ComboDetail />}
+                />
+                <Route path="bookings" element={<Bookings />} />
+                <Route
+                  path="booking-detail/:bookingId"
+                  element={<BookingDetail />}
+                />
+                <Route path="records" element={<Records />} />
+                <Route path="feedbacks" element={<Feedbacks />} />
+                <Route path="payments" element={<Payments />} />
+              </Route>
+              <Route path="/admin" element={<AdminPage />}>
+                <Route index element={<Dashboard />} />
+                <Route path="customers" element={<Customers />} />
+                <Route path="childs/:customerId" element={<Childs />} />
+                <Route path="staffs" element={<Staffs />} />
+                <Route path="vaccines" element={<Vaccines />} />
+                <Route
+                  path="vaccine-detail/:vaccineId"
+                  element={<VaccineDetail />}
+                />
+                <Route
+                  path="marketing-campains"
+                  element={<MarketingCampains />}
+                />
+                <Route path="vaccine-combos" element={<VaccineCombos />} />
+                <Route
+                  path="combo-detail/:vaccineComboId"
+                  element={<ComboDetail />}
+                />
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="bookings" element={<Bookings />} />
+                <Route
+                  path="booking-detail/:bookingId"
+                  element={<BookingDetail />}
+                />
+                <Route path="records" element={<Records />} />
+                <Route path="feedbacks" element={<Feedbacks />} />
+                <Route path="payments" element={<Payments />} />
+              </Route>
+            </Routes>
           </CartProvider>
           {/* CHAT BOX */}
           <Chatbox />

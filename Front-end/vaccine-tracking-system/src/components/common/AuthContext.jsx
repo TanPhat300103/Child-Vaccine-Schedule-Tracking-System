@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 
@@ -10,22 +10,26 @@ export function AuthProvider({ children }) {
   const checkLoginStatus = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:8080/auth/myprofile", {
-        method: "GET",
-        credentials: "include",
+      const response = await fetch('http://localhost:8080/auth/myprofile', {
+        method: 'GET',
+        credentials: 'include',
       });
-      if (response.ok) {
+   
+      if (response.ok ) {
         const data = await response.json();
-        console.log("AuthContext - User data:", data);
+        console.log('AuthContext - User data:', data);
+        if (data.info != "anonymousUser")
+        {
         setIsLoggedIn(true);
         setUserInfo(data);
+        }
       } else {
-        console.log("AuthContext - Not logged in:", response.status);
+        console.log('AuthContext - Not logged in:', response.status);
         setIsLoggedIn(false);
         setUserInfo(null);
       }
     } catch (err) {
-      console.error("AuthContext - Error:", err);
+      console.error('AuthContext - Error:', err);
       setIsLoggedIn(false);
       setUserInfo(null);
     } finally {
@@ -46,19 +50,19 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try {
-      const response = await fetch("http://localhost:8080/logout", {
-        method: "POST",
-        credentials: "include",
+      const response = await fetch('http://localhost:8080/logout', {
+        method: 'POST',
+        credentials: 'include',
       });
       if (response.ok) {
         setIsLoggedIn(false);
         setUserInfo(null);
-        console.log("AuthContext - Logged out");
+        console.log('AuthContext - Logged out');
       } else {
-        console.log("AuthContext - Logout failed:", response.status);
+        console.log('AuthContext - Logout failed:', response.status);
       }
     } catch (err) {
-      console.error("AuthContext - Logout error:", err);
+      console.error('AuthContext - Logout error:', err);
     }
   };
 

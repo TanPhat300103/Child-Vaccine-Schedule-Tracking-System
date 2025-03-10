@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
+
 import {
   FaBullhorn,
   FaBars,
@@ -18,29 +19,29 @@ import {
   FaUser,
   FaUserCircle,
   FaUserMd,
-  FaTimes,
 } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
 import { slides, benefits, process } from "../stores/homedata.jsx";
+
 import AgeVaccine from "../components/homepage/AgeVaccine.jsx";
 import Footer from "../components/common/Footer";
-import { useCart } from "../components/homepage/AddCart.jsx";
+import { useCart } from "../components/homepage/AddCart.jsx"; // Đảm bảo đúng đường dẫn đến CartContext
 import { getChildByCustomerId, getCustomerId } from "../apis/api.js";
 import { useAuth } from "../components/common/AuthContext.jsx";
 import PriceVaccine from "../components/homepage/PriceVaccine.jsx";
 import ComboVaccine from "../components/homepage/ComboVaccine.jsx";
+
 import { useTranslation } from "react-i18next";
 import { LogOut } from "lucide-react";
 import AgeVaccine2 from "../components/homepage/AgeVaccine2.jsx";
 import AgeVaccine3 from "../components/homepage/AgeVaccine3.jsx";
-import LanguageSwitcher from "../components/translate/LanguageSwitcher.jsx";
+import Header from "../components/header/header.jsx"// Import Header
 
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const vaccinePricingRef = useRef(null);
   const footerRef = useRef(null);
-  const [isLoading, setIsLoading] = useState(true);
   const { userInfo } = useAuth();
   const { i18n } = useTranslation();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -55,20 +56,9 @@ const Home = () => {
   const [childData, setChildData] = useState([]);
   const navigate = useNavigate();
   const UserId = localStorage.getItem("userId");
-  const [isHandbookOpen, setIsHandbookOpen] = useState(false); // Trạng thái cho dropdown "Cẩm nang" trong mobile
+
   localStorage.setItem("userId", userInfo.userId);
-
-  // if (userInfo) {
-  //   const role = userInfo.authorities?.[0]?.authority;
-  //   if (role === "ROLE_STAFF") {
-  //     navigate("/staff");
-  //   } else if (role === "ROLE_ADMIN") {
-  //     navigate("/admin");
-  //   }
-  //   // Nếu là ROLE_CUSTOMER hoặc không có vai trò khác, tiếp tục render trang Home
-  // }
-
-  // Cart
+  // cart
   const cartItemCount = useMemo(() => {
     return Object.values(cart).reduce(
       (total, vaccine) => total + vaccine.quantity,
@@ -80,43 +70,43 @@ const Home = () => {
   const feedbackContainerRef = useRef(null);
   const animationRef = useRef(null);
   const [notifications, setNotifications] = useState([]);
-
   const handleCartClick = () => {
     navigate("/book-vaccine", {
-      state: { cartItems: cart },
+      state: { cartItems: cart }, // Truyền cart vào state
     });
   };
 
-  // Check auth
+  // check auth
   useEffect(() => {
     const checkAuthentication = async () => {
       const response = await fetch("http://localhost:8080/auth/myprofile", {
         method: "GET",
-        credentials: "include",
+        credentials: "include", // Gửi cookie/session
       });
       if (response.status === 401) {
-        navigate("/login");
+        setIsAuthenticated(false);
+        navigate("/login"); // Redirect if not authenticated
       }
     };
+
     checkAuthentication();
   }, []);
 
-  // Navigate role
+  // navigate role
   useEffect(() => {
     if (userInfo) {
-      const role = userInfo.authorities[0].authority;
-      if (role === "ROLE_STAFF") {
-        navigate("/staff");
-      } else if (role === "ROLE_ADMIN") {
-        navigate("/admin");
+      if (userInfo.authorities[0].authority === "ROLE_CUSTOMER") {
+        navigate("/home"); // Dẫn người dùng tới trang Home
+      } else if (userInfo.authorities[0].authority === "ROLE_STAFF") {
+        navigate("/staff"); // Dẫn người dùng tới trang Staff
+      } else if (userInfo.authorities[0].authority === "ROLE_ADMIN") {
+        console.log("admin on");
+        navigate("/admin"); // Dẫn người dùng tới trang Admin
       }
-      setIsLoading(false); // Chỉ tắt loading khi đã xác định vai trò
-    } else {
-      setIsLoading(false); // Nếu không có userInfo, vẫn tắt loading để render Home
     }
-  }, [userInfo, navigate]);
+  }, [userInfo, navigate]); // Dependency array đảm bảo useEffect chỉ chạy khi userInfo thay đổi
 
-  // Handle logout
+  // handle logout
   const handleLogout = async () => {
     await logout();
     setIsUserMenuOpen(false);
@@ -124,20 +114,20 @@ const Home = () => {
     navigate("/");
   };
 
-  // Take API customerById
+  // take api customerByid
   useEffect(() => {
     const fetchCustomer = async () => {
       try {
         const data = await getCustomerId(userInfo.userId);
         setCustomerData(data);
+        console.log("customerdata: ", customerData);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu vắc xin:", error.message);
       }
     };
     fetchCustomer();
   }, []);
-
-  // Save name to localStorage
+  // take name
   useEffect(() => {
     if (customerData && customerData.firstName && customerData.lastName) {
       localStorage.setItem(
@@ -146,8 +136,7 @@ const Home = () => {
       );
     }
   }, [customerData]);
-
-  // Fetch feedbacks từ API
+  // Fetch feedback từ API
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
@@ -163,10 +152,9 @@ const Home = () => {
         console.error("Error fetching feedbacks:", error);
       }
     };
+
     fetchFeedbacks();
   }, []);
-
-  // Fetch notifications từ API
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
@@ -176,9 +164,13 @@ const Home = () => {
         });
         if (response.ok) {
           const data = await response.json();
+          // Lọc thông báo có roleId = 1 hoặc role.roleId = 1
+          console.log("notification: ", data[21].role.roleId);
           const filteredNotifications = data.filter(
             (notification) => notification.role?.roleId?.toString() === "1"
           );
+
+          // Sắp xếp theo ngày giảm dần
           filteredNotifications.sort(
             (a, b) => new Date(b.date) - new Date(a.date)
           );
@@ -188,26 +180,28 @@ const Home = () => {
         console.error("Error fetching notifications:", error);
       }
     };
+
     fetchNotifications();
   }, []);
-
   // Auto slide cho feedback
   useEffect(() => {
     if (feedbacks.length > 0) {
       const timer = setInterval(() => {
         setCurrentFeedbackSlide((prev) => (prev + 1) % feedbacks.length);
-      }, 5000);
+      }, 5000); // Thay đổi slide mỗi 5 giây
       return () => clearInterval(timer);
     }
   }, [feedbacks.length]);
-
   useEffect(() => {
     if (feedbacks.length === 0 || !feedbackContainerRef.current) return;
+
     const containerWidth = feedbackContainerRef.current.scrollWidth / 2;
-    const speed = 1;
+    const speed = 1; // Tốc độ scroll (px per frame)
+
     const animate = () => {
       setTranslateX((prev) => {
         const newX = prev - speed;
+        // Reset về 0 khi đi hết nửa đầu của container (vì đã nhân đôi data)
         if (Math.abs(newX) >= containerWidth) {
           return 0;
         }
@@ -215,15 +209,16 @@ const Home = () => {
       });
       animationRef.current = requestAnimationFrame(animate);
     };
+
     animationRef.current = requestAnimationFrame(animate);
+
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
     };
   }, [feedbacks]);
-
-  // Take API childByCustomerId
+  // take api childByCustomerId
   useEffect(() => {
     const fetchChild = async () => {
       try {
@@ -236,7 +231,7 @@ const Home = () => {
     fetchChild();
   }, []);
 
-  // Move slides
+  //move slides
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -244,7 +239,7 @@ const Home = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Scroll to pricing
+  //scroll to pricing
   const scrollToVaccinePricing = () => {
     if (vaccinePricingRef.current) {
       vaccinePricingRef.current.scrollIntoView({
@@ -254,7 +249,7 @@ const Home = () => {
     }
   };
 
-  // Scroll to footer
+  //scroll to footer
   const scrollToFooter = () => {
     if (footerRef.current) {
       footerRef.current.scrollIntoView({
@@ -264,31 +259,24 @@ const Home = () => {
     }
   };
 
-  const closeAllMenus = () => {
-    setIsUserMenuOpen(false);
-    setIsMobileMenuOpen(false);
-    setIsHandbookOpen(false);
-  };
-
   // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
   const getLatestCampaign = () => {
     const campaigns = notifications.filter(
       (notification) => notification.role && notification.role.roleId === 1
     );
     if (campaigns.length > 0) {
-      return campaigns[0];
+      return campaigns[0]; // Lấy chiến dịch gần nhất
     }
     return null;
   };
-
   const renderStars = (ranking) => {
     return (
       <div className="flex">
@@ -307,7 +295,6 @@ const Home = () => {
       </div>
     );
   };
-
   // Get customer data
   useEffect(() => {
     const fetchCustomer = async () => {
@@ -318,6 +305,7 @@ const Home = () => {
         console.error("Error fetching customer data:", error.message);
       }
     };
+
     if (UserId) fetchCustomer();
   }, [UserId]);
 
@@ -331,6 +319,7 @@ const Home = () => {
         console.error("Error fetching child data:", error.message);
       }
     };
+
     if (UserId) fetchChild();
   }, [UserId]);
 
@@ -351,22 +340,9 @@ const Home = () => {
       action: scrollToVaccinePricing,
     },
     {
-      name: "Cẩm nang",
+      name: "Liên hệ",
       icon: <FaInfo className="text-lg" />,
-      dropdown: [
-        {
-          name: "Quy trình tiêm chủng",
-          action: () => navigate("/quytrinh"),
-        },
-        {
-          name: "Những lưu ý trước và sau khi tiêm chủng",
-          action: () => navigate("/luuy"),
-        },
-        {
-          name: "Những câu hỏi thường gặp",
-          action: () => navigate("/cauhoi"),
-        },
-      ],
+      action: scrollToFooter,
     },
     {
       name: "Theo dõi",
@@ -381,385 +357,10 @@ const Home = () => {
 
   return (
     <div>
+      {" "}
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
         {/* Header */}
-        <header
-          className={`fixed w-full z-50 transition-all duration-300 ${
-            isScrolled
-              ? "py-2 bg-white shadow-lg"
-              : "py-3 bg-white/95 backdrop-blur-sm"
-          }`}
-        >
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between">
-              {/* Logo */}
-              <div
-                onClick={() => {
-                  navigate("/home");
-                  closeAllMenus();
-                }}
-                className="flex items-center space-x-2 cursor-pointer group"
-              >
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-teal-400 rounded-full flex items-center justify-center transform transition-all duration-300 group-hover:scale-105 shadow-md">
-                  <FaSyringe className="text-white text-lg" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-lg font-bold text-blue-700">
-                    VaccineCare
-                  </span>
-                  <span className="text-xs text-blue-500 -mt-1">
-                    Trung Tâm Tiêm Chủng
-                  </span>
-                </div>
-              </div>
-
-              {/* Desktop Navigation */}
-              <nav className="hidden md:flex items-center space-x-6">
-                {navItems.map((item, index) => (
-                  <div key={index} className="relative group">
-                    <button
-                      onClick={() => item.action && item.action()}
-                      className="group flex flex-col items-center text-gray-700 hover:text-blue-600 transition-colors"
-                    >
-                      <div className="p-2 rounded-full group-hover:bg-blue-50 transition-colors">
-                        {item.icon}
-                      </div>
-                      <span className="text-sm font-medium mt-1">
-                        {item.name}
-                      </span>
-                      <span className="block h-0.5 w-0 group-hover:w-full transition-all duration-300 bg-blue-600 mt-1" />
-                    </button>
-
-                    {/* Dropdown cho Cẩm nang */}
-                    {item.dropdown && (
-                      <div className="absolute left-0 mt-2 w-40 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                        {item.dropdown.map((subItem, subIndex) => (
-                          <button
-                            key={subIndex}
-                            onClick={() => {
-                              subItem.action();
-                              closeAllMenus();
-                            }}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                          >
-                            {subItem.name}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </nav>
-
-              {/* Mobile Menu Button */}
-              <div className="md:hidden">
-                <button
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="p-2 rounded-lg bg-blue-50 text-blue-600 focus:outline-none hover:bg-blue-100 transition-colors"
-                  aria-label="Toggle mobile menu"
-                >
-                  {isMobileMenuOpen ? (
-                    <FaTimes className="text-lg" />
-                  ) : (
-                    <FaBars className="text-lg" />
-                  )}
-                </button>
-              </div>
-
-              {/* User Actions & Icons */}
-              <div className="hidden md:flex items-center space-x-4">
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  onClick={handleCartClick}
-                  className="relative p-2 text-blue-600 hover:text-blue-700 transition-colors"
-                  aria-label="Shopping Cart"
-                >
-                  <FaShoppingCart size={20} />
-                  {cartItemCount > 0 && (
-                    <span className="absolute top-0 right-0 text-xs bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center">
-                      {cartItemCount}
-                    </span>
-                  )}
-                </motion.button>
-                {/* Notification Icon */}
-                <button
-                  onClick={() => {
-                    navigate("/bell");
-                    closeAllMenus();
-                  }}
-                  className="relative p-2 bg-blue-50 rounded-full hover:bg-blue-100 text-blue-600 transition-colors"
-                  aria-label="Thông báo"
-                >
-                  <FaBell className="text-lg" />
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
-                    2
-                  </span>
-                </button>
-
-                {/* User Profile */}
-                <div className="relative">
-                  <button
-                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="flex items-center space-x-2 bg-blue-50 hover:bg-blue-100 rounded-full pr-4 pl-1 py-1 transition-colors"
-                  >
-                    <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-teal-400 rounded-full flex items-center justify-center text-white font-bold shadow-sm">
-                      {profileInitial}
-                    </div>
-                    <span className="font-medium text-blue-700 text-sm">
-                      {customerData?.firstName?.length > 0
-                        ? `${customerData.firstName}`
-                        : "Tài khoản"}
-                    </span>
-                  </button>
-
-                  {/* User Dropdown Menu */}
-                  {isUserMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden">
-                      <div className="p-4 bg-gradient-to-r from-blue-50 to-teal-50 border-b border-gray-100">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-teal-400 rounded-full flex items-center justify-center text-white font-bold shadow-sm">
-                            {profileInitial}
-                          </div>
-                          <div>
-                            <h3 className="text-sm font-medium text-gray-600">
-                              Xin chào,
-                            </h3>
-                            <p className="text-base font-semibold text-blue-700">
-                              {customerData?.firstName} {customerData?.lastName}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      <nav className="py-2">
-                        <button
-                          onClick={() => {
-                            navigate("/customer");
-                            closeAllMenus();
-                          }}
-                          className="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 transition duration-200"
-                        >
-                          <div className="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mr-3">
-                            <FaUserCircle className="text-lg" />
-                          </div>
-                          <span className="text-sm font-medium">
-                            Hồ sơ của tôi
-                          </span>
-                        </button>
-                        {childData.map((child) => (
-                          <button
-                            key={child.childId}
-                            onClick={() => {
-                              navigate(`/customer/child/${child.childId}`);
-                              closeAllMenus();
-                            }}
-                            className="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 transition duration-200"
-                          >
-                            <div className="w-9 h-9 bg-teal-100 rounded-full flex items-center justify-center text-teal-600 mr-3">
-                              <FaChild className="text-lg" />
-                            </div>
-                            <span className="text-sm font-medium">
-                              Hồ sơ của {child.firstName} {child.lastName}
-                            </span>
-                          </button>
-                        ))}
-                        <button
-                          onClick={() => {
-                            navigate("/customer/add-child");
-                            closeAllMenus();
-                          }}
-                          className="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 transition duration-200"
-                        >
-                          <div className="w-9 h-9 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 mr-3">
-                            <FaPlusCircle className="text-lg" />
-                          </div>
-                          <span className="text-sm font-medium">
-                            Thêm hồ sơ mới cho con
-                          </span>
-                        </button>
-                        <button
-                          onClick={handleLogout}
-                          className="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-red-50 transition duration-200 border-t border-gray-100 mt-1"
-                        >
-                          <div className="w-9 h-9 bg-red-100 rounded-full flex items-center justify-center text-red-600 mr-3">
-                            <FaSignOutAlt className="text-lg" />
-                          </div>
-                          <span className="text-sm font-medium">Đăng xuất</span>
-                        </button>
-                      </nav>
-                    </div>
-                  )}
-                </div>
-                <LanguageSwitcher />
-              </div>
-            </div>
-
-            {/* Mobile Menu */}
-            {isMobileMenuOpen && (
-              <div className="md:hidden mt-4">
-                <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                  {/* Navigation Items */}
-                  <div className="grid grid-cols-3 gap-2 p-4 border-b border-gray-100">
-                    {navItems.map((item, index) => (
-                      <div key={index}>
-                        <button
-                          onClick={() => {
-                            if (item.dropdown) {
-                              setIsHandbookOpen(!isHandbookOpen);
-                            } else {
-                              item.action();
-                              closeAllMenus();
-                            }
-                          }}
-                          className="flex flex-col items-center p-3 rounded-lg hover:bg-blue-50 transition-colors"
-                        >
-                          <div className="w-10 h-10 flex items-center justify-center bg-blue-100 rounded-full text-blue-600 mb-2">
-                            {item.icon}
-                          </div>
-                          <span className="text-xs font-medium text-gray-700">
-                            {item.name}
-                          </span>
-                        </button>
-                        {/* Hiển thị dropdown trên mobile */}
-                        {item.dropdown &&
-                          isHandbookOpen &&
-                          item.name === "Cẩm nang" && (
-                            <div className="col-span-3 bg-gray-50 p-2 rounded-lg">
-                              {item.dropdown.map((subItem, subIndex) => (
-                                <button
-                                  key={subIndex}
-                                  onClick={() => {
-                                    subItem.action();
-                                    closeAllMenus();
-                                  }}
-                                  className="w-full text-left p-2 text-sm text-gray-700 hover:bg-blue-50"
-                                >
-                                  {subItem.name}
-                                </button>
-                              ))}
-                            </div>
-                          )}
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* User Profile Section */}
-                  <div className="p-4 bg-gradient-to-r from-blue-50 to-teal-50">
-                    <div className="flex items-center space-x-3 mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-teal-400 rounded-full flex items-center justify-center text-white font-bold shadow-sm">
-                        {profileInitial}
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-medium text-gray-600">
-                          Xin chào,
-                        </h3>
-                        <p className="text-base font-semibold text-blue-700">
-                          {customerData?.firstName} {customerData?.lastName}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-4 gap-2">
-                      <button
-                        onClick={() => {
-                          navigate("/customer");
-                          closeAllMenus();
-                        }}
-                        className="flex flex-col items-center"
-                      >
-                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mb-1">
-                          <FaUserCircle className="text-lg" />
-                        </div>
-                        <span className="text-xs font-medium text-gray-700">
-                          Hồ sơ
-                        </span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          navigate("/customer/add-child");
-                          closeAllMenus();
-                        }}
-                        className="flex flex-col items-center"
-                      >
-                        <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 mb-1">
-                          <FaPlusCircle className="text-lg" />
-                        </div>
-                        <span className="text-xs font-medium text-gray-700">
-                          Thêm con
-                        </span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          navigate("/bell");
-                          closeAllMenus();
-                        }}
-                        className="flex flex-col items-center relative"
-                      >
-                        <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 mb-1">
-                          <FaBell className="text-lg" />
-                          <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
-                            2
-                          </span>
-                        </div>
-                        <span className="text-xs font-medium text-gray-700">
-                          Thông báo
-                        </span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          navigate("/cart");
-                          closeAllMenus();
-                        }}
-                        className="flex flex-col items-center"
-                      >
-                        <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center text-teal-600 mb-1">
-                          <FaShoppingCart className="text-lg" />
-                        </div>
-                        <span className="text-xs font-medium text-gray-700">
-                          Giỏ hàng
-                        </span>
-                      </button>
-                    </div>
-                    {childData.length > 0 && (
-                      <div className="mt-4 pt-4 border-t border-gray-200">
-                        <h4 className="text-sm font-semibold text-gray-600 mb-3">
-                          Hồ sơ con của bạn:
-                        </h4>
-                        <div className="space-y-2">
-                          {childData.map((child) => (
-                            <button
-                              key={child.childId}
-                              onClick={() => {
-                                navigate(`/customer/child/${child.childId}`);
-                                closeAllMenus();
-                              }}
-                              className="w-full flex items-center p-2 rounded-lg bg-white hover:bg-teal-50 transition-colors"
-                            >
-                              <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center text-teal-600 mr-3">
-                                <FaChild className="text-lg" />
-                              </div>
-                              <span className="text-sm font-medium text-gray-700">
-                                {child.firstName} {child.lastName}
-                              </span>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    <button
-                      onClick={handleLogout}
-                      className="w-full flex items-center justify-center space-x-2 mt-4 p-3 rounded-lg bg-red-50 hover:bg-red-100 transition-colors"
-                    >
-                      <FaSignOutAlt className="text-red-600" />
-                      <span className="font-medium text-red-600">
-                        Đăng xuất
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </header>
-
+       <Header/>
         {/* Banner */}
         <motion.section className="relative h-screen overflow-hidden">
           <motion.div
@@ -800,11 +401,13 @@ const Home = () => {
               </div>
             ))}
           </motion.div>
+
+          {/* Dots for Slide Navigation */}
           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-6">
             {slides.map((_, index) => (
               <div
                 key={index}
-                onClick={() => setCurrentSlide(index)}
+                onClick={() => setCurrentSlide(index)} // Set current slide on click
                 className={`w-5 h-5 rounded-full cursor-pointer ${
                   currentSlide === index ? "bg-blue-600" : "bg-gray-400"
                 } transition-colors duration-300`}
@@ -812,7 +415,6 @@ const Home = () => {
             ))}
           </div>
         </motion.section>
-
         {/* Benefit */}
         <motion.section className="py-20 bg-white">
           <div className="container mx-auto px-4">
@@ -846,7 +448,6 @@ const Home = () => {
             </div>
           </div>
         </motion.section>
-
         {/* Quality */}
         <motion.section className="py-20 bg-white">
           <div className="container mx-auto px-4">
@@ -897,14 +498,14 @@ const Home = () => {
             </div>
           </div>
         </motion.section>
-
         {/* Combo Vaccine */}
-        <AgeVaccine3 />
+        <AgeVaccine3></AgeVaccine3>
 
         {/* Price Vaccine */}
         <motion.section className="py-20 bg-white" ref={vaccinePricingRef}>
-          <PriceVaccine />
+          <PriceVaccine></PriceVaccine>
         </motion.section>
+        {/* Age Vaccine */}
 
         {/* Processing */}
         <section className="py-20 bg-blue-50">
@@ -917,6 +518,7 @@ const Home = () => {
             >
               Phụ Huynh Nói Gì
             </motion.h2>
+
             {feedbacks.length > 0 ? (
               <div className="overflow-hidden">
                 <motion.div
@@ -960,7 +562,6 @@ const Home = () => {
             )}
           </div>
         </section>
-
         {/* Latest News */}
         <motion.section className="py-20 bg-white">
           <div className="container mx-auto px-4">
@@ -972,7 +573,9 @@ const Home = () => {
             >
               Tin Tức Mới Nhất
             </motion.h2>
+
             <div className="grid md:grid-cols-2 gap-8">
+              {/* Hiển thị 2 thông báo gần nhất */}
               {notifications.slice(0, 2).map((notification, index) => (
                 <motion.div
                   key={notification.id}
@@ -995,6 +598,8 @@ const Home = () => {
                 </motion.div>
               ))}
             </div>
+
+            {/* Thiết kế lại Chiến dịch Marketing Gần Nhất */}
             {getLatestCampaign() && (
               <motion.div
                 initial={{ y: 20, opacity: 0 }}
@@ -1005,21 +610,29 @@ const Home = () => {
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center">
+                    {/* Icon tiêm chủng hoặc trẻ em */}
                     <FaSyringe className="text-teal-600 text-3xl mr-4" />
                     <h3 className="text-2xl font-semibold text-teal-800">
                       Chiến Dịch Tiêm Chủng Gần Nhất
                     </h3>
                   </div>
+                  {/* Badge nổi bật */}
                   <span className="bg-green-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
                     Mới
                   </span>
                 </div>
+
+                {/* Tiêu đề chiến dịch */}
                 <p className="text-xl font-medium text-blue-700 mb-3 bg-blue-50 p-3 rounded-lg">
                   {getLatestCampaign().tittle}
                 </p>
+
+                {/* Nội dung chiến dịch */}
                 <p className="text-gray-700 mb-4 leading-relaxed">
                   {getLatestCampaign().message}
                 </p>
+
+                {/* Thông tin bổ sung */}
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-gray-500">
                     Ngày:{" "}
@@ -1027,15 +640,18 @@ const Home = () => {
                       {getLatestCampaign().date}
                     </span>
                   </p>
+                  {/* Nút kêu gọi hành động */}
                   <button className="bg-teal-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-teal-700 transition-colors duration-300">
                     Tìm Hiểu Thêm
                   </button>
                 </div>
+
+                {/* Hình ảnh minh họa nhỏ */}
+                <div className="mt-4 flex justify-end"></div>
               </motion.div>
             )}
           </div>
         </motion.section>
-
         {/* Footer */}
         <section ref={footerRef}>
           <Footer />

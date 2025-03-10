@@ -4,6 +4,9 @@ import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getBookingDetailsByBookID } from "../../apis/api";
+import Header from "../../components/header/header";
+import Footer from "../../components/common/Footer";
+import { Footprints } from "lucide-react";
 
 const DetailVaccine2 = () => {
   const [expandedVaccine, setExpandedVaccine] = useState(null);
@@ -39,7 +42,8 @@ const DetailVaccine2 = () => {
     navigate("/payment", { state: { bookingId } });
   };
   return (
-    <div className="min-h-screen bg-blue-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-blue-50 ">
+      <Header/>
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="bg-blue-800 p-6 text-white">
           <h1 className="text-2xl font-bold mb-2">
@@ -226,6 +230,7 @@ const DetailVaccine2 = () => {
           </div>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 };

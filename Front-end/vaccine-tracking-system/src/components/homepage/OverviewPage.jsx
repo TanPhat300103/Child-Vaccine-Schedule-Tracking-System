@@ -19,7 +19,7 @@ import {
 import "../homepage/OverviewPage.css";
 import { useAuth } from "../common/AuthContext";
 import Footer from "../common/Footer";
-import Header from "../common/Header";
+import Header from "../header/header";
 
 function Overview() {
   const navigate = useNavigate();

@@ -22,7 +22,9 @@ const PriceVaccineGuest = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedVaccine, setSelectedVaccine] = useState(null);
   const [activeTab, setActiveTab] = useState("all");
-  const carouselRef = useRef(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const vaccinesPerPage = 12; // 4 columns x 3 rows
+  const gridContainerRef = useRef(null);
 
   const [vaccineData, setVaccineData] = useState({
     id: 6,
@@ -143,6 +145,7 @@ const PriceVaccineGuest = () => {
     setMaxPrice(3000000);
     setSearchQuery("");
     setActiveTab("all");
+    setCurrentPage(1);
   };
 
   // Handle price input changes
@@ -156,10 +159,16 @@ const PriceVaccineGuest = () => {
     setMaxPrice(value);
   };
 
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredVaccinesByPriceAndAge.length / vaccinesPerPage);
+  
+  // Get current vaccines for display
+  const displayVaccines = filteredVaccinesByPriceAndAge.slice(0, vaccinesPerPage);
+
   return (
     <div className="py-8 bg-gradient-to-b from-blue-50 to-white">
       {/* Header Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
+      <div className="max-w-7xl mx-auto px-8 sm:px-10 lg:px-12 mb-4">
         <h1 className="text-3xl font-bold text-blue-900 flex items-center">
           <FaShieldVirus className="mr-3 text-blue-600" />
           Danh mục vắc xin
@@ -261,7 +270,7 @@ const PriceVaccineGuest = () => {
         </div>
       </div>
 
-      {/* Vaccines Horizontal Scrollable List */}
+      {/* Vaccines Grid Layout */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Results Count */}
         <div className="flex items-center justify-between mb-4 bg-gray-50 p-2 rounded-lg">
@@ -274,7 +283,7 @@ const PriceVaccineGuest = () => {
           </p>
         </div>
 
-        {/* Vaccines Horizontal Scrollable List */}
+        {/* Vaccines Grid Layout */}
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
@@ -296,21 +305,23 @@ const PriceVaccineGuest = () => {
             </button>
           </div>
         ) : (
-          <div className="overflow-x-auto pb-2">
-            <div className="flex space-x-4" ref={carouselRef}>
+          <div className="h-[480px] overflow-y-auto" ref={gridContainerRef}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {filteredVaccinesByPriceAndAge.map((vaccine) => (
                 <motion.div
                   key={vaccine.vaccineId}
-                  className="flex-shrink-0 w-[280px] bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200 cursor-pointer"
+                  className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200 cursor-pointer h-full flex flex-col"
                   onClick={() => openModal(vaccine)}
+                  whileHover={{ y: -5 }}
+                  transition={{ type: "spring", stiffness: 300 }}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-md font-semibold text-gray-800">{vaccine.name}</h3>
+                    <h3 className="text-md font-semibold text-gray-800 line-clamp-1">{vaccine.name}</h3>
                     <span className="text-blue-600 font-bold text-md">
                       {vaccine.price.toLocaleString()} VND
                     </span>
                   </div>
-                  <p className="text-gray-600 text-sm mb-2 line-clamp-2">{vaccine.description}</p>
+                  <p className="text-gray-600 text-sm mb-2 line-clamp-2 flex-grow">{vaccine.description}</p>
                   <div className="flex items-center justify-between text-sm mb-2">
                     <span className={`px-2 py-1 rounded-full ${getBadgeColor(vaccine.country)}`}>
                       {vaccine.country}

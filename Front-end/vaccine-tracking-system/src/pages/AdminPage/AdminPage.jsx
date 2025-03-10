@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../components/common/AuthContext.jsx";
+
 import {
   FiGrid,
   FiUsers,
@@ -23,6 +24,7 @@ import { RiSyringeLine } from "react-icons/ri";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { FaCashRegister } from "react-icons/fa";
+import { LogOut } from "lucide-react";
 
 const AdminPage = () => {
   const adminData = {
@@ -42,6 +44,8 @@ const AdminPage = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
+
+
   const controlHeader = () => {
     if (window.scrollY > lastScrollY) {
       setShowHeader(false);
@@ -58,21 +62,30 @@ const AdminPage = () => {
     };
   }, [lastScrollY]);
 
+  // handle logout
+  const handleLogout = async () => {
+    await logout();
+    navigate("/");
+  };
+
+
   // Kiểm tra xem có đang ở trang Vaccine không
   const isVaccineActive =
     location.pathname.startsWith("/admin/vaccines") ||
     location.pathname.startsWith("/admin/vaccine-combos");
 
+    const { isLoggedIn, logout, isLoading } = useAuth();
   return (
+
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
       <aside
         className={`
-    ${sidebarOpen ? "w-72" : "w-20"}
-    bg-gradient-to-r from-[#4169E1] via-[#5A7ED7] to-[#6495ED]
-    text-white font-bold transition-all duration-300 ease-in-out
-    fixed h-screen z-20 border border-[#4169E1] overflow-y-auto
-  `}
+          fixed top-0 left-0 h-screen z-20 transition-all duration-300 ease-in-out
+          ${sidebarOpen ? "w-72" : "w-20"}
+          bg-gradient-to-b from-[#4169E1] via-[#5A7ED7] to-[#6495ED]
+          text-white font-bold border border-[#4169E1]
+        `}
       >
         {sidebarOpen ? (
           <div className="flex items-center justify-between p-4 border-b border-[#4169E1]">
@@ -419,12 +432,37 @@ const AdminPage = () => {
             </div>
             {/* Right Section: Các nút chức năng */}
             <div className="flex items-center space-x-3">
-              <button
-                onClick={() => navigate("/")}
-                className="p-2 rounded-full bg-[#4169E1] hover:bg-[#5A7ED7] transition duration-150"
-              >
-                <FiLogOut className="w-5 h-5" />
+              <button className="p-2 rounded-full bg-[#4169E1] hover:bg-[#5A7ED7] transition duration-150">
+                <FiHelpCircle className="w-5 h-5" />
               </button>
+              <button className="p-2 rounded-full bg-[#4169E1] hover:bg-[#5A7ED7] transition duration-150 relative">
+                <FiMessageSquare className="w-5 h-5" />
+                <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+              </button>
+              <button className="p-2 rounded-full bg-[#4169E1] hover:bg-[#5A7ED7] transition duration-150 relative">
+                <FiAlertTriangle className="w-5 h-5" />
+                <span className="absolute top-0 right-0 w-2 h-2 bg-yellow-500 rounded-full"></span>
+              </button>
+              <button className="p-2 rounded-full bg-[#4169E1] hover:bg-[#5A7ED7] transition duration-150">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+                  />
+                </svg>
+              </button>
+              <div className="dropdown-item logout" onClick={handleLogout}>
+                    <LogOut size={16} />
+                    <span>Logout</span>
+                  </div>
             </div>
           </div>
         </div>

@@ -4,7 +4,6 @@ import { format } from "date-fns";
 import {
   getChild,
   updateChild,
-  deleteChild,
   getMedicalHistoryByChildId,
   updateReaction,
 } from "../../apis/api";
@@ -100,22 +99,7 @@ const Child = () => {
     }
   };
 
-  const handleDelete = async () => {
-    if (window.confirm("Bạn có chắc chắn muốn tắt hồ sơ trẻ này không?")) {
-      try {
-        const response = await deleteChild(child.childId);
-        if (response.success) {
-          alert("Tắt thành công!");
-          navigate("/customer");
-        } else {
-          alert(response.message);
-        }
-      } catch (err) {
-        console.error("Lỗi tắt trẻ:", err);
-        alert("Lỗi tắt trẻ");
-      }
-    }
-  };
+
 
   const handleUpdateReaction = async (id) => {
     try {
@@ -207,12 +191,6 @@ const Child = () => {
                   className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-full transition-all hover:scale-110"
                 >
                   <Edit2 className="w-6 h-6" />
-                </button>
-                <button
-                  onClick={handleDelete}
-                  className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full transition-all hover:scale-110"
-                >
-                  <Trash2 className="w-6 h-6" />
                 </button>
               </>
             )}
