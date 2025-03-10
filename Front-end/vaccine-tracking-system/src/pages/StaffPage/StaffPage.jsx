@@ -109,14 +109,14 @@ const StaffPage = () => {
           <aside
             className={`
               ${sidebarOpen ? "w-72" : "w-20"}
-              bg-gradient-to-b from-[#2B6DF5] to-[#3C7EFB]
+              bg-gradient-to-r from-[#4169E1] via-[#5A7ED7] to-[#6495ED]
               text-white font-bold transition-all duration-300 ease-in-out
-              fixed h-screen z-20 border border-[#2B6DF5]
+              fixed h-screen z-20 border border-[#4169E1]
             `}
           >
             {/* Logo & Brand */}
             {sidebarOpen ? (
-              <div className="flex items-center justify-between p-4 border-b border-[#2B6DF5]">
+              <div className="flex items-center justify-between p-4 border-b border-[#4169E1]">
                 <div className="flex items-center">
                   <FaHospital className="text-white w-8 h-8" />
                   <h1 className="ml-3 text-xl">Nhân Viên VaccineCare</h1>
@@ -129,7 +129,7 @@ const StaffPage = () => {
                 </button>
               </div>
             ) : (
-              <div className="flex items-center justify-end p-4 border-b border-[#2B6DF5]">
+              <div className="flex items-center justify-end p-4 border-b border-[#4169E1]">
                 <button
                   onClick={toggleSidebar}
                   className="text-white hover:text-white/90 focus:outline-none"
@@ -150,8 +150,8 @@ const StaffPage = () => {
                     className={({ isActive }) =>
                       `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                         isActive
-                          ? "bg-[#00C3CB]"
-                          : "hover:bg-[#2B75F5] shadow-sm"
+                          ? "bg-[#4F39F6]"
+                          : "hover:bg-[#4169E1] shadow-sm"
                       }`
                     }
                   >
@@ -162,7 +162,7 @@ const StaffPage = () => {
                       <span className="ml-3">Hồ Sơ Nhân Viên</span>
                     )}
                     {!sidebarOpen && (
-                      <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                      <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#4169E1] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                         Hồ Sơ Nhân Viên
                       </span>
                     )}
@@ -176,8 +176,8 @@ const StaffPage = () => {
                     className={({ isActive }) =>
                       `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                         isActive
-                          ? "bg-[#00C3CB]"
-                          : "hover:bg-[#2B75F5] shadow-sm"
+                          ? "bg-[#4F39F6]"
+                          : "hover:bg-[#4169E1] shadow-sm"
                       }`
                     }
                   >
@@ -188,7 +188,7 @@ const StaffPage = () => {
                       <span className="ml-3">Quản Lý Khách Hàng</span>
                     )}
                     {!sidebarOpen && (
-                      <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                      <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#4169E1] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                         Quản Lý Khách Hàng
                       </span>
                     )}
@@ -202,8 +202,8 @@ const StaffPage = () => {
                     className={({ isActive }) =>
                       `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                         isActive
-                          ? "bg-[#00C3CB]"
-                          : "hover:bg-[#2B75F5] shadow-sm"
+                          ? "bg-[#4F39F6]"
+                          : "hover:bg-[#4169E1] shadow-sm"
                       }`
                     }
                   >
@@ -214,7 +214,7 @@ const StaffPage = () => {
                       <span className="ml-3">Lịch Đăng Ký Tiêm</span>
                     )}
                     {!sidebarOpen && (
-                      <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                      <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#4169E1] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                         Lịch Đăng Ký Tiêm
                       </span>
                     )}
@@ -228,8 +228,8 @@ const StaffPage = () => {
                     className={({ isActive }) =>
                       `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                         isActive
-                          ? "bg-[#00C3CB]"
-                          : "hover:bg-[#2B75F5] shadow-sm"
+                          ? "bg-[#4F39F6]"
+                          : "hover:bg-[#4169E1] shadow-sm"
                       }`
                     }
                   >
@@ -240,7 +240,7 @@ const StaffPage = () => {
                       <span className="ml-3">Báo Cáo Phản Ứng</span>
                     )}
                     {!sidebarOpen && (
-                      <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                      <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#4169E1] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                         Báo Cáo Phản Ứng
                       </span>
                     )}
@@ -254,8 +254,8 @@ const StaffPage = () => {
                     className={({ isActive }) =>
                       `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                         isActive
-                          ? "bg-[#00C3CB]"
-                          : "hover:bg-[#2B75F5] shadow-sm"
+                          ? "bg-[#4F39F6]"
+                          : "hover:bg-[#4169E1] shadow-sm"
                       }`
                     }
                   >
@@ -264,7 +264,7 @@ const StaffPage = () => {
                     />
                     {sidebarOpen && <span className="ml-3">Phản Hồi</span>}
                     {!sidebarOpen && (
-                      <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                      <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#4169E1] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                         Phản Hồi
                       </span>
                     )}
@@ -278,8 +278,8 @@ const StaffPage = () => {
                     className={({ isActive }) =>
                       `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                         isActive
-                          ? "bg-[#00C3CB]"
-                          : "hover:bg-[#2B75F5] shadow-sm"
+                          ? "bg-[#4F39F6]"
+                          : "hover:bg-[#4169E1] shadow-sm"
                       }`
                     }
                   >
@@ -290,7 +290,7 @@ const StaffPage = () => {
                       <span className="ml-3">Chiến Dịch Marketing</span>
                     )}
                     {!sidebarOpen && (
-                      <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                      <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#4169E1] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                         Chiến Dịch Marketing
                       </span>
                     )}
@@ -302,8 +302,8 @@ const StaffPage = () => {
                     className={({ isActive }) =>
                       `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                         isActive
-                          ? "bg-[#00C3CB]"
-                          : "hover:bg-[#2B75F5] shadow-sm"
+                          ? "bg-[#4F39F6]"
+                          : "hover:bg-[#4169E1] shadow-sm"
                       }`
                     }
                   >
@@ -314,7 +314,7 @@ const StaffPage = () => {
                       <span className="ml-3">Quản Lý Hóa Đơn</span>
                     )}
                     {!sidebarOpen && (
-                      <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                      <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#4169E1] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                         Quản Lý Hóa Đơn
                       </span>
                     )}
@@ -326,8 +326,8 @@ const StaffPage = () => {
                   <div
                     className={`relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer ${
                       isVaccineActive
-                        ? "bg-[#00C3CB]"
-                        : "hover:bg-[#2B75F5] shadow-sm"
+                        ? "bg-[#4F39F6]"
+                        : "hover:bg-[#4169E1] shadow-sm"
                     }`}
                   >
                     <FaSyringe
@@ -340,7 +340,7 @@ const StaffPage = () => {
                       </>
                     )}
                     {!sidebarOpen && (
-                      <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                      <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#4169E1] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                         Vaccine
                       </span>
                     )}
@@ -356,8 +356,8 @@ const StaffPage = () => {
                         className={({ isActive }) =>
                           `flex items-center px-4 py-2 text-sm rounded-lg transition-all duration-200 ${
                             isActive
-                              ? "bg-[#00C3CB]"
-                              : "hover:bg-[#2B75F5] shadow-sm"
+                              ? "bg-[#4F39F6]"
+                              : "hover:bg-[#4169E1] shadow-sm"
                           }`
                         }
                       >
@@ -375,8 +375,8 @@ const StaffPage = () => {
                         className={({ isActive }) =>
                           `flex items-center px-4 py-2 text-sm rounded-lg transition-all duration-200 ${
                             isActive
-                              ? "bg-[#00C3CB]"
-                              : "hover:bg-[#2B75F5] shadow-sm"
+                              ? "bg-[#4F39F6]"
+                              : "hover:bg-[#4169E1] shadow-sm"
                           }`
                         }
                       >
@@ -394,12 +394,12 @@ const StaffPage = () => {
             </nav>
 
             {/* Bottom Section (Settings) */}
-            <div className="absolute bottom-0 w-full p-4 border-t border-[#2B6DF5]">
+            <div className="absolute bottom-0 w-full p-4 border-t border-[#4169E1]">
               <NavLink
                 to="/staff/settings"
                 className={({ isActive }) =>
                   `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
-                    isActive ? "bg-[#00C3CB]" : "hover:bg-[#2B75F5] shadow-sm"
+                    isActive ? "bg-[#4F39F6]" : "hover:bg-[#4169E1] shadow-sm"
                   }`
                 }
               >
@@ -408,7 +408,7 @@ const StaffPage = () => {
                 />
                 {sidebarOpen && <span className="ml-3">Cài đặt</span>}
                 {!sidebarOpen && (
-                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#4169E1] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                     Cài đặt
                   </span>
                 )}
@@ -428,9 +428,7 @@ const StaffPage = () => {
           >
             <div
               className="
-                bg-gradient-to-r
-                from-[#2B6DF5]
-                to-[#3C7EFB]
+                bg-gradient-to-r from-[#4169E1] via-[#5A7ED7] to-[#6495ED]
                 text-white
                 font-bold
                 rounded-b-lg
@@ -454,12 +452,12 @@ const StaffPage = () => {
                   <div className="relative">
                     <Notification
                       roleId={2}
-                      className="p-2 text-white hover:text-white/80 hover:bg-[#2B75F5] rounded-full transition-all duration-200 focus:outline-none"
+                      className="p-2 text-white hover:bg-[#4169E1] rounded-full transition-all duration-200 focus:outline-none"
                     />
                   </div>
                   <div className="relative group">
                     <button className="flex items-center space-x-3 focus:outline-none">
-                      <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#2B6DF5] font-bold text-lg border border-[#2B6DF5]">
+                      <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#4169E1] font-bold text-lg border border-[#4169E1]">
                         {staffData.firstName.charAt(0)}
                       </div>
                       <div className="text-left hidden md:block">
@@ -474,14 +472,14 @@ const StaffPage = () => {
                       <div className="py-2">
                         <Link
                           to="/staff"
-                          className="flex items-center px-4 py-2 text-gray-700 hover:bg-[#EFF7FF] hover:text-[#2B6DF5] transition-colors"
+                          className="flex items-center px-4 py-2 text-gray-700 hover:bg-[#EFF7FF] hover:text-[#4169E1] transition-colors"
                         >
                           <FiSettings className="w-5 h-5 mr-2" />
                           <span>Hồ sơ</span>
                         </Link>
                         <button
                           onClick={() => navigate("/")}
-                          className="flex items-center w-full text-left px-4 py-2 text-gray-700 hover:bg-[#EFF7FF] hover:text-[#2B6DF5] transition-colors"
+                          className="flex items-center w-full text-left px-4 py-2 text-gray-700 hover:bg-[#EFF7FF] hover:text-[#4169E1] transition-colors"
                         >
                           <FiLogOut className="w-5 h-5 mr-2" />
                           <span>Đăng xuất</span>

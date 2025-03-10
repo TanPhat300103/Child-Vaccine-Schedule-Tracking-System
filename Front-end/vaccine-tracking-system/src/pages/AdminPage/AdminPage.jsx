@@ -70,16 +70,16 @@ const AdminPage = () => {
         className={`
           fixed top-0 left-0 h-screen z-20 transition-all duration-300 ease-in-out
           ${sidebarOpen ? "w-72" : "w-20"}
-          bg-gradient-to-b from-[#2B6DF5] to-[#3C7EFB]
-          text-white font-bold border border-[#2B6DF5]
+          bg-gradient-to-b from-[#4169E1] via-[#5A7ED7] to-[#6495ED]
+          text-white font-bold border border-[#4169E1]
         `}
       >
         {sidebarOpen ? (
-          <div className="flex items-center justify-between p-4 border-b border-[#2B6DF5]">
+          <div className="flex items-center justify-between p-4 border-b border-[#4169E1]">
             <div className="flex items-center">
               {/* Vòng tròn icon */}
               <div className="flex items-center justify-center w-12 h-12 bg-white rounded-full">
-                <RiSyringeLine className="text-[#2B6DF5] w-7 h-7" />
+                <RiSyringeLine className="text-[#4169E1] w-7 h-7" />
               </div>
               <h1 className="ml-3 text-xl font-bold">Quản Trị Viên</h1>
             </div>
@@ -91,7 +91,7 @@ const AdminPage = () => {
             </button>
           </div>
         ) : (
-          <div className="flex items-center justify-end p-4 border-b border-[#2B6DF5]">
+          <div className="flex items-center justify-end p-4 border-b border-[#4169E1]">
             <button
               onClick={toggleSidebar}
               className="text-white hover:text-white/90 focus:outline-none"
@@ -118,15 +118,15 @@ const AdminPage = () => {
                 className={({ isActive }) =>
                   `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                     isActive
-                      ? "bg-[#00C3CB]"
-                      : "hover:bg-[#2B75F5] hover:shadow-sm"
+                      ? "bg-[#4F39F6]"
+                      : "hover:bg-[#4169E1] hover:shadow-sm"
                   }`
                 }
               >
                 <FiGrid className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`} />
                 {sidebarOpen && <span className="ml-3">Bảng Điều Khiển</span>}
                 {!sidebarOpen && (
-                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#4169E1] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                     Bảng Điều Khiển
                   </span>
                 )}
@@ -140,15 +140,15 @@ const AdminPage = () => {
                 className={({ isActive }) =>
                   `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                     isActive
-                      ? "bg-[#00C3CB]"
-                      : "hover:bg-[#2B75F5] hover:shadow-sm"
+                      ? "bg-[#4F39F6]"
+                      : "hover:bg-[#4169E1] hover:shadow-sm"
                   }`
                 }
               >
                 <FiUser className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`} />
                 {sidebarOpen && <span className="ml-3">Quản Lý Nhân viên</span>}
                 {!sidebarOpen && (
-                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#4169E1] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                     Quản Lý Nhân viên
                   </span>
                 )}
@@ -162,8 +162,8 @@ const AdminPage = () => {
                 className={({ isActive }) =>
                   `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                     isActive
-                      ? "bg-[#00C3CB]"
-                      : "hover:bg-[#2B75F5] hover:shadow-sm"
+                      ? "bg-[#4F39F6]"
+                      : "hover:bg-[#4169E1] hover:shadow-sm"
                   }`
                 }
               >
@@ -172,7 +172,7 @@ const AdminPage = () => {
                   <span className="ml-3">Quản Lý Khách Hàng</span>
                 )}
                 {!sidebarOpen && (
-                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#4169E1] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                     Quản Lý Khách Hàng
                   </span>
                 )}
@@ -194,8 +194,8 @@ const AdminPage = () => {
                 className={({ isActive }) =>
                   `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                     isActive
-                      ? "bg-[#00C3CB]"
-                      : "hover:bg-[#2B75F5] hover:shadow-sm"
+                      ? "bg-[#4F39F6]"
+                      : "hover:bg-[#4169E1] hover:shadow-sm"
                   }`
                 }
               >
@@ -204,7 +204,7 @@ const AdminPage = () => {
                 />
                 {sidebarOpen && <span className="ml-3">Lịch Đăng Ký Tiêm</span>}
                 {!sidebarOpen && (
-                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#4169E1] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                     Lịch Đăng Ký Tiêm
                   </span>
                 )}
@@ -216,8 +216,8 @@ const AdminPage = () => {
               <div
                 className={`relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer ${
                   isVaccineActive
-                    ? "bg-[#00C3CB]"
-                    : "hover:bg-[#2B75F5] hover:shadow-sm"
+                    ? "bg-[#4F39F6]"
+                    : "hover:bg-[#4169E1] hover:shadow-sm"
                 }`}
               >
                 <RiSyringeLine
@@ -230,7 +230,7 @@ const AdminPage = () => {
                   </>
                 )}
                 {!sidebarOpen && (
-                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#4169E1] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                     Vaccine
                   </span>
                 )}
@@ -246,8 +246,8 @@ const AdminPage = () => {
                     className={({ isActive }) =>
                       `flex items-center px-4 py-2 text-sm rounded-lg transition-all duration-200 ${
                         isActive
-                          ? "bg-[#00C3CB]"
-                          : "hover:bg-[#2B75F5] hover:shadow-sm"
+                          ? "bg-[#4F39F6]"
+                          : "hover:bg-[#4169E1] hover:shadow-sm"
                       }`
                     }
                   >
@@ -265,8 +265,8 @@ const AdminPage = () => {
                     className={({ isActive }) =>
                       `flex items-center px-4 py-2 text-sm rounded-lg transition-all duration-200 ${
                         isActive
-                          ? "bg-[#00C3CB]"
-                          : "hover:bg-[#2B75F5] hover:shadow-sm"
+                          ? "bg-[#4F39F6]"
+                          : "hover:bg-[#4169E1] hover:shadow-sm"
                       }`
                     }
                   >
@@ -284,8 +284,8 @@ const AdminPage = () => {
                 className={({ isActive }) =>
                   `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                     isActive
-                      ? "bg-[#00C3CB]"
-                      : "hover:bg-[#2B75F5] hover:shadow-sm"
+                      ? "bg-[#4F39F6]"
+                      : "hover:bg-[#4169E1] hover:shadow-sm"
                   }`
                 }
               >
@@ -294,7 +294,7 @@ const AdminPage = () => {
                 />
                 {sidebarOpen && <span className="ml-3">Báo Cáo Phản Ứng</span>}
                 {!sidebarOpen && (
-                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#4169E1] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                     Báo Cáo Phản Ứng
                   </span>
                 )}
@@ -316,8 +316,8 @@ const AdminPage = () => {
                 className={({ isActive }) =>
                   `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                     isActive
-                      ? "bg-[#00C3CB]"
-                      : "hover:bg-[#2B75F5] hover:shadow-sm"
+                      ? "bg-[#4F39F6]"
+                      : "hover:bg-[#4169E1] hover:shadow-sm"
                   }`
                 }
               >
@@ -326,7 +326,7 @@ const AdminPage = () => {
                 />
                 {sidebarOpen && <span className="ml-3">Phản Hồi</span>}
                 {!sidebarOpen && (
-                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#4169E1] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                     Phản Hồi
                   </span>
                 )}
@@ -340,8 +340,8 @@ const AdminPage = () => {
                 className={({ isActive }) =>
                   `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                     isActive
-                      ? "bg-[#00C3CB]"
-                      : "hover:bg-[#2B75F5] hover:shadow-sm"
+                      ? "bg-[#4F39F6]"
+                      : "hover:bg-[#4169E1] hover:shadow-sm"
                   }`
                 }
               >
@@ -352,7 +352,7 @@ const AdminPage = () => {
                   <span className="ml-3">Chiến Dịch Marketing</span>
                 )}
                 {!sidebarOpen && (
-                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#4169E1] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                     Chiến Dịch Marketing
                   </span>
                 )}
@@ -366,8 +366,8 @@ const AdminPage = () => {
                 className={({ isActive }) =>
                   `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
                     isActive
-                      ? "bg-[#00C3CB]"
-                      : "hover:bg-[#2B75F5] hover:shadow-sm"
+                      ? "bg-[#4F39F6]"
+                      : "hover:bg-[#4169E1] hover:shadow-sm"
                   }`
                 }
               >
@@ -376,7 +376,7 @@ const AdminPage = () => {
                 />
                 {sidebarOpen && <span className="ml-3">Quản Lý Hóa Đơn</span>}
                 {!sidebarOpen && (
-                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#2B75F5] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
+                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#4169E1] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
                     Quản Lý Hóa Đơn
                   </span>
                 )}
@@ -398,10 +398,10 @@ const AdminPage = () => {
       >
         <div
           className="
-            bg-gradient-to-r from-[#2B6DF5] to-[#3C7EFB]
+            bg-gradient-to-r from-[#4169E1] via-[#5A7ED7] to-[#6495ED]
             text-white font-bold
             rounded-b-lg shadow-md p-3
-            border border-[#2B6DF5]
+            border border-[#4169E1]
           "
         >
           <div className="flex items-center justify-between">
@@ -419,18 +419,18 @@ const AdminPage = () => {
             </div>
             {/* Right Section: Các nút chức năng */}
             <div className="flex items-center space-x-3">
-              <button className="p-2 rounded-full bg-[#2B6DF5] hover:bg-[#2B75F5] transition duration-150">
+              <button className="p-2 rounded-full bg-[#4169E1] hover:bg-[#5A7ED7] transition duration-150">
                 <FiHelpCircle className="w-5 h-5" />
               </button>
-              <button className="p-2 rounded-full bg-[#2B6DF5] hover:bg-[#2B75F5] transition duration-150 relative">
+              <button className="p-2 rounded-full bg-[#4169E1] hover:bg-[#5A7ED7] transition duration-150 relative">
                 <FiMessageSquare className="w-5 h-5" />
                 <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
               </button>
-              <button className="p-2 rounded-full bg-[#2B6DF5] hover:bg-[#2B75F5] transition duration-150 relative">
+              <button className="p-2 rounded-full bg-[#4169E1] hover:bg-[#5A7ED7] transition duration-150 relative">
                 <FiAlertTriangle className="w-5 h-5" />
                 <span className="absolute top-0 right-0 w-2 h-2 bg-yellow-500 rounded-full"></span>
               </button>
-              <button className="p-2 rounded-full bg-[#2B6DF5] hover:bg-[#2B75F5] transition duration-150">
+              <button className="p-2 rounded-full bg-[#4169E1] hover:bg-[#5A7ED7] transition duration-150">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-6 w-6"
@@ -448,7 +448,7 @@ const AdminPage = () => {
               </button>
               <button
                 onClick={() => navigate("/")}
-                className="p-2 rounded-full bg-[#2B6DF5] hover:bg-[#2B75F5] transition duration-150"
+                className="p-2 rounded-full bg-[#4169E1] hover:bg-[#5A7ED7] transition duration-150"
               >
                 <FiLogOut className="w-5 h-5" />
               </button>
