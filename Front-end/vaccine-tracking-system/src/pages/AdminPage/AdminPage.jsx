@@ -68,11 +68,11 @@ const AdminPage = () => {
       {/* Sidebar */}
       <aside
         className={`
-          fixed top-0 left-0 h-screen z-20 transition-all duration-300 ease-in-out
-          ${sidebarOpen ? "w-72" : "w-20"}
-          bg-gradient-to-b from-[#4169E1] via-[#5A7ED7] to-[#6495ED]
-          text-white font-bold border border-[#4169E1]
-        `}
+    ${sidebarOpen ? "w-72" : "w-20"}
+    bg-gradient-to-r from-[#4169E1] via-[#5A7ED7] to-[#6495ED]
+    text-white font-bold transition-all duration-300 ease-in-out
+    fixed h-screen z-20 border border-[#4169E1] overflow-y-auto
+  `}
       >
         {sidebarOpen ? (
           <div className="flex items-center justify-between p-4 border-b border-[#4169E1]">
