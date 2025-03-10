@@ -4,13 +4,13 @@ import { Link } from "react-router-dom";
 import "../CamNang/QuyTrinh.css";
 import { useAuth } from "../../components/common/AuthContext";
 import Footer from "../../components/common/Footer";
-import Header from "../../components/common/Header";
+import Header from "../../components/header/header";
 
 function QuyTrinh() {
   const { userInfo } = useAuth();
   return (
     <div>
-      <Header></Header>{" "}
+      <Header/>
       <div className="vaccination-handbook-container">
         {/* Header (Hero Section) */}
         <div className="handbook-hero">

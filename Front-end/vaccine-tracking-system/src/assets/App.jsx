@@ -35,20 +35,49 @@ import { slides, benefits, process } from "../stores/homedata.jsx";
 import Footer from "../components/common/Footer";
 import PriceVaccineGuest from "../components/homepage/PriceVaccineGuest.jsx";
 import AgeVaccine2 from "../components/homepage/AgeVaccine2.jsx";
+import Header from "../components/header/header.jsx";
+import { useAuth } from "../components/common/AuthContext.jsx"; // Thêm import useAuth
 
 const App = () => {
+   const { userInfo } = useAuth();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [feedbacks, setFeedbacks] = useState([]);
   const vaccinePricingRef = useRef(null);
+  const comboVaccineRef = useRef(null);
   const footerRef = useRef(null);
   const feedbackContainerRef = useRef(null);
+  const ageVaccineRef = useRef(null); // Ref mới cho AgeVaccine2
   const [translateX, setTranslateX] = useState(0);
   const animationRef = useRef(null);
   const navigate = useNavigate();
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isLoggedIn } = useAuth();
+  
+  if(userInfo!=null){// Lấy trạng thái đăng nhập từ AuthContext
+  localStorage.setItem("userId", userInfo.userId);}
+ 
+  useEffect(() => {
+    if (userInfo!=null && userInfo!="anonymousUser") {
+      if (userInfo.authorities[0].authority === "ROLE_CUSTOMER") {
+        navigate("/home"); // Dẫn người dùng tới trang Home
+      } else if (userInfo.authorities[0].authority === "ROLE_STAFF") {
+        navigate("/staff"); // Dẫn người dùng tới trang Staff
+      } else if (userInfo.authorities[0].authority === "ROLE_ADMIN") {
+        console.log("admin on");
+        navigate("/admin"); // Dẫn người dùng tới trang Admin
+      }
+    }
+  }, [userInfo, navigate]);
 
-  // Move slides
+    // handle logout
+    const handleLogout = async () => {
+      await logout();
+      setIsUserMenuOpen(false);
+      setCustomerData(null);
+      navigate("/");
+    };
+
+
+  // Di chuyển slide
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -56,7 +85,8 @@ const App = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Fetch feedback từ API
+
+  // Lấy dữ liệu phản hồi từ API
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
@@ -76,12 +106,12 @@ const App = () => {
     fetchFeedbacks();
   }, []);
 
-  // Auto scroll feedback
+  // Tự động cuộn phản hồi
   useEffect(() => {
     if (feedbacks.length === 0 || !feedbackContainerRef.current) return;
 
     const containerWidth = feedbackContainerRef.current.scrollWidth / 2;
-    const speed = 1; // Tốc độ scroll (px per frame)
+    const speed = 1;
 
     const animate = () => {
       setTranslateX((prev) => {
@@ -103,7 +133,17 @@ const App = () => {
     };
   }, [feedbacks]);
 
-  // Scroll to pricing
+  // Cuộn đến AgeVaccine2
+  const scrollToAgeVaccine = () => {
+    if (ageVaccineRef.current) {
+      ageVaccineRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+
+  // Cuộn đến Vaccine Pricing
   const scrollToVaccinePricing = () => {
     if (vaccinePricingRef.current) {
       vaccinePricingRef.current.scrollIntoView({
@@ -113,7 +153,17 @@ const App = () => {
     }
   };
 
-  // Scroll to footer
+  // Cuộn đến Combo Vaccine
+  const scrollToComboVaccine = () => {
+    if (comboVaccineRef.current) {
+      comboVaccineRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+
+  // Cuộn đến footer
   const scrollToFooter = () => {
     if (footerRef.current) {
       footerRef.current.scrollIntoView({
@@ -123,161 +173,52 @@ const App = () => {
     }
   };
 
-  // Handle scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const closeAllMenus = () => {
-    setIsMobileMenuOpen(false);
+  // Xử lý click nút "Đặt lịch ngay"
+  const handleBookingClick = () => {
+    if (isLoggedIn) {
+      navigate("/book-vaccine"); // Nếu đã đăng nhập, chuyển đến trang booking
+    } else {
+      navigate("/login"); // Nếu chưa đăng nhập, chuyển đến trang login
+    }
   };
 
-  const navItems = [
-    {
-      name: "Trang chủ",
-      icon: <FaSyringe className="text-lg" />,
-      action: () => navigate("/"),
-    },
-    {
-      name: "Đặt lịch tiêm",
-      icon: <FaCalendarCheck className="text-lg" />,
-      action: () => navigate("/login"),
-    },
-    {
-      name: "Gói vaccine",
-      icon: <FaUserMd className="text-lg" />,
-      action: scrollToVaccinePricing,
-    },
-    {
-      name: "Liên hệ",
-      icon: <FaInfo className="text-lg" />,
-      action: scrollToFooter,
-    },
-  ];
-
   const enhancedBenefits = [
-    {
-      icon: <FaShieldAlt className="text-blue-500" />,
-      title: "Bảo Vệ Sức Khỏe",
-      description: "Vắc-xin giúp ngăn ngừa các bệnh truyền nhiễm nguy hiểm, bảo vệ sức khỏe cộng đồng.",
-    },
-    {
-      icon: <FaHeartbeat className="text-blue-500" />,
-      title: "Tăng Cường Miễn Dịch",
-      description: "Tiêm chủng giúp cơ thể tăng cường khả năng miễn dịch, giảm nguy cơ mắc bệnh.",
-    },
-    {
-      icon: <FaChild className="text-blue-500" />,
-      title: "An Toàn Cho Trẻ Em",
-      description: "Vắc-xin được kiểm định nghiêm ngặt, đảm bảo an toàn cho trẻ em và người lớn.",
-    },
-    {
-      icon: <FaUserMd className="text-blue-500" />,
-      title: "Chăm Sóc Chuyên Nghiệp",
-      description: "Đội ngũ y bác sĩ giàu kinh nghiệm, tận tâm chăm sóc sức khỏe của bạn.",
-    },
-    {
-      icon: <FaHospital className="text-blue-500" />,
-      title: "Cơ Sở Vật Chất Hiện Đại",
-      description: "Hệ thống phòng tiêm hiện đại, vô trùng, đảm bảo tiêu chuẩn y tế quốc tế.",
-    },
-    {
-      icon: <FaStethoscope className="text-blue-500" />,
-      title: "Theo Dõi Sau Tiêm",
-      description: "Hệ thống theo dõi sức khỏe sau tiêm chủng, hỗ trợ 24/7 khi cần thiết.",
-    },
+    { icon: <FaShieldAlt className="text-blue-500" />, title: "Bảo Vệ Sức Khỏe", description: "Vắc-xin giúp ngăn ngừa các bệnh truyền nhiễm nguy hiểm, bảo vệ sức khỏe cộng đồng." },
+    { icon: <FaHeartbeat className="text-blue-500" />, title: "Tăng Cường Miễn Dịch", description: "Tiêm chủng giúp cơ thể tăng cường khả năng miễn dịch, giảm nguy cơ mắc bệnh." },
+    { icon: <FaChild className="text-blue-500" />, title: "An Toàn Cho Trẻ Em", description: "Vắc-xin được kiểm định nghiêm ngặt, đảm bảo an toàn cho trẻ em và người lớn." },
+    { icon: <FaUserMd className="text-blue-500" />, title: "Chăm Sóc Chuyên Nghiệp", description: "Đội ngũ y bác sĩ giàu kinh nghiệm, tận tâm chăm sóc sức khỏe của bạn." },
+    { icon: <FaHospital className="text-blue-500" />, title: "Cơ Sở Vật Chất Hiện Đại", description: "Hệ thống phòng tiêm hiện đại, vô trùng, đảm bảo tiêu chuẩn y tế quốc tế." },
+    { icon: <FaStethoscope className="text-blue-500" />, title: "Theo Dõi Sau Tiêm", description: "Hệ thống theo dõi sức khỏe sau tiêm chủng, hỗ trợ 24/7 khi cần thiết." },
   ];
 
   const features = [
-    {
-      icon: <FaCalendarCheck className="text-white text-2xl" />,
-      title: "Đặt Lịch Trực Tuyến",
-      description: "Đặt lịch tiêm chủng trực tuyến dễ dàng, tiết kiệm thời gian chờ đợi.",
-    },
-    {
-      icon: <FaMedkit className="text-white text-2xl" />,
-      title: "Đa Dạng Vắc-xin",
-      description: "Cung cấp đầy đủ các loại vắc-xin trong và ngoài chương trình tiêm chủng.",
-    },
-    {
-      icon: <FaRegClock className="text-white text-2xl" />,
-      title: "Linh Hoạt Thời Gian",
-      description: "Hoạt động 7 ngày/tuần, sáng chiều tối để phục vụ mọi nhu cầu của khách hàng.",
-    },
-    {
-      icon: <FaUserPlus className="text-white text-2xl" />,
-      title: "Hồ Sơ Điện Tử",
-      description: "Lưu trữ thông tin tiêm chủng trên hệ thống điện tử, dễ dàng tra cứu.",
-    },
+    { icon: <FaCalendarCheck className="text-white text-2xl" />, title: "Đặt Lịch Trực Tuyến", description: "Đặt lịch tiêm chủng trực tuyến dễ dàng, tiết kiệm thời gian chờ đợi." },
+    { icon: <FaMedkit className="text-white text-2xl" />, title: "Đa Dạng Vắc-xin", description: "Cung cấp đầy đủ các loại vắc-xin trong và ngoài chương trình tiêm chủng." },
+    { icon: <FaRegClock className="text-white text-2xl" />, title: "Linh Hoạt Thời Gian", description: "Hoạt động 7 ngày/tuần, sáng chiều tối để phục vụ mọi nhu cầu của khách hàng." },
+    { icon: <FaUserPlus className="text-white text-2xl" />, title: "Hồ Sơ Điện Tử", description: "Lưu trữ thông tin tiêm chủng trên hệ thống điện tử, dễ dàng tra cứu." },
   ];
 
   const enhancedProcess = [
-    {
-      step: 1,
-      icon: <FaUserPlus className="text-blue-600" />,
-      title: "Đăng Ký Tài Khoản",
-      description: "Tạo tài khoản trực tuyến để quản lý lịch tiêm và theo dõi hồ sơ sức khỏe.",
-    },
-    {
-      step: 2,
-      icon: <FaCalendarCheck className="text-blue-600" />,
-      title: "Đặt Lịch Tiêm Chủng",
-      description: "Chọn ngày giờ phù hợp và loại vắc-xin phù hợp với nhu cầu của bạn.",
-    },
-    {
-      step: 3,
-      icon: <FaUserMd className="text-blue-600" />,
-      title: "Khám Sàng Lọc",
-      description: "Bác sĩ khám sức khỏe, tư vấn và đánh giá trước khi tiêm chủng.",
-    },
-    {
-      step: 4,
-      icon: <FaSyringe className="text-blue-600" />,
-      title: "Tiêm Vắc-xin",
-      description: "Quy trình tiêm chủng an toàn, vô trùng theo tiêu chuẩn y tế quốc tế.",
-    },
-    {
-      step: 5,
-      icon: <FaRegClock className="text-blue-600" />,
-      title: "Theo Dõi Sau Tiêm",
-      description: "Theo dõi sức khỏe 30 phút sau tiêm tại trung tâm để đảm bảo an toàn.",
-    },
-    {
-      step: 6,
-      icon: <FaComments className="text-blue-600" />,
-      title: "Nhận Thông Báo Nhắc Lịch",
-      description: "Hệ thống tự động gửi thông báo nhắc lịch tiêm mũi tiếp theo.",
-    },
+    { step: 1, icon: <FaUserPlus className="text-blue-600" />, title: "Đăng Ký Tài Khoản", description: "Tạo tài khoản trực tuyến để quản lý lịch tiêm và theo dõi hồ sơ sức khỏe." },
+    { step: 2, icon: <FaCalendarCheck className="text-blue-600" />, title: "Đặt Lịch Tiêm Chủng", description: "Chọn ngày giờ phù hợp và loại vắc-xin phù hợp với nhu cầu của bạn." },
+    { step: 3, icon: <FaUserMd className="text-blue-600" />, title: "Khám Sàng Lọc", description: "Bác sĩ khám sức khỏe, tư vấn và đánh giá trước khi tiêm chủng." },
+    { step: 4, icon: <FaSyringe className="text-blue-600" />, title: "Tiêm Vắc-xin", description: "Quy trình tiêm chủng an toàn, vô trùng theo tiêu chuẩn y tế quốc tế." },
+    { step: 5, icon: <FaRegClock className="text-blue-600" />, title: "Theo Dõi Sau Tiêm", description: "Theo dõi sức khỏe 30 phút sau tiêm tại trung tâm để đảm bảo an toàn." },
+    { step: 6, icon: <FaComments className="text-blue-600" />, title: "Nhận Thông Báo Nhắc Lịch", description: "Hệ thống tự động gửi thông báo nhắc lịch tiêm mũi tiếp theo." },
   ];
 
   const stats = [
-    { value: "50,000+", label: "Khách hàng", icon: <FaUser className="text-blue-500" /> },
-    { value: "99.8%", label: "Độ hài lòng", icon: <FaHeartbeat className="text-blue-500" /> },
-    { value: "30+", label: "Bác sĩ chuyên khoa", icon: <FaUserMd className="text-blue-500" /> },
+    { value: "5,000+", label: "Khách hàng", icon: <FaUser className="text-blue-500" /> },
+    { value: "90.8%", label: "Độ hài lòng", icon: <FaHeartbeat className="text-blue-500" /> },
+    { value: "20+", label: "Bác sĩ chuyên khoa", icon: <FaUserMd className="text-blue-500" /> },
     { value: "100+", label: "Loại vắc-xin", icon: <FaSyringe className="text-blue-500" /> },
   ];
 
   const faqs = [
-    {
-      question: "Tôi cần chuẩn bị gì trước khi đi tiêm chủng?",
-      answer: "Bạn nên ăn uống đầy đủ, mang theo sổ tiêm chủng (nếu có), thẻ BHYT và giấy tờ tùy thân. Đối với trẻ em, phụ huynh nên mang theo sổ theo dõi sức khỏe của bé.",
-    },
-    {
-      question: "Sau khi tiêm vắc-xin có thể có những phản ứng gì?",
-      answer: "Sau tiêm chủng có thể xuất hiện một số phản ứng nhẹ như đau tại chỗ tiêm, sốt nhẹ, mệt mỏi. Các triệu chứng này thường tự khỏi sau 1-2 ngày và là dấu hiệu bình thường cho thấy cơ thể đang tạo ra phản ứng miễn dịch.",
-    },
-    {
-      question: "Trung tâm có các gói vắc-xin nào cho trẻ em?",
-      answer: "Chúng tôi cung cấp đầy đủ các gói vắc-xin trong và ngoài chương trình tiêm chủng mở rộng như: gói vắc-xin cơ bản, gói vắc-xin 5 trong 1, 6 trong 1, vắc-xin phòng Rotavirus, Thủy đậu, HPV, và nhiều loại khác.",
-    },
-    {
-      question: "Làm thế nào để đặt lịch tiêm chủng online?",
-      answer: "Bạn có thể đăng ký tài khoản trên trang web, sau đó chọn mục 'Đặt lịch tiêm', điền thông tin cá nhân, chọn loại vắc-xin và thời gian mong muốn. Hệ thống sẽ xác nhận lịch hẹn qua SMS hoặc email.",
-    },
+    { question: "Tôi cần chuẩn bị gì trước khi đi tiêm chủng?", answer: "Bạn nên ăn uống đầy đủ, mang theo sổ tiêm chủng (nếu có), thẻ BHYT và giấy tờ tùy thân. Đối với trẻ em, phụ huynh nên mang theo sổ theo dõi sức khỏe của bé." },
+    { question: "Sau khi tiêm vắc-xin có thể có những phản ứng gì?", answer: "Sau tiêm chủng có thể xuất hiện một số phản ứng nhẹ như đau tại chỗ tiêm, sốt nhẹ, mệt mỏi. Các triệu chứng này thường tự khỏi sau 1-2 ngày và là dấu hiệu bình thường cho thấy cơ thể đang tạo ra phản ứng miễn dịch." },
+    { question: "Trung tâm có các gói vắc-xin nào cho trẻ em?", answer: "Chúng tôi cung cấp đầy đủ các gói vắc-xin trong và ngoài chương trình tiêm chủng mở rộng như: gói vắc-xin cơ bản, gói vắc-xin 5 trong 1, 6 trong 1, vắc-xin phòng Rotavirus, Thủy đậu, HPV, và nhiều loại khác." },
+    { question: "Làm thế nào để đặt lịch tiêm chủng online?", answer: "Bạn có thể đăng ký tài khoản trên trang web, sau đó chọn mục 'Đặt lịch tiêm', điền thông tin cá nhân, chọn loại vắc-xin và thời gian mong muốn. Hệ thống sẽ xác nhận lịch hẹn qua SMS hoặc email." },
   ];
 
   const renderStars = (ranking) => {
@@ -290,7 +231,7 @@ const App = () => {
             fill="currentColor"
             viewBox="0 0 20 20"
           >
-            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3 .921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784 .57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81 .588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
           </svg>
         ))}
       </div>
@@ -298,133 +239,10 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      {/* Header */}
-      <header
-        className={`fixed w-full z-50 transition-all duration-300 ${
-          isScrolled ? "py-2 bg-white shadow-lg" : "py-3 bg-white/95 backdrop-blur-sm"
-        }`}
-      >
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between">
-            <div
-              onClick={() => {
-                navigate("/home");
-                closeAllMenus();
-              }}
-              className="flex items-center space-x-2 cursor-pointer group"
-            >
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-teal-400 rounded-full flex items-center justify-center transform transition-all duration-300 group-hover:scale-105 shadow-md">
-                <FaSyringe className="text-white text-lg" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-lg font-bold text-blue-700">VaccineCare</span>
-                <span className="text-xs text-blue-500 -mt-1">Trung Tâm Tiêm Chủng</span>
-              </div>
-            </div>
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white ">
+      <Header scrollToVaccinePricing={scrollToAgeVaccine} />
 
-            <nav className="hidden md:flex items-center space-x-6">
-              {navItems.map((item, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    item.action();
-                    closeAllMenus();
-                  }}
-                  className="group flex flex-col items-center text-gray-700 hover:text-blue-600 transition-colors"
-                >
-                  <div className="p-2 rounded-full group-hover:bg-blue-50 transition-colors">
-                    {item.icon}
-                  </div>
-                  <span className="text-sm font-medium mt-1">{item.name}</span>
-                  <span className="block h-0.5 w-0 group-hover:w-full transition-all duration-300 bg-blue-600 mt-1" />
-                </button>
-              ))}
-            </nav>
-
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2 rounded-lg bg-blue-50 text-blue-600 focus:outline-none hover:bg-blue-100 transition-colors"
-                aria-label="Toggle mobile menu"
-              >
-                <FaBars className="text-lg" />
-              </button>
-            </div>
-
-            <div className="hidden md:flex items-center space-x-4">
-              <button
-                onClick={() => {
-                  navigate("/login");
-                  closeAllMenus();
-                }}
-                className="px-4 py-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
-              >
-                Đăng Nhập
-              </button>
-              <button
-                onClick={() => {
-                  navigate("/register");
-                  closeAllMenus();
-                }}
-                className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-              >
-                Đăng Ký
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed top-16 left-0 right-0 z-40 bg-white shadow-lg rounded-b-xl overflow-hidden md:hidden"
-          >
-            <div className="p-4 flex flex-col space-y-4">
-              {navItems.map((item, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    item.action();
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="flex items-center space-x-4 p-3 rounded-lg hover:bg-blue-50 transition-colors"
-                >
-                  <div className="p-2 bg-blue-100 rounded-full text-blue-600">{item.icon}</div>
-                  <span className="font-medium">{item.name}</span>
-                </button>
-              ))}
-              <div className="border-t border-gray-200 pt-4 flex flex-col space-y-3">
-                <button
-                  onClick={() => {
-                    navigate("/login");
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="p-3 rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-50 transition-colors text-center"
-                >
-                  Đăng Nhập
-                </button>
-                <button
-                  onClick={() => {
-                    navigate("/register");
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="p-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors text-center"
-                >
-                  Đăng Ký
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Enhanced Hero Section */}
+      {/* Phần Hero */}
       <section className="pt-24 pb-16 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-blue-100 to-white opacity-70 z-0"></div>
         <div className="container mx-auto px-4 relative z-10">
@@ -441,7 +259,7 @@ const App = () => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => navigate("/login")}
+                  onClick={handleBookingClick} // Thay đổi onClick để kiểm tra trạng thái đăng nhập
                   className="px-8 py-3 rounded-full bg-blue-600 text-white font-medium shadow-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                 >
                   Đặt lịch ngay
@@ -449,7 +267,7 @@ const App = () => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={scrollToVaccinePricing}
+                  onClick={scrollToAgeVaccine}
                   className="px-8 py-3 rounded-full border-2 border-blue-600 text-blue-600 font-medium hover:bg-blue-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                 >
                   Xem gói vaccine
@@ -509,7 +327,7 @@ const App = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
+      {/* Phần Thống kê */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
@@ -531,7 +349,7 @@ const App = () => {
         </div>
       </section>
 
-      {/* Enhanced Benefits */}
+      {/* Phần Lợi ích */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -581,7 +399,7 @@ const App = () => {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Phần Dịch vụ nổi bật */}
       <section className="py-16 bg-gradient-to-br from-blue-600 to-blue-800 text-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -622,15 +440,29 @@ const App = () => {
         </div>
       </section>
 
-      {/* Age Vaccine */}
-      <AgeVaccine2 />
+      {/* Phần Age Vaccine */}
+      <motion.section ref={ageVaccineRef} className="py-20 bg-white">
+        <AgeVaccine2 />
+      </motion.section>
 
-      {/* Price Vaccine */}
+      {/* Phần Price Vaccine */}
       <motion.section className="py-20 bg-white" ref={vaccinePricingRef}>
         <PriceVaccineGuest />
       </motion.section>
 
-      {/* Process Section */}
+      {/* Phần Combo Vaccine */}
+      <motion.section className="py-20 bg-white" ref={comboVaccineRef}>
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">
+            Gói Vaccine Combo
+          </h2>
+          <p className="text-center text-gray-600">
+            Đây là placeholder cho phần Combo Vaccine. Vui lòng thay bằng nội dung thực tế.
+          </p>
+        </div>
+      </motion.section>
+
+      {/* Phần Quy trình */}
       <section className="py-20 bg-blue-50">
         <div className="container mx-auto px-4">
           <motion.h2
@@ -663,7 +495,7 @@ const App = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
+      {/* Phần Phản hồi */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <motion.h2
@@ -714,35 +546,6 @@ const App = () => {
           ) : (
             <p className="text-center text-gray-600">Chưa có đánh giá nào</p>
           )}
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="py-20 bg-blue-50">
-        <div className="container mx-auto px-4">
-          <motion.h2
-            initial={{ y: 20, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800"
-          >
-            Câu Hỏi Thường Gặp
-          </motion.h2>
-          <div className="max-w-3xl mx-auto space-y-6">
-            {faqs.map((faq, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-white p-6 rounded-xl shadow-md"
-              >
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">{faq.question}</h3>
-                <p className="text-gray-600">{faq.answer}</p>
-              </motion.div>
-            ))}
-          </div>
         </div>
       </section>
 

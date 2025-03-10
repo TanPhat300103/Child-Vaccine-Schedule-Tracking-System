@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaTimes, FaUser, FaTransgender, FaCalendarAlt } from "react-icons/fa";
 import { format } from "date-fns";
 import { data, useLocation, useNavigate } from "react-router-dom";
+import Header from "../../components/header/header"// Import Header
 import {
   getChildByCustomerId,
   getVaccineCombos,
@@ -10,7 +11,6 @@ import {
   postSchedules,
 } from "../../apis/api";
 import { toast } from "react-toastify";
-import Header from "../../components/common/Header";
 import Footer from "../../components/common/Footer";
 import { useAuth } from "../../components/common/AuthContext";
 

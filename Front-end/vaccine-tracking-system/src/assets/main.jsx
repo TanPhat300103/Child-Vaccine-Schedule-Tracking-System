@@ -63,6 +63,7 @@ import ComboVaccine from "../components/homepage/ComboVaccine.jsx";
 import CauHoi from "../pages/CamNang/CauHoi.jsx";
 import LuuY from "../pages/CamNang/LuuY.jsx";
 import Chatbox from "../components/chatbox/chatbox.jsx"
+import NotificationDetail from "../components/notification/notification.jsx";
 const Main = () => {
   return (
     <StrictMode>
@@ -78,7 +79,7 @@ const Main = () => {
               <Route path="/" element={<App />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/home" element={<Home />} />
+              <Route path="/home" element={<App />} />
               <Route path="/terms-of-service" element={<TermsOfService />} />
               <Route path="/privacy-policy" element={<Policy />} />
               <Route path="/book-vaccine" element={<BookVaccine />} />
@@ -89,7 +90,7 @@ const Main = () => {
               <Route path="/react-vaccine2" element={<ReactVaccine2 />} />
               <Route path="/specific-vaccine" element={<SpecificVaccine />} />
               <Route path="/specific-combo" element={<SpecificCombo />} />
-
+              <Route path="/notification/:notificationId" element={<NotificationDetail />} />
               {/* Các route mới từ main */}
 
               <Route path="/feedback" element={<Feedback />} />

@@ -24,6 +24,7 @@ import {
 import { FaHospital, FaSyringe, FaCashRegister } from "react-icons/fa";
 import Notification from "../../components/common/Notification";
 import { useAuth } from "../../components/common/AuthContext.jsx";
+import { LogOut } from "lucide-react";
 
 const StaffPage = () => {
   const { userInfo } = useAuth();
@@ -37,6 +38,9 @@ const StaffPage = () => {
   const [showHeader, setShowHeader] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
+  //Log out 
+   const { isLoggedIn, logout, isLoading } = useAuth();
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -49,6 +53,14 @@ const StaffPage = () => {
     }
     setLastScrollY(window.scrollY);
   };
+
+  //LOGOUT
+    // handle logout
+    const handleLogout = async () => {
+      await logout();
+      navigate("/");
+    };
+  
 
   // Fetch dữ liệu nhân viên
   useEffect(() => {
@@ -477,13 +489,10 @@ const StaffPage = () => {
                           <FiSettings className="w-5 h-5 mr-2" />
                           <span>Hồ sơ</span>
                         </Link>
-                        <button
-                          onClick={() => navigate("/")}
-                          className="flex items-center w-full text-left px-4 py-2 text-gray-700 hover:bg-[#EFF7FF] hover:text-[#4169E1] transition-colors"
-                        >
-                          <FiLogOut className="w-5 h-5 mr-2" />
-                          <span>Đăng xuất</span>
-                        </button>
+                        <div className="dropdown-item logout" onClick={handleLogout}>
+                    <LogOut size={16} />
+                    <span>Logout</span>
+                  </div>
                       </div>
                     </div>
                   </div>

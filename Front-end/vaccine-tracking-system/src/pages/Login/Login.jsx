@@ -50,7 +50,7 @@ const Login = () => {
       if (response.ok) {
         console.log("Login successful - Updating status...");
         await checkLoginStatus();
-        navigate("/home");
+        navigate("/");
       } else if (!phoneNumber) {
         setError("Số điện thoại là bắt buộc");
       } else if (!/^0\d{9}$/.test(phoneNumber)) {

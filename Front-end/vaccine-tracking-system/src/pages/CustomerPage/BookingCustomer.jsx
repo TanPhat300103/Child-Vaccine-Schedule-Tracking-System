@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../components/common/AuthContext";
 
+
 function BookingCustomer() {
   const navigate = useNavigate();
   const { userInfo } = useAuth();

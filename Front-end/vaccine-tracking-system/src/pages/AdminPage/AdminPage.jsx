@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../components/common/AuthContext.jsx";
+
 import {
   FiGrid,
   FiUsers,
@@ -23,6 +24,7 @@ import { RiSyringeLine } from "react-icons/ri";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { FaCashRegister } from "react-icons/fa";
+import { LogOut } from "lucide-react";
 
 const AdminPage = () => {
   const adminData = {
@@ -42,6 +44,8 @@ const AdminPage = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
+
+
   const controlHeader = () => {
     if (window.scrollY > lastScrollY) {
       setShowHeader(false);
@@ -58,12 +62,21 @@ const AdminPage = () => {
     };
   }, [lastScrollY]);
 
+  // handle logout
+  const handleLogout = async () => {
+    await logout();
+    navigate("/");
+  };
+
+
   // Kiểm tra xem có đang ở trang Vaccine không
   const isVaccineActive =
     location.pathname.startsWith("/admin/vaccines") ||
     location.pathname.startsWith("/admin/vaccine-combos");
 
+    const { isLoggedIn, logout, isLoading } = useAuth();
   return (
+
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
       <aside
@@ -446,12 +459,10 @@ const AdminPage = () => {
                   />
                 </svg>
               </button>
-              <button
-                onClick={() => navigate("/")}
-                className="p-2 rounded-full bg-[#4169E1] hover:bg-[#5A7ED7] transition duration-150"
-              >
-                <FiLogOut className="w-5 h-5" />
-              </button>
+              <div className="dropdown-item logout" onClick={handleLogout}>
+                    <LogOut size={16} />
+                    <span>Logout</span>
+                  </div>
             </div>
           </div>
         </div>

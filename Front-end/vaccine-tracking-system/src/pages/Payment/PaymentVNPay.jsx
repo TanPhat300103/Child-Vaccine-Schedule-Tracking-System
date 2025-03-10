@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../components/common/AuthContext";
 import { getMarketing, getPaymentByBookingID } from "../../apis/api";
 import Footer from "../../components/common/Footer";
-import Header from "../../components/common/Header";
+import Header from "../../components/header/header";
 
 // Import icons
 import {

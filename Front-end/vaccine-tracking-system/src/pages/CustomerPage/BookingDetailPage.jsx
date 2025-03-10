@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, NavLink } from "react-router-dom";
 import "../CustomerPage/BookingDetailPage.css";
+
 import {
   Calendar,
   Shield,
@@ -17,7 +18,7 @@ import {
   PlusCircle,
 } from "lucide-react";
 import { useAuth } from "../../components/common/AuthContext";
-import Header from "../../components/common/Header";
+import Header from "../../components/header/header";
 import Footer from "../../components/common/Footer";
 import { FiCalendar, FiLogOut, FiPlusCircle, FiUser } from "react-icons/fi";
 import { AiOutlineHistory } from "react-icons/ai";
