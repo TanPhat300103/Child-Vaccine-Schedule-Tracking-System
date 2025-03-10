@@ -83,4 +83,9 @@ public class CustomerService {
 
     }
 
+    //hàm này chỉ để lấy số liệu bên staff
+    public long countCustomer(){
+        return customerRepository.count();
+    }
+
 }

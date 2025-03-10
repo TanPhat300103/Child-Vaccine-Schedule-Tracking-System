@@ -11,4 +11,5 @@ public interface MedicalHistoryRepository extends JpaRepository<MedicalHistory,S
     void deleteAllByChild_ChildId(String childId);
     List<MedicalHistory> findByChild_ChildId(String childId); // Tìm danh sách theo childId
 
+    public List<MedicalHistory> getAllByReactionIsNotNull();
 }

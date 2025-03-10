@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
 import java.util.List;
 
 @Repository
@@ -18,4 +19,6 @@ public interface BookingDetailRepository extends JpaRepository<BookingDetail, St
     int countByBookingIdAndVaccineIdAndAdministeredDateNotNull(@Param("bookingId") String bookingId, @Param("vaccineId") String vaccineId);
 
     public List<BookingDetail> findBookingDetailsByBooking_BookingId(String bookingId);
+
+    List<BookingDetail> getBookingDetailsByScheduledDate (Date date);
 }

@@ -49,4 +49,8 @@ public class MedicalHistoryService {
     {
         medicalHistoryRepository.deleteAllByChild_ChildId(id);
     }
+
+    public List<MedicalHistory> getReaction(){
+        return medicalHistoryRepository.getAllByReactionIsNotNull();
+    }
 }
