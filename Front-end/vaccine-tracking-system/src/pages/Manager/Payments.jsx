@@ -17,6 +17,7 @@ const Payments = () => {
   const [paymentSearchText, setPaymentSearchText] = useState("");
   const [paymentSearchFilter, setPaymentSearchFilter] = useState("bookingId"); // 'bookingId', 'date', 'transactionId'
 
+  const [isLoading, setIsLoading] = useState(false);
   // State hiển thị modal xác nhận thanh toán
   const [confirmModal, setConfirmModal] = useState({
     show: false,
@@ -187,26 +188,46 @@ const Payments = () => {
   };
 
   // Xử lý khi xác nhận thanh toán
+  // Ví dụ hàm validate coupon (theo tiêu chí: coupon phải là chữ in hoa và số, độ dài từ 1 đến 99 ký tự)// Hàm validate coupon (cho phép chữ hoa và chữ thường, số; độ dài từ 5 đến 10 ký tự)
+  function isCouponValid(coupon) {
+    const regex = /^[A-Za-z0-9]{1,99}$/;
+    return regex.test(coupon);
+  }
+
+  // Xử lý khi xác nhận thanh toán
   const confirmPayment = () => {
     const { paymentId } = confirmModal;
+    // Ẩn modal xác nhận
     setConfirmModal({ show: false, paymentId: null });
 
-    toast.info("Đang Thanh Toán...", { autoClose: 3000 });
+    // Lấy coupon hiện tại và validate (nếu có)
+    const coupon = selectedPayment?.marketingCampaign?.coupon?.trim() || "";
+    if (coupon && !isCouponValid(coupon)) {
+      toast.error("Coupon không hợp lệ");
+      return;
+    }
+
+    // Bật trạng thái loading để disable các thao tác giao diện
+    setIsLoading(true);
+
+    // Hiển thị toast loading
+    const loadingToast = toast.loading("Đang xử lý thanh toán...");
+
     axios
       .post("http://localhost:8080/payment/update", null, {
         params: {
           paymentId,
-          coupon: selectedPayment?.marketingCampaign?.coupon || "", // Gửi coupon hiện tại nếu có, nếu không thì null
-          method: false,
+          coupon,
+          method: false, // COD (thanh toán tại quầy)
         },
         withCredentials: true,
       })
       .then((response) => {
-        console.log("Nhận response từ POST /payment/update:", response.data);
-        const { VNPAYURL } = response.data;
-        if (VNPAYURL) {
-          window.location.href = VNPAYURL;
-        } else {
+        const data = response.data;
+        console.log("Nhận response từ POST /payment/update:", data);
+
+        // Nếu nhận được trường message với giá trị "COD" thì xử lý COD
+        if (data.message === "COD") {
           // Làm mới danh sách payments
           axios
             .get("http://localhost:8080/payment", { withCredentials: true })
@@ -215,11 +236,39 @@ const Payments = () => {
               setSelectedPayment(null);
             })
             .catch((err) => console.error("Error refreshing payments:", err));
+
+          toast.update(loadingToast, {
+            render: "Thanh Toán Thành Công",
+            type: "success",
+            isLoading: false,
+            autoClose: 3000,
+          });
+        } else if (data.VNPAYURL) {
+          // Trường hợp online (nếu có)
+          window.location.href = data.VNPAYURL;
+        } else {
+          // Xử lý lỗi hoặc response không mong đợi
+          toast.update(loadingToast, {
+            render: data.message || "Thanh toán thất bại. Vui lòng thử lại.",
+            type: "error",
+            isLoading: false,
+            autoClose: 3000,
+          });
         }
       })
       .catch((error) => {
-        toast.error("Lỗi khi xác nhận thanh toán");
         console.error("Error updating payment:", error);
+        toast.update(loadingToast, {
+          render:
+            error.response?.data?.message ||
+            "Đã có lỗi xảy ra. Vui lòng thử lại.",
+          type: "error",
+          isLoading: false,
+          autoClose: 3000,
+        });
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
