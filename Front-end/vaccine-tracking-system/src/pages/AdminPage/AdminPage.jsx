@@ -419,33 +419,6 @@ const AdminPage = () => {
             </div>
             {/* Right Section: Các nút chức năng */}
             <div className="flex items-center space-x-3">
-              <button className="p-2 rounded-full bg-[#4169E1] hover:bg-[#5A7ED7] transition duration-150">
-                <FiHelpCircle className="w-5 h-5" />
-              </button>
-              <button className="p-2 rounded-full bg-[#4169E1] hover:bg-[#5A7ED7] transition duration-150 relative">
-                <FiMessageSquare className="w-5 h-5" />
-                <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
-              </button>
-              <button className="p-2 rounded-full bg-[#4169E1] hover:bg-[#5A7ED7] transition duration-150 relative">
-                <FiAlertTriangle className="w-5 h-5" />
-                <span className="absolute top-0 right-0 w-2 h-2 bg-yellow-500 rounded-full"></span>
-              </button>
-              <button className="p-2 rounded-full bg-[#4169E1] hover:bg-[#5A7ED7] transition duration-150">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
-                  />
-                </svg>
-              </button>
               <button
                 onClick={() => navigate("/")}
                 className="p-2 rounded-full bg-[#4169E1] hover:bg-[#5A7ED7] transition duration-150"
