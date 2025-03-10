@@ -267,6 +267,7 @@ const BookVaccine = () => {
   };
 
   // select child
+  // select child
   const handleChildSelect = (child) => {
     setSelectedChild(child); // Lưu đối tượng của trẻ được chọn
     setFormData((prev) => ({
@@ -274,8 +275,43 @@ const BookVaccine = () => {
       childId: child.childId, // Cập nhật childId vào formData
     }));
     console.log("Selected Child ID:", child.childId); // In ra childId khi chọn
+
+    // Thêm chức năng kiểm tra vaccine đã chọn với độ tuổi của trẻ
+    if (selectedVaccines.length > 0) {
+      const childAge = calculateAge(child.dob);
+      const incompatibleVaccines = [];
+
+      // Tìm các vaccine không phù hợp với độ tuổi
+      const newSelectedVaccines = selectedVaccines.filter((vaccine) => {
+        if (childAge < vaccine.ageMin || childAge > vaccine.ageMax) {
+          incompatibleVaccines.push(vaccine.name);
+          return false;
+        }
+        return true;
+      });
+
+      // Nếu có vaccine bị loại bỏ
+      if (incompatibleVaccines.length > 0) {
+        // Cập nhật danh sách vaccine đã chọn
+        setSelectedVaccines(newSelectedVaccines);
+
+        // Cập nhật vaccineId trong formData
+        setFormData((prev) => ({
+          ...prev,
+          vaccineId: newSelectedVaccines.map((v) => v.vaccineId),
+        }));
+
+        // Hiển thị thông báo
+        toast.warning(
+          `Các vaccine ${incompatibleVaccines.join(
+            ", "
+          )} đã bị loại bỏ do không phù hợp với độ tuổi của trẻ.`
+        );
+      }
+    }
   };
 
+  // select vaccines
   // select vaccines
   const handleVaccineSelect = (vaccine) => {
     console.log("Selected Vaccine ID:", vaccine.vaccineId);
@@ -330,8 +366,15 @@ const BookVaccine = () => {
   };
 
   // select vaccineCombo
+  // select vaccineCombo
   const handleComboSelect = async (combo) => {
     console.log("Selected Comboid:", combo.vaccineComboId);
+
+    // Check if a child has been selected first
+    if (!selectedChild || !selectedChild.childId) {
+      toast.error("Vui lòng chọn trẻ trước khi chọn combo vaccine!");
+      return;
+    }
 
     // Kiểm tra nếu combo đã có trong selectedCombos
     const existingCombo = selectedCombos.find(
@@ -357,25 +400,49 @@ const BookVaccine = () => {
       console.log(`Combo ${combo.vaccineComboId} removed from selection.`);
     } else {
       try {
-        const dataComboId = await getVaccineCombosByComboId(
-          combo.vaccineComboId
+        // Fetch combo details from API
+        const response = await fetch(
+          `http://localhost:8080/combodetail/findcomboid?id=${combo.vaccineComboId}`
         );
-        console.log("API response vaccineiddata:", dataComboId);
+        const comboDetails = await response.json();
 
-        if (!dataComboId || dataComboId.length === 0) {
+        console.log("API response combo details:", comboDetails);
+
+        if (!comboDetails || comboDetails.length === 0) {
           console.error(
             "Data for this vaccine combo is not found or is empty."
           );
+          toast.error("Không tìm thấy thông tin chi tiết của combo vắc-xin.");
           return;
         }
-        console.log("datacomboId: ", dataComboId);
-        const vaccineIdsInCombo = dataComboId.map(
-          (item) => item.vaccine.vaccineId
+
+        // Calculate child's age
+        const childAge = calculateAge(selectedChild.dob);
+        console.log("Child Age:", childAge);
+
+        // Check if all vaccines in the combo are suitable for the child's age
+        const incompatibleVaccines = comboDetails.filter((detail) => {
+          const vaccine = detail.vaccine;
+          return childAge < vaccine.ageMin || childAge > vaccine.ageMax;
+        });
+
+        // If there are incompatible vaccines, show error and don't allow selection
+        if (incompatibleVaccines.length > 0) {
+          const vaccineNames = incompatibleVaccines
+            .map((detail) => detail.vaccine.name)
+            .join(", ");
+          toast.error(
+            `Combo không phù hợp với độ tuổi của trẻ. Các vaccine không phù hợp: ${vaccineNames}`
+          );
+          return;
+        }
+
+        // Extract vaccineIds from the combo details
+        const vaccineIdsInCombo = comboDetails.map(
+          (detail) => detail.vaccine.vaccineId
         );
-        const vaccineIdsInLe = vaccineData.map((item) => item.vaccineId);
-        console.log("vaccineIdsInLe: ", selectedVaccines);
         console.log("vaccineIdsInCombo: ", vaccineIdsInCombo);
-        console.log("vaccineData: ", vaccineData.vaccineId);
+
         // Kiểm tra nếu có vaccineId nào trong vaccineCombo đã có trong vaccineData
         const isVaccineInVaccineData = vaccineIdsInCombo.some((id) =>
           selectedVaccines.some(
@@ -385,16 +452,14 @@ const BookVaccine = () => {
 
         if (isVaccineInVaccineData) {
           toast.error(
-            "Một trong các vaccine trong combo đã có trong vaccineData. Không thể chọn."
+            "Một trong các vaccine trong combo đã có trong danh sách vaccine đã chọn. Không thể chọn combo này."
           );
           return;
         }
 
-        // Nếu vaccineIdsInCombo hợp lệ, thêm vaccine combo vào selection
+        // If all checks pass, add the combo to selection
         setDataComboById(vaccineIdsInCombo);
-
         setSelectedCombos((prev) => [...prev, combo]);
-
         setFormData((prevData) => ({
           ...prevData,
           vaccineComboId: [...prevData.vaccineComboId, combo.vaccineComboId],

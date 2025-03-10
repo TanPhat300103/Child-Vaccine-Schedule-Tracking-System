@@ -40,6 +40,7 @@ const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const vaccinePricingRef = useRef(null);
   const footerRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { userInfo } = useAuth();
   const { i18n } = useTranslation();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -56,6 +57,16 @@ const Home = () => {
   const UserId = localStorage.getItem("userId");
   const [isHandbookOpen, setIsHandbookOpen] = useState(false); // Trạng thái cho dropdown "Cẩm nang" trong mobile
   localStorage.setItem("userId", userInfo.userId);
+
+  // if (userInfo) {
+  //   const role = userInfo.authorities?.[0]?.authority;
+  //   if (role === "ROLE_STAFF") {
+  //     navigate("/staff");
+  //   } else if (role === "ROLE_ADMIN") {
+  //     navigate("/admin");
+  //   }
+  //   // Nếu là ROLE_CUSTOMER hoặc không có vai trò khác, tiếp tục render trang Home
+  // }
 
   // Cart
   const cartItemCount = useMemo(() => {
@@ -93,13 +104,15 @@ const Home = () => {
   // Navigate role
   useEffect(() => {
     if (userInfo) {
-      if (userInfo.authorities[0].authority === "ROLE_CUSTOMER") {
-        navigate("/home");
-      } else if (userInfo.authorities[0].authority === "ROLE_STAFF") {
+      const role = userInfo.authorities[0].authority;
+      if (role === "ROLE_STAFF") {
         navigate("/staff");
-      } else if (userInfo.authorities[0].authority === "ROLE_ADMIN") {
+      } else if (role === "ROLE_ADMIN") {
         navigate("/admin");
       }
+      setIsLoading(false); // Chỉ tắt loading khi đã xác định vai trò
+    } else {
+      setIsLoading(false); // Nếu không có userInfo, vẫn tắt loading để render Home
     }
   }, [userInfo, navigate]);
 
