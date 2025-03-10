@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { getBookingDetailsByBookID, confirmBooking } from "../../apis/api";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import {
   CalendarIcon,
@@ -30,6 +32,9 @@ const BookingDetail = () => {
   // State cho dropdown
   const [isBookingInfoOpen, setIsBookingInfoOpen] = useState(true); // Mặc định mở
   const [isCustomerInfoOpen, setIsCustomerInfoOpen] = useState(true); // Mặc định mở
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [detailIdToConfirm, setDetailIdToConfirm] = useState(null);
 
   // State cho bộ lọc trạng thái
   const [statusFilter, setStatusFilter] = useState("all"); // "all", "administered", "notAdministered"
@@ -62,18 +67,26 @@ const BookingDetail = () => {
     fetchBookingData();
   }, [bookingId]);
 
-  const handleConfirm = async (detailId) => {
+  const handleConfirm = (detailId) => {
+    setDetailIdToConfirm(detailId);
+    setShowConfirmModal(true);
+  };
+
+  const confirmAction = async () => {
+    setShowConfirmModal(false);
+    const loadingToast = toast.loading("Đang xử lý xác nhận tiêm...");
+
     try {
-      const updatedDetail = await confirmBooking(detailId);
+      const updatedDetail = await confirmBooking(detailIdToConfirm);
       setBookingDetails((prevDetails) =>
         prevDetails.map((detail) =>
-          detail.bookingDetailId === detailId ? updatedDetail : detail
+          detail.bookingDetailId === detailIdToConfirm ? updatedDetail : detail
         )
       );
 
       const updatedGroups = bookingDetails
         .map((detail) =>
-          detail.bookingDetailId === detailId ? updatedDetail : detail
+          detail.bookingDetailId === detailIdToConfirm ? updatedDetail : detail
         )
         .reduce((acc, detail) => {
           const childKey = detail.child.firstName + " " + detail.child.lastName;
@@ -84,11 +97,23 @@ const BookingDetail = () => {
           return acc;
         }, {});
       setGroupedDetails(updatedGroups);
+
+      toast.update(loadingToast, {
+        render: "Xác nhận tiêm thành công",
+        type: "success",
+        isLoading: false,
+        autoClose: 2000,
+      });
     } catch (error) {
       console.error("Error confirming booking detail:", error);
+      toast.update(loadingToast, {
+        render: "Xác nhận tiêm thất bại. Vui lòng thử lại.",
+        type: "error",
+        isLoading: false,
+        autoClose: 2000,
+      });
     }
   };
-
   // Lọc booking details theo trạng thái
   const filteredGroupedDetails = Object.keys(groupedDetails).reduce(
     (acc, childKey) => {
@@ -156,6 +181,30 @@ const BookingDetail = () => {
         </div>
       </div>
 
+      {showConfirmModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-2xl bg-opacity-30">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+            <h3 className="text-lg font-semibold mb-4">Xác nhận tiêm</h3>
+            <p className="text-gray-600 mb-6">
+              Bạn có chắc chắn muốn xác nhận tiêm không?
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                className="py-2 px-4 bg-gray-200 rounded-lg text-gray-700 hover:bg-gray-300"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={confirmAction}
+                className="py-2 px-4 bg-teal-600 rounded-lg text-white hover:bg-teal-700"
+              >
+                Xác nhận
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Main content - split into 3:5 ratio */}
       <div className="flex flex-1 max-w-7xl mx-auto w-full px-4 py-6 sm:px-6 lg:px-8">
         {/* Left sidebar - 3/8 width (Booking & Customer Info) */}
@@ -426,6 +475,7 @@ const BookingDetail = () => {
           )}
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
