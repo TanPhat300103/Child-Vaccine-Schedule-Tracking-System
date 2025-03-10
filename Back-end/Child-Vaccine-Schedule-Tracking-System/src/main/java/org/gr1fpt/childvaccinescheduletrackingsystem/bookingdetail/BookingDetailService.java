@@ -172,4 +172,8 @@ public class BookingDetailService {
             }
         }
     }
+    //hàm này phục vụ staff dashboard, chỉ lấy số liệu lên thôi
+    public List<BookingDetail> getAllBookingToday(){
+        return bookingDetailRepository.getBookingDetailsByScheduledDate(Date.valueOf(LocalDateTime.now().toLocalDate()));
+    }
 }

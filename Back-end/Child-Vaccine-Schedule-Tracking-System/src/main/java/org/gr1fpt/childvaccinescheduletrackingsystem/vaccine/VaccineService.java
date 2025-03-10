@@ -83,4 +83,8 @@ public class VaccineService {
     public List<Vaccine> findByNameContain(String name){
         return vaccineRepository.findByNameContaining(name);
     }
+
+    public long countActiveVaccine(){
+        return vaccineRepository.countByActive(true);
+    }
 }
