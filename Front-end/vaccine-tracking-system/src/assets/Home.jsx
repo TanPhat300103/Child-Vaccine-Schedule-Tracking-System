@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-
 import {
   FaBullhorn,
   FaBars,
@@ -19,23 +18,23 @@ import {
   FaUser,
   FaUserCircle,
   FaUserMd,
+  FaTimes,
 } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
 import { slides, benefits, process } from "../stores/homedata.jsx";
-
 import AgeVaccine from "../components/homepage/AgeVaccine.jsx";
 import Footer from "../components/common/Footer";
-import { useCart } from "../components/homepage/AddCart.jsx"; // Đảm bảo đúng đường dẫn đến CartContext
+import { useCart } from "../components/homepage/AddCart.jsx";
 import { getChildByCustomerId, getCustomerId } from "../apis/api.js";
 import { useAuth } from "../components/common/AuthContext.jsx";
 import PriceVaccine from "../components/homepage/PriceVaccine.jsx";
 import ComboVaccine from "../components/homepage/ComboVaccine.jsx";
-
 import { useTranslation } from "react-i18next";
 import { LogOut } from "lucide-react";
 import AgeVaccine2 from "../components/homepage/AgeVaccine2.jsx";
 import AgeVaccine3 from "../components/homepage/AgeVaccine3.jsx";
+import LanguageSwitcher from "../components/translate/LanguageSwitcher.jsx";
 
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -55,9 +54,10 @@ const Home = () => {
   const [childData, setChildData] = useState([]);
   const navigate = useNavigate();
   const UserId = localStorage.getItem("userId");
-
+  const [isHandbookOpen, setIsHandbookOpen] = useState(false); // Trạng thái cho dropdown "Cẩm nang" trong mobile
   localStorage.setItem("userId", userInfo.userId);
-  // cart
+
+  // Cart
   const cartItemCount = useMemo(() => {
     return Object.values(cart).reduce(
       (total, vaccine) => total + vaccine.quantity,
@@ -69,43 +69,41 @@ const Home = () => {
   const feedbackContainerRef = useRef(null);
   const animationRef = useRef(null);
   const [notifications, setNotifications] = useState([]);
+
   const handleCartClick = () => {
     navigate("/book-vaccine", {
-      state: { cartItems: cart }, // Truyền cart vào state
+      state: { cartItems: cart },
     });
   };
 
-  // check auth
+  // Check auth
   useEffect(() => {
     const checkAuthentication = async () => {
       const response = await fetch("http://localhost:8080/auth/myprofile", {
         method: "GET",
-        credentials: "include", // Gửi cookie/session
+        credentials: "include",
       });
       if (response.status === 401) {
-        setIsAuthenticated(false);
-        navigate("/login"); // Redirect if not authenticated
+        navigate("/login");
       }
     };
-
     checkAuthentication();
   }, []);
 
-  // navigate role
+  // Navigate role
   useEffect(() => {
     if (userInfo) {
       if (userInfo.authorities[0].authority === "ROLE_CUSTOMER") {
-        navigate("/home"); // Dẫn người dùng tới trang Home
+        navigate("/home");
       } else if (userInfo.authorities[0].authority === "ROLE_STAFF") {
-        navigate("/staff"); // Dẫn người dùng tới trang Staff
+        navigate("/staff");
       } else if (userInfo.authorities[0].authority === "ROLE_ADMIN") {
-        console.log("admin on");
-        navigate("/admin"); // Dẫn người dùng tới trang Admin
+        navigate("/admin");
       }
     }
-  }, [userInfo, navigate]); // Dependency array đảm bảo useEffect chỉ chạy khi userInfo thay đổi
+  }, [userInfo, navigate]);
 
-  // handle logout
+  // Handle logout
   const handleLogout = async () => {
     await logout();
     setIsUserMenuOpen(false);
@@ -113,20 +111,20 @@ const Home = () => {
     navigate("/");
   };
 
-  // take api customerByid
+  // Take API customerById
   useEffect(() => {
     const fetchCustomer = async () => {
       try {
         const data = await getCustomerId(userInfo.userId);
         setCustomerData(data);
-        console.log("customerdata: ", customerData);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu vắc xin:", error.message);
       }
     };
     fetchCustomer();
   }, []);
-  // take name
+
+  // Save name to localStorage
   useEffect(() => {
     if (customerData && customerData.firstName && customerData.lastName) {
       localStorage.setItem(
@@ -135,7 +133,8 @@ const Home = () => {
       );
     }
   }, [customerData]);
-  // Fetch feedback từ API
+
+  // Fetch feedbacks từ API
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
@@ -151,9 +150,10 @@ const Home = () => {
         console.error("Error fetching feedbacks:", error);
       }
     };
-
     fetchFeedbacks();
   }, []);
+
+  // Fetch notifications từ API
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
@@ -163,13 +163,9 @@ const Home = () => {
         });
         if (response.ok) {
           const data = await response.json();
-          // Lọc thông báo có roleId = 1 hoặc role.roleId = 1
-          console.log("notification: ", data[21].role.roleId);
           const filteredNotifications = data.filter(
             (notification) => notification.role?.roleId?.toString() === "1"
           );
-
-          // Sắp xếp theo ngày giảm dần
           filteredNotifications.sort(
             (a, b) => new Date(b.date) - new Date(a.date)
           );
@@ -179,28 +175,26 @@ const Home = () => {
         console.error("Error fetching notifications:", error);
       }
     };
-
     fetchNotifications();
   }, []);
+
   // Auto slide cho feedback
   useEffect(() => {
     if (feedbacks.length > 0) {
       const timer = setInterval(() => {
         setCurrentFeedbackSlide((prev) => (prev + 1) % feedbacks.length);
-      }, 5000); // Thay đổi slide mỗi 5 giây
+      }, 5000);
       return () => clearInterval(timer);
     }
   }, [feedbacks.length]);
+
   useEffect(() => {
     if (feedbacks.length === 0 || !feedbackContainerRef.current) return;
-
     const containerWidth = feedbackContainerRef.current.scrollWidth / 2;
-    const speed = 1; // Tốc độ scroll (px per frame)
-
+    const speed = 1;
     const animate = () => {
       setTranslateX((prev) => {
         const newX = prev - speed;
-        // Reset về 0 khi đi hết nửa đầu của container (vì đã nhân đôi data)
         if (Math.abs(newX) >= containerWidth) {
           return 0;
         }
@@ -208,16 +202,15 @@ const Home = () => {
       });
       animationRef.current = requestAnimationFrame(animate);
     };
-
     animationRef.current = requestAnimationFrame(animate);
-
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
     };
   }, [feedbacks]);
-  // take api childByCustomerId
+
+  // Take API childByCustomerId
   useEffect(() => {
     const fetchChild = async () => {
       try {
@@ -230,7 +223,7 @@ const Home = () => {
     fetchChild();
   }, []);
 
-  //move slides
+  // Move slides
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -238,7 +231,7 @@ const Home = () => {
     return () => clearInterval(timer);
   }, []);
 
-  //scroll to pricing
+  // Scroll to pricing
   const scrollToVaccinePricing = () => {
     if (vaccinePricingRef.current) {
       vaccinePricingRef.current.scrollIntoView({
@@ -248,7 +241,7 @@ const Home = () => {
     }
   };
 
-  //scroll to footer
+  // Scroll to footer
   const scrollToFooter = () => {
     if (footerRef.current) {
       footerRef.current.scrollIntoView({
@@ -258,24 +251,31 @@ const Home = () => {
     }
   };
 
+  const closeAllMenus = () => {
+    setIsUserMenuOpen(false);
+    setIsMobileMenuOpen(false);
+    setIsHandbookOpen(false);
+  };
+
   // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
   const getLatestCampaign = () => {
     const campaigns = notifications.filter(
       (notification) => notification.role && notification.role.roleId === 1
     );
     if (campaigns.length > 0) {
-      return campaigns[0]; // Lấy chiến dịch gần nhất
+      return campaigns[0];
     }
     return null;
   };
+
   const renderStars = (ranking) => {
     return (
       <div className="flex">
@@ -294,6 +294,7 @@ const Home = () => {
       </div>
     );
   };
+
   // Get customer data
   useEffect(() => {
     const fetchCustomer = async () => {
@@ -304,7 +305,6 @@ const Home = () => {
         console.error("Error fetching customer data:", error.message);
       }
     };
-
     if (UserId) fetchCustomer();
   }, [UserId]);
 
@@ -318,7 +318,6 @@ const Home = () => {
         console.error("Error fetching child data:", error.message);
       }
     };
-
     if (UserId) fetchChild();
   }, [UserId]);
 
@@ -339,9 +338,22 @@ const Home = () => {
       action: scrollToVaccinePricing,
     },
     {
-      name: "Liên hệ",
+      name: "Cẩm nang",
       icon: <FaInfo className="text-lg" />,
-      action: scrollToFooter,
+      dropdown: [
+        {
+          name: "Quy trình tiêm chủng",
+          action: () => navigate("/quytrinh"),
+        },
+        {
+          name: "Những lưu ý trước và sau khi tiêm chủng",
+          action: () => navigate("/luuy"),
+        },
+        {
+          name: "Những câu hỏi thường gặp",
+          action: () => navigate("/cauhoi"),
+        },
+      ],
     },
     {
       name: "Theo dõi",
@@ -356,7 +368,6 @@ const Home = () => {
 
   return (
     <div>
-      {" "}
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
         {/* Header */}
         <header
@@ -392,22 +403,38 @@ const Home = () => {
               {/* Desktop Navigation */}
               <nav className="hidden md:flex items-center space-x-6">
                 {navItems.map((item, index) => (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      item.action();
-                      closeAllMenus();
-                    }}
-                    className="group flex flex-col items-center text-gray-700 hover:text-blue-600 transition-colors"
-                  >
-                    <div className="p-2 rounded-full group-hover:bg-blue-50 transition-colors">
-                      {item.icon}
-                    </div>
-                    <span className="text-sm font-medium mt-1">
-                      {item.name}
-                    </span>
-                    <span className="block h-0.5 w-0 group-hover:w-full transition-all duration-300 bg-blue-600 mt-1" />
-                  </button>
+                  <div key={index} className="relative group">
+                    <button
+                      onClick={() => item.action && item.action()}
+                      className="group flex flex-col items-center text-gray-700 hover:text-blue-600 transition-colors"
+                    >
+                      <div className="p-2 rounded-full group-hover:bg-blue-50 transition-colors">
+                        {item.icon}
+                      </div>
+                      <span className="text-sm font-medium mt-1">
+                        {item.name}
+                      </span>
+                      <span className="block h-0.5 w-0 group-hover:w-full transition-all duration-300 bg-blue-600 mt-1" />
+                    </button>
+
+                    {/* Dropdown cho Cẩm nang */}
+                    {item.dropdown && (
+                      <div className="absolute left-0 mt-2 w-40 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                        {item.dropdown.map((subItem, subIndex) => (
+                          <button
+                            key={subIndex}
+                            onClick={() => {
+                              subItem.action();
+                              closeAllMenus();
+                            }}
+                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                          >
+                            {subItem.name}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 ))}
               </nav>
 
@@ -451,7 +478,6 @@ const Home = () => {
                   aria-label="Thông báo"
                 >
                   <FaBell className="text-lg" />
-                  {/* Notification badge */}
                   <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
                     2
                   </span>
@@ -476,7 +502,6 @@ const Home = () => {
                   {/* User Dropdown Menu */}
                   {isUserMenuOpen && (
                     <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden">
-                      {/* Header section */}
                       <div className="p-4 bg-gradient-to-r from-blue-50 to-teal-50 border-b border-gray-100">
                         <div className="flex items-center space-x-3">
                           <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-teal-400 rounded-full flex items-center justify-center text-white font-bold shadow-sm">
@@ -492,10 +517,7 @@ const Home = () => {
                           </div>
                         </div>
                       </div>
-
-                      {/* Menu items */}
                       <nav className="py-2">
-                        {/* Main profile */}
                         <button
                           onClick={() => {
                             navigate("/customer");
@@ -510,8 +532,6 @@ const Home = () => {
                             Hồ sơ của tôi
                           </span>
                         </button>
-
-                        {/* Child profiles */}
                         {childData.map((child) => (
                           <button
                             key={child.childId}
@@ -529,8 +549,6 @@ const Home = () => {
                             </span>
                           </button>
                         ))}
-
-                        {/* Add new child profile */}
                         <button
                           onClick={() => {
                             navigate("/customer/add-child");
@@ -545,8 +563,6 @@ const Home = () => {
                             Thêm hồ sơ mới cho con
                           </span>
                         </button>
-
-                        {/* Logout */}
                         <button
                           onClick={handleLogout}
                           className="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-red-50 transition duration-200 border-t border-gray-100 mt-1"
@@ -560,6 +576,7 @@ const Home = () => {
                     </div>
                   )}
                 </div>
+                <LanguageSwitcher />
               </div>
             </div>
 
@@ -570,21 +587,45 @@ const Home = () => {
                   {/* Navigation Items */}
                   <div className="grid grid-cols-3 gap-2 p-4 border-b border-gray-100">
                     {navItems.map((item, index) => (
-                      <button
-                        key={index}
-                        onClick={() => {
-                          item.action();
-                          closeAllMenus();
-                        }}
-                        className="flex flex-col items-center p-3 rounded-lg hover:bg-blue-50 transition-colors"
-                      >
-                        <div className="w-10 h-10 flex items-center justify-center bg-blue-100 rounded-full text-blue-600 mb-2">
-                          {item.icon}
-                        </div>
-                        <span className="text-xs font-medium text-gray-700">
-                          {item.name}
-                        </span>
-                      </button>
+                      <div key={index}>
+                        <button
+                          onClick={() => {
+                            if (item.dropdown) {
+                              setIsHandbookOpen(!isHandbookOpen);
+                            } else {
+                              item.action();
+                              closeAllMenus();
+                            }
+                          }}
+                          className="flex flex-col items-center p-3 rounded-lg hover:bg-blue-50 transition-colors"
+                        >
+                          <div className="w-10 h-10 flex items-center justify-center bg-blue-100 rounded-full text-blue-600 mb-2">
+                            {item.icon}
+                          </div>
+                          <span className="text-xs font-medium text-gray-700">
+                            {item.name}
+                          </span>
+                        </button>
+                        {/* Hiển thị dropdown trên mobile */}
+                        {item.dropdown &&
+                          isHandbookOpen &&
+                          item.name === "Cẩm nang" && (
+                            <div className="col-span-3 bg-gray-50 p-2 rounded-lg">
+                              {item.dropdown.map((subItem, subIndex) => (
+                                <button
+                                  key={subIndex}
+                                  onClick={() => {
+                                    subItem.action();
+                                    closeAllMenus();
+                                  }}
+                                  className="w-full text-left p-2 text-sm text-gray-700 hover:bg-blue-50"
+                                >
+                                  {subItem.name}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                      </div>
                     ))}
                   </div>
 
@@ -603,8 +644,6 @@ const Home = () => {
                         </p>
                       </div>
                     </div>
-
-                    {/* Action buttons */}
                     <div className="grid grid-cols-4 gap-2">
                       <button
                         onClick={() => {
@@ -620,7 +659,6 @@ const Home = () => {
                           Hồ sơ
                         </span>
                       </button>
-
                       <button
                         onClick={() => {
                           navigate("/customer/add-child");
@@ -635,7 +673,6 @@ const Home = () => {
                           Thêm con
                         </span>
                       </button>
-
                       <button
                         onClick={() => {
                           navigate("/bell");
@@ -653,7 +690,6 @@ const Home = () => {
                           Thông báo
                         </span>
                       </button>
-
                       <button
                         onClick={() => {
                           navigate("/cart");
@@ -669,8 +705,6 @@ const Home = () => {
                         </span>
                       </button>
                     </div>
-
-                    {/* Child profiles section */}
                     {childData.length > 0 && (
                       <div className="mt-4 pt-4 border-t border-gray-200">
                         <h4 className="text-sm font-semibold text-gray-600 mb-3">
@@ -697,13 +731,8 @@ const Home = () => {
                         </div>
                       </div>
                     )}
-
-                    {/* Logout button */}
                     <button
-                      onClick={() => {
-                        navigate("/");
-                        closeAllMenus();
-                      }}
+                      onClick={handleLogout}
                       className="w-full flex items-center justify-center space-x-2 mt-4 p-3 rounded-lg bg-red-50 hover:bg-red-100 transition-colors"
                     >
                       <FaSignOutAlt className="text-red-600" />
@@ -717,6 +746,7 @@ const Home = () => {
             )}
           </div>
         </header>
+
         {/* Banner */}
         <motion.section className="relative h-screen overflow-hidden">
           <motion.div
@@ -757,13 +787,11 @@ const Home = () => {
               </div>
             ))}
           </motion.div>
-
-          {/* Dots for Slide Navigation */}
           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-6">
             {slides.map((_, index) => (
               <div
                 key={index}
-                onClick={() => setCurrentSlide(index)} // Set current slide on click
+                onClick={() => setCurrentSlide(index)}
                 className={`w-5 h-5 rounded-full cursor-pointer ${
                   currentSlide === index ? "bg-blue-600" : "bg-gray-400"
                 } transition-colors duration-300`}
@@ -771,6 +799,7 @@ const Home = () => {
             ))}
           </div>
         </motion.section>
+
         {/* Benefit */}
         <motion.section className="py-20 bg-white">
           <div className="container mx-auto px-4">
@@ -804,6 +833,7 @@ const Home = () => {
             </div>
           </div>
         </motion.section>
+
         {/* Quality */}
         <motion.section className="py-20 bg-white">
           <div className="container mx-auto px-4">
@@ -854,14 +884,14 @@ const Home = () => {
             </div>
           </div>
         </motion.section>
+
         {/* Combo Vaccine */}
-        <AgeVaccine3></AgeVaccine3>
+        <AgeVaccine3 />
 
         {/* Price Vaccine */}
         <motion.section className="py-20 bg-white" ref={vaccinePricingRef}>
-          <PriceVaccine></PriceVaccine>
+          <PriceVaccine />
         </motion.section>
-        {/* Age Vaccine */}
 
         {/* Processing */}
         <section className="py-20 bg-blue-50">
@@ -874,7 +904,6 @@ const Home = () => {
             >
               Phụ Huynh Nói Gì
             </motion.h2>
-
             {feedbacks.length > 0 ? (
               <div className="overflow-hidden">
                 <motion.div
@@ -918,6 +947,7 @@ const Home = () => {
             )}
           </div>
         </section>
+
         {/* Latest News */}
         <motion.section className="py-20 bg-white">
           <div className="container mx-auto px-4">
@@ -929,9 +959,7 @@ const Home = () => {
             >
               Tin Tức Mới Nhất
             </motion.h2>
-
             <div className="grid md:grid-cols-2 gap-8">
-              {/* Hiển thị 2 thông báo gần nhất */}
               {notifications.slice(0, 2).map((notification, index) => (
                 <motion.div
                   key={notification.id}
@@ -954,8 +982,6 @@ const Home = () => {
                 </motion.div>
               ))}
             </div>
-
-            {/* Thiết kế lại Chiến dịch Marketing Gần Nhất */}
             {getLatestCampaign() && (
               <motion.div
                 initial={{ y: 20, opacity: 0 }}
@@ -966,29 +992,21 @@ const Home = () => {
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center">
-                    {/* Icon tiêm chủng hoặc trẻ em */}
                     <FaSyringe className="text-teal-600 text-3xl mr-4" />
                     <h3 className="text-2xl font-semibold text-teal-800">
                       Chiến Dịch Tiêm Chủng Gần Nhất
                     </h3>
                   </div>
-                  {/* Badge nổi bật */}
                   <span className="bg-green-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
                     Mới
                   </span>
                 </div>
-
-                {/* Tiêu đề chiến dịch */}
                 <p className="text-xl font-medium text-blue-700 mb-3 bg-blue-50 p-3 rounded-lg">
                   {getLatestCampaign().tittle}
                 </p>
-
-                {/* Nội dung chiến dịch */}
                 <p className="text-gray-700 mb-4 leading-relaxed">
                   {getLatestCampaign().message}
                 </p>
-
-                {/* Thông tin bổ sung */}
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-gray-500">
                     Ngày:{" "}
@@ -996,18 +1014,15 @@ const Home = () => {
                       {getLatestCampaign().date}
                     </span>
                   </p>
-                  {/* Nút kêu gọi hành động */}
                   <button className="bg-teal-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-teal-700 transition-colors duration-300">
                     Tìm Hiểu Thêm
                   </button>
                 </div>
-
-                {/* Hình ảnh minh họa nhỏ */}
-                <div className="mt-4 flex justify-end"></div>
               </motion.div>
             )}
           </div>
         </motion.section>
+
         {/* Footer */}
         <section ref={footerRef}>
           <Footer />

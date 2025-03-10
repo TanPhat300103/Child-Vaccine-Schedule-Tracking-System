@@ -4,6 +4,7 @@
   margin: 0 auto;
   padding: 0 24px;
   background: #e6e8ff;
+
 }
 
 /* Hero Section */
@@ -15,6 +16,7 @@
   border-bottom: 1px solid #e2e8f0;
   overflow: hidden;
   clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
+   
 }
 
 .back-button {
@@ -35,6 +37,7 @@
   text-decoration: none;
   transition: all 0.3s ease;
   z-index: 2;
+  
 }
 
 .back-button:hover {
