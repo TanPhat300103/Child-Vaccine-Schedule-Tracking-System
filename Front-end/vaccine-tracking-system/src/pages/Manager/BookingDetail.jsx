@@ -1,8 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { getBookingDetailsByBookID, confirmBooking } from "../../apis/api";
-import { CalendarIcon, UserIcon, DollarSignIcon, PhoneIcon, MailIcon, CheckCircleIcon, ClockIcon, AlertCircleIcon, MapPinIcon, ShieldIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import {
+  CalendarIcon,
+  UserIcon,
+  DollarSignIcon,
+  PhoneIcon,
+  MailIcon,
+  CheckCircleIcon,
+  ClockIcon,
+  AlertCircleIcon,
+  MapPinIcon,
+  ShieldIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+} from "lucide-react";
 
 const BookingDetail = () => {
   const { bookingId } = useParams();
@@ -11,10 +27,14 @@ const BookingDetail = () => {
   const [groupedDetails, setGroupedDetails] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   // State cho dropdown
   const [isBookingInfoOpen, setIsBookingInfoOpen] = useState(true); // Mặc định mở
   const [isCustomerInfoOpen, setIsCustomerInfoOpen] = useState(true); // Mặc định mở
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [detailIdToConfirm, setDetailIdToConfirm] = useState(null);
 
   // State cho bộ lọc trạng thái
   const [statusFilter, setStatusFilter] = useState("all"); // "all", "administered", "notAdministered"
@@ -26,7 +46,7 @@ const BookingDetail = () => {
       if (detailsData.length > 0) {
         setBooking(detailsData[0].booking);
       }
-      
+
       const groups = detailsData.reduce((acc, detail) => {
         const childKey = detail.child.firstName + " " + detail.child.lastName;
         if (!acc[childKey]) {
@@ -47,18 +67,26 @@ const BookingDetail = () => {
     fetchBookingData();
   }, [bookingId]);
 
-  const handleConfirm = async (detailId) => {
+  const handleConfirm = (detailId) => {
+    setDetailIdToConfirm(detailId);
+    setShowConfirmModal(true);
+  };
+
+  const confirmAction = async () => {
+    setShowConfirmModal(false);
+    const loadingToast = toast.loading("Đang xử lý xác nhận tiêm...");
+
     try {
-      const updatedDetail = await confirmBooking(detailId);
+      const updatedDetail = await confirmBooking(detailIdToConfirm);
       setBookingDetails((prevDetails) =>
         prevDetails.map((detail) =>
-          detail.bookingDetailId === detailId ? updatedDetail : detail
+          detail.bookingDetailId === detailIdToConfirm ? updatedDetail : detail
         )
       );
-      
+
       const updatedGroups = bookingDetails
         .map((detail) =>
-          detail.bookingDetailId === detailId ? updatedDetail : detail
+          detail.bookingDetailId === detailIdToConfirm ? updatedDetail : detail
         )
         .reduce((acc, detail) => {
           const childKey = detail.child.firstName + " " + detail.child.lastName;
@@ -69,53 +97,77 @@ const BookingDetail = () => {
           return acc;
         }, {});
       setGroupedDetails(updatedGroups);
+
+      toast.update(loadingToast, {
+        render: "Xác nhận tiêm thành công",
+        type: "success",
+        isLoading: false,
+        autoClose: 2000,
+      });
     } catch (error) {
       console.error("Error confirming booking detail:", error);
+      toast.update(loadingToast, {
+        render: "Xác nhận tiêm thất bại. Vui lòng thử lại.",
+        type: "error",
+        isLoading: false,
+        autoClose: 2000,
+      });
     }
   };
-
   // Lọc booking details theo trạng thái
-  const filteredGroupedDetails = Object.keys(groupedDetails).reduce((acc, childKey) => {
-    const filteredDetails = groupedDetails[childKey].filter((detail) => {
-      const isAdministered = !!detail.administeredDate;
-      if (statusFilter === "all") return true;
-      if (statusFilter === "administered") return isAdministered;
-      if (statusFilter === "notAdministered") return !isAdministered;
-      return true;
-    });
+  const filteredGroupedDetails = Object.keys(groupedDetails).reduce(
+    (acc, childKey) => {
+      const filteredDetails = groupedDetails[childKey].filter((detail) => {
+        const isAdministered = !!detail.administeredDate;
+        if (statusFilter === "all") return true;
+        if (statusFilter === "administered") return isAdministered;
+        if (statusFilter === "notAdministered") return !isAdministered;
+        return true;
+      });
 
-    if (filteredDetails.length > 0) {
-      acc[childKey] = filteredDetails;
-    }
-    return acc;
-  }, {});
+      if (filteredDetails.length > 0) {
+        acc[childKey] = filteredDetails;
+      }
+      return acc;
+    },
+    {}
+  );
 
-  if (loading) return (
-    <div className="flex items-center justify-center min-h-screen bg-blue-50">
-      <div className="text-center">
-        <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-        <p className="mt-4 text-lg text-blue-800">Đang tải thông tin đặt lịch...</p>
+  if (loading)
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-blue-50">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4 text-lg text-blue-800">
+            Đang tải thông tin đặt lịch...
+          </p>
+        </div>
       </div>
-    </div>
-  );
-  
-  if (error) return (
-    <div className="flex items-center justify-center min-h-screen bg-blue-50">
-      <div className="bg-white p-8 rounded-lg shadow-md max-w-md">
-        <AlertCircleIcon className="text-red-500 w-12 h-12 mx-auto mb-4" />
-        <p className="text-center text-red-500 text-lg font-medium">{error}</p>
+    );
+
+  if (error)
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-blue-50">
+        <div className="bg-white p-8 rounded-lg shadow-md max-w-md">
+          <AlertCircleIcon className="text-red-500 w-12 h-12 mx-auto mb-4" />
+          <p className="text-center text-red-500 text-lg font-medium">
+            {error}
+          </p>
+        </div>
       </div>
-    </div>
-  );
-  
-  if (!booking) return (
-    <div className="flex items-center justify-center min-h-screen bg-blue-50">
-      <div className="bg-white p-8 rounded-lg shadow-md max-w-md">
-        <AlertCircleIcon className="text-orange-500 w-12 h-12 mx-auto mb-4" />
-        <p className="text-center text-gray-700 text-lg font-medium">Không tìm thấy thông tin đặt lịch.</p>
+    );
+
+  if (!booking)
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-blue-50">
+        <div className="bg-white p-8 rounded-lg shadow-md max-w-md">
+          <AlertCircleIcon className="text-orange-500 w-12 h-12 mx-auto mb-4" />
+          <p className="text-center text-gray-700 text-lg font-medium">
+            Không tìm thấy thông tin đặt lịch.
+          </p>
+        </div>
       </div>
-    </div>
-  );
+    );
 
   return (
     <div className="min-h-screen bg-blue-50 flex flex-col">
@@ -123,12 +175,36 @@ const BookingDetail = () => {
       <div className="bg-white border-b border-blue-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <h1 className="text-2xl font-bold text-blue-800 flex items-center">
-            <ShieldIcon className="mr-2" /> 
+            <ShieldIcon className="mr-2" />
             Chi Tiết Lịch Tiêm Chủng
           </h1>
         </div>
       </div>
-      
+
+      {showConfirmModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-2xl bg-opacity-30">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+            <h3 className="text-lg font-semibold mb-4">Xác nhận tiêm</h3>
+            <p className="text-gray-600 mb-6">
+              Bạn có chắc chắn muốn xác nhận tiêm không?
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                className="py-2 px-4 bg-gray-200 rounded-lg text-gray-700 hover:bg-gray-300"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={confirmAction}
+                className="py-2 px-4 bg-teal-600 rounded-lg text-white hover:bg-teal-700"
+              >
+                Xác nhận
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Main content - split into 3:5 ratio */}
       <div className="flex flex-1 max-w-7xl mx-auto w-full px-4 py-6 sm:px-6 lg:px-8">
         {/* Left sidebar - 3/8 width (Booking & Customer Info) */}
@@ -141,7 +217,7 @@ const BookingDetail = () => {
                 <span className="font-bold">#{booking.bookingId}</span>
               </div>
             </div>
-            
+
             {/* Booking info section with dropdown */}
             <div className="border-b border-gray-100">
               <button
@@ -163,17 +239,21 @@ const BookingDetail = () => {
                   <ul className="space-y-3 text-sm">
                     <li className="flex justify-between">
                       <span className="text-gray-500">Ngày đặt:</span>
-                      <span className="font-medium">{format(new Date(booking.bookingDate), "dd/MM/yyyy")}</span>
+                      <span className="font-medium">
+                        {format(new Date(booking.bookingDate), "dd/MM/yyyy")}
+                      </span>
                     </li>
                     <li className="flex justify-between">
                       <span className="text-gray-500">Tổng tiền:</span>
-                      <span className="font-medium text-green-600">{booking.totalAmount.toLocaleString()} VNĐ</span>
+                      <span className="font-medium text-green-600">
+                        {booking.totalAmount.toLocaleString()} VNĐ
+                      </span>
                     </li>
                   </ul>
                 </div>
               )}
             </div>
-            
+
             {/* Customer info section with dropdown */}
             <div>
               <button
@@ -195,11 +275,15 @@ const BookingDetail = () => {
                   <div className="space-y-3 text-sm">
                     <div>
                       <div className="text-gray-500 mb-1">Họ và tên</div>
-                      <div className="font-medium">{booking.customer.firstName} {booking.customer.lastName}</div>
+                      <div className="font-medium">
+                        {booking.customer.firstName} {booking.customer.lastName}
+                      </div>
                     </div>
                     <div>
                       <div className="text-gray-500 mb-1">Mã khách hàng</div>
-                      <div className="font-medium">#{booking.customer.customerId}</div>
+                      <div className="font-medium">
+                        #{booking.customer.customerId}
+                      </div>
                     </div>
                     <div>
                       <div className="text-gray-500 mb-1">Số điện thoại</div>
@@ -212,7 +296,9 @@ const BookingDetail = () => {
                       <div className="text-gray-500 mb-1">Email</div>
                       <div className="font-medium flex items-center overflow-hidden text-ellipsis">
                         <MailIcon className="w-3 h-3 mr-1 text-gray-400 flex-shrink-0" />
-                        <span className="truncate">{booking.customer.email}</span>
+                        <span className="truncate">
+                          {booking.customer.email}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -221,7 +307,7 @@ const BookingDetail = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Main content area - 5/8 width (Booking Details) */}
         <div className="w-5/8">
           {/* Status Filter (moved back to right column) */}
@@ -256,15 +342,30 @@ const BookingDetail = () => {
             >
               Chưa Tiêm
             </button>
+            <div className="ml-auto">
+              <button
+                onClick={() => navigate(-1)}
+                className={`w-40 px-4 py-4 rounded-full text-sm font-medium transition duration-150 shadow-sm ${
+                  statusFilter === "notAdministered"
+                    ? "bg-blue-100 text-amber-900"
+                    : "bg-amber-200 text-blue-900 hover:bg-blue-200"
+                }`}
+              >
+                Quay Lại
+              </button>
+            </div>
           </div>
 
           {Object.keys(filteredGroupedDetails).length > 0 ? (
             <div className="space-y-6">
               {Object.keys(filteredGroupedDetails).map((childKey) => (
-                <div key={childKey} className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div
+                  key={childKey}
+                  className="bg-white rounded-lg shadow-md overflow-hidden"
+                >
                   <div className="bg-blue-600 text-white px-6 py-4 flex items-center justify-between">
                     <h2 className="text-lg font-semibold flex items-center">
-                      <UserIcon className="mr-2" /> 
+                      <UserIcon className="mr-2" />
                       {childKey}
                     </h2>
                     <span className="bg-blue-500 px-3 py-1 rounded-full text-sm">
@@ -278,47 +379,68 @@ const BookingDetail = () => {
                         <div
                           key={detail.bookingDetailId}
                           className={`border rounded-lg overflow-hidden flex flex-col sm:flex-row sm:items-center sm:justify-between ${
-                            isAdministered ? "border-green-200" : "border-blue-200"
+                            isAdministered
+                              ? "border-green-200"
+                              : "border-blue-200"
                           }`}
                         >
-                          <div className={`px-4 py-3 flex items-center justify-between sm:w-1/3 ${
-                            isAdministered ? "bg-green-50" : "bg-blue-50"
-                          }`}>
-                            <div className="font-medium text-gray-800">{detail.vaccine.name}</div>
-                            <div className={`text-xs inline-flex items-center px-2 py-1 rounded-full ${
-                              isAdministered 
-                                ? "bg-green-100 text-green-800" 
-                                : "bg-blue-100 text-blue-800"
-                            }`}>
-                              {isAdministered 
-                                ? <CheckCircleIcon className="w-3 h-3 mr-1" /> 
-                                : <ClockIcon className="w-3 h-3 mr-1" />
-                              }
+                          <div
+                            className={`px-4 py-3 flex items-center justify-between sm:w-1/3 ${
+                              isAdministered ? "bg-green-50" : "bg-blue-50"
+                            }`}
+                          >
+                            <div className="font-medium text-gray-800">
+                              {detail.vaccine.name}
+                            </div>
+                            <div
+                              className={`text-xs inline-flex items-center px-2 py-1 rounded-full ${
+                                isAdministered
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-blue-100 text-blue-800"
+                              }`}
+                            >
+                              {isAdministered ? (
+                                <CheckCircleIcon className="w-3 h-3 mr-1" />
+                              ) : (
+                                <ClockIcon className="w-3 h-3 mr-1" />
+                              )}
                               {isAdministered ? "Đã tiêm" : "Chưa tiêm"}
                             </div>
                           </div>
                           <div className="p-4 flex-1 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0 sm:space-x-4">
                             <div className="flex-1 flex flex-col sm:flex-row sm:space-x-4">
                               <div className="flex-1">
-                                <div className="text-xs text-gray-500 mb-1">Ngày dự kiến</div>
+                                <div className="text-xs text-gray-500 mb-1">
+                                  Ngày dự kiến
+                                </div>
                                 <div className="text-sm flex items-center">
                                   <CalendarIcon className="w-3 h-3 mr-1 text-blue-400" />
-                                  {format(new Date(detail.scheduledDate), "dd/MM/yyyy")}
+                                  {format(
+                                    new Date(detail.scheduledDate),
+                                    "dd/MM/yyyy"
+                                  )}
                                 </div>
                               </div>
                               {isAdministered && (
                                 <div className="flex-1">
-                                  <div className="text-xs text-gray-500 mb-1">Ngày tiêm</div>
+                                  <div className="text-xs text-gray-500 mb-1">
+                                    Ngày tiêm
+                                  </div>
                                   <div className="text-sm flex items-center">
                                     <CheckCircleIcon className="w-3 h-3 mr-1 text-green-500" />
-                                    {format(new Date(detail.administeredDate), "dd/MM/yyyy")}
+                                    {format(
+                                      new Date(detail.administeredDate),
+                                      "dd/MM/yyyy"
+                                    )}
                                   </div>
                                 </div>
                               )}
                             </div>
                             {detail.feedback && (
                               <div className="sm:w-1/3">
-                                <div className="text-xs text-gray-500 mb-1">Ghi chú</div>
+                                <div className="text-xs text-gray-500 mb-1">
+                                  Ghi chú
+                                </div>
                                 <div className="text-sm italic text-gray-600">
                                   "{detail.feedback}"
                                 </div>
@@ -326,7 +448,9 @@ const BookingDetail = () => {
                             )}
                             {!isAdministered && (
                               <button
-                                onClick={() => handleConfirm(detail.bookingDetailId)}
+                                onClick={() =>
+                                  handleConfirm(detail.bookingDetailId)
+                                }
                                 className="w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md flex items-center justify-center transition duration-150"
                               >
                                 <CheckCircleIcon className="w-4 h-4 mr-2" />
@@ -344,11 +468,14 @@ const BookingDetail = () => {
           ) : (
             <div className="bg-white rounded-lg shadow-md p-6 text-center">
               <AlertCircleIcon className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-              <p className="text-gray-500">Không có chi tiết đặt lịch nào phù hợp.</p>
+              <p className="text-gray-500">
+                Không có chi tiết đặt lịch nào phù hợp.
+              </p>
             </div>
           )}
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

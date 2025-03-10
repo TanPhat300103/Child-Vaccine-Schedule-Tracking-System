@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getChildByCustomerId, getCustomerId } from "../../apis/api";
+import LanguageSwitcher from "../translate/LanguageSwitcher";
+
 import {
   FaSyringe,
   FaCalendarCheck,
@@ -328,6 +330,7 @@ const Header = () => {
                 </div>
               )}
             </div>
+            <LanguageSwitcher></LanguageSwitcher>
           </div>
         </div>
 

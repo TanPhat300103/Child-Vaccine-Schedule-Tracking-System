@@ -17,6 +17,7 @@ const Payments = () => {
   const [paymentSearchText, setPaymentSearchText] = useState("");
   const [paymentSearchFilter, setPaymentSearchFilter] = useState("bookingId"); // 'bookingId', 'date', 'transactionId'
 
+  const [isLoading, setIsLoading] = useState(false);
   // State hiển thị modal xác nhận thanh toán
   const [confirmModal, setConfirmModal] = useState({
     show: false,
@@ -52,6 +53,30 @@ const Payments = () => {
         setCoupons(response.data);
       })
       .catch((error) => console.error("Error fetching coupons:", error));
+  }, []);
+
+  // **Thêm useEffect để lắng nghe sự kiện popstate**
+  useEffect(() => {
+    const handlePopState = (event) => {
+      if (event.state) {
+        if (event.state.step === 1) {
+          // Quay về bước 2: danh sách hóa đơn của khách hàng
+          setSelectedCustomer(event.state.customerId);
+          setSelectedPayment(null);
+        } else if (event.state.step === 0) {
+          // Quay về bước 1: danh sách khách hàng
+          setSelectedCustomer(null);
+          setSelectedPayment(null);
+        }
+      } else {
+        // Nếu không có state (trang trước Payments), có thể xử lý tùy ý
+        setSelectedCustomer(null);
+        setSelectedPayment(null);
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
   // Nhóm payments theo customerId
@@ -116,9 +141,24 @@ const Payments = () => {
   const handleCustomerSelect = (customerId) => {
     setSelectedCustomer(customerId);
     setSelectedPayment(null);
+    window.history.pushState({ step: 1, customerId }, "", window.location.href);
   };
 
-  // Khi chuyển đổi filter (Chưa thanh toán / Đã thanh toán)
+  // **Thêm hàm handlePaymentSelect để đẩy state khi chọn hóa đơn**
+  const handlePaymentSelect = (payment) => {
+    setSelectedPayment(payment);
+    window.history.pushState(
+      { step: 2, customerId: selectedCustomer, paymentId: payment.paymentId },
+      "",
+      window.location.href
+    );
+  };
+
+  // **Sửa nút Quay Lại để dùng window.history.back()**
+  const handleBack = () => {
+    window.history.back();
+  };
+
   const handleFilterChange = (filter) => {
     setPaymentFilter(filter);
     setSelectedPayment(null);
@@ -163,11 +203,7 @@ const Payments = () => {
     // Coupon hợp lệ, cập nhật payment
     axios
       .post("http://localhost:8080/payment/update", null, {
-        params: {
-          paymentId,
-          coupon: couponCode,
-          method: false,
-        },
+        params: { paymentId, coupon: couponCode, method: false },
         withCredentials: true,
       })
       .then(() => {
@@ -187,26 +223,42 @@ const Payments = () => {
   };
 
   // Xử lý khi xác nhận thanh toán
+  // Ví dụ hàm validate coupon (theo tiêu chí: coupon phải là chữ in hoa và số, độ dài từ 1 đến 99 ký tự)// Hàm validate coupon (cho phép chữ hoa và chữ thường, số; độ dài từ 5 đến 10 ký tự)
+  function isCouponValid(coupon) {
+    const regex = /^[A-Za-z0-9]{1,99}$/;
+    return regex.test(coupon);
+  }
+
+  // Xử lý khi xác nhận thanh toán
   const confirmPayment = () => {
     const { paymentId } = confirmModal;
+    // Ẩn modal xác nhận
     setConfirmModal({ show: false, paymentId: null });
 
-    toast.info("Đang Thanh Toán...", { autoClose: 3000 });
+    // Lấy coupon hiện tại và validate (nếu có)
+    const coupon = selectedPayment?.marketingCampaign?.coupon?.trim() || "";
+    if (coupon && !isCouponValid(coupon)) {
+      toast.error("Coupon không hợp lệ");
+      return;
+    }
+
+    // Bật trạng thái loading để disable các thao tác giao diện
+    setIsLoading(true);
+
+    // Hiển thị toast loading
+    const loadingToast = toast.loading("Đang xử lý thanh toán...");
+
     axios
       .post("http://localhost:8080/payment/update", null, {
-        params: {
-          paymentId,
-          coupon: selectedPayment?.marketingCampaign?.coupon || "", // Gửi coupon hiện tại nếu có, nếu không thì null
-          method: false,
-        },
+        params: { paymentId, coupon, method: false },
         withCredentials: true,
       })
       .then((response) => {
-        console.log("Nhận response từ POST /payment/update:", response.data);
-        const { VNPAYURL } = response.data;
-        if (VNPAYURL) {
-          window.location.href = VNPAYURL;
-        } else {
+        const data = response.data;
+        console.log("Nhận response từ POST /payment/update:", data);
+
+        // Nếu nhận được trường message với giá trị "COD" thì xử lý COD
+        if (data.message === "COD") {
           // Làm mới danh sách payments
           axios
             .get("http://localhost:8080/payment", { withCredentials: true })
@@ -215,11 +267,39 @@ const Payments = () => {
               setSelectedPayment(null);
             })
             .catch((err) => console.error("Error refreshing payments:", err));
+
+          toast.update(loadingToast, {
+            render: "Thanh Toán Thành Công",
+            type: "success",
+            isLoading: false,
+            autoClose: 3000,
+          });
+        } else if (data.VNPAYURL) {
+          // Trường hợp online (nếu có)
+          window.location.href = data.VNPAYURL;
+        } else {
+          // Xử lý lỗi hoặc response không mong đợi
+          toast.update(loadingToast, {
+            render: data.message || "Thanh toán thất bại. Vui lòng thử lại.",
+            type: "error",
+            isLoading: false,
+            autoClose: 3000,
+          });
         }
       })
       .catch((error) => {
-        toast.error("Lỗi khi xác nhận thanh toán");
         console.error("Error updating payment:", error);
+        toast.update(loadingToast, {
+          render:
+            error.response?.data?.message ||
+            "Đã có lỗi xảy ra. Vui lòng thử lại.",
+          type: "error",
+          isLoading: false,
+          autoClose: 3000,
+        });
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -255,7 +335,7 @@ const Payments = () => {
             Chi tiết thanh toán
           </h3>
           <button
-            onClick={() => setSelectedPayment(null)}
+            onClick={handleBack} // **Sửa thành handleBack**
             className="flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full p-2 transition-all duration-200"
           >
             <svg
@@ -334,7 +414,6 @@ const Payments = () => {
               </div>
             </div>
           </div>
-
           <div className="space-y-6">
             <div className="bg-blue-50 rounded-lg p-4">
               <h4 className="text-lg font-semibold text-blue-700 mb-3 flex items-center">
@@ -377,7 +456,6 @@ const Payments = () => {
                 </div>
               </div>
             </div>
-
             <div className="bg-indigo-50 rounded-lg p-4">
               <h4 className="text-lg font-semibold text-indigo-700 mb-3 flex items-center">
                 <svg
@@ -790,7 +868,7 @@ const Payments = () => {
                   <div
                     key={payment.paymentId}
                     className="bg-white rounded-xl shadow-sm p-5 hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-100 hover:border-teal-200"
-                    onClick={() => setSelectedPayment(payment)}
+                    onClick={() => handlePaymentSelect(payment)} // **Sửa thành handlePaymentSelect**
                   >
                     <div className="flex justify-between items-center">
                       <div className="space-y-1">

@@ -120,11 +120,11 @@ const StaffPage = () => {
           {/* Sidebar */}
           <aside
             className={`
-              ${sidebarOpen ? "w-72" : "w-20"}
-              bg-gradient-to-r from-[#4169E1] via-[#5A7ED7] to-[#6495ED]
-              text-white font-bold transition-all duration-300 ease-in-out
-              fixed h-screen z-20 border border-[#4169E1]
-            `}
+    ${sidebarOpen ? "w-72" : "w-20"}
+    bg-gradient-to-r from-[#4169E1] via-[#5A7ED7] to-[#6495ED]
+    text-white font-bold transition-all duration-300 ease-in-out
+    fixed h-screen z-20 border border-[#4169E1] overflow-y-auto
+  `}
           >
             {/* Logo & Brand */}
             {sidebarOpen ? (
@@ -404,28 +404,6 @@ const StaffPage = () => {
                 </li>
               </ul>
             </nav>
-
-            {/* Bottom Section (Settings) */}
-            <div className="absolute bottom-0 w-full p-4 border-t border-[#4169E1]">
-              <NavLink
-                to="/staff/settings"
-                className={({ isActive }) =>
-                  `relative flex items-center px-4 py-3 rounded-lg transition-all duration-200 group ${
-                    isActive ? "bg-[#4F39F6]" : "hover:bg-[#4169E1] shadow-sm"
-                  }`
-                }
-              >
-                <FiSettings
-                  className={`w-6 h-6 ${!sidebarOpen && "mx-auto"}`}
-                />
-                {sidebarOpen && <span className="ml-3">Cài đặt</span>}
-                {!sidebarOpen && (
-                  <span className="absolute left-full rounded-md px-2 py-1 ml-6 bg-[#4169E1] text-white text-sm invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
-                    Cài đặt
-                  </span>
-                )}
-              </NavLink>
-            </div>
           </aside>
 
           {/* Header */}
