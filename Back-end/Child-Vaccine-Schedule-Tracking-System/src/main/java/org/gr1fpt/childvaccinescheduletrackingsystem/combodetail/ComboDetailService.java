@@ -1,11 +1,13 @@
 package org.gr1fpt.childvaccinescheduletrackingsystem.combodetail;
 
 import org.gr1fpt.childvaccinescheduletrackingsystem.exception.CustomException;
+import org.gr1fpt.childvaccinescheduletrackingsystem.vaccine.Vaccine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,6 +27,14 @@ public class ComboDetailService {
     public ComboDetail create(ComboDetail comboDetail) {
       comboDetail.setComboDetailId(generateId());
       return comboDetailRepository.save(comboDetail);
+    }
+
+    public String addListVaccineIntoCombo(List<ComboDetail> comboList){
+        for(ComboDetail comboDetail : comboList){
+            comboDetail.setComboDetailId(generateId());
+            comboDetailRepository.save(comboDetail);
+        }
+        return "OK";
     }
 
     public Optional<ComboDetail> findById(String id) {

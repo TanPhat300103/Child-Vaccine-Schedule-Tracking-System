@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("combodetail")
 @CrossOrigin(origins = "*")
@@ -22,6 +24,11 @@ public class ComboDetailController {
     public ComboDetail create (@RequestBody @Valid ComboDetail comboDetail)
     {
         return comboDetailService.create(comboDetail);
+    }
+
+    @PostMapping("add")
+    public String add(@RequestBody @Valid List<ComboDetail> comboList){
+        return comboDetailService.addListVaccineIntoCombo(comboList);
     }
 
     @GetMapping("findid")
