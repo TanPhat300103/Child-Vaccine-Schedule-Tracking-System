@@ -20,7 +20,7 @@ const LanguageSwitcher = () => {
     };
   }, []);
 
-  // Định nghĩa các ngôn ngữ hỗ trợ
+  // navItems ngon ngu
   const languages = [
     { code: "en", name: "English", flag: "🇺🇸" },
     { code: "vi", name: "Tiếng Việt", flag: "🇻🇳" },

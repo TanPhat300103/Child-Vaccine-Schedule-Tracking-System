@@ -5,7 +5,7 @@ const Notification = ({ roleId }) => {
   const [notifications, setNotifications] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  // Hàm gọi API để lấy danh sách thông báo theo roleId
+  // lay api notification by id
   const fetchNotifications = async () => {
     try {
       const response = await fetch(
@@ -22,7 +22,7 @@ const Notification = ({ roleId }) => {
     }
   };
 
-  // Gọi API ngay khi component được mount và định kỳ mỗi 30 giây
+  // lay api notification 30s
   useEffect(() => {
     fetchNotifications();
     const intervalId = setInterval(fetchNotifications, 30000);

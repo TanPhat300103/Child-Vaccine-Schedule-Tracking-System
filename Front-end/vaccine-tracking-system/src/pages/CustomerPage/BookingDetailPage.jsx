@@ -3,29 +3,24 @@ import { useParams, useNavigate, NavLink } from "react-router-dom";
 import "../CustomerPage/BookingDetailPage.css";
 import {
   Calendar,
-  Shield,
-  DollarSign,
   ChevronDown,
   ChevronUp,
   Syringe,
-  User,
-  BookOpen,
-  CreditCard,
   CheckCircle,
   XCircle,
   Save,
-  PlusCircle,
 } from "lucide-react";
 import { useAuth } from "../../components/common/AuthContext";
 import Header from "../../components/common/Header";
 import Footer from "../../components/common/Footer";
 import { FiCalendar, FiLogOut, FiPlusCircle, FiUser } from "react-icons/fi";
 import { AiOutlineHistory } from "react-icons/ai";
+import { fetchChildren } from "../../apis/api";
 
 function BookingDetailPage() {
-  const { bookingId } = useParams();
   const navigate = useNavigate();
   const { userInfo } = useAuth();
+  const { bookingId } = useParams();
   const [booking, setBooking] = useState(null);
   const [bookingDetails, setBookingDetails] = useState([]);
   const [bookings, setBookings] = useState([]);
@@ -38,6 +33,8 @@ function BookingDetailPage() {
   const [reactionNote, setReactionNote] = useState("");
   const [children, setChildren] = useState([]);
   const customerId = userInfo?.userId;
+
+  // lay api children by customer id
   const loadChildrenData = async (customerId) => {
     try {
       const response = await fetchChildren(customerId);
@@ -54,6 +51,7 @@ function BookingDetailPage() {
     }
   };
 
+  // lay api customer va booking
   useEffect(() => {
     const fetchData = async () => {
       if (!userInfo?.userId) {
@@ -158,6 +156,7 @@ function BookingDetailPage() {
     setReactionNote(e.target.value);
   };
 
+  // xu ly api update reaction
   const updateReaction = async (detailId) => {
     try {
       const response = await fetch(

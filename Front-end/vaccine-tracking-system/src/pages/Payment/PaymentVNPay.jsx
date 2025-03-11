@@ -5,17 +5,14 @@ import { useAuth } from "../../components/common/AuthContext";
 import { getMarketing, getPaymentByBookingID } from "../../apis/api";
 import Footer from "../../components/common/Footer";
 import Header from "../../components/common/Header";
-
-// Import icons
 import {
   CreditCard,
   CheckCircle,
   ChevronRight,
-  ArrowRight,
   Percent,
   Receipt,
 } from "lucide-react";
-import { FaHandPaper, FaMoneyBill, FaSpinner } from "react-icons/fa";
+import { FaHandPaper, FaSpinner } from "react-icons/fa";
 
 const PaymentVnpay = () => {
   const [paymentMethod, setPaymentMethod] = useState(null);
@@ -29,7 +26,6 @@ const PaymentVnpay = () => {
   const [discount, setDiscount] = useState(0);
   const [coupon, setCoupon] = useState(null);
   const [isCouponValid, setIsCouponValid] = useState(false);
-
   const navigate = useNavigate();
   const { userInfo } = useAuth();
 
@@ -45,7 +41,6 @@ const PaymentVnpay = () => {
   };
 
   const bookingDataFromStorage = getBookingData();
-
   const bookingDetails = {
     bookingId: bookingDataFromStorage?.bookingId || "",
     customerName: localStorage.getItem("userName") || "",
@@ -98,7 +93,7 @@ const PaymentVnpay = () => {
     },
   ];
 
-  // Fetch marketing data
+  // lay api marketing
   useEffect(() => {
     const fetchMarketing = async () => {
       try {
@@ -111,7 +106,7 @@ const PaymentVnpay = () => {
     fetchMarketing();
   }, []);
 
-  // Fetch payment data
+  // lay api payment by booking id
   useEffect(() => {
     if (bookingDataFromStorage?.bookingId) {
       const fetchPaymentData = async () => {
@@ -131,11 +126,9 @@ const PaymentVnpay = () => {
   // Form validation
   const validateForm = () => {
     const newErrors = {};
-
     if (paymentMethod === "online" && !selectedBank) {
       newErrors.bank = "Vui lòng chọn ngân hàng";
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -146,13 +139,10 @@ const PaymentVnpay = () => {
       toast.error("Vui lòng nhập mã giảm giá");
       return;
     }
-
     setIsValidatingCoupon(true);
-
     const foundCoupon = marketingData.find(
       (item) => item.coupon === couponCode
     );
-
     setTimeout(() => {
       if (foundCoupon) {
         setDiscount(foundCoupon.discount);
@@ -174,17 +164,14 @@ const PaymentVnpay = () => {
   const discountAmount = Math.round((totalAmount * discount) / 100);
   const finalAmount = totalAmount - discountAmount;
 
-  // Handle form submission
+  // xu ly api submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validateForm()) {
       return;
     }
-
     setIsLoading(true);
     const loadingToast = toast.loading("Đang xử lý thanh toán...");
-
     try {
       const params = {
         paymentId: paymentData?.paymentId,

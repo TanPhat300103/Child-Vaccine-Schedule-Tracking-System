@@ -7,6 +7,7 @@ export function AuthProvider({ children }) {
   const [userInfo, setUserInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // lay api userInfo dang nhap
   const checkLoginStatus = async () => {
     setIsLoading(true);
     try {
@@ -44,6 +45,7 @@ export function AuthProvider({ children }) {
     await checkLoginStatus();
   };
 
+  // xu ly dang xuay cookie
   const logout = async () => {
     try {
       const response = await fetch("http://localhost:8080/logout", {

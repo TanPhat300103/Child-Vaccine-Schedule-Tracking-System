@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const AgeVaccine2 = () => {
+const AgeVaccineApp = () => {
   const [combos, setCombos] = useState([]);
   const [selectedCombo, setSelectedCombo] = useState(null);
   const [comboDetails, setComboDetails] = useState([]);
@@ -494,4 +494,4 @@ const AgeVaccine2 = () => {
   );
 };
 
-export default AgeVaccine2;
+export default AgeVaccineApp;

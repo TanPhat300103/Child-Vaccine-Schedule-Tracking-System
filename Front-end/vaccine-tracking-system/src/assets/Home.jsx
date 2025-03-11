@@ -3,59 +3,50 @@ import {
   FaBullhorn,
   FaBars,
   FaBell,
-  FaBoxOpen,
-  FaCalendarAlt,
   FaCalendarCheck,
   FaChartLine,
   FaChild,
-  FaHome,
   FaInfo,
-  FaPhoneAlt,
   FaPlusCircle,
   FaShoppingCart,
   FaSignOutAlt,
   FaSyringe,
-  FaUser,
   FaUserCircle,
   FaUserMd,
   FaTimes,
 } from "react-icons/fa";
-import { AnimatePresence, motion } from "framer-motion";
-import { useLocation, useNavigate } from "react-router-dom";
-import { slides, benefits, process } from "../stores/homedata.jsx";
-import AgeVaccine from "../components/homepage/AgeVaccine.jsx";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { slides, benefits } from "../stores/homedata.jsx";
 import Footer from "../components/common/Footer";
 import { useCart } from "../components/homepage/AddCart.jsx";
 import { getChildByCustomerId, getCustomerId } from "../apis/api.js";
 import { useAuth } from "../components/common/AuthContext.jsx";
-import PriceVaccine from "../components/homepage/PriceVaccine.jsx";
-import ComboVaccine from "../components/homepage/ComboVaccine.jsx";
-import { useTranslation } from "react-i18next";
-import { LogOut } from "lucide-react";
-import AgeVaccine2 from "../components/homepage/AgeVaccine2.jsx";
-import AgeVaccine3 from "../components/homepage/AgeVaccine3.jsx";
+import PriceVaccineHome from "../components/homepage/PriceVaccineHome.jsx";
+import AgeVaccineHome from "../components/homepage/AgeVaccineHome.jsx";
 import LanguageSwitcher from "../components/translate/LanguageSwitcher.jsx";
 
 const Home = () => {
+  const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const vaccinePricingRef = useRef(null);
   const footerRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { userInfo } = useAuth();
-  const { i18n } = useTranslation();
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [currentFeedbackSlide, setCurrentFeedbackSlide] = useState(false);
+  const [isHandbookOpen, setIsHandbookOpen] = useState(false);
   const [customerData, setCustomerData] = useState({
     firstName: "",
     lastName: "",
   });
+  const [childData, setChildData] = useState([]);
   const { cart } = useCart();
   const { logout } = useAuth();
-  const [childData, setChildData] = useState([]);
-  const navigate = useNavigate();
-  const UserId = localStorage.getItem("userId");
-  const [isHandbookOpen, setIsHandbookOpen] = useState(false); // Trạng thái cho dropdown "Cẩm nang" trong mobile
+  const { userInfo } = useAuth();
+
   localStorage.setItem("userId", userInfo.userId);
 
   // if (userInfo) {
@@ -68,7 +59,7 @@ const Home = () => {
   //   // Nếu là ROLE_CUSTOMER hoặc không có vai trò khác, tiếp tục render trang Home
   // }
 
-  // Cart
+  // gio hang
   const cartItemCount = useMemo(() => {
     return Object.values(cart).reduce(
       (total, vaccine) => total + vaccine.quantity,
@@ -80,51 +71,13 @@ const Home = () => {
   const feedbackContainerRef = useRef(null);
   const animationRef = useRef(null);
   const [notifications, setNotifications] = useState([]);
-
   const handleCartClick = () => {
     navigate("/book-vaccine", {
       state: { cartItems: cart },
     });
   };
 
-  // Check auth
-  useEffect(() => {
-    const checkAuthentication = async () => {
-      const response = await fetch("http://localhost:8080/auth/myprofile", {
-        method: "GET",
-        credentials: "include",
-      });
-      if (response.status === 401) {
-        navigate("/login");
-      }
-    };
-    checkAuthentication();
-  }, []);
-
-  // Navigate role
-  useEffect(() => {
-    if (userInfo) {
-      const role = userInfo.authorities[0].authority;
-      if (role === "ROLE_STAFF") {
-        navigate("/staff");
-      } else if (role === "ROLE_ADMIN") {
-        navigate("/admin");
-      }
-      setIsLoading(false); // Chỉ tắt loading khi đã xác định vai trò
-    } else {
-      setIsLoading(false); // Nếu không có userInfo, vẫn tắt loading để render Home
-    }
-  }, [userInfo, navigate]);
-
-  // Handle logout
-  const handleLogout = async () => {
-    await logout();
-    setIsUserMenuOpen(false);
-    setCustomerData(null);
-    navigate("/");
-  };
-
-  // Take API customerById
+  // lay api customer
   useEffect(() => {
     const fetchCustomer = async () => {
       try {
@@ -137,17 +90,7 @@ const Home = () => {
     fetchCustomer();
   }, []);
 
-  // Save name to localStorage
-  useEffect(() => {
-    if (customerData && customerData.firstName && customerData.lastName) {
-      localStorage.setItem(
-        "userName",
-        customerData.firstName + " " + customerData.lastName
-      );
-    }
-  }, [customerData]);
-
-  // Fetch feedbacks từ API
+  // lay api feedback
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
@@ -166,7 +109,7 @@ const Home = () => {
     fetchFeedbacks();
   }, []);
 
-  // Fetch notifications từ API
+  // lay api notification
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
@@ -190,6 +133,66 @@ const Home = () => {
     };
     fetchNotifications();
   }, []);
+
+  // lay api child
+  useEffect(() => {
+    const fetchChild = async () => {
+      try {
+        const data = await getChildByCustomerId(userInfo.userId);
+        setChildData(data);
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu vắc xin:", error.message);
+      }
+    };
+    fetchChild();
+  }, []);
+
+  // Check auth
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      const response = await fetch("http://localhost:8080/auth/myprofile", {
+        method: "GET",
+        credentials: "include",
+      });
+      if (response.status === 401) {
+        navigate("/login");
+      }
+    };
+    checkAuthentication();
+  }, []);
+
+  // chuyen trang
+  useEffect(() => {
+    if (userInfo) {
+      const role = userInfo.authorities[0].authority;
+      if (role === "ROLE_STAFF") {
+        navigate("/staff");
+      } else if (role === "ROLE_ADMIN") {
+        navigate("/admin");
+      }
+      setIsLoading(false); // Chỉ tắt loading khi đã xác định vai trò
+    } else {
+      setIsLoading(false); // Nếu không có userInfo, vẫn tắt loading để render Home
+    }
+  }, [userInfo, navigate]);
+
+  // xu ly dang xuat
+  const handleLogout = async () => {
+    await logout();
+    setIsUserMenuOpen(false);
+    setCustomerData(null);
+    navigate("/");
+  };
+
+  // Save name to localStorage
+  useEffect(() => {
+    if (customerData && customerData.firstName && customerData.lastName) {
+      localStorage.setItem(
+        "userName",
+        customerData.firstName + " " + customerData.lastName
+      );
+    }
+  }, [customerData]);
 
   // Auto slide cho feedback
   useEffect(() => {
@@ -222,19 +225,6 @@ const Home = () => {
       }
     };
   }, [feedbacks]);
-
-  // Take API childByCustomerId
-  useEffect(() => {
-    const fetchChild = async () => {
-      try {
-        const data = await getChildByCustomerId(userInfo.userId);
-        setChildData(data);
-      } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu vắc xin:", error.message);
-      }
-    };
-    fetchChild();
-  }, []);
 
   // Move slides
   useEffect(() => {
@@ -307,32 +297,6 @@ const Home = () => {
       </div>
     );
   };
-
-  // Get customer data
-  useEffect(() => {
-    const fetchCustomer = async () => {
-      try {
-        const data = await getCustomerId(UserId);
-        setCustomerData(data);
-      } catch (error) {
-        console.error("Error fetching customer data:", error.message);
-      }
-    };
-    if (UserId) fetchCustomer();
-  }, [UserId]);
-
-  // Get child data
-  useEffect(() => {
-    const fetchChild = async () => {
-      try {
-        const data = await getChildByCustomerId(UserId);
-        setChildData(data);
-      } catch (error) {
-        console.error("Error fetching child data:", error.message);
-      }
-    };
-    if (UserId) fetchChild();
-  }, [UserId]);
 
   const navItems = [
     {
@@ -899,11 +863,11 @@ const Home = () => {
         </motion.section>
 
         {/* Combo Vaccine */}
-        <AgeVaccine3 />
+        <AgeVaccineHome />
 
         {/* Price Vaccine */}
         <motion.section className="py-20 bg-white" ref={vaccinePricingRef}>
-          <PriceVaccine />
+          <PriceVaccineHome />
         </motion.section>
 
         {/* Processing */}

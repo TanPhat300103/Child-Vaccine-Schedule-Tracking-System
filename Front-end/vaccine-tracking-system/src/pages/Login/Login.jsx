@@ -23,12 +23,11 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
   const navigate = useNavigate();
   const { checkLoginStatus } = useAuth();
   const otpRefs = useRef([]);
 
-  // Xử lý đăng nhập
+  // Xử lý api submit đăng nhập
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -77,15 +76,14 @@ const Login = () => {
     }
   };
 
-  // Xử lý đăng nhập bằng Google
+  // Xử lý api submit đăng nhập bằng Google
   const handleGoogleLogin = () => {
     setIsLoading(true);
     setError("");
-
     window.location.href = "http://localhost:8080/oauth2/authorization/google";
   };
 
-  // Gửi yêu cầu OTP
+  // xu ly api gui otp
   const handleForgotPasswordSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -115,7 +113,7 @@ const Login = () => {
     }
   };
 
-  // Xử lý resend OTP
+  // Xử lý api resend OTP
   const handleResendOtp = async () => {
     if (resendCooldown > 0) return;
     setIsLoading(true);
@@ -145,7 +143,7 @@ const Login = () => {
     }
   };
 
-  // Xử lý xác nhận OTP
+  // Xử lý api xác nhận OTP
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -179,7 +177,7 @@ const Login = () => {
     }
   };
 
-  // Xử lý đặt lại mật khẩu
+  // Xử lý api reset đặt lại mật khẩu
   const handleResetPasswordSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -228,7 +226,7 @@ const Login = () => {
     }
   };
 
-  // Xử lý thay đổi giá trị trong ô OTP
+  // Xử lý api thay đổi giá trị trong ô OTP
   const handleOtpChange = (e, index) => {
     const value = e.target.value;
     if (/^\d$/.test(value) || value === "") {

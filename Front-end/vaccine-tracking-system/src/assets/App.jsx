@@ -1,21 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   FaBars,
-  FaBell,
-  FaBoxOpen,
-  FaCalendarAlt,
   FaCalendarCheck,
-  FaChartLine,
   FaChild,
-  FaHome,
   FaInfo,
-  FaPhoneAlt,
-  FaPlusCircle,
-  FaShoppingCart,
-  FaSignOutAlt,
   FaSyringe,
   FaUser,
-  FaUserCircle,
   FaUserMd,
   FaHospital,
   FaHeartbeat,
@@ -23,18 +13,16 @@ import {
   FaStethoscope,
   FaMedkit,
   FaCheck,
-  FaSearch,
-  FaMapMarkerAlt,
   FaComments,
   FaRegClock,
   FaUserPlus,
 } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { slides, benefits, process } from "../stores/homedata.jsx";
+import { slides } from "../stores/homedata.jsx";
 import Footer from "../components/common/Footer";
-import PriceVaccineGuest from "../components/homepage/PriceVaccineGuest.jsx";
-import AgeVaccine2 from "../components/homepage/AgeVaccine2.jsx";
+import PriceVaccineApp from "../components/homepage/PriceVaccineApp.jsx";
+import AgeVaccineApp from "../components/homepage/AgeVaccineApp.jsx";
 import LanguageSwitcher from "../components/translate/LanguageSwitcher.jsx";
 
 const App = () => {
@@ -45,20 +33,12 @@ const App = () => {
   const feedbackContainerRef = useRef(null);
   const [translateX, setTranslateX] = useState(0);
   const animationRef = useRef(null);
-  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isHandbookOpen, setIsHandbookOpen] = useState(false); // Thêm trạng thái cho dropdown "Cẩm nang" trong mobile
+  const navigate = useNavigate();
 
-  // Move slides
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, []);
-
-  // Fetch feedback từ API
+  // lay api feedback
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
@@ -76,6 +56,14 @@ const App = () => {
     };
 
     fetchFeedbacks();
+  }, []);
+
+  // Move slides
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 4000);
+    return () => clearInterval(timer);
   }, []);
 
   // Auto scroll feedback
@@ -762,11 +750,11 @@ const App = () => {
       </section>
 
       {/* Age Vaccine */}
-      <AgeVaccine2 />
+      <AgeVaccineApp />
 
       {/* Price Vaccine */}
       <motion.section className="py-20 bg-white" ref={vaccinePricingRef}>
-        <PriceVaccineGuest />
+        <PriceVaccineApp />
       </motion.section>
 
       {/* Process Section */}

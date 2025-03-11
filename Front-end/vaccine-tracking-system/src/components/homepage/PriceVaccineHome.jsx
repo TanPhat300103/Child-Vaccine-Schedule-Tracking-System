@@ -41,7 +41,7 @@ const CustomSlider = styled(Slider)(`
   }
 `);
 
-const PriceVaccine = () => {
+const PriceVaccineHome = () => {
   const [pricePackages, setPricePackages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
@@ -687,4 +687,4 @@ const PriceVaccine = () => {
   );
 };
 
-export default PriceVaccine;
+export default PriceVaccineHome;

@@ -19,6 +19,7 @@ function PaymentReturnPage() {
   const [loading, setLoading] = useState(true);
   const [showConfetti, setShowConfetti] = useState(false);
 
+  //
   useEffect(() => {
     const handlePaymentResult = () => {
       const queryParams = new URLSearchParams(location.search);
@@ -55,13 +56,10 @@ function PaymentReturnPage() {
       } else {
         result.paymentId = "unknown";
       }
-
       setPaymentResult(result);
-
       if (result.status === "SUCCESS") {
         setShowConfetti(true);
       }
-
       setLoading(false);
     };
 

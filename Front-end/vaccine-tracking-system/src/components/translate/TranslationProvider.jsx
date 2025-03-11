@@ -9,6 +9,7 @@ export const TranslationProvider = ({ children }) => {
   const [language, setLanguage] = useState("vi");
   const [isLoaded, setIsLoaded] = useState(false);
 
+  // goi script google translate api
   useEffect(() => {
     const addGoogleTranslateScript = () => {
       const script = document.createElement("script");

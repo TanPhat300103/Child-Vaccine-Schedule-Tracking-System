@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getChildByCustomerId, getCustomerId } from "../../apis/api";
 import LanguageSwitcher from "../translate/LanguageSwitcher";
-
 import {
   FaSyringe,
   FaCalendarCheck,
@@ -29,20 +28,9 @@ const Header = () => {
   });
   const [childData, setChildData] = useState([]);
   const navigate = useNavigate();
-
   const UserId = localStorage.getItem("userId");
 
-  // Handle scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Get customer and child data
+  // lay api customer
   useEffect(() => {
     const fetchData = async () => {
       if (UserId) {
@@ -60,6 +48,16 @@ const Header = () => {
 
     fetchData();
   }, [UserId]);
+
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Navigation functions
   const scrollToVaccinePricing = () => {

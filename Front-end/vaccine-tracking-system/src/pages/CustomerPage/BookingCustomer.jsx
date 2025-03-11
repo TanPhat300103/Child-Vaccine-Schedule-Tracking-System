@@ -32,10 +32,9 @@ function BookingCustomer() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [ratingFilter, setRatingFilter] = useState("all");
   const [sortBy, setSortBy] = useState("date-desc");
-  const ratingA = null;
-  const ratingB = null;
+  let ratingA, ratingB;
 
-  // Hàm xử lý filtered và sorted bookings
+  // xu ly filter loc
   const filteredBookings = useMemo(() => {
     let result = [...bookings];
 
@@ -88,6 +87,7 @@ function BookingCustomer() {
     return result;
   }, [bookings, feedbacks, searchTerm, statusFilter, ratingFilter, sortBy]);
 
+  // lay api customer
   useEffect(() => {
     const fetchData = async () => {
       if (!userInfo?.userId) {
@@ -165,6 +165,7 @@ function BookingCustomer() {
     setShowDetailModal(true);
   };
 
+  // xu ly api submit feedback
   const handleSubmitFeedback = async () => {
     if (!selectedBookingId || rating === 0) return;
 
@@ -194,6 +195,7 @@ function BookingCustomer() {
     }
   };
 
+  // xu ly api update feedback
   const handleUpdateFeedback = async () => {
     if (!selectedBookingId || editRating === 0) return;
 

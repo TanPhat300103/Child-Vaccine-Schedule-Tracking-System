@@ -11,8 +11,7 @@ import {
 } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 
-// PriceVaccineGuest Component
-const PriceVaccineGuest = () => {
+const PriceVaccineApp = () => {
   const [pricePackages, setPricePackages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -53,7 +52,9 @@ const PriceVaccineGuest = () => {
     const fetchVaccineData = async () => {
       try {
         setLoading(true);
-        const data = await getVaccineDetailByVaccineId(selectedVaccine.vaccineId);
+        const data = await getVaccineDetailByVaccineId(
+          selectedVaccine.vaccineId
+        );
         if (data?.length > 0) {
           setVaccineData(data[0]);
         }
@@ -250,7 +251,10 @@ const PriceVaccineGuest = () => {
           </div>
 
           {/* Reset Filters Button (only visible if filters are applied) */}
-          {(selectedCountry || minPrice > 0 || maxPrice < 3000000 || searchQuery) && (
+          {(selectedCountry ||
+            minPrice > 0 ||
+            maxPrice < 3000000 ||
+            searchQuery) && (
             <button
               onClick={resetFilters}
               className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center shadow-sm hover:shadow-md"
@@ -305,22 +309,32 @@ const PriceVaccineGuest = () => {
                   onClick={() => openModal(vaccine)}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-md font-semibold text-gray-800">{vaccine.name}</h3>
+                    <h3 className="text-md font-semibold text-gray-800">
+                      {vaccine.name}
+                    </h3>
                     <span className="text-blue-600 font-bold text-md">
                       {vaccine.price.toLocaleString()} VND
                     </span>
                   </div>
-                  <p className="text-gray-600 text-sm mb-2 line-clamp-2">{vaccine.description}</p>
+                  <p className="text-gray-600 text-sm mb-2 line-clamp-2">
+                    {vaccine.description}
+                  </p>
                   <div className="flex items-center justify-between text-sm mb-2">
-                    <span className={`px-2 py-1 rounded-full ${getBadgeColor(vaccine.country)}`}>
+                    <span
+                      className={`px-2 py-1 rounded-full ${getBadgeColor(
+                        vaccine.country
+                      )}`}
+                    >
                       {vaccine.country}
                     </span>
                     <span className="text-gray-500 flex items-center">
-                      <FaSyringe className="mr-1 text-sm" /> {vaccine.doseNumber} liều
+                      <FaSyringe className="mr-1 text-sm" />{" "}
+                      {vaccine.doseNumber} liều
                     </span>
                   </div>
                   <div className="flex items-center text-sm text-gray-500">
-                    <FaChild className="mr-1 text-sm" /> {vaccine.ageMin}-{vaccine.ageMax} tuổi
+                    <FaChild className="mr-1 text-sm" /> {vaccine.ageMin}-
+                    {vaccine.ageMax} tuổi
                   </div>
                 </motion.div>
               ))}
@@ -352,31 +366,42 @@ const PriceVaccineGuest = () => {
                 <FaTimes className="text-xl" />
               </button>
 
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">{vaccineData?.vaccine.name}</h3>
+              <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                {vaccineData?.vaccine.name}
+              </h3>
               <div className="flex items-center space-x-2 mb-4">
                 <FaChild className="text-blue-500" />
                 <span className="text-gray-600 text-sm">
-                  Độ tuổi: {vaccineData?.vaccine.ageMin} - {vaccineData?.vaccine.ageMax} tuổi
+                  Độ tuổi: {vaccineData?.vaccine.ageMin} -{" "}
+                  {vaccineData?.vaccine.ageMax} tuổi
                 </span>
               </div>
               <div className="text-blue-600 font-bold text-lg mb-4">
                 {vaccineData?.vaccine.price.toLocaleString()} VND
               </div>
-              <p className="text-gray-600 mb-4">{vaccineData?.vaccine.description}</p>
+              <p className="text-gray-600 mb-4">
+                {vaccineData?.vaccine.description}
+              </p>
               <div className="space-y-3 mb-6">
                 <div className="flex items-center justify-between">
                   <span className="text-gray-700 text-sm flex items-center">
                     <FaSyringe className="mr-2 text-blue-500" />
                     Số liều:
                   </span>
-                  <span className="font-medium">{vaccineData?.vaccine.doseNumber}</span>
+                  <span className="font-medium">
+                    {vaccineData?.vaccine.doseNumber}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-gray-700 text-sm flex items-center">
                     <FaGlobe className="mr-2 text-blue-500" />
                     Quốc gia:
                   </span>
-                  <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getBadgeColor(vaccineData?.vaccine.country)}`}>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-semibold ${getBadgeColor(
+                      vaccineData?.vaccine.country
+                    )}`}
+                  >
                     {vaccineData?.vaccine.country}
                   </span>
                 </div>
@@ -392,7 +417,9 @@ const PriceVaccineGuest = () => {
                     <FaUserClock className="mr-2 text-blue-500" />
                     Dung sai:
                   </span>
-                  <span className="font-medium">±{vaccineData?.tolerance} ngày</span>
+                  <span className="font-medium">
+                    ±{vaccineData?.tolerance} ngày
+                  </span>
                 </div>
               </div>
             </motion.div>
@@ -403,4 +430,4 @@ const PriceVaccineGuest = () => {
   );
 };
 
-export default PriceVaccineGuest;
+export default PriceVaccineApp;

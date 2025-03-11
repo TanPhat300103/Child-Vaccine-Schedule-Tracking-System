@@ -2,11 +2,9 @@ import React, { useState } from "react";
 import {
   FaUser,
   FaPhone,
-  FaMapMarkerAlt,
   FaLock,
   FaEnvelope,
   FaCalendarAlt,
-  FaWallet,
   FaEye,
   FaEyeSlash,
   FaArrowLeft,
@@ -35,7 +33,7 @@ const Register = () => {
     agreeToTerms: false,
   });
 
-  // Check validate data
+  // Check validattion
   const validateForm = () => {
     const newErrors = {};
     if (!formData.firstName) newErrors.firstName = "Họ không được để trống";
@@ -71,7 +69,7 @@ const Register = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Submit and handle API
+  // xu ly api submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {

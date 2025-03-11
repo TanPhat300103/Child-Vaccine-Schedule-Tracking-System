@@ -5,32 +5,26 @@ const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState({});
 
+  // them vao gio hang
   const addToCart = (vaccine) => {
     setCart((prevCart) => {
       const updatedCart = { ...prevCart };
-
-      // Kiểm tra nếu vaccine đã có trong giỏ hàng
       if (updatedCart[vaccine.vaccineId]) {
-        // Nếu có, tăng số lượng (quantity)
         updatedCart[vaccine.vaccineId].quantity += 1;
       } else {
-        // Nếu chưa có, thêm vaccine mới vào giỏ hàng và set số lượng = 1
         updatedCart[vaccine.vaccineId] = { ...vaccine, quantity: 1 };
       }
-
       return updatedCart;
     });
   };
 
+  // xoa khoi gio hang
   const removeFromCart = (vaccineId) => {
     setCart((prevCart) => {
       const updatedCart = { ...prevCart };
-
-      // Nếu vaccine đã có trong giỏ hàng và số lượng lớn hơn 1, giảm số lượng đi 1
       if (updatedCart[vaccineId] && updatedCart[vaccineId].quantity > 1) {
         updatedCart[vaccineId].quantity -= 1;
       } else {
-        // Nếu số lượng là 1 hoặc không còn vaccine này, xóa khỏi giỏ hàng
         delete updatedCart[vaccineId];
       }
 
@@ -39,7 +33,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const clearCart = () => {
-    setCart({}); // Xóa toàn bộ giỏ hàng
+    setCart({});
   };
 
   return (

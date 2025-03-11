@@ -5,8 +5,6 @@ import { ToastContainer } from "react-toastify";
 import { CartProvider } from "../components/homepage/AddCart";
 import { AuthProvider } from "../components/common/AuthContext.jsx";
 import App from "./App.jsx";
-
-import ErrorBoundary from "../components/common/ErrorBoundary.jsx";
 import "./index.css";
 
 // Trang home
@@ -40,9 +38,7 @@ import PaymentReturnPage from "../pages/Payment/PaymentReturnPage.jsx";
 import AdminPage from "../pages/AdminPage/AdminPage.jsx";
 import Staffs from "../pages/AdminPage/Staffs.jsx";
 import Dashboard from "../pages/AdminPage/Dasboard.jsx";
-import Feedback from "../pages/Feedback/Feedback.jsx";
 import QuyTrinh from "../pages/CamNang/QuyTrinh.jsx";
-
 import Overview from "../components/homepage/OverviewPage.jsx";
 
 // Vaccines
@@ -50,20 +46,12 @@ import Vaccines from "../pages/Manager/Vaccines.jsx";
 import VaccineDetail from "../pages/Manager/VaccineDetail.jsx";
 import VaccineCombos from "../pages/Manager/VaccineCombos.jsx";
 import ComboDetail from "../pages/Manager/ComboDetail.jsx";
-import DetailVaccine from "../pages/Vaccination/DetailVaccine.jsx";
-import StatusVaccine from "../pages/Vaccination/StatusVaccine.jsx";
-import ReactVaccine from "../pages/Vaccination/ReactVaccine.jsx";
-import SpecificVaccine from "../pages/Vaccination/SpecificVaccine.jsx";
-import SpecificCombo from "../pages/Vaccination/SpecificCombo.jsx";
-import DetailVaccine2 from "../pages/Vaccination/DetailVaccine2.jsx";
-import ReactVaccine2 from "../pages/Vaccination/ReactVaccine2.jsx";
 import BookVaccine from "../pages/Vaccination/BookVaccine.jsx";
-import PriceVaccine from "../components/homepage/PriceVaccine.jsx";
-import ComboVaccine from "../components/homepage/ComboVaccine.jsx";
 import CauHoi from "../pages/CamNang/CauHoi.jsx";
 import LuuY from "../pages/CamNang/LuuY.jsx";
 import Chatbox from "../components/chatbox/chatbox.jsx";
 import { TranslationProvider } from "../components/translate/TranslationProvider.jsx";
+
 const Main = () => {
   return (
     <StrictMode>
@@ -84,18 +72,8 @@ const Main = () => {
                 <Route path="/terms-of-service" element={<TermsOfService />} />
                 <Route path="/privacy-policy" element={<Policy />} />
                 <Route path="/book-vaccine" element={<BookVaccine />} />
-                <Route path="/detail-vaccine" element={<DetailVaccine />} />
-                <Route path="/detail-vaccine2" element={<DetailVaccine2 />} />
-                <Route path="/status-vaccine" element={<StatusVaccine />} />
-                <Route path="/react-vaccine" element={<ReactVaccine />} />
-                <Route path="/react-vaccine2" element={<ReactVaccine2 />} />
-                <Route path="/specific-vaccine" element={<SpecificVaccine />} />
-                <Route path="/specific-combo" element={<SpecificCombo />} />
 
                 {/* Các route mới từ main */}
-
-                <Route path="/feedback" element={<Feedback />} />
-                <Route path="/price-vaccine" element={<PriceVaccine />} />
                 <Route path="/header" element={<Header />} />
                 <Route path="/footer" element={<Footer />} />
                 <Route path="/auth" element={<AuthProvider />} />
@@ -109,7 +87,6 @@ const Main = () => {
                 <Route path="/cauhoi" element={<CauHoi />} />
                 <Route path="/luuy" element={<LuuY />} />
                 <Route path="/payment-return" element={<PaymentReturnPage />} />
-                <Route path="/combo-vaccine" element={<ComboVaccine />} />
                 <Route path="/customer" element={<CustomerPage />}>
                   <Route path="child/:childId" element={<Child />} />
                   <Route path="add-child" element={<AddChild />} />
