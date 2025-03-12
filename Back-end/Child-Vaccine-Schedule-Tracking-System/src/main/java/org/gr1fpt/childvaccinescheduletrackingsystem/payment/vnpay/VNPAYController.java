@@ -18,7 +18,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 @RestController
@@ -86,6 +88,7 @@ public class VNPAYController  {
             Payment payment = paymentService.getPaymentById(paymentId);
             payment.setTransactionId(vnp_TransactionNo);
             payment.setStatus(true);
+            payment.setDate(Date.valueOf(LocalDate.now()));
             applicationEventPublisher.publishEvent(payment);
 
             Notification notification = new Notification();

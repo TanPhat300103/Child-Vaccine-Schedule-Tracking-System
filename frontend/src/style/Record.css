@@ -1,0 +1,440 @@
+/* Records Container */
+.records-container-record {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px;
+  }
+  
+  /* Header */
+  .records-header-record {
+    margin-bottom: 32px;
+  }
+  
+  .records-title-record {
+    font-size: 30px;
+    font-weight: bold;
+    color: #111827;
+    margin-bottom: 8px;
+  }
+  
+  .records-subtitle-record {
+    color: #6b7280;
+  }
+  
+  /* Search and Filter Section */
+  .search-filter-container-record {
+    background-color: #fff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f3f4f6;
+    margin-bottom: 32px;
+  }
+  
+  .filter-buttons-record {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .filter-button-record {
+    width: 112px;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .filter-button-record:hover {
+    background-color: #e5e7eb;
+  }
+  
+  .filter-button-active-record {
+    background-color: #6b7280;
+    color: #fff;
+  }
+  
+  .filter-button-has-reaction-record {
+    background-color: #d97706;
+    color: #fff;
+  }
+  
+  .filter-button-has-reaction-inactive-record {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+  
+  .filter-button-has-reaction-inactive-record:hover {
+    background-color: #fde68a;
+  }
+  
+  .filter-button-no-reaction-record {
+    background-color: #16a34a;
+    color: #fff;
+  }
+  
+  .filter-button-no-reaction-inactive-record {
+    background-color: #dcfce7;
+    color: #166534;
+  }
+  
+  .filter-button-no-reaction-inactive-record:hover {
+    background-color: #bbf7d0;
+  }
+  
+  .search-container-record {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+  }
+  
+  @media (min-width: 768px) {
+    .search-container-record {
+      flex-direction: row;
+    }
+    .filter-buttons-record {
+      margin-bottom: 0;
+    }
+  }
+  
+  .search-input-wrapper-record {
+    position: relative;
+    flex: 1;
+  }
+  
+  .search-input-record {
+    width: 100%;
+    padding: 12px 16px 12px 40px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+  
+  .search-input-record:focus {
+    outline: none;
+    border-color: transparent;
+    box-shadow: 0 0 0 2px #14b8a6;
+  }
+  
+  .search-icon-record {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+  }
+  
+  .date-input-container-record {
+    display: flex;
+    gap: 16px;
+    flex: 1;
+  }
+  
+  .date-input-wrapper-record {
+    position: relative;
+    flex: 1;
+  }
+  
+  .date-input-record {
+    width: 100%;
+    padding: 12px 16px 12px 40px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+  
+  .date-input-record:focus {
+    outline: none;
+    border-color: transparent;
+    box-shadow: 0 0 0 2px #14b8a6;
+  }
+  
+  .date-icon-record {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+  }
+  
+  .search-select-record {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background-color: #fff;
+    transition: all 0.2s ease;
+    appearance: none;
+  }
+  
+  @media (min-width: 768px) {
+    .search-select-record {
+      width: 192px;
+    }
+  }
+  
+  .search-select-record:focus {
+    outline: none;
+    border-color: transparent;
+    box-shadow: 0 0 0 2px #14b8a6;
+  }
+  
+  /* Records List */
+  .records-list-record {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .record-card-record {
+    padding: 16px;
+    background-color: #fff;
+    border: 1px solid #f3f4f6;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .record-card-record:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .record-card-content-record {
+    flex: 1;
+  }
+  
+  .record-card-title-record {
+    font-size: 18px;
+    font-weight: bold;
+    color: #0f766e;
+    margin-bottom: 4px;
+  }
+  
+  .record-card-text-record {
+    font-size: 14px;
+    color: #4b5563;
+  }
+  
+  .record-card-label-record {
+    font-weight: 500;
+  }
+  
+  .record-card-badge-record {
+    flex-shrink: 0;
+  }
+  
+  .reaction-badge-record {
+    display: inline-flex;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 9999px;
+  }
+  
+  .reaction-badge-none-record {
+    background-color: #f3f4f6;
+    color: #4b5563;
+  }
+  
+  .reaction-badge-has-reaction-record {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+  
+  /* Skeleton Loader */
+  .skeleton-container-record {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .skeleton-item-record {
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    height: 96px;
+    animation: pulse 1.5s infinite;
+  }
+  
+  @keyframes pulse {
+    0% {
+      background-color: #f3f4f6;
+    }
+    50% {
+      background-color: #e5e7eb;
+    }
+    100% {
+      background-color: #f3f4f6;
+    }
+  }
+  
+  /* Error Container */
+  .error-container-record {
+    padding: 16px;
+    background-color: #fef2f2;
+    border-left: 4px solid #f87171;
+    color: #b91c1c;
+    border-radius: 4px;
+  }
+  
+  .error-text-record {
+    display: flex;
+    align-items: center;
+  }
+  
+  .error-text-record span {
+    margin-right: 8px;
+  }
+  
+  /* No Records */
+  .no-records-container-record {
+    text-align: center;
+    padding: 48px;
+    background-color: #f9fafb;
+    border-radius: 8px;
+  }
+  
+  .no-records-icon-record {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    background-color: #f3f4f6;
+    border-radius: 9999px;
+    margin-bottom: 16px;
+    color: #9ca3af;
+  }
+  
+  .no-records-text-record {
+    color: #6b7280;
+  }
+  
+  /* Modal */
+  .modal-overlay-record {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 16px;
+    backdrop-filter: blur(2px);
+  }
+  
+  .modal-container-record {
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    max-width: 448px;
+    width: 100%;
+    position: relative;
+  }
+  
+  .modal-close-button-record {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background-color: #f3f4f6;
+    color: #6b7280;
+    transition: background-color 0.2s ease;
+  }
+  
+  .modal-close-button-record:hover {
+    background-color: #e5e7eb;
+  }
+  
+  .modal-title-record {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 16px;
+  }
+  
+  .modal-content-record {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  
+  .modal-subtitle-record {
+    font-size: 18px;
+    font-weight: 600;
+    color: #0f766e;
+    margin-bottom: 4px;
+  }
+  
+  .modal-text-record {
+    font-size: 14px;
+    color: #374151;
+  }
+  
+  .modal-label-record {
+    font-weight: 500;
+  }
+  
+  .modal-textarea-record {
+    width: 100%;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 8px 16px;
+    margin-top: 8px;
+    transition: all 0.2s ease;
+    resize: none;
+  }
+  
+  .modal-textarea-record:focus {
+    outline: none;
+    border-color: transparent;
+    box-shadow: 0 0 0 2px #14b8a6;
+  }
+  
+  .modal-buttons-record {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+  
+  .modal-cancel-button-record {
+    padding: 8px 16px;
+    background-color: #f3f4f6;
+    color: #374151;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .modal-cancel-button-record:hover {
+    background-color: #e5e7eb;
+  }
+  
+  .modal-save-button-record {
+    padding: 8px 24px;
+    background-color: #14b8a6;
+    color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+  }
+  
+  .modal-save-button-record:hover {
+    background-color: #0f766e;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }

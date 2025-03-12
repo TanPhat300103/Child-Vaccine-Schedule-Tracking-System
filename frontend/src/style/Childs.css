@@ -1,0 +1,429 @@
+/* General Container */
+.container-child {
+    min-height: 100vh;
+    background-color: #f3f4f6;
+  }
+  
+  .content-wrapper-child {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+  
+  /* Header */
+  .header-child {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  
+  .header-title-child {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .header-icon-child {
+    font-size: 36px;
+    color: #3b82f6;
+  }
+  
+  .header-text-child {
+    font-size: 30px;
+    font-weight: 500;
+    color: #4b5563;
+  }
+  
+  .header-subtitle-child {
+    margin-top: 8px;
+    color: #6b7280;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* Two-column Layout */
+  .layout-child {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  @media (min-width: 768px) {
+    .layout-child {
+      flex-direction: row;
+    }
+  
+    .left-column-child {
+      width: 33.333%;
+    }
+  
+    .right-column-child {
+      width: 66.667%;
+    }
+  }
+  
+  /* Customer Card */
+  .customer-card-child {
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  
+  .customer-card-title-child {
+    font-size: 20px;
+    font-weight: 600;
+    color: #3b82f6;
+    margin-bottom: 16px;
+  }
+  
+  .customer-card-content-child {
+    color: #4b5563;
+  }
+  
+  .back-button-child {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #fce7f3;
+    color: #ec4899;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .back-button-child:hover {
+    background-color: #f9a8d4;
+    color: #db2777;
+    transform: scale(1.05);
+  }
+  
+  .back-icon-child {
+    width: 16px;
+    height: 16px;
+  }
+  
+  /* Search Bar */
+  .search-bar-child {
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  @media (min-width: 640px) {
+    .search-bar-child {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+  
+  .search-container-child {
+    position: relative;
+    width: 100%;
+  }
+  
+  @media (min-width: 640px) {
+    .search-container-child {
+      width: 50%;
+    }
+  }
+  
+  .search-icon-child {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+  }
+  
+  .search-input-child {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .search-input-child:focus {
+    outline: none;
+    border-color: transparent;
+    box-shadow: 0 0 0 2px #93c5fd;
+  }
+  
+  .add-button-child {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #3b82f6;
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .add-button-child:hover {
+    background-color: #2563eb;
+  }
+  
+  /* Children List */
+  .children-list-child {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .child-card-child {
+    background-color: #ffffff;
+    border-left: 4px solid #3b82f6;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .child-card-child:hover {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .child-card-child:hover .child-name-child {
+    color: #3b82f6;
+  }
+  
+  .child-card-left-child {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .child-icon-container-child {
+    background-color: #eff6ff;
+    padding: 12px;
+    border-radius: 9999px;
+  }
+  
+  .child-icon-child {
+    width: 20px;
+    height: 20px;
+    color: #3b82f6;
+  }
+  
+  .child-name-child {
+    font-size: 18px;
+    font-weight: 500;
+    color: #4b5563;
+    transition: color 0.2s ease-in-out;
+  }
+  
+  .child-info-child {
+    font-size: 14px;
+    color: #6b7280;
+  }
+  
+  .child-card-right-child {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .status-button-child {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .status-button-child.deactivate-child {
+    background-color: #fef2f2;
+    color: #ef4444;
+  }
+  
+  .status-button-child.deactivate-child:hover {
+    background-color: #fee2e2;
+  }
+  
+  .status-button-child.activate-child {
+    background-color: #f0fdf4;
+    color: #22c55e;
+  }
+  
+  .status-button-child.activate-child:hover {
+    background-color: #dcfce7;
+  }
+  
+  .edit-button-child {
+    background-color: #eff6ff;
+    color: #3b82f6;
+    padding: 8px 16px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .edit-button-child:hover {
+    background-color: #dbeafe;
+  }
+  
+  /* No Children */
+  .no-children-child {
+    text-align: center;
+    padding: 40px;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .no-children-icon-child {
+    margin: 0 auto;
+    font-size: 36px;
+    color: #d1d5db;
+    margin-bottom: 16px;
+  }
+  
+  .no-children-text-child {
+    color: #6b7280;
+    font-size: 16px;
+  }
+  
+  /* Modal */
+  .modal-overlay-child {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+  }
+  
+  .modal-backdrop-child {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    backdrop-filter: blur(4px);
+  }
+  
+  .modal-content-child {
+    position: relative;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    width: 100%;
+    max-width: 448px;
+    max-height: 80vh;
+    overflow-y: auto;
+    animation: fadeIn-child 0.3s ease-in-out;
+  }
+  
+  @keyframes fadeIn-child {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  .modal-title-child {
+    font-size: 20px;
+    font-weight: 600;
+    color: #3b82f6;
+    margin-bottom: 16px;
+  }
+  
+  .modal-form-child {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .form-group-child {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-label-child {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4b5563;
+  }
+  
+  .required-child {
+    color: #f87171;
+  }
+  
+  .form-input-child {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .form-input-child:focus {
+    outline: none;
+    border-color: transparent;
+    box-shadow: 0 0 0 2px #93c5fd;
+  }
+  
+  .error-text-child {
+    color: #f87171;
+    font-size: 14px;
+  }
+  
+  .form-buttons-child {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .submit-button-child {
+    background-color: #3b82f6;
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .submit-button-child:hover {
+    background-color: #2563eb;
+  }
+  
+  .cancel-button-child {
+    background-color: #e5e7eb;
+    color: #4b5563;
+    padding: 8px 16px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .cancel-button-child:hover {
+    background-color: #d1d5db;
+  }

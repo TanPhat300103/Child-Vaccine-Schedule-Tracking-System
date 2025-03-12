@@ -37,10 +37,10 @@ public class SecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Origin của frontend
+                    config.setAllowedOriginPatterns(Arrays.asList("*")); // Chấp nhận mọi origin theo pattern
                     config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(Arrays.asList("*"));
-                    config.setAllowCredentials(true); // Cho phép gửi cookie/session
+                    config.setAllowCredentials(true);
                     return config;
                 }))
                 .csrf(csrf -> csrf.disable())  // tắt csrf để đơn giản hóa việc test API

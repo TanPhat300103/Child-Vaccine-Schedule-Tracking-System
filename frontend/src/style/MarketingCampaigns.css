@@ -1,0 +1,384 @@
+/* Container */
+.container-marketing {
+    min-height: 100vh;
+    background-color: #f3f4f6;
+    padding: 32px 0;
+  }
+  
+  .content-marketing {
+    max-width: 896px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+  
+  /* Title */
+  .title-marketing {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1e40af;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  
+  /* Controls */
+  .controls-marketing {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  
+  @media (min-width: 640px) {
+    .controls-marketing {
+      flex-direction: row;
+    }
+  }
+  
+  /* Search */
+  .search-container-marketing {
+    position: relative;
+    width: 100%;
+  }
+  
+  @media (min-width: 640px) {
+    .search-container-marketing {
+      width: 33.33%;
+    }
+  }
+  
+  .search-icon-marketing {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+  }
+  
+  .search-input-marketing {
+    width: 100%;
+    padding: 8px 8px 8px 40px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    outline: none;
+  }
+  
+  .search-input-marketing:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.5);
+  }
+  
+  /* Filter Buttons */
+  .filter-buttons-marketing {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .filter-button-marketing {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: #e5e7eb;
+    color: #374151;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .filter-button-marketing:hover {
+    background-color: #d1d5db;
+  }
+  
+  .filter-button-marketing.active-filter-marketing {
+    background-color: #bfdbfe;
+    color: #1e40af;
+  }
+  
+  /* Create Button */
+  .create-button-marketing {
+    padding: 8px 16px;
+    background-color: #3b82f6;
+    color: white;
+    border-radius: 4px;
+    border: none;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .create-button-marketing:hover {
+    background-color: #2563eb;
+  }
+  
+  .create-icon-marketing {
+    margin-right: 8px;
+  }
+  
+  /* Campaigns List */
+  .campaigns-list-marketing {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  /* Campaign Item */
+  .campaign-item-marketing {
+    background-color: white;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #3b82f6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: box-shadow 0.3s;
+    cursor: pointer;
+  }
+  
+  .campaign-item-marketing:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .campaign-info-marketing {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .campaign-icon-marketing {
+    color: #3b82f6;
+  }
+  
+  .campaign-title-marketing {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1f2937;
+    transition: color 0.3s;
+  }
+  
+  .campaign-item-marketing:hover .campaign-title-marketing {
+    color: #2563eb;
+  }
+  
+  .campaign-time-marketing,
+  .campaign-discount-marketing {
+    font-size: 14px;
+    color: #6b7280;
+  }
+  
+  .campaign-buttons-marketing {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .toggle-button-marketing {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .toggle-button-marketing.active-marketing {
+    background-color: #dcfce7;
+    color: #16a34a;
+  }
+  
+  .toggle-button-marketing.active-marketing:hover {
+    background-color: #bbf7d0;
+  }
+  
+  .toggle-button-marketing.inactive-marketing {
+    background-color: #fee2e2;
+    color: #dc2626;
+  }
+  
+  .toggle-button-marketing.inactive-marketing:hover {
+    background-color: #fecaca;
+  }
+  
+  .button-icon-marketing {
+    margin-right: 4px;
+    display: inline;
+  }
+  
+  .details-button-marketing {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: #dbeafe;
+    color: #2563eb;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .details-button-marketing:hover {
+    background-color: #bfdbfe;
+  }
+  
+  /* Modal */
+  .modal-overlay-marketing {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+  }
+  
+  .modal-backdrop-marketing {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    backdrop-filter: blur(4px);
+  }
+  
+  .modal-content-marketing {
+    position: relative;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    width: 100%;
+    max-width: 448px;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  .modal-title-marketing {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1e40af;
+    margin-bottom: 16px;
+  }
+  
+  .modal-form-marketing {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .form-group-marketing {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-label-marketing {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4b5563;
+    margin-bottom: 4px;
+  }
+  
+  .form-input-marketing {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    outline: none;
+  }
+  
+  .form-input-marketing:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.5);
+  }
+  
+  .form-textarea-marketing {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    outline: none;
+    resize: vertical;
+  }
+  
+  .form-textarea-marketing:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.5);
+  }
+  
+  .date-picker-container-marketing {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  
+  .checkbox-group-marketing {
+    display: flex;
+    align-items: center;
+  }
+  
+  .checkbox-input-marketing {
+    width: 16px;
+    height: 16px;
+    color: #2563eb;
+  }
+  
+  .checkbox-label-marketing {
+    margin-left: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4b5563;
+  }
+  
+  .button-group-marketing {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .submit-button-marketing {
+    padding: 8px 16px;
+    background-color: #3b82f6;
+    color: white;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .submit-button-marketing:hover {
+    background-color: #2563eb;
+  }
+  
+  .cancel-button-marketing {
+    padding: 8px 16px;
+    background-color: #e5e7eb;
+    color: #374151;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .cancel-button-marketing:hover {
+    background-color: #d1d5db;
+  }
+  
+  /* No Results */
+  .no-results-marketing {
+    text-align: center;
+    color: #6b7280;
+    margin-top: 24px;
+  }

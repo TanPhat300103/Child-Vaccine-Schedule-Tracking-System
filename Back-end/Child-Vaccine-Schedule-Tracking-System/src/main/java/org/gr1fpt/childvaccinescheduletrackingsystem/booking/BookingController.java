@@ -20,7 +20,7 @@ public class BookingController {
 
     @PostMapping("create")
     public Booking createBooking(@RequestBody @Valid BookingDTO bookingDTO) {
-        System.out.println(bookingDTO.getVaccineId());
+        System.out.println(bookingDTO.getBooking().getBookingDate()+"HOANG TUU GIO");
        return bookingService.saveBooking(bookingDTO);
     }
 

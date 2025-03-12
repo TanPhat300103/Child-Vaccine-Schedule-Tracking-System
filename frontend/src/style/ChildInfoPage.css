@@ -1,0 +1,787 @@
+/* ChildInfoPage.css - Modern & Stylish Design for Child Info Page with Updated Medical Card */
+
+/* Import Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Variables (giữ đồng bộ với ProfilePage.css) */
+:root {
+  --primary: #5e60ce;
+  --primary-light: #48cae4;
+  --primary-soft: rgba(163, 216, 244, 0.3); /* Nền mờ */
+  --primary-gradient: linear-gradient(90deg, #5e60ce, #48cae4); /* Gradient cho header */
+  --secondary: #f72585;
+  --secondary-light: #ff70a6;
+  --text-dark: #22223b;
+  --text-light: #9a8c98;
+  --background: #f2e9e4;
+  --white: #ffffff;
+  --gray-100: #f8f9fa;
+  --gray-200: #e9ecef;
+  --gray-300: #dee2e6;
+  --danger: #ef233c;
+  --success: #06d6a0;
+  --warning: #ffd60a;
+  --male: #48cae4;
+  --female: #ff70a6;
+  --border-radius: 16px;
+  --card-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease-in-out;
+}
+
+/* Global Styles */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--background);
+  color: var(--text-dark);
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+button {
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  outline: none;
+}
+
+/* Container */
+.profile-container-childinfo {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* Profile Header */
+.profile-header-childinfo {
+  background: linear-gradient(120deg, var(--primary), var(--primary-light));
+  border-radius: var(--border-radius);
+  padding: 40px;
+  box-shadow: var(--card-shadow);
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-header-childinfo::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent);
+  transform: rotate(30deg);
+  pointer-events: none;
+}
+
+.profile-user-info-childinfo {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  z-index: 1;
+  position: relative;
+}
+
+.profile-avatar-childinfo {
+  width: 90px;
+  height: 90px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--white);
+  text-transform: uppercase;
+  border: 4px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.profile-user-text-childinfo h1 {
+  margin: 0 0 8px 0;
+  font-weight: 700;
+  font-size: 28px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-user-text-childinfo p {
+  margin: 0;
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+/* Content Layout */
+.profile-content-childinfo {
+  display: flex;
+  gap: 40px;
+}
+
+/* Sidebar Styling (Giống BookingDetailPage) */
+.profile-sidebar-childinfo {
+  width: 280px;
+  background: linear-gradient(180deg, var(--white), rgba(240, 244, 248, 0.8));
+  border-radius: var(--border-radius);
+  padding: 20px;
+  box-shadow: var(--card-shadow);
+  flex-shrink: 0;
+  position: sticky;
+  top: 100px;
+  height: fit-content;
+  max-height: calc(100vh - 120px);
+}
+
+.profile-sidebar-item-childinfo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  color: var(--text-dark);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  background: var(--white);
+  position: relative;
+}
+
+.profile-sidebar-item-childinfo:hover {
+  background: rgba(94, 96, 206, 0.1);
+  transform: translateX(5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.profile-sidebar-item-childinfo.active {
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  color: var(--white);
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(94, 96, 206, 0.2);
+}
+
+.profile-sidebar-content-childinfo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.profile-sidebar-placeholder-childinfo {
+  width: 18px;
+  height: 18px;
+  visibility: hidden;
+}
+
+.profile-sidebar-dropdown-toggle-childinfo {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.profile-sidebar-child-list-childinfo {
+  margin-top: 5px;
+  background: var(--white);
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+  padding: 10px;
+  animation: slideDown 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.profile-sidebar-child-item-childinfo {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 15px;
+  font-size: 14px;
+  color: var(--text-dark);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: var(--transition);
+}
+
+.profile-sidebar-child-item-childinfo:hover {
+  background: rgba(94, 96, 206, 0.1);
+}
+
+.profile-sidebar-child-item-childinfo.active {
+  background: linear-gradient(90deg, var(--primary-light), var(--primary));
+  color: var(--white);
+  font-weight: 600;
+}
+
+.profile-sidebar-child-name {
+  font-weight: 500;
+}
+
+.profile-sidebar-child-date {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.profile-sidebar-no-child-childinfo {
+  padding: 12px 15px;
+  font-size: 14px;
+  color: var(--text-light);
+  text-align: center;
+  border-radius: 8px;
+  background: var(--white);
+}
+
+/* Main Content */
+.profile-main-childinfo {
+  flex: 1;
+}
+
+/* Section Styling */
+.profile-section-childinfo {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  padding: 35px;
+  margin-bottom: 40px;
+  border: 1px solid var(--gray-200);
+}
+
+/* Section Header */
+.profile-section-header-childinfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--gray-200);
+}
+
+.profile-section-header-childinfo h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+/* Buttons */
+.profile-add-btn-childinfo,
+.profile-save-btn-childinfo,
+.profile-cancel-btn-childinfo,
+.profile-edit-child-btn-childinfo,
+.profile-delete-child-btn-childinfo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 500;
+  font-size: 15px;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.profile-add-btn-childinfo {
+  background: linear-gradient(90deg, var(--success), #80ed99);
+  color: var(--white);
+}
+
+.profile-save-btn-childinfo {
+  background: var(--success);
+  color: var(--white);
+}
+
+.profile-cancel-btn-childinfo {
+  background: var(--gray-300);
+  color: var(--text-dark);
+}
+
+.profile-edit-child-btn-childinfo {
+  background: var(--primary-light);
+  color: var(--white);
+}
+
+.profile-delete-child-btn-childinfo {
+  background: var(--danger);
+  color: var(--white);
+}
+
+.profile-add-btn-childinfo:hover,
+.profile-save-btn-childinfo:hover,
+.profile-edit-child-btn-childinfo:hover,
+.profile-delete-child-btn-childinfo:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.profile-cancel-btn-childinfo:hover {
+  background: var(--gray-500);
+}
+
+/* Form Styling */
+.profile-child-form-childinfo,
+.profile-edit-form-childinfo {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  animation: slideIn 0.4s ease;
+}
+
+.profile-form-row-childinfo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.profile-form-group-childinfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-form-group-childinfo label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-light);
+  margin-bottom: 8px;
+}
+
+.profile-form-group-childinfo input,
+.profile-form-group-childinfo select {
+  padding: 12px;
+  border: 2px solid var(--gray-300);
+  border-radius: 8px;
+  font-size: 15px;
+  color: var(--text-dark);
+  background-color: var(--white);
+  transition: var(--transition);
+}
+
+.profile-form-group-childinfo input:focus,
+.profile-form-group-childinfo select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 8px rgba(94, 96, 206, 0.3);
+  outline: none;
+}
+
+.profile-form-actions-childinfo {
+  display: flex;
+  gap: 15px;
+}
+
+/* Children Row (Horizontal Display) */
+.profile-children-row-childinfo {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 15px;
+  overflow-x: auto;
+  padding: 10px 0;
+  margin-bottom: 20px;
+}
+
+.profile-child-card-modern-childinfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: var(--white);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: var(--card-shadow);
+  min-width: 120px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.profile-child-card-modern-childinfo.male .profile-child-avatar-modern-childinfo {
+  background: var(--male);
+}
+
+.profile-child-card-modern-childinfo.female .profile-child-avatar-modern-childinfo {
+  background: var(--female);
+}
+
+.profile-child-card-modern-childinfo:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.profile-child-card-modern-childinfo.active {
+  border: 2px solid var(--primary);
+  box-shadow: 0 0 10px rgba(94, 96, 206, 0.3);
+}
+
+.profile-child-avatar-modern-childinfo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--white);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-child-info-modern-childinfo {
+  text-align: center;
+}
+
+.profile-child-info-modern-childinfo h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+.profile-child-info-modern-childinfo p {
+  font-size: 12px;
+  color: var(--text-light);
+  margin: 0;
+}
+
+/* Medical History Card */
+.profile-medical-history-childinfo {
+  margin-top: 20px;
+}
+
+.profile-medical-card-childinfo {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  padding: 20px;
+  border: 1px solid var(--gray-200);
+  overflow: hidden;
+}
+
+.profile-medical-header-childinfo {
+  background: var(--primary-gradient);
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  padding: 15px 20px;
+  color: var(--white);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: -20px -20px 20px -20px;
+  position: relative;
+}
+
+.profile-medical-header-childinfo h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-medical-actions-childinfo {
+  display: flex;
+  gap: 10px;
+}
+
+.profile-medical-actions-childinfo button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  transition: var(--transition);
+}
+
+.profile-medical-actions-childinfo .profile-save-btn-childinfo,
+.profile-medical-actions-childinfo .profile-cancel-btn-childinfo {
+  background: var(--success);
+  color: var(--white);
+  padding: 8px;
+}
+
+.profile-medical-actions-childinfo .profile-cancel-btn-childinfo {
+  background: var(--gray-300);
+  color: var(--text-dark);
+}
+
+.profile-medical-actions-childinfo button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.profile-medical-actions-childinfo .profile-save-btn-childinfo:hover,
+.profile-medical-actions-childinfo .profile-cancel-btn-childinfo:hover {
+  transform: scale(1.1);
+}
+
+.profile-medical-info-childinfo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.profile-medical-field-childinfo {
+  background: var(--primary-soft);
+  border-radius: var(--border-radius);
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-medical-field-childinfo label {
+  font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.profile-medical-field-childinfo p {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-dark);
+}
+
+.profile-medical-field-childinfo input,
+.profile-medical-field-childinfo select {
+  padding: 10px;
+  border: 2px solid var(--gray-300);
+  border-radius: 8px;
+  font-size: 15px;
+  color: var(--text-dark);
+  background-color: var(--white);
+  transition: var(--transition);
+}
+
+.profile-medical-field-childinfo input:focus,
+.profile-medical-field-childinfo select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 8px rgba(94, 96, 206, 0.3);
+  outline: none;
+}
+
+.profile-medical-field-childinfo.gender {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-medical-field-childinfo.gender p {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.profile-medical-schedule-childinfo {
+  margin-top: 20px;
+}
+
+.profile-medical-schedule-childinfo h3 {
+  font-size: 18px;
+  color: var(--primary);
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-medical-table-childinfo {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--gray-100);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.profile-medical-table-childinfo th,
+.profile-medical-table-childinfo td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.profile-medical-table-childinfo th {
+  background: var(--primary-soft);
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+.profile-medical-table-childinfo tr:last-child td {
+  border-bottom: none;
+}
+
+.profile-no-history-childinfo {
+  text-align: center;
+  color: var(--text-light);
+  padding: 20px;
+  background: var(--primary-soft);
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Loading & Error */
+.profile-loading-childinfo {
+  text-align: center;
+  padding: 50px;
+  font-size: 18px;
+  color: var(--text-light);
+}
+
+.profile-loading-spinner-childinfo {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--primary);
+  border-top: 4px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+.profile-error-childinfo {
+  text-align: center;
+  padding: 50px;
+  font-size: 18px;
+  color: var(--danger);
+}
+
+.profile-error-icon-childinfo {
+  font-size: 40px;
+  margin-bottom: 20px;
+}
+
+/* No Children */
+.profile-no-children-childinfo {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-light);
+}
+
+.profile-no-data-icon-childinfo {
+  font-size: 40px;
+  margin-bottom: 20px;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .profile-content-childinfo {
+    flex-direction: column;
+  }
+  .profile-sidebar-childinfo {
+    width: 100%;
+  }
+  .profile-form-row-childinfo {
+    grid-template-columns: 1fr;
+  }
+  .profile-children-row-childinfo {
+    flex-wrap: wrap;
+  }
+  .profile-child-card-modern-childinfo {
+    min-width: 100px;
+  }
+  .profile-medical-info-childinfo {
+    grid-template-columns: 1fr;
+  }
+  .profile-medical-field-childinfo.gender {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .profile-sidebar-child-list-childinfo {
+    position: static;
+  }
+}
+/* Nút cập nhật phản ứng trong bảng */
+.profile-update-reaction-btn-childinfo {
+  background: none;
+  border: none;
+  color: var(--primary);
+  margin-left: 10px;
+  padding: 5px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.profile-update-reaction-btn-childinfo:hover {
+  background: rgba(94, 96, 206, 0.2);
+  transform: scale(1.1);
+}
+/* Modal */
+.profile-reaction-modal-childinfo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.profile-reaction-modal-content-childinfo {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  padding: 25px;
+  width: 100%;
+  max-width: 500px; /* Tăng kích thước modal */
+  box-shadow: var(--card-shadow);
+  animation: slideIn 0.4s ease;
+}
+
+.profile-reaction-modal-content-childinfo h3 {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+/* Điều chỉnh khoảng cách giữa các nút */
+.profile-form-actions-childinfo {
+  display: flex;
+  gap: 20px; /* Tăng khoảng cách giữa Lưu và Hủy */
+  margin-top: 5%;
+}
+
+/* Animation cho modal */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

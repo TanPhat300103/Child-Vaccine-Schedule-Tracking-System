@@ -1,0 +1,394 @@
+/* Container chính */
+.container-bookingmanager {
+    min-height: 100vh;
+    background-color: #eff6ff;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Header */
+  .header-bookingmanager {
+    background-color: #ffffff;
+    border-bottom: 1px solid #dbeafe;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .header-content-bookingmanager {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 16px 24px;
+  }
+  
+  .header-title-bookingmanager {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e40af;
+    display: flex;
+    align-items: center;
+  }
+  
+  .header-icon-bookingmanager {
+    margin-right: 8px;
+  }
+  
+  /* Main content */
+  .main-content-bookingmanager {
+    display: flex;
+    flex: 1;
+    max-width: 1280px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 24px;
+  }
+  
+  /* Sidebar (Customer List) */
+  .sidebar-bookingmanager {
+    width: 37.5%;
+    padding-right: 24px;
+  }
+  
+  .sidebar-content-bookingmanager {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 24px;
+  }
+  
+  .sidebar-header-bookingmanager {
+    padding: 16px;
+    background-color: #2563eb;
+    color: #ffffff;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+  
+  .sidebar-header-bookingmanager h2 {
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .search-section-bookingmanager {
+    padding: 16px;
+    border-bottom: 1px solid #f3f4f6;
+  }
+  
+  .search-container-bookingmanager {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  
+  .search-select-bookingmanager {
+    width: 25%;
+    padding: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px 0 0 4px;
+    background-color: #f9fafb;
+    color: #1f2937;
+    font-size: 14px;
+    outline: none;
+  }
+  
+  .search-select-bookingmanager:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 1px #3b82f6;
+  }
+  
+  .search-input-bookingmanager {
+    width: 75%;
+    padding: 8px;
+    border: 1px solid #d1d5db;
+    border-left: none;
+    border-radius: 0 4px 4px 0;
+    outline: none;
+  }
+  
+  .search-input-bookingmanager:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 1px #3b82f6;
+  }
+  
+  .customer-list-bookingmanager {
+    padding: 16px;
+    overflow-y: auto;
+    max-height: calc(100vh - 300px);
+  }
+  
+  .customer-item-bookingmanager {
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .customer-item-bookingmanager:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-color: #bfdbfe;
+  }
+  
+  .customer-item-bookingmanager.selected-bookingmanager {
+    background-color: #eff6ff;
+    border-color: #93c5fd;
+  }
+  
+  .customer-id-bookingmanager {
+    font-weight: 600;
+  }
+  
+  .customer-details-bookingmanager {
+    font-size: 14px;
+    color: #6b7280;
+    margin-top: 4px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .customer-email-bookingmanager {
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Bookings Section */
+  .bookings-section-bookingmanager {
+    width: 62.5%;
+  }
+  
+  .bookings-header-bookingmanager {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  
+  .bookings-header-bookingmanager h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 16px;
+  }
+  
+  .status-filter-bookingmanager {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  
+  .filter-button-bookingmanager {
+    width: 112px;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .filter-button-bookingmanager:hover {
+    opacity: 0.9;
+  }
+  
+  .filter-button-bookingmanager.active-all-bookingmanager {
+    background-color: #6b7280;
+    color: #ffffff;
+  }
+  
+  .filter-button-bookingmanager:not(.active-all-bookingmanager) {
+    background-color: #e5e7eb;
+    color: #1f2937;
+  }
+  
+  .filter-button-bookingmanager.active-daDat-bookingmanager {
+    background-color: #2563eb;
+    color: #ffffff;
+  }
+  
+  .filter-button-bookingmanager:not(.active-daDat-bookingmanager)[data-status="daDat"] {
+    background-color: #bfdbfe;
+    color: #1e40af;
+  }
+  
+  .filter-button-bookingmanager.active-daHoanThanh-bookingmanager {
+    background-color: #16a34a;
+    color: #ffffff;
+  }
+  
+  .filter-button-bookingmanager:not(.active-daHoanThanh-bookingmanager)[data-status="daHoanThanh"] {
+    background-color: #bbf7d0;
+    color: #065f46;
+  }
+  
+  .filter-button-bookingmanager.active-daHuy-bookingmanager {
+    background-color: #dc2626;
+    color: #ffffff;
+  }
+  
+  .filter-button-bookingmanager:not(.active-daHuy-bookingmanager)[data-status="daHuy"] {
+    background-color: #fecaca;
+    color: #991b1b;
+  }
+  
+  .bookings-list-bookingmanager {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    overflow-y: auto;
+    max-height: calc(100vh - 400px);
+  }
+  
+  .booking-item-bookingmanager {
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+  }
+  
+  .booking-item-bookingmanager:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .booking-id-bookingmanager {
+    font-weight: 600;
+  }
+  
+  .booking-date-bookingmanager {
+    font-size: 14px;
+    color: #6b7280;
+  }
+  
+  .booking-status-amount-bookingmanager {
+    display: flex;
+    align-items: center;
+  }
+  
+  .status-label-bookingmanager {
+    font-size: 14px;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    margin-right: 12px;
+  }
+  
+  .booking-amount-bookingmanager {
+    font-weight: 500;
+  }
+  
+  /* No results */
+  .no-results-bookingmanager {
+    text-align: center;
+    padding: 32px 0;
+    color: #6b7280;
+  }
+  
+  .no-results-icon-bookingmanager {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 16px;
+    color: #9ca3af;
+  }
+  
+  /* No customer selected */
+  .no-customer-selected-bookingmanager {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    text-align: center;
+    min-height: calc(100vh - 200px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .no-customer-icon-bookingmanager {
+    width: 96px;
+    height: 96px;
+    margin-bottom: 16px;
+    color: #bfdbfe;
+  }
+  
+  .no-customer-selected-bookingmanager p {
+    font-size: 18px;
+    color: #6b7280;
+  }
+  
+  .hint-bookingmanager {
+    font-size: 14px;
+    color: #9ca3af;
+    margin-top: 8px;
+  }
+  
+  /* Loading */
+  .loading-container-bookingmanager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #eff6ff;
+  }
+  
+  .loading-content-bookingmanager {
+    text-align: center;
+  }
+  
+  .spinner-bookingmanager {
+    width: 64px;
+    height: 64px;
+    border: 4px solid #3b82f6;
+    border-top: 4px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+  }
+  
+  .loading-content-bookingmanager p {
+    margin-top: 8px;
+    font-size: 18px;
+    color: #1e40af;
+  }
+  
+  /* Error */
+  .error-container-bookingmanager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #eff6ff;
+  }
+  
+  .error-content-bookingmanager {
+    background-color: #ffffff;
+    padding: 32px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    text-align: center;
+  }
+  
+  .error-icon-bookingmanager {
+    width: 48px;
+    height: 48px;
+    color: #ef4444;
+    margin: 0 auto 16px;
+  }
+  
+  .error-content-bookingmanager p {
+    font-size: 18px;
+    font-weight: 500;
+    color: #ef4444;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }

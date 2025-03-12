@@ -93,7 +93,6 @@ public class PaymentService {
         }
         Payment payment = new Payment();
         payment.setPaymentId(generateId(savedBooking.getBookingId()));
-        payment.setDate(Date.valueOf(LocalDate.now()));
         payment.setTotal(savedBooking.getTotalAmount());
         payment.setStatus(false);
         payment.setBooking(savedBooking);

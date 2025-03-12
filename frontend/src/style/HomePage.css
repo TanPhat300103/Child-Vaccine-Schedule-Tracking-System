@@ -1,0 +1,1434 @@
+/* General Styles */
+.homepage-min-h-screen {
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #f0f9ff, #ffffff);
+}
+
+.homepage-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Hero Section */
+.homepage-hero {
+    padding: 6rem 0 4rem;
+    position: relative;
+}
+
+.homepage-hero-container {
+    position: relative;
+    z-index: 10;
+}
+
+.homepage-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+}
+
+@media (min-width: 768px) {
+    .homepage-hero-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.homepage-hero-title {
+    font-size: 2.25rem;
+    font-weight: bold;
+    color: #1f2937;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+    .homepage-hero-title {
+        font-size: 3rem;
+    }
+}
+
+.homepage-text-blue {
+    color: #2563eb;
+}
+
+.homepage-hero-subtitle {
+    font-size: 1.125rem;
+    color: #4b5563;
+    margin-bottom: 2rem;
+}
+
+.homepage-hero-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.homepage-btn {
+    padding: 0.75rem 2rem;
+    border-radius: 9999px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.homepage-btn-primary {
+    background-color: #2563eb;
+    color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.homepage-btn-primary:hover {
+    background-color: #1d4ed8;
+}
+
+.homepage-btn-secondary {
+    border: 2px solid #2563eb;
+    color: #2563eb;
+}
+
+.homepage-btn-secondary:hover {
+    background-color: #eff6ff;
+}
+
+.homepage-hero-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 1rem;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Stats Section */
+.homepage-stats {
+    padding: 3rem 0;
+    background-color: #ffffff;
+}
+
+.homepage-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    .homepage-stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.homepage-stat-item {
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    background-color: #eff6ff;
+    transition: background-color 0.3s ease;
+}
+
+.homepage-stat-item:hover {
+    background-color: #dbeafe;
+}
+
+.homepage-stat-icon {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+.homepage-stat-value {
+    font-size: 1.875rem;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+}
+
+.homepage-stat-label {
+    color: #4b5563;
+}
+
+/* Benefits Section */
+.homepage-benefits {
+    padding: 4rem 0;
+    background-color: #ffffff;
+}
+
+.homepage-section-title {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.homepage-section-title h2 {
+    font-size: 2.25rem;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 1rem;
+}
+
+.homepage-section-title p {
+    color: #4b5563;
+    max-width: 48rem;
+    margin: 0 auto;
+}
+
+.homepage-benefits-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .homepage-benefits-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.homepage-benefit-item {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f3f4f6;
+    transition: box-shadow 0.3s ease;
+}
+
+.homepage-benefit-item:hover {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.homepage-benefit-icon {
+    font-size: 2rem;
+    padding: 1rem;
+    background-color: #eff6ff;
+    border-radius: 9999px;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.homepage-benefit-item h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.75rem;
+}
+
+.homepage-benefit-item p {
+    color: #4b5563;
+}
+
+/* Features Section */
+.homepage-features {
+    padding: 4rem 0;
+    background: linear-gradient(to bottom right, #2563eb, #1e40af);
+    color: #ffffff;
+}
+
+.homepage-features-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .homepage-features-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.homepage-feature-item {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    transition: background-color 0.3s ease;
+}
+
+.homepage-feature-item:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.homepage-feature-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.homepage-feature-item h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.homepage-feature-item p {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Age Vaccine Section */
+.homepage-age-vaccine {
+    padding: 5rem 0;
+    background: linear-gradient(to bottom right, #f0f4ff, #e0e7ff);
+}
+
+.homepage-age-vaccine-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.homepage-age-vaccine-header h1 {
+    font-size: 2.25rem;
+    font-weight: bold;
+    color: #1e3a8a;
+    margin-bottom: 0.5rem;
+}
+
+.homepage-age-vaccine-header p {
+    font-size: 1.125rem;
+    color: #4b5563;
+    max-width: 48rem;
+    margin: 0 auto;
+}
+
+.homepage-age-vaccine-error {
+    background-color: #fef2f2;
+    border-left: 4px solid #ef4444;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 0.375rem;
+    display: flex;
+    align-items: center;
+}
+
+.homepage-age-vaccine-error-icon {
+    font-size: 1.25rem;
+    color: #ef4444;
+    margin-right: 0.75rem;
+}
+
+.homepage-age-vaccine-error p {
+    font-size: 0.875rem;
+    color: #b91c1c;
+}
+
+.homepage-age-vaccine-search {
+    margin-bottom: 2rem;
+}
+
+.homepage-age-vaccine-search-container {
+    position: relative;
+    max-width: 28rem;
+    margin: 0 auto;
+}
+
+.homepage-age-vaccine-search-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.25rem;
+    color: #6b7280;
+}
+
+.homepage-age-vaccine-search input {
+    width: 100%;
+    padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 9999px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    font-size: 1rem;
+    color: #1f2937;
+}
+
+.homepage-age-vaccine-search input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.5);
+}
+
+.homepage-age-vaccine-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+    .homepage-age-vaccine-grid {
+        grid-template-columns: 1fr 2fr;
+    }
+}
+
+.homepage-age-vaccine-combo-list {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid #dbeafe;
+}
+
+.homepage-age-vaccine-combo-header {
+    background-color: #2563eb;
+    padding: 1.5rem;
+    color: #ffffff;
+}
+
+.homepage-age-vaccine-combo-header h2 {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.homepage-age-vaccine-combo-header p {
+    font-size: 0.875rem;
+    color: #bfdbfe;
+}
+
+.homepage-age-vaccine-combo-items {
+    max-height: 37.5rem;
+    overflow-y: auto;
+}
+
+.homepage-age-vaccine-combo-item {
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.homepage-age-vaccine-combo-item:hover {
+    background-color: #f9fafb;
+}
+
+.homepage-age-vaccine-combo-item-selected {
+    background-color: #eff6ff;
+    border-left: 4px solid #2563eb;
+}
+
+.homepage-age-vaccine-combo-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.homepage-age-vaccine-combo-content h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.homepage-age-vaccine-combo-content p {
+    color: #4b5563;
+    margin-top: 0.25rem;
+}
+
+.homepage-age-vaccine-status {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 9999px;
+}
+
+.homepage-age-vaccine-status.active {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.homepage-age-vaccine-status.inactive {
+    background-color: #f3f4f6;
+    color: #4b5563;
+}
+
+.homepage-age-vaccine-combo-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.homepage-age-vaccine-combo-footer span {
+    font-size: 1.125rem;
+    font-weight: bold;
+    color: #2563eb;
+}
+
+.homepage-age-vaccine-combo-footer button {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #2563eb;
+    color: #2563eb;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    background-color: transparent;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.homepage-age-vaccine-combo-footer button:hover {
+    background-color: #eff6ff;
+}
+
+.homepage-age-vaccine-no-results {
+    padding: 2rem;
+    text-align: center;
+    color: #6b7280;
+}
+
+.homepage-age-vaccine-no-results span {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.homepage-age-vaccine-details {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid #dbeafe;
+}
+
+.homepage-age-vaccine-details-header {
+    background-color: #2563eb;
+    padding: 1.5rem;
+    color: #ffffff;
+}
+
+.homepage-age-vaccine-details-header h2 {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.homepage-age-vaccine-details-header p {
+    font-size: 0.875rem;
+    color: #bfdbfe;
+}
+
+.homepage-age-vaccine-details-body {
+    padding: 1.5rem;
+}
+
+.homepage-age-vaccine-details-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.homepage-age-vaccine-details-title span {
+    font-size: 1.5rem;
+    margin-right: 0.75rem;
+}
+
+.homepage-age-vaccine-details-title h3 {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.homepage-age-vaccine-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 16rem;
+}
+
+.homepage-age-vaccine-spinner {
+    width: 4rem;
+    height: 4rem;
+    border: 4px solid #2563eb;
+    border-top: 4px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.homepage-age-vaccine-details-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .homepage-age-vaccine-details-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.homepage-age-vaccine-detail-item {
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.homepage-age-vaccine-detail-item:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.homepage-age-vaccine-detail-header {
+    background-color: #eff6ff;
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.homepage-age-vaccine-detail-header h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.homepage-age-vaccine-detail-body {
+    padding: 1rem;
+}
+
+.homepage-age-vaccine-detail-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+.homepage-age-vaccine-detail-info p:first-child {
+    color: #6b7280;
+}
+
+.homepage-age-vaccine-detail-info p:last-child {
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.homepage-age-vaccine-detail-info p span {
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    background-color: #dbeafe;
+    color: #2563eb;
+    border-radius: 0.25rem;
+    margin-left: 0.5rem;
+}
+
+.homepage-age-vaccine-detail-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 0.75rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.homepage-age-vaccine-detail-footer div {
+    display: flex;
+    align-items: center;
+}
+
+.homepage-age-vaccine-detail-footer span:first-child {
+    font-size: 1.25rem;
+    color: #16a34a;
+    margin-right: 0.5rem;
+}
+
+.homepage-age-vaccine-detail-footer p {
+    font-size: 0.875rem;
+    color: #15803d;
+}
+
+.homepage-age-vaccine-detail-footer span:last-child {
+    font-weight: bold;
+    color: #2563eb;
+}
+
+.homepage-age-vaccine-cta {
+    background-color: #eff6ff;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid #dbeafe;
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .homepage-age-vaccine-cta {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+.homepage-age-vaccine-cta h4 {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #1e3a8a;
+}
+
+.homepage-age-vaccine-cta p {
+    font-size: 0.875rem;
+    color: #2563eb;
+    margin-top: 0.25rem;
+}
+
+.homepage-age-vaccine-cta button {
+    padding: 0.75rem 1.5rem;
+    background-color: #2563eb;
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.homepage-age-vaccine-cta button:hover {
+    background-color: #1d4ed8;
+}
+
+.homepage-age-vaccine-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 3rem;
+    text-align: center;
+}
+
+.homepage-age-vaccine-placeholder span {
+    font-size: 3rem;
+    color: #2563eb;
+    margin-bottom: 1.5rem;
+}
+
+.homepage-age-vaccine-placeholder h2 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+}
+
+.homepage-age-vaccine-placeholder p {
+    font-size: 1rem;
+    color: #6b7280;
+    max-width: 28rem;
+}
+
+.homepage-age-vaccine-footer {
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-top: 3rem;
+}
+
+.homepage-age-vaccine-footer h3 {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #1f2937;
+    margin-bottom: 1rem;
+}
+
+.homepage-age-vaccine-footer-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .homepage-age-vaccine-footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.homepage-age-vaccine-footer-item {
+    display: flex;
+    align-items: center;
+}
+
+.homepage-age-vaccine-footer-item span {
+    font-size: 1.5rem;
+    background-color: #2563eb;
+    color: #ffffff;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.375rem;
+    margin-right: 1rem;
+}
+
+.homepage-age-vaccine-footer-item h4 {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.homepage-age-vaccine-footer-item p {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-top: 0.5rem;
+}
+
+/* Price Vaccine Section */
+.homepage-price-vaccine {
+    padding: 5rem 0;
+    background-color: #ffffff;
+}
+
+.price-vaccine-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.price-vaccine-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #1e3a8a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.price-vaccine-icon {
+    margin-right: 0.75rem;
+    color: #2563eb;
+    font-size: 2.25rem;
+}
+
+.price-vaccine-subtitle {
+    font-size: 1rem;
+    color: #4b5563;
+    margin-top: 0.5rem;
+}
+
+.price-vaccine-filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    background-color: #ffffff;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+}
+
+.price-vaccine-filter-price {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 15rem;
+}
+
+.price-vaccine-filter-price span {
+    color: #4b5563;
+    font-size: 0.875rem;
+}
+
+.price-vaccine-filter-price input {
+    width: 6rem;
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    color: #1f2937;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.price-vaccine-filter-price input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.5);
+}
+
+.price-vaccine-filter-country {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 7.5rem;
+}
+
+.price-vaccine-filter-icon {
+    color: #2563eb;
+    font-size: 0.875rem;
+}
+
+.price-vaccine-filter-country select {
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    color: #1f2937;
+    background-color: #ffffff;
+    transition: all 0.3s ease;
+}
+
+.price-vaccine-filter-country select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.5);
+}
+
+.price-vaccine-filter-country select:hover {
+    border-color: #2563eb;
+}
+
+.price-vaccine-filter-search {
+    position: relative;
+    flex: 1;
+    min-width: 12.5rem;
+}
+
+.price-vaccine-search-icon {
+    position: absolute;
+    left: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+    font-size: 1rem;
+}
+
+.price-vaccine-filter-search input {
+    width: 100%;
+    padding: 0.5rem 0.5rem 0.5rem 2rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    color: #1f2937;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.price-vaccine-filter-search input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.5);
+}
+
+.price-vaccine-filter-search input:hover {
+    border-color: #2563eb;
+}
+
+.price-vaccine-filter-tabs {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.price-vaccine-tab {
+    display: flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #4b5563;
+    background-color: #ffffff;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.price-vaccine-tab span {
+    margin-right: 0.25rem;
+}
+
+.price-vaccine-tab:hover {
+    background-color: #f3f4f6;
+}
+
+.price-vaccine-tab-active {
+    background-color: #2563eb;
+    color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.price-vaccine-reset-btn {
+    display: flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    color: #4b5563;
+    background-color: #f3f4f6;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.price-vaccine-reset-btn:hover {
+    background-color: #e5e7eb;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.price-vaccine-results {
+    background-color: #f9fafb;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.price-vaccine-results p {
+    font-size: 0.875rem;
+    color: #4b5563;
+}
+
+.price-vaccine-results span {
+    font-weight: bold;
+    color: #2563eb;
+}
+
+.price-vaccine-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 16rem;
+}
+
+.price-vaccine-spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 4px solid #2563eb;
+    border-top: 4px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.price-vaccine-no-results {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.price-vaccine-no-results-icon {
+    font-size: 2.5rem;
+    color: #6b7280;
+    margin-bottom: 0.75rem;
+}
+
+.price-vaccine-no-results h3 {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+}
+
+.price-vaccine-no-results p {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.price-vaccine-no-results button {
+    margin-top: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    background-color: #eff6ff;
+    color: #2563eb;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.price-vaccine-no-results button:hover {
+    background-color: #dbeafe;
+}
+
+.price-vaccine-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    max-height: 30rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+    padding-right: 0.5rem; /* Optional: Add padding to prevent content sticking to scrollbar */
+}
+
+.price-vaccine-item {
+    background-color: #ffffff;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    transition: box-shadow 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Prevent overflow */
+}
+
+.price-vaccine-item:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.price-vaccine-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.price-vaccine-item-header h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.price-vaccine-item-header span {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #2563eb;
+    white-space: nowrap;
+}
+
+.price-vaccine-item p {
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    flex-grow: 1;
+}
+
+.price-vaccine-item-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.price-vaccine-item-info span:first-child {
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.price-vaccine-item-info span:last-child {
+    display: flex;
+    align-items: center;
+    color: #6b7280;
+}
+
+.price-vaccine-item-info span:last-child svg {
+    margin-right: 0.25rem;
+}
+
+.price-vaccine-item-age {
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.price-vaccine-item-age svg {
+    margin-right: 0.25rem;
+}
+
+.price-vaccine-badge-blue {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.price-vaccine-badge-red {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+.price-vaccine-badge-indigo {
+    background-color: #e0e7ff;
+    color: #4f46e5;
+}
+
+.price-vaccine-badge-yellow {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.price-vaccine-badge-pink {
+    background-color: #fce7f3;
+    color: #db2777;
+}
+
+.price-vaccine-badge-purple {
+    background-color: #ede9fe;
+    color: #6d28d9;
+}
+
+.price-vaccine-badge-gray {
+    background-color: #f3f4f6;
+    color: #4b5563;
+}
+
+.price-vaccine-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+}
+
+.price-vaccine-modal {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 30rem;
+    position: relative;
+}
+
+.price-vaccine-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: #6b7280;
+    font-size: 1.25rem;
+    transition: color 0.3s ease;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.price-vaccine-modal-close:hover {
+    color: #1f2937;
+}
+
+.price-vaccine-modal h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 1rem;
+}
+
+.price-vaccine-modal-age {
+    display: flex;
+    align-items: center;
+    color: #4b5563;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+.price-vaccine-modal-age svg {
+    margin-right: 0.5rem;
+    color: #2563eb;
+}
+
+.price-vaccine-modal-price {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #2563eb;
+    margin-bottom: 1rem;
+}
+
+.price-vaccine-modal p {
+    font-size: 1rem;
+    color: #4b5563;
+    margin-bottom: 1.5rem;
+}
+
+.price-vaccine-modal-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.price-vaccine-modal-details div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.price-vaccine-modal-details span:first-child {
+    font-size: 0.875rem;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+}
+
+.price-vaccine-modal-details span:first-child svg {
+    margin-right: 0.5rem;
+    color: #2563eb;
+}
+
+.price-vaccine-modal-details span:last-child {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.price-vaccine-modal-details span:last-child.price-vaccine-badge-blue,
+.price-vaccine-modal-details span:last-child.price-vaccine-badge-red,
+.price-vaccine-modal-details span:last-child.price-vaccine-badge-indigo,
+.price-vaccine-modal-details span:last-child.price-vaccine-badge-yellow,
+.price-vaccine-modal-details span:last-child.price-vaccine-badge-pink,
+.price-vaccine-modal-details span:last-child.price-vaccine-badge-purple,
+.price-vaccine-modal-details span:last-child.price-vaccine-badge-gray {
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+}
+
+
+.homepage-combo-vaccine h2 {
+    font-size: 1.875rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 3rem;
+    color: #1f2937;
+}
+
+.homepage-combo-vaccine p {
+    text-align: center;
+    color: #4b5563;
+}
+
+/* Process Section */
+.homepage-process {
+    padding: 5rem 0;
+    background-color: #f0f9ff;
+}
+
+.homepage-process-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .homepage-process-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.homepage-process-item {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.homepage-process-item:hover {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.homepage-process-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.homepage-process-step {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.homepage-process-item h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.homepage-process-item p {
+    color: #4b5563;
+}
+
+/* Feedback Section */
+.homepage-feedback {
+    padding: 5rem 0;
+    background-color: #ffffff;
+}
+
+.homepage-feedback-overflow {
+    overflow: hidden;
+}
+
+.homepage-feedback-container {
+    display: flex;
+    gap: 1.5rem;
+    white-space: nowrap;
+    transition: transform 0.1s linear;
+}
+
+.homepage-feedback-item {
+    flex-shrink: 0;
+    width: 400px;
+}
+
+.homepage-feedback-card {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.homepage-feedback-card:hover {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.homepage-feedback-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.homepage-feedback-avatar {
+    width: 3rem;
+    height: 3rem;
+    background-color: #2563eb;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-right: 1rem;
+}
+
+.homepage-feedback-name {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.homepage-feedback-date {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.homepage-feedback-rating {
+    margin-bottom: 1rem;
+}
+
+.homepage-feedback-stars {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.homepage-star-filled {
+    color: #f59e0b;
+}
+
+.homepage-star-empty {
+    color: #d1d5db;
+}
+
+.homepage-feedback-comment {
+    font-size: 0.875rem;
+    color: #4b5563;
+    font-style: italic;
+}
+
+.homepage-feedback-placeholder {
+    text-align: center;
+    color: #6b7280;
+    font-size: 1.125rem;
+}
