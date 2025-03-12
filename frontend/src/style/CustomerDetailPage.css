@@ -1,0 +1,384 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+/* Base styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #f5f9fb 0%, #e3f2fd 100%);
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Container with animation */
+  .healthcare-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+  
+  .healthcare-container.animate {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Header */
+  .healthcare-header {
+    background: linear-gradient(45deg, #2d87c9, #4caf50);
+    color: white;
+    padding: 24px;
+    border-radius: 12px 12px 0 0;
+    text-align: center;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    animation: fadeInDown 1s ease-out;
+  }
+  
+  .healthcare-header .header-title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Main content with fluid grid layout */
+  .healthcare-content {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 40px;
+    margin-top: 30px;
+  }
+  
+  /* Profile Section */
+  .profile-section {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08), 0 4px 6px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.4s ease, opacity 0.4s ease;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  
+  .profile-section.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+    animation: slideIn 0.8s ease-out;
+  }
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .profile-section:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15), 0 6px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .profile-card {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  .avatar-section {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    position: relative;
+  }
+  
+  .profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid rgba(76, 175, 80, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+  
+  .profile-avatar:hover {
+    transform: scale(1.15) rotate(5deg);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  }
+  
+  .profile-info {
+    flex: 1;
+  }
+  
+  .profile-name {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: #2d87c9;
+    text-shadow: 1px 1px 2px rgba(45, 135, 201, 0.2);
+  }
+  
+  .profile-contact {
+    margin: 10px 0;
+    color: #666;
+    font-size: 16px;
+    transition: color 0.3s ease;
+  }
+  
+  .profile-contact:hover .icon {
+    color: #2d87c9;
+  }
+  
+  .profile-contact .icon {
+    margin-right: 10px;
+    color: #4caf50;
+    transition: color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .profile-contact:hover .icon {
+    transform: scale(1.1);
+  }
+  
+  .profile-details {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #444;
+  }
+  
+  .profile-details p {
+    margin: 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+  
+  .profile-details p:hover {
+    transform: translateX(5px);
+    color: #2d87c9;
+  }
+  
+  .profile-details .icon {
+    color: #4caf50;
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+  
+  .profile-details p:hover .icon {
+    transform: scale(1.1);
+    color: #2d87c9;
+  }
+  
+  /* Children Section */
+  .children-section {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08), 0 4px 6px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.4s ease, opacity 0.4s ease;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  
+  .children-section.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+    animation: slideIn 0.8s ease-out;
+  }
+  
+  .children-section:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15), 0 6px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .children-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2d87c9;
+    margin-bottom: 28px;
+    border-bottom: 3px solid rgba(76, 175, 80, 0.3);
+    padding-bottom: 12px;
+    animation: fadeIn 1s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .no-child {
+    font-style: italic;
+    color: #666;
+    text-align: center;
+    animation: fadeIn 1s ease-out;
+  }
+  
+  /* Children Grid */
+  .children-grid {
+    display: grid;
+    gap: 24px;
+  }
+  
+  .child-card {
+    background: linear-gradient(135deg, #ffffff, #f8fafc);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.4s ease, background 0.4s ease;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  
+  .child-card.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+    animation: slideIn 0.8s ease-out;
+  }
+  
+  .child-card:hover {
+    transform: translateY(-10px) rotate(1deg);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12), 0 4px 10px rgba(0, 0, 0, 0.08);
+    background: linear-gradient(135deg, #f8fafc, #e6f3ff);
+  }
+  
+  .child-header {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .child-name {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #2d87c9;
+    text-shadow: 1px 1px 2px rgba(45, 135, 201, 0.1);
+  }
+  
+  .child-dob {
+    margin: 0;
+    color: #444;
+    font-size: 16px;
+  }
+  
+  .child-details {
+    margin-top: 16px;
+    font-size: 16px;
+    color: #555;
+    animation: fadeIn 0.8s ease-out;
+  }
+  
+  .child-details p {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+  
+  .child-details p:hover {
+    transform: translateX(5px);
+    color: #2d87c9;
+  }
+  
+  .child-details .icon {
+    color: #4caf50;
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+  
+  .child-details p:hover .icon {
+    transform: scale(1.1);
+    color: #2d87c9;
+  }
+  
+  .expanded {
+    padding: 24px;
+    background: linear-gradient(135deg, #e6f3ff, #f8fafc);
+  }
+  
+  /* Icons */
+  .icon {
+    font-size: 18px;
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+  
+  /* Loading / Error */
+  .loading-text {
+    text-align: center;
+    margin-top: 40px;
+    color: #666;
+    font-size: 20px;
+    animation: pulse 1.5s infinite ease-in-out;
+  }
+  
+  @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+  }
+  
+  .error-text {
+    text-align: center;
+    margin-top: 40px;
+    color: #d32f2f;
+    font-size: 20px;
+    animation: shake 0.5s ease-out;
+  }
+  
+  @keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    50% { transform: translateX(10px); }
+    75% { transform: translateX(-10px); }
+    100% { transform: translateX(0); }
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .healthcare-content {
+      grid-template-columns: 1fr;
+    }
+  
+    .profile-section, .children-section {
+      padding: 20px;
+    }
+  
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+    }
+  
+    .profile-name {
+      font-size: 20px;
+    }
+  
+    .children-title {
+      font-size: 22px;
+    }
+  
+    .child-name {
+      font-size: 18px;
+    }
+  }

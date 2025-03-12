@@ -24,7 +24,7 @@ public class Payment {
     @JoinColumn(name = "bookingId", nullable = false)
     private Booking booking;
 
-    private Date date;
+    private Date date = null;
     @Min(value = 0,message = "total must be greater than 0")
     private int total;
 

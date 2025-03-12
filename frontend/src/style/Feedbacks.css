@@ -1,0 +1,601 @@
+.main-container-feedbackmanager {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 16px 24px;
+  }
+  
+  .header-feedbackmanager {
+    margin-bottom: 32px;
+  }
+  
+  .title-feedbackmanager {
+    font-size: 24px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 8px;
+  }
+  
+  .subtitle-feedbackmanager {
+    color: #6b7280;
+    font-size: 16px;
+  }
+  
+  .search-filter-container-feedbackmanager {
+    margin-bottom: 32px;
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f3f4f6;
+  }
+  
+  .search-grid-feedbackmanager {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  @media (min-width: 768px) {
+    .search-grid-feedbackmanager {
+      grid-template-columns: repeat(12, 1fr);
+    }
+    .search-input-container-feedbackmanager {
+      grid-column: span 6;
+    }
+    .search-type-container-feedbackmanager {
+      grid-column: span 3;
+    }
+    .ranking-filter-wrapper-feedbackmanager {
+      grid-column: span 3;
+    }
+  }
+  
+  .search-input-container-feedbackmanager {
+    position: relative;
+  }
+  
+  .search-icon-feedbackmanager {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+  }
+  
+  .search-input-feedbackmanager {
+    padding-left: 40px;
+    width: 100%;
+    padding: 12px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+  
+  .search-input-feedbackmanager:focus {
+    outline: none;
+    border-color: transparent;
+    box-shadow: 0 0 0 2px #14b8a6;
+  }
+  
+  .search-type-container-feedbackmanager {
+    position: relative;
+  }
+  
+  .search-type-select-feedbackmanager {
+    width: 100%;
+    padding: 12px 40px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    appearance: none;
+    transition: all 0.2s;
+  }
+  
+  .search-type-select-feedbackmanager:focus {
+    outline: none;
+    border-color: transparent;
+    box-shadow: 0 0 0 2px #14b8a6;
+  }
+  
+  .search-type-icon-feedbackmanager {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    pointer-events: none;
+  }
+  
+  .dropdown-arrow-feedbackmanager {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    color: #9ca3af;
+    pointer-events: none;
+  }
+  
+  .ranking-filter-container-feedbackmanager {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  @media (min-width: 768px) {
+    .ranking-filter-container-feedbackmanager {
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+  
+  .ranking-label-feedbackmanager {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4b5563;
+  }
+  
+  .stars-container-feedbackmanager {
+    display: flex;
+    align-items: center;
+  }
+  
+  .star-button-feedbackmanager {
+    padding: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  
+  .star-button-feedbackmanager:hover {
+    transform: scale(1.1);
+  }
+  
+  .star-size-feedbackmanager {
+    font-size: 20px;
+  }
+  
+  .star-filled-feedbackmanager {
+    color: #fbbf24;
+  }
+  
+  .star-outline-feedbackmanager {
+    color: #d1d5db;
+  }
+  
+  .star-hover-feedbackmanager:hover {
+    color: #fde68a;
+  }
+  
+  .clear-button-feedbackmanager {
+    margin-left: 4px;
+    padding: 4px;
+    background: #f3f4f6;
+    border-radius: 9999px;
+    font-size: 12px;
+    color: #6b7280;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .clear-button-feedbackmanager:hover {
+    background: #e5e7eb;
+  }
+  
+  .all-text-feedbackmanager {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: -4px;
+  }
+  
+  .dashboard-summary-feedbackmanager {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  
+  @media (min-width: 768px) {
+    .dashboard-summary-feedbackmanager {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+  
+  .summary-card-feedbackmanager {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f3f4f6;
+    padding: 16px;
+  }
+  
+  .summary-header-feedbackmanager {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  
+  .star-count-feedbackmanager {
+    display: flex;
+    align-items: center;
+  }
+  
+  .star-number-feedbackmanager {
+    font-weight: 500;
+    margin-left: 4px;
+  }
+  
+  .count-feedbackmanager {
+    font-size: 18px;
+    font-weight: 700;
+  }
+  
+  .progress-bar-container-feedbackmanager {
+    width: 100%;
+    background: #f3f4f6;
+    border-radius: 9999px;
+    height: 8px;
+  }
+  
+  .progress-bar-feedbackmanager {
+    height: 8px;
+    border-radius: 9999px;
+  }
+  
+  .gradient-green-teal-feedbackmanager {
+    background: linear-gradient(to right, #34d399, #14b8a6);
+  }
+  
+  .gradient-teal-cyan-feedbackmanager {
+    background: linear-gradient(to right, #2dd4bf, #06b6d4);
+  }
+  
+  .gradient-blue-indigo-feedbackmanager {
+    background: linear-gradient(to right, #60a5fa, #4f46e5);
+  }
+  
+  .gradient-amber-orange-feedbackmanager {
+    background: linear-gradient(to right, #fbbf24, #f97316);
+  }
+  
+  .gradient-red-rose-feedbackmanager {
+    background: linear-gradient(to right, #f87171, #e11d48);
+  }
+  
+  .gradient-gray-feedbackmanager {
+    background: linear-gradient(to right, #9ca3af, #6b7280);
+  }
+  
+  .percentage-feedbackmanager {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 4px;
+    text-align: right;
+  }
+  
+  .feedback-list-feedbackmanager {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .feedback-card-feedbackmanager {
+    padding: 16px;
+    background: #ffffff;
+    border: 1px solid #f3f4f6;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .feedback-card-feedbackmanager:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .feedback-card-content-feedbackmanager {
+    flex: 1;
+  }
+  
+  .feedback-id-feedbackmanager {
+    padding: 4px 8px;
+    background: #f3f4f6;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #6b7280;
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+  
+  .customer-name-feedbackmanager {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0d9488;
+    margin-bottom: 4px;
+  }
+  
+  .booking-info-feedbackmanager {
+    font-size: 14px;
+    color: #4b5563;
+  }
+  
+  .booking-label-feedbackmanager {
+    font-weight: 500;
+  }
+  
+  .stars-display-feedbackmanager {
+    display: flex;
+  }
+  
+  .no-feedback-container-feedbackmanager {
+    text-align: center;
+    padding: 48px;
+    background: #f9fafb;
+    border-radius: 8px;
+  }
+  
+  .no-feedback-icon-feedbackmanager {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    background: #f3f4f6;
+    border-radius: 9999px;
+    margin-bottom: 16px;
+    color: #9ca3af;
+  }
+  
+  .no-feedback-text-feedbackmanager {
+    color: #6b7280;
+  }
+  
+  .modal-overlay-feedbackmanager {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 16px;
+  }
+  
+  .modal-container-feedbackmanager {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    max-width: 512px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .modal-header-gradient-feedbackmanager {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+  }
+  
+  .modal-decor-top-feedbackmanager {
+    position: absolute;
+    top: -80px;
+    right: -80px;
+    width: 160px;
+    height: 160px;
+    background: #ccfbf1;
+    border-radius: 9999px;
+    opacity: 0.5;
+  }
+  
+  .modal-decor-bottom-feedbackmanager {
+    position: absolute;
+    bottom: -80px;
+    left: -80px;
+    width: 160px;
+    height: 160px;
+    background: #fef3c7;
+    border-radius: 9999px;
+    opacity: 0.5;
+  }
+  
+  .modal-close-button-feedbackmanager {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background: #f3f4f6;
+    color: #6b7280;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .modal-close-button-feedbackmanager:hover {
+    background: #e5e7eb;
+  }
+  
+  .modal-content-feedbackmanager {
+    position: relative;
+  }
+  
+  .modal-header-content-feedbackmanager {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  
+  .modal-title-feedbackmanager {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1f2937;
+  }
+  
+  .modal-id-feedbackmanager {
+    font-size: 14px;
+    color: #6b7280;
+  }
+  
+  .modal-stars-feedbackmanager {
+    display: flex;
+  }
+  
+  .modal-body-feedbackmanager {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  .customer-info-feedbackmanager {
+    background: #f9fafb;
+    padding: 16px;
+    border-radius: 8px;
+  }
+  
+  .customer-info-header-feedbackmanager {
+    margin-bottom: 12px;
+  }
+  
+  .info-label-feedbackmanager {
+    font-size: 14px;
+    color: #6b7280;
+  }
+  
+  .customer-name-modal-feedbackmanager {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0d9488;
+  }
+  
+  .booking-info-modal-feedbackmanager {
+    display: flex;
+    align-items: center;
+  }
+  
+  .booking-icon-feedbackmanager {
+    color: #0d9488;
+    margin-right: 8px;
+  }
+  
+  .booking-label-modal-feedbackmanager {
+    font-size: 14px;
+    color: #6b7280;
+  }
+  
+  .booking-id-modal-feedbackmanager {
+    font-weight: 500;
+  }
+  
+  .comment-section-feedbackmanager {
+  }
+  
+  .comment-header-feedbackmanager {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  
+  .comment-icon-feedbackmanager {
+    color: #0d9488;
+    margin-right: 8px;
+  }
+  
+  .comment-title-feedbackmanager {
+    font-weight: 500;
+    color: #374151;
+  }
+  
+  .comment-content-feedbackmanager {
+    background: #f9fafb;
+    padding: 16px;
+    border-radius: 8px;
+  }
+  
+  .comment-text-feedbackmanager {
+    color: #374151;
+    font-style: italic;
+  }
+  
+  .no-comment-feedbackmanager {
+    color: #9ca3af;
+  }
+  
+  .modal-footer-feedbackmanager {
+    margin-top: 32px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .close-button-feedbackmanager {
+    padding: 8px 24px;
+    background: #f3f4f6;
+    color: #374151;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .close-button-feedbackmanager:hover {
+    background: #e5e7eb;
+  }
+  
+  .skeleton-container-feedbackmanager {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .skeleton-card-feedbackmanager {
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    animation: pulse 1.5s infinite;
+    height: 80px;
+  }
+  
+  @keyframes pulse {
+    0% { background-color: #f3f4f6; }
+    50% { background-color: #e5e7eb; }
+    100% { background-color: #f3f4f6; }
+  }
+  
+  .error-container-feedbackmanager {
+    padding: 16px;
+    background: #fef2f2;
+    border-left: 4px solid #f87171;
+    color: #b91c1c;
+    border-radius: 4px;
+  }
+  
+  .error-text-feedbackmanager {
+    display: flex;
+    align-items: center;
+  }
+  
+  .error-icon-feedbackmanager {
+    margin-right: 8px;
+  }

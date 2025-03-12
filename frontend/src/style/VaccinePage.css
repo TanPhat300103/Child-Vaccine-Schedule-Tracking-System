@@ -1,0 +1,380 @@
+.vaccine-page {
+  background: linear-gradient(to bottom, #f0f7f4, #e0f2e9); /* Gradient xanh lá nhạt */
+  min-height: 100vh;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 16px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease-in;
+}
+
+.header h1 {
+  color: #2e7d32; /* Xanh lá đậm */
+  font-size: 24px;
+  margin: 0;
+}
+
+.add-button {
+  background-color: #4caf50; /* Xanh lá */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.add-button:hover {
+  background-color: #388e3c;
+  transform: translateY(-2px);
+}
+
+.add-button i {
+  font-size: 16px;
+}
+
+.filter-container {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 16px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  animation: slideIn 0.5s ease-in;
+}
+
+.filter-input {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  width: 200px;
+  transition: border-color 0.3s ease;
+}
+
+.filter-input:focus {
+  border-color: #4caf50;
+  outline: none;
+}
+
+.price-filter, .age-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.price-filter label, .age-filter label {
+  color: #4b5563;
+  font-size: 14px;
+}
+
+.small {
+  width: 100px;
+}
+
+.vaccine-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.vaccine-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeInUp 0.5s ease-in;
+}
+
+.vaccine-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.card-header h3 {
+  color: #2e7d32;
+  font-size: 18px;
+  margin: 0;
+}
+
+.status {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status.active {
+  background-color: #4caf50;
+  color: white;
+}
+
+.status.inactive {
+  background-color: #f44336;
+  color: white;
+}
+
+.card-body p {
+  margin: 8px 0;
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-body i {
+  color: #4caf50;
+  font-size: 16px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.action-button {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.action-button.update {
+  background-color: #2196f3;
+  color: white;
+}
+
+.action-button.update:hover {
+  background-color: #1976d2;
+  transform: translateY(-2px);
+}
+
+.action-button.delete {
+  background-color: #f44336;
+  color: white;
+}
+
+.action-button.delete:hover {
+  background-color: #d32f2f;
+  transform: translateY(-2px);
+}
+
+/* Toggle Switch */
+/* Toggle Switch */
+.vaccine-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.vaccine-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.vaccine-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.vaccine-slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .vaccine-slider {
+  background-color: #4caf50;
+}
+
+input:checked + .vaccine-slider:before {
+  transform: translateX(26px);
+}
+
+/* Modal Form */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 600px; /* Đủ rộng để chứa các field theo cặp */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Hiệu ứng bóng đổ */
+}
+
+.modal-content h2 {
+  color: #2e7d32;
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px; /* Khoảng cách giữa các field trong cùng hàng */
+  margin-bottom: 16px;
+}
+
+.form-group {
+  flex: 1; /* Các field chiếm không gian đều nhau */
+  min-width: 0; /* Ngăn tràn nội dung */
+}
+
+.form-group label {
+  color: #4b5563;
+  font-size: 14px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng mượt mà */
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); /* Hiệu ứng sáng khi focus */
+  outline: none;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.cancel-button,
+.save-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Hiệu ứng hover */
+}
+
+.cancel-button {
+  background-color: #f44336;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: #d32f2f;
+  transform: translateY(-2px); /* Nút nhấc lên khi hover */
+}
+
+.save-button {
+  background-color: #4caf50;
+  color: white;
+}
+
+.save-button:hover {
+  background-color: #388e3c;
+  transform: translateY(-2px); /* Nút nhấc lên khi hover */
+}
+
+/* Country Select */
+.country-select .react-select__control {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #ffffff;
+  transition: border-color 0.3s ease;
+}
+
+.country-select .react-select__control:hover {
+  border-color: #4caf50;
+}
+
+.country-select .react-select__option {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+}
+
+.country-select .react-select__option:hover {
+  background-color: #e0f2e9;
+}
+
+.country-select .react-select__single-value {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

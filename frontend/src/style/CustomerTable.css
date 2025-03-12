@@ -1,0 +1,338 @@
+/*******************************************************
+  PAGE CONTAINER & HEADER
+*******************************************************/
+.page-container-customer {
+  background: linear-gradient(to right, #E0F7FA, #B2EBF2);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.header-customer {
+  background: linear-gradient(to right, #4CAF50, #2196F3);
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.header-customer h1 {
+  color: white;
+  font-size: 24px;
+  margin: 0;
+}
+
+/*******************************************************
+  FILTER CONTAINER
+*******************************************************/
+.filter-container-customer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filter-left-customer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-left-customer label {
+  font-size: 14px;
+  color: #333;
+}
+
+.filter-left-customer select {
+  padding: 6px 8px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.search-center-customer input {
+  width: 300px;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.icon-right-customer .btn-sort-customer {
+  background-color: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.icon-right-customer .btn-sort-customer:hover {
+  background-color: #2563eb;
+}
+
+/*******************************************************
+  CUSTOMER GRID & CARDS
+*******************************************************/
+/*******************************************************
+  CUSTOMER GRID & CARDS
+*******************************************************/
+.customer-grid-customer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.customer-card-customer {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.customer-card-customer:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card-header-customer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.card-header-customer h3 {
+  font-size: 18px;
+  color: #333;
+}
+
+.gender-icon-customer {
+  font-size: 20px;
+  color: #fff;
+  padding: 5px;
+  border-radius: 50%;
+}
+
+.gender-icon-customer.male-customer {
+  background-color: #3b82f6;
+}
+
+.gender-icon-customer.female-customer {
+  background-color: #ec4899;
+}
+
+.card-body-customer p {
+  margin: 5px 0;
+  color: #666;
+  overflow: hidden; /* Ẩn phần vượt quá kích thước */
+  text-overflow: ellipsis; /* Thêm dấu ... khi text bị cắt */
+  white-space: nowrap; /* Ngăn không cho xuống dòng */
+  max-width: 100%; /* Đảm bảo chiều rộng không vượt quá container */
+}
+
+.card-body-customer i {
+  margin-right: 8px;
+  color: #888;
+}
+
+/* Thêm kiểu cho email cụ thể nếu cần */
+.card-body-customer p.email-customer {
+  max-width: 70%; /* Giới hạn chiều rộng của email để không chiếm quá nhiều không gian */
+}
+
+/* Nếu bạn muốn hiển thị chỉ một nửa email, bạn cần chỉnh sửa thêm trong file JS để cắt chuỗi email */
+
+.card-footer-customer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.switch-customer {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.switch-customer input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider-customer {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #f59e0b;
+  transition: 0.4s;
+  border-radius: 24px;
+}
+
+.slider-customer:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.switch-customer input:checked + .slider-customer {
+  background-color: #22c55e;
+}
+
+.switch-customer input:checked + .slider-customer:before {
+  transform: translateX(26px);
+}
+
+.btn-update-customer {
+  background-color: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-update-customer:hover {
+  background-color: #2563eb;
+}
+
+/*******************************************************
+  MODAL
+*******************************************************/
+.modal-overlay-customer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-update-customer {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header-customer {
+  background: linear-gradient(to right, #4CAF50, #2196F3);
+  padding: 12px;
+  border-radius: 12px 12px 0 0;
+  text-align: center;
+}
+
+.modal-header-customer h3 {
+  color: white;
+  margin: 0;
+  font-size: 20px;
+}
+
+.modal-update-customer form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.form-group-customer.full-width-customer {
+  grid-column: span 2;
+}
+
+.form-group-customer {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group-customer label {
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #1f2937;
+  font-size: 14px;
+}
+
+.form-group-customer input,
+.form-group-customer select {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background-color: #f9fafb;
+  transition: border-color 0.2s ease;
+}
+
+.form-group-customer input:focus,
+.form-group-customer select:focus {
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.modal-actions-customer {
+  grid-column: span 2;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.btn-cancel-customer,
+.btn-submit-customer {
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.btn-cancel-customer {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.btn-cancel-customer:hover {
+  background-color: #d1d5db;
+}
+
+.btn-submit-customer {
+  background-color: #3b82f6;
+  color: #fff;
+}
+
+.btn-submit-customer:hover {
+  background-color: #2563eb;
+}
