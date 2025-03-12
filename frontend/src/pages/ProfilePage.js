@@ -34,6 +34,7 @@ function ProfilePage() {
         });
         if (!customerResponse.ok) throw new Error('Không tìm thấy thông tin khách hàng');
         const customerData = await customerResponse.json();
+        console.log('Dữ liệu từ server:', customerData);
         setCustomer(customerData);
       } catch (err) {
         setError('Lỗi khi lấy thông tin: ' + err.message);
@@ -46,13 +47,14 @@ function ProfilePage() {
   }, [userInfo]);
 
   const handleUpdateClick = () => {
+    console.log('customer.dob trước khi truyền:', customer.dob); // Kiểm tra giá trị dob
     setIsEditing(true);
     setFormData({
       customerId: customer.customerId,
       phoneNumber: customer.phoneNumber,
       firstName: customer.firstName,
       lastName: customer.lastName,
-      dob: customer.dateOfBirth,
+      dob: customer.dob || '', // Sử dụng customer.dob thay vì dateOfBirth
       gender: customer.gender,
       password: customer.password,
       address: customer.address || '',
@@ -78,7 +80,7 @@ function ProfilePage() {
       });
 
       if (response.ok) {
-        setCustomer(formData);
+        setCustomer({ ...customer, ...formData, dob: formData.dob }); // Sử dụng dob thay vì dateOfBirth
         setIsEditing(false);
       } else {
         const errorText = await response.text();

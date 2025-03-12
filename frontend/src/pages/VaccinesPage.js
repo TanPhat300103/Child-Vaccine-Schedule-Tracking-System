@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import VaccineList from "../pages/VaccineListPage"; // Import component VaccineList
-import VaccineCombo from "../components/VaccineCombo"; // Import component VaccineCombo
-import '../style/VaccinesPage.css'; // Style riêng cho page
-import Header from"../layout/Header";
+import VaccineList from "../pages/VaccineListPage";
+import VaccineCombo from "../components/VaccineCombo";
+import '../style/VaccinesPage.css';
+import Header from "../layout/Header";
 import Footer from "../layout/Footer";
 
 function VaccinesPage() {
-  const [activeTab, setActiveTab] = useState('vaccine-list'); // Mặc định chọn Vaccine List
-
-  // State cho VaccineCombo
+  const [activeTab, setActiveTab] = useState('vaccine-list');
   const [combos, setCombos] = useState([]);
   const [selectedCombo, setSelectedCombo] = useState(null);
   const [comboDetails, setComboDetails] = useState([]);
@@ -16,7 +14,6 @@ function VaccinesPage() {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Fetch vaccine combos
   useEffect(() => {
     const fetchCombos = async () => {
       try {
@@ -40,7 +37,6 @@ function VaccinesPage() {
     fetchCombos();
   }, []);
 
-  // Fetch combo details
   const fetchComboDetails = async (comboId) => {
     setLoading(true);
     try {
@@ -72,10 +68,26 @@ function VaccinesPage() {
   };
 
   return (
-   
-    
     <div className="vaccines-page">
-      
+      {/* Hero Section */}
+      <div className="faq-hero">
+        <div className="hero-content">
+          <h1>Bảng Giá</h1>
+          <div className="quote">
+            <p>
+              Bác sĩ nói rằng khoảnh khắc cuối cùng của con người sau khi mất đi là thính giác, vì vậy đừng ôm anh mà khóc, hãy nói rằng em yêu anh...
+            </p>
+          </div>
+        </div>
+        <div className="hero-decoration">
+          <div className="hero-circle-1"></div>
+          <div className="hero-circle-2"></div>
+          <div className="hero-circle-3"></div>
+          <div className="hero-circle-4"></div>
+          <div className="hero-circle-5"></div>
+        </div>
+      </div>
+
       <div className="vaccines-tabs">
         <button
           className={`vaccines-tab ${activeTab === 'vaccine-list' ? 'vaccines-tab-active' : ''}`}
@@ -107,8 +119,6 @@ function VaccinesPage() {
         )}
       </div>
     </div>
-    
-
   );
 }
 

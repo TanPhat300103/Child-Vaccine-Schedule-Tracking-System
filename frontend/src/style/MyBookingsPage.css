@@ -1,5 +1,3 @@
-/* MyBookingsPage.css - Modern & Stylish Design */
-
 /* Import Font */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
@@ -269,10 +267,10 @@ button {
 }
 
 .star-empty {
-  color: var(--text-dark); /* Đổi màu sao mờ thành màu tối hơn để nổi bật */
+  color: var(--text-dark);
   fill: none;
-  stroke: var(--text-dark); /* Thêm viền để sao rõ hơn */
-  stroke-width: 1.5; /* Tăng độ dày viền */
+  stroke: var(--text-dark);
+  stroke-width: 1.5;
 }
 
 /* Actions */
@@ -325,15 +323,15 @@ button {
 }
 
 .profile-status.active {
-  background-color: var(--warning); /* Màu vàng cho "Đang tiến hành" */
+  background-color: var(--warning);
 }
 
 .profile-status.completed {
-  background-color: var(--success); /* Màu xanh cho "Đã hoàn thành" */
+  background-color: var(--success);
 }
 
 .profile-status.canceled {
-  background-color: var(--danger); /* Màu đỏ cho "Đã hủy" */
+  background-color: var(--danger);
 }
 
 /* No Bookings */
@@ -517,6 +515,146 @@ button {
   100% { transform: rotate(360deg); }
 }
 
+/* Search Bar */
+.profile-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+  background: var(--white);
+  padding: 15px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+}
+
+.profile-search-input {
+  flex: 1;
+  padding: 12px 15px;
+  border: 2px solid var(--gray-200);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  transition: var(--transition);
+}
+
+.profile-search-input:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 8px rgba(94, 96, 206, 0.2);
+}
+
+.profile-search-btn {
+  padding: 12px 20px;
+  background: var(--primary);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.profile-search-btn:hover {
+  background: var(--primary-light);
+  transform: translateY(-2px);
+}
+
+/* Filters */
+.profile-filters {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+  flex-wrap: nowrap; /* Ngăn filter xuống dòng */
+}
+
+.profile-filter-select {
+  padding: 10px 15px;
+  border: 2px solid var(--gray-200);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  background: var(--white);
+  cursor: pointer;
+  transition: var(--transition);
+  min-width: 200px;
+  max-width: 250px; /* Giới hạn chiều rộng để không bị tràn */
+}
+
+.profile-filter-select:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 8px rgba(94, 96, 206, 0.2);
+}
+
+.profile-filter-select:hover {
+  border-color: var(--primary-light);
+}
+
+/* Container cho Filters và Children */
+.profile-filter-and-children {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+/* Children Section */
+.profile-children-section {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  padding: 10px;
+  flex-shrink: 0;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.profile-children-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.profile-child-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--white);
+  border-radius: 50px;
+  padding: 8px 15px;
+  min-width: 100px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid var(--primary-light);
+  transition: var(--transition);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer; /* Thêm con trỏ tay khi hover */
+}
+
+.profile-child-card:hover,
+.profile-child-card.selected {
+  background-color: var(--primary-light);
+  color: var(--white);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.profile-child-info h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-child-info p {
+  display: none; /* Ẩn ngày sinh và giới tính */
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .profile-content {
@@ -534,5 +672,22 @@ button {
   }
   .feedback-modal {
     width: 90%;
+  }
+  .profile-filter-and-children {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .profile-filters {
+    flex-wrap: wrap; /* Cho phép filter xuống dòng trên màn hình nhỏ */
+  }
+  .profile-filter-select {
+    max-width: 100%; /* Filter chiếm toàn bộ chiều rộng trên màn hình nhỏ */
+  }
+  .profile-children-section {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .profile-child-card {
+    min-width: 80px; /* Giảm kích thước card trên màn hình nhỏ */
   }
 }
