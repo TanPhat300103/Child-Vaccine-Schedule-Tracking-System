@@ -1,3 +1,4 @@
+/* header.css */
 /* Biến màu sắc */
 :root {
   --primary: #4f46e5;
@@ -48,6 +49,12 @@ body {
   border-top: 3px solid var(--primary);
   border-radius: 50%;
   margin: 0 auto;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Logo + brand */
@@ -103,8 +110,7 @@ body {
   margin: 0;
 }
 
-.nav-link,
-.nav-static {
+.nav-link {
   display: inline-flex;
   align-items: center;
   text-decoration: none;
@@ -116,6 +122,7 @@ body {
   border-radius: 10px;
   padding: 8px 16px;
   gap: 8px;
+  cursor: pointer;
 }
 
 .nav-link:hover {
@@ -137,13 +144,6 @@ body {
   animation: gentlePulse 2s infinite ease-in-out;
 }
 
-.nav-static {
-  cursor: default;
-  background-color: var(--light-gray);
-  border-color: var(--border);
-  opacity: 0.8;
-}
-
 /* Animation gentlePulse */
 @keyframes gentlePulse {
   0% {
@@ -157,36 +157,57 @@ body {
   }
 }
 
-/* Nút Đăng nhập (khi chưa login) */
+/* Nút Đăng nhập và Đăng ký */
 .navbar-right {
   display: flex;
   align-items: center;
 }
 
+.auth-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.auth-link {
+  text-decoration: none;
+}
+
 .navbar-right .nav-button {
-  background: linear-gradient(to right, var(--secondary), #fb923c);
-  color: var(--white);
   border: none;
   border-radius: 10px;
   padding: 10px 18px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700; /* Tăng độ đậm của chữ */
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
-  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+  transition: all 0.3s ease;
 }
 
-.navbar-right .nav-button:hover {
-  background: linear-gradient(to right, var(--secondary-hover), var(--secondary));
+.navbar-right .nav-button.login {
+  background: linear-gradient(to right, #3b82f6, #60a5fa);
+  color: var(--white);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.navbar-right .nav-button.login:hover {
+  background: linear-gradient(to right, #2563eb, #3b82f6);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
-.navbar-right .nav-button::after {
-  content: "➔";
-  font-size: 14px;
+.navbar-right .nav-button.register {
+  background: var(--white);
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.2);
+}
+
+.navbar-right .nav-button.register:hover {
+  background: linear-gradient(to right, rgba(79, 70, 229, 0.05), rgba(99, 102, 241, 0.1));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  color: var(--primary-hover);
 }
 
 /* User actions (chuông + profile) */
@@ -548,128 +569,6 @@ body {
   cursor: pointer;
 }
 
-/* Notification detail */
-.notification-detail-container {
-  max-width: 1000px;
-  margin: 40px auto;
-  padding: 24px;
-  background-color: var(--white);
-  border-radius: 12px;
-  box-shadow: var(--shadow);
-}
-
-.notification-detail-header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.back-button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: none;
-  border: 1px solid var(--border);
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--gray);
-  cursor: pointer;
-}
-
-.back-button:hover {
-  background-color: var(--primary-light);
-  color: var(--primary);
-  border-color: var(--primary);
-}
-
-.notification-detail-header h1 {
-  font-size: 24px;
-  font-weight: 600;
-  color: var(--dark);
-}
-
-.notification-detail-content {
-  padding: 16px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background-color: var(--light-gray);
-  margin-bottom: 32px;
-}
-
-.notification-detail-content h2 {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--dark);
-  margin-bottom: 8px;
-}
-
-.notification-date {
-  font-size: 14px;
-  color: var(--gray);
-  margin-bottom: 16px;
-}
-
-.notification-message {
-  font-size: 16px;
-  color: var(--dark);
-  line-height: 1.5;
-  margin-bottom: 16px;
-}
-
-.status {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 16px;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.status.read {
-  background-color: #28a745;
-  color: var(--white);
-}
-
-.status.unread {
-  background-color: var(--primary);
-  color: var(--white);
-}
-
-.all-notifications-section {
-  margin-top: 32px;
-}
-
-.all-notifications-section h3 {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--dark);
-  margin-bottom: 16px;
-}
-
-.notification-item.selected {
-  border: 2px solid var(--primary);
-  border-radius: 6px;
-  background-color: var(--primary-light);
-}
-
-.mark-read-button {
-  background-color: var(--primary);
-  color: var(--white);
-  border: none;
-  padding: 4px 12px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  margin-left: 8px;
-}
-
-.mark-read-button:hover {
-  background-color: var(--primary-hover);
-}
-
 /* Responsive */
 @media (max-width: 768px) {
   .navbar {
@@ -689,6 +588,7 @@ body {
     background-color: var(--white);
     box-shadow: var(--shadow);
     z-index: 999;
+    transition: left 0.3s ease;
   }
 
   .navbar-nav.mobile-active {
@@ -705,8 +605,7 @@ body {
     width: 100%;
   }
 
-  .nav-link,
-  .nav-static {
+  .nav-link {
     width: 100%;
     justify-content: flex-start;
     padding: 12px 16px;
@@ -769,6 +668,15 @@ body {
 
   .handbook-item {
     padding: 10px 20px;
+    font-size: 13px;
+  }
+
+  .auth-buttons {
+    gap: 8px;
+  }
+
+  .navbar-right .nav-button {
+    padding: 8px 14px;
     font-size: 13px;
   }
 }

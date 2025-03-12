@@ -1,8 +1,9 @@
+// Header.jsx
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "../style/header.css";
 import { useAuth } from '../components/AuthContext';
 import { useState, useEffect, useRef } from 'react';
-import { Home, Users, Package, DollarSign, Star, User, LogOut, ChevronDown, Menu, X, Syringe, Calendar, Bell, CheckCircle, Circle, BookOpen } from "lucide-react";
+import { Home, Star, User, LogOut, ChevronDown, Menu, X, Syringe, Calendar, Bell, CheckCircle, Circle, BookOpen } from "lucide-react";
 
 function Header() {
   const { isLoggedIn, userInfo, logout, isLoading } = useAuth();
@@ -11,13 +12,13 @@ function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
-  const [isHandbookOpen, setIsHandbookOpen] = useState(false); // State cho dropdown Cẩm nang
+  const [isHandbookOpen, setIsHandbookOpen] = useState(false);
   const [customerData, setCustomerData] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [activeTab, setActiveTab] = useState('all');
   const dropdownRef = useRef(null);
   const notificationRef = useRef(null);
-  const handbookRef = useRef(null); // Ref cho dropdown Cẩm nang
+  const handbookRef = useRef(null);
 
   useEffect(() => {
     if (isLoggedIn && userInfo?.userId) {
@@ -166,6 +167,14 @@ function Header() {
     navigate(path);
   };
 
+  const handleProtectedRoute = (path) => {
+    if (!isLoggedIn) {
+      navigate('/login');
+    } else {
+      navigate(path);
+    }
+  };
+
   const displayedNotifications = activeTab === 'all' 
     ? notifications 
     : notifications.filter(n => !n.read);
@@ -220,20 +229,27 @@ function Header() {
             </Link>
           </li>
           <li>
-            <Link 
-              to="/booking" 
+            <div 
+              onClick={() => handleProtectedRoute('/booking')}
               className={`nav-link ${location.pathname === '/booking' ? 'active' : ''}`}
             >
               <Calendar size={18} /> Booking
-            </Link>
+            </div>
           </li>
-          
           <li>
-            <Link 
-              to="/overview" 
+            <div 
+              onClick={() => handleProtectedRoute('/overview')}
               className={`nav-link ${location.pathname === '/overview' ? 'active' : ''}`}
             >
               <Star size={18} /> Overview
+            </div>
+          </li>
+          <li>
+            <Link 
+              to="/vaccines"
+              className={`nav-link ${location.pathname === '/vaccine' ? 'active' : ''}`}
+            >
+              <Syringe size={18} /> Vaccine
             </Link>
           </li>
           <li className="handbook-container" ref={handbookRef}>
@@ -365,9 +381,14 @@ function Header() {
             </div>
           </div>
         ) : (
-          <Link to="/login">
-            <button className="nav-button">Đăng nhập</button>
-          </Link>
+          <div className="auth-buttons">
+            <Link to="/login" className="auth-link">
+              <button className="nav-button login">Đăng nhập</button>
+            </Link>
+            <Link to="/register" className="auth-link">
+              <button className="nav-button register">Đăng ký</button>
+            </Link>
+          </div>
         )}
       </div>
     </header>

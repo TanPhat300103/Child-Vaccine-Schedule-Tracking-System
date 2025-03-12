@@ -6,6 +6,7 @@ import { FcGoogle } from "react-icons/fc";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import { FaHospital } from "react-icons/fa";
 import { RiSyringeLine } from "react-icons/ri";
+import { FaArrowLeft } from "react-icons/fa";
 
 function LoginForm() {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -30,6 +31,8 @@ function LoginForm() {
   const handleGoBack = () => {
     navigate(-1); // Quay lại trang trước đó trong lịch sử
 };
+
+
   // Xử lý đăng nhập
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -252,6 +255,7 @@ function LoginForm() {
       <div className="login-form-content">
         {/* Left Side: Branding and Background */}
         <div className="login-form-left">
+        
           <div className="login-form-icons">
             <RiSyringeLine className="login-form-icon" />
             <FaHospital className="login-form-icon" />
@@ -264,11 +268,16 @@ function LoginForm() {
               Đảm bảo bé yêu của bạn được bảo vệ với lịch tiêm chủng đầy đủ và
               đúng thời gian.
             </p>
+            {/* Nút Back đặt ở dưới góc trái */}
+            <button onClick={handleGoBack} className="login-form-back-button">
+              <FaArrowLeft className="login-form-back-icon" />
+            </button>
           </div>
         </div>
 
         {/* Right Side: Form */}
         <div className="login-form-right">
+       
           <h2 className="login-form-title">
             {!isForgotPassword
               ? 'Đăng nhập'

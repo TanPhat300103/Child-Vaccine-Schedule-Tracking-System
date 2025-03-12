@@ -39,27 +39,7 @@ const HomePage = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedVaccine, setSelectedVaccine] = useState(null);
   const [activeTab, setActiveTab] = useState("all");
-  const [vaccineData, setVaccineData] = useState({
-    id: 6,
-    vaccine: {
-      vaccineId: "V001",
-      name: "ROTARIX",
-      description: "Rota virus",
-      country: "USA",
-      doseNumber: 2,
-      price: 500000,
-      ageMin: 0,
-      ageMax: 2,
-      active: true,
-    },
-    entryDate: "2025-01-01",
-    expiredDate: "2027-01-01",
-    img: "https://www.cdc.gov/covid/media/images/2024/11/GettyImages-1773970411_1200x675.png",
-    quantity: 100,
-    status: true,
-    tolerance: 5,
-    day: 30,
-  });
+  const [vaccineData, setVaccineData] = useState(null);
 
   const slides = [
     { img: "https://via.placeholder.com/800x400?text=Slide+1" },
