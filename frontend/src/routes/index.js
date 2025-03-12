@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import Header from "../layout/Header";
 import Footer from "../layout/Footer";
 import HomePage from "../pages/HomePage";
@@ -11,15 +16,15 @@ import ProfilePage from "../pages/ProfilePage";
 import BookingDetailPage from "../pages/BookingDetailPage";
 import MyPaymentPage from "../pages/MyPaymentPage";
 import PaymentProcessPage from "../pages/PaymentProcessPage";
-import PaymentReturnPage from '../pages/PaymentReturnPage';
+import PaymentReturnPage from "../pages/PaymentReturnPage";
 import BookingPage from "../pages/BookingPage";
 import Overview from "../pages/Overview";
-import NotificationDetail from '../pages/NotificationDetail';
+import NotificationDetail from "../pages/NotificationDetail";
 import Chatbox from "../components/Chatbox";
-import ChildInfoPage from '../pages/ChildInfoPage';
-import VaccinationHandbook from '../layout/VaccinationHandbook';
-import VaccinationNotes from '../pages/VaccinationNotes';
-import VaccinationFAQ from '../layout/VaccinationFAQ';
+import ChildInfoPage from "../pages/ChildInfoPage";
+import VaccinationHandbook from "../layout/VaccinationHandbook";
+import VaccinationNotes from "../pages/VaccinationNotes";
+import VaccinationFAQ from "../layout/VaccinationFAQ";
 import MyBookingsPage from "../pages/MyBookingsPage";
 import StaffPage from "../pages/Staff/StaffPage";
 import Profile from "../pages/Staff/Profile";
@@ -27,9 +32,9 @@ import Customers from "../pages/Manager/CustomerManager";
 import Childs from "../pages/Manager/ChildManager";
 import Bookings from "../pages/Manager/BookingManager";
 import BookingDetail from "../pages/Manager/BookingDetailManager";
-import Records from "../pages/Manager/Record";
-import Feedbacks from "../pages/Manager/Feedbacks";
-import MarketingCampaigns from "../pages/Manager/MarketingCampaigns";
+import Records from "../pages/Manager/RecordManager";
+import Feedbacks from "../pages/Manager/FeedbackManager";
+import MarketingCampaigns from "../pages/Manager/MarketingCampaignManager";
 import Payments from "../pages/Manager/PaymentManager";
 import Vaccines from "../pages/Manager/VaccineManager";
 import VaccineDetailManager from "../pages/Manager/VaccineDetailManager";
@@ -96,7 +101,7 @@ function AppRoutes() {
               </Layout>
             }
           />
-      
+
           <Route
             path="/profile"
             element={
@@ -213,18 +218,30 @@ function AppRoutes() {
           {/* Route cha cho staff với các route con */}
           <Route path="/staff" element={<StaffPage />}>
             <Route index element={<Profile />} />
-            <Route path = "customers" element={<Customers />} />
-            <Route path = "childs/:customerId" element={<Childs />} />
-            <Route path = "bookings" element={<Bookings />} />
-            <Route path = "booking-detail/:bookingId" element={<BookingDetail />} />
-            <Route path = "records" element={<Records />} />
-            <Route path = "feedbacks" element={<Feedbacks />} />
-            <Route path = "marketing-campaigns" element={<MarketingCampaigns />} />
-            <Route path = "payments" element={<Payments />} />
-            <Route path = "vaccines" element={<Vaccines />} />
-            <Route path = "vaccine-detail/:vaccineId" element={<VaccineDetailManager />} />
-            <Route path = "vaccine-combos" element={<VaccineCombos />} />
-            <Route path = "combo-detail/:vaccineComboId" element={<ComboDetail />} />
+            <Route path="customers" element={<Customers />} />
+            <Route path="childs/:customerId" element={<Childs />} />
+            <Route path="bookings" element={<Bookings />} />
+            <Route
+              path="booking-detail/:bookingId"
+              element={<BookingDetail />}
+            />
+            <Route path="records" element={<Records />} />
+            <Route path="feedbacks" element={<Feedbacks />} />
+            <Route
+              path="marketing-campaigns"
+              element={<MarketingCampaigns />}
+            />
+            <Route path="payments" element={<Payments />} />
+            <Route path="vaccines" element={<Vaccines />} />
+            <Route
+              path="vaccine-detail/:vaccineId"
+              element={<VaccineDetailManager />}
+            />
+            <Route path="vaccine-combos" element={<VaccineCombos />} />
+            <Route
+              path="combo-detail/:vaccineComboId"
+              element={<ComboDetail />}
+            />
           </Route>
         </Routes>
       </AuthProvider>
