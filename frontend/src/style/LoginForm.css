@@ -1,405 +1,346 @@
 /* LoginForm.css */
 .login-form-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #6b48ff 0%, #00ddeb 100%);
-  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to bottom right, #eff6ff, #dbeafe);
+  padding: 48px 16px;
+}
+
+.login-form-content {
+  width: 100%;
+  max-width: 1024px;
+  display: flex;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  padding: 20px;
 }
 
-.login-form-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><circle cx="10" cy="10" r="2" fill="rgba(255,255,255,0.2)" /><circle cx="50" cy="50" r="3" fill="rgba(255,255,255,0.3)" /><circle cx="90" cy="30" r="2" fill="rgba(255,255,255,0.2)" /><circle cx="20" cy="80" r="3" fill="rgba(255,255,255,0.3)" /><circle cx="70" cy="70" r="2" fill="rgba(255,255,255,0.2)" /></svg>');
-  animation: login-form-particle 15s linear infinite;
-}
-
-@keyframes login-form-particle {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(-100px);
-  }
-}
-
-.login-form-card {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-  padding: 40px;
-  max-width: 450px;
-  width: 100%;
-  text-align: center;
+/* Left Side */
+.login-form-left {
+  display: none;
+  width: 50%;
+  background: linear-gradient(to bottom right, #2563eb, #60a5fa);
+  padding: 32px;
+  color: #ffffff;
   position: relative;
-  z-index: 1;
-  animation: login-form-fadeIn 1s ease-in-out;
 }
 
-.login-form-welcome {
-  font-size: 28px;
+@media (min-width: 1024px) {
+  .login-form-left {
+    display: block;
+  }
+}
+
+.login-form-icons {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.login-form-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.login-form-left-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.login-form-left-title {
+  font-size: 24px;
   font-weight: 700;
-  color: #6b48ff;
-  margin-bottom: 20px;
-  font-family: 'Poppins', sans-serif;
-  line-height: 1.4;
-  animation: login-form-pulse 2s infinite;
+  margin-bottom: 16px;
 }
 
-@keyframes login-form-pulse {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.02);
-    opacity: 0.9;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
+.login-form-left-text {
+  font-size: 16px;
+}
+
+/* Right Side */
+.login-form-right {
+  width: 100%;
+  padding: 32px;
+}
+
+@media (min-width: 1024px) {
+  .login-form-right {
+    width: 50%;
   }
 }
 
 .login-form-title {
-  font-size: 26px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 30px;
-  font-family: 'Poppins', sans-serif;
-  letter-spacing: 1px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 8px;
 }
 
-.login-form-error-message {
-  color: #ff4d4f;
-  margin-bottom: 20px;
-  font-size: 14px;
-  font-family: 'Poppins', sans-serif;
+.login-form-subtitle {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 24px;
+}
+
+.login-form-link {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.login-form-link:hover {
+  text-decoration: underline;
+}
+
+/* Error Message */
+.login-form-error {
+  background: #fef2f2;
+  border-left: 4px solid #ef4444;
+  padding: 16px;
+  margin-bottom: 24px;
+  border-radius: 4px;
+}
+
+.login-form-error-text {
+  color: #dc2626;
+  font-size: 12px;
+}
+
+/* Form */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .login-form-group {
-  margin-bottom: 25px;
   text-align: left;
-  position: relative;
 }
 
 .login-form-label {
   display: block;
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 10px;
-  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
   font-weight: 500;
-}
-
-.login-form-input-wrapper {
-  position: relative;
-  width: 100%;
+  color: #374151;
+  margin-bottom: 8px;
 }
 
 .login-form-input {
   width: 100%;
-  padding: 12px;
-  font-size: 14px;
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid #e0e0e0;
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
   outline: none;
-  transition: all 0.3s ease;
-  font-family: 'Poppins', sans-serif;
-  color: #333;
-  position: relative;
+  transition: all 0.2s ease;
+  background: transparent;
+  color: #374151;
+  font-size: 14px;
 }
 
 .login-form-input:focus {
-  border-bottom: 2px solid #6b48ff;
-  box-shadow: 0 2px 10px rgba(107, 72, 255, 0.2);
+  border-color: transparent;
+  ring: 2px solid #3b82f6;
 }
 
-/* Thanh sáng chạy theo ký tự */
-.login-form-input-highlight {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #00ddeb, #6b48ff);
-  transition: width 0.2s ease;
-  box-shadow: 0 0 10px rgba(0, 221, 235, 0.8); /* Ánh sáng phát ra */
-}
-
-/* Điều chỉnh chiều rộng dựa trên data-length */
-.login-form-input-wrapper .login-form-input[data-length="0"] + .login-form-input-highlight {
-  width: 0%;
-}
-
-.login-form-input-wrapper .login-form-input[data-length="1"] + .login-form-input-highlight {
-  width: 5%;
-}
-
-.login-form-input-wrapper .login-form-input[data-length="2"] + .login-form-input-highlight {
-  width: 10%;
-}
-
-.login-form-input-wrapper .login-form-input[data-length="3"] + .login-form-input-highlight {
-  width: 15%;
-}
-
-.login-form-input-wrapper .login-form-input[data-length="4"] + .login-form-input-highlight {
-  width: 20%;
-}
-
-.login-form-input-wrapper .login-form-input[data-length="5"] + .login-form-input-highlight {
-  width: 25%;
-}
-
-.login-form-input-wrapper .login-form-input[data-length="6"] + .login-form-input-highlight {
-  width: 30%;
-}
-
-.login-form-input-wrapper .login-form-input[data-length="7"] + .login-form-input-highlight {
-  width: 35%;
-}
-
-.login-form-input-wrapper .login-form-input[data-length="8"] + .login-form-input-highlight {
-  width: 40%;
-}
-
-.login-form-input-wrapper .login-form-input[data-length="9"] + .login-form-input-highlight {
-  width: 45%;
-}
-
-.login-form-input-wrapper .login-form-input[data-length="10"] + .login-form-input-highlight {
-  width: 50%;
-}
-
-.login-form-input-wrapper .login-form-input[data-length="11"] + .login-form-input-highlight {
-  width: 55%;
-}
-
-.login-form-input-wrapper .login-form-input[data-length="12"] + .login-form-input-highlight {
-  width: 60%;
-}
-
-.login-form-input-wrapper .login-form-input[data-length="13"] + .login-form-input-highlight {
-  width: 65%;
-}
-
-.login-form-input-wrapper .login-form-input[data-length="14"] + .login-form-input-highlight {
-  width: 70%;
-}
-
-.login-form-input-wrapper .login-form-input[data-length="15"] + .login-form-input-highlight {
-  width: 75%;
-}
-
-.login-form-input-wrapper .login-form-input[data-length="16"] + .login-form-input-highlight {
-  width: 80%;
-}
-
-.login-form-input-wrapper .login-form-input[data-length="17"] + .login-form-input-highlight {
-  width: 85%;
-}
-
-.login-form-input-wrapper .login-form-input[data-length="18"] + .login-form-input-highlight {
-  width: 90%;
-}
-
-.login-form-input-wrapper .login-form-input[data-length="19"] + .login-form-input-highlight {
-  width: 95%;
-}
-
-.login-form-input-wrapper .login-form-input[data-length="20"] + .login-form-input-highlight,
-.login-form-input-wrapper .login-form-input[data-length] + .login-form-input-highlight {
-  width: 100%;
-}
-
-/* Hiệu ứng nhấp nháy cho thanh sáng */
-.login-form-input-highlight {
-  animation: login-form-glow 1s infinite;
-}
-
-@keyframes login-form-glow {
-  0% {
-    box-shadow: 0 0 10px rgba(0, 221, 235, 0.8);
-  }
-  50% {
-    box-shadow: 0 0 20px rgba(0, 221, 235, 1);
-  }
-  100% {
-    box-shadow: 0 0 10px rgba(0, 221, 235, 0.8);
-  }
-}
-
-.login-form-button {
-  width: 100%;
-  padding: 14px;
-  background: linear-gradient(90deg, #6b48ff, #00ddeb);
-  color: #ffffff;
-  border: none;
-  border-radius: 50px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: 'Poppins', sans-serif;
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-}
-
-.login-form-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, #00ddeb, #6b48ff);
-  transition: left 0.4s ease;
-  z-index: -1;
-}
-
-.login-form-button:hover:not(:disabled)::before {
-  left: 0;
-}
-
-.login-form-button:hover:not(:disabled) {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(107, 72, 255, 0.5);
-}
-
-.login-form-button:disabled {
-  background: #cccccc;
+.login-form-input:disabled {
+  background: #f3f4f6;
   cursor: not-allowed;
 }
 
-@keyframes login-form-fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.login-form-password-wrapper {
+  position: relative;
 }
 
-.login-form-forgot-button {
-  width: 100%;
-  padding: 10px;
+.login-form-eye-button {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   background: none;
-  color: #6b48ff;
   border: none;
+  cursor: pointer;
+}
+
+.login-form-eye-icon {
+  width: 20px;
+  height: 20px;
+  color: #9ca3af;
+}
+
+/* Button */
+.login-form-button {
+  width: 100%;
+  padding: 12px 16px;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: 'Poppins', sans-serif;
-  margin-top: 15px;
+  transition: all 0.2s ease;
+}
+
+.login-form-button:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.login-form-button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.login-form-loading-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  display: inline-block;
+  vertical-align: middle;
+  animation: spin 1s linear infinite;
+}
+
+.login-form-loading-circle {
+  opacity: 0.25;
+}
+
+.login-form-loading-path {
+  opacity: 0.75;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Divider */
+.login-form-divider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 16px 0;
+}
+
+.login-form-hr {
+  width: 100%;
+  border: 0;
+  border-top: 1px solid #d1d5db;
+}
+
+.login-form-divider-text {
+  position: absolute;
+  background: #ffffff;
+  padding: 0 16px;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+/* Google Button */
+.login-form-google-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  background: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.login-form-google-button:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+
+.login-form-google-button:disabled {
+  background: #f3f4f6;
+  cursor: not-allowed;
+}
+
+.login-form-google-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+/* Forgot Button */
+.login-form-forgot {
   text-align: center;
 }
 
+.login-form-forgot-button {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
 .login-form-forgot-button:hover:not(:disabled) {
-  color: #00ddeb;
   text-decoration: underline;
 }
 
 .login-form-forgot-button:disabled {
-  color: #cccccc;
+  color: #9ca3af;
   cursor: not-allowed;
 }
 
-.otp-input-container {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 10px;
+.login-form-disabled {
+  color: #9ca3af;
+  cursor: not-allowed;
 }
 
-.otp-input {
-  width: 50px;
-  height: 50px;
+/* OTP Inputs */
+.login-form-otp-group {
+  text-align: center;
+}
+
+.login-form-otp-subtitle {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 16px;
+}
+
+.login-form-otp-inputs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.login-form-otp-input {
+  width: 56px;
+  height: 56px;
   text-align: center;
   font-size: 18px;
-  font-family: 'Poppins', sans-serif;
-  color: #333;
-  background: transparent;
-  border: 2px solid #e0e0e0;
+  font-weight: 600;
+  border: 1px solid #d1d5db;
   border-radius: 8px;
   outline: none;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
-.otp-input:focus {
-  border-color: #6b48ff;
-  box-shadow: 0 0 10px rgba(107, 72, 255, 0.2);
+.login-form-otp-input:focus {
+  border-color: transparent;
+  ring: 2px solid #3b82f6;
 }
 
-.otp-input:disabled {
-  background: #f5f5f5;
-  cursor: not-allowed;
-}
-/* Nút Đăng nhập bằng Google */
-.login-form-google-button {
-  width: 100%;
-  padding: 14px;
-  background: #ffffff; /* Nền trắng giống nút Google */
-  color: #4285f4; /* Màu xanh đặc trưng của Google */
-  border: 1px solid #dadce0; /* Viền nhẹ giống phong cách Google */
-  border-radius: 50px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: 'Poppins', sans-serif;
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-  margin-top: 15px; /* Khoảng cách với nút Đăng nhập */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Hiệu ứng hover */
-.login-form-google-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, #4285f4, #34a853); /* Gradient xanh Google */
-  transition: left 0.4s ease;
-  z-index: -1;
-}
-
-.login-form-google-button:hover:not(:disabled)::before {
-  left: 0;
-}
-
-.login-form-google-button:hover:not(:disabled) {
-  color: #ffffff; /* Chữ trắng khi hover */
-  transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(66, 133, 244, 0.5); /* Hiệu ứng sáng xanh */
-}
-
-/* Trạng thái disabled */
-.login-form-google-button:disabled {
-  background: #f5f5f5;
-  color: #cccccc;
-  border-color: #e0e0e0;
+.login-form-otp-input:disabled {
+  background: #f3f4f6;
   cursor: not-allowed;
 }
 
-/* Tùy chọn: Thêm biểu tượng Google (nếu muốn) */
-.login-form-google-button::after {
-  content: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20"><path fill="%234285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="%2334A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-1.02.68-2.31 1.08-3.71 1.08-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C4.01 20.49 7.72 23 12 23z"/><path fill="%23FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="%23EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.72 1 4.01 3.51 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>');
-  margin-left: 10px; /* Khoảng cách giữa chữ và biểu tượng */
-}

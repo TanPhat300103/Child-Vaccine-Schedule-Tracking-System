@@ -10,7 +10,7 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
-
+import { Users, Heart, Stethoscope, Syringe, Search } from "lucide-react"; // Import biểu tượng từ Lucide React
 const HomePage = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [feedbacks, setFeedbacks] = useState([]);
@@ -84,19 +84,18 @@ const HomePage = () => {
   ];
 
   const enhancedProcess = [
-    { step: 1, icon: "➕", title: "Đăng Ký Tài Khoản", description: "Tạo tài khoản trực tuyến để quản lý lịch tiêm và theo dõi hồ sơ sức khỏe." },
-    { step: 2, icon: "✅", title: "Đặt Lịch Tiêm Chủng", description: "Chọn ngày giờ phù hợp và loại vắc-xin phù hợp với nhu cầu của bạn." },
-    { step: 3, icon: "👨‍⚕️", title: "Khám Sàng Lọc", description: "Bác sĩ khám sức khỏe, tư vấn và đánh giá trước khi tiêm chủng." },
-    { step: 4, icon: "💉", title: "Tiêm Vắc-xin", description: "Quy trình tiêm chủng an toàn, vô trùng theo tiêu chuẩn y tế quốc tế." },
-    { step: 5, icon: "⏰", title: "Theo Dõi Sau Tiêm", description: "Theo dõi sức khỏe 30 phút sau tiêm tại trung tâm để đảm bảo an toàn." },
-    { step: 6, icon: "💬", title: "Nhận Thông Báo Nhắc Lịch", description: "Hệ thống tự động gửi thông báo nhắc lịch tiêm mũi tiếp theo." },
+    { step: 1, title: "Đăng ký trực tuyến", description: "Truy cập website hoặc ứng dụng để đặt lịch. Chọn vaccine, ngày giờ, nhận mã QR qua email/SMS trong 2-3 phút." },
+    { step: 2, title: "Chuẩn bị trước khi đến", description: "Mang CMND/CCCD, mã QR hoặc số y tế (nếu có). Đeo khẩu trang, đến nhẹ, tắm sạch." },
+    { step: 3, title: "Khám sàng lọc", description: "Bác sĩ kiểm tra nhiệt độ, huyết áp, tiến sử bệnh lý. Thời gian 5-10 phút để xác định điều kiện tiêm." },
+    { step: 4, title: "Tiêm vaccine", description: "Nhân viên y tế thực hiện trong phòng vô trùng, nhanh chóng và không đau." },
+    { step: 5, title: "Theo dõi sau tiêm", description: "Nghỉ ngơi 30 phút, nhận giấy chứng nhận và hướng dẫn chăm sóc của ứng dụng/giấy in." },
   ];
 
   const stats = [
-    { value: "5,000+", label: "Khách hàng", icon: "👤" },
-    { value: "90.8%", label: "Độ hài lòng", icon: "❤️" },
-    { value: "20+", label: "Bác sĩ chuyên khoa", icon: "👨‍⚕️" },
-    { value: "100+", label: "Loại vắc-xin", icon: "💉" },
+    { value: "5,000+", label: "Khách hàng", icon: <Users size={32} /> },
+    { value: "90.8%", label: "Độ hài lòng", icon: <Heart size={32} /> },
+    { value: "20+", label: "Bác sĩ chuyên khoa", icon: <Stethoscope size={32} /> },
+    { value: "100+", label: "Loại vắc-xin", icon: <Syringe size={32} /> },
   ];
 
   useEffect(() => {
@@ -322,18 +321,6 @@ const HomePage = () => {
     setMaxPrice(value);
   };
 
-  const scrollToAgeVaccine = () => {
-    ageVaccineRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
-  const scrollToVaccinePricing = () => {
-    vaccinePricingRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
-  const scrollToComboVaccine = () => {
-    comboVaccineRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
   const renderStars = (ranking) => {
     return (
       <div className="homepage-feedback-stars">
@@ -362,7 +349,7 @@ const HomePage = () => {
               </p>
               <div className="homepage-hero-buttons">
                 <button className="homepage-btn homepage-btn-primary">Đặt lịch ngay</button>
-                <button className="homepage-btn homepage-btn-secondary" onClick={scrollToAgeVaccine}>
+                <button className="homepage-btn homepage-btn-secondary" onClick={() => window.location.href = "#"}>
                   Xem gói vaccine
                 </button>
               </div>
@@ -379,49 +366,16 @@ const HomePage = () => {
         <div className="homepage-container">
           <div className="homepage-stats-grid">
             {stats.map((stat, index) => (
-              <div key={index} className="homepage-stat-item">
+              <motion.div
+                key={index}
+                className="homepage-stat-item"
+                whileHover={{ scale: 1.05, boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)" }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
                 <div className="homepage-stat-icon">{stat.icon}</div>
                 <div className="homepage-stat-value">{stat.value}</div>
                 <div className="homepage-stat-label">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Benefits Section */}
-      <section className="homepage-benefits">
-        <div className="homepage-container">
-          <div className="homepage-section-title">
-            <h2>Tại sao nên tiêm vắc-xin tại VaccineCare?</h2>
-            <p>Chúng tôi cam kết mang đến dịch vụ tiêm chủng chất lượng cao, an toàn và hiệu quả với đội ngũ y bác sĩ giàu kinh nghiệm.</p>
-          </div>
-          <div className="homepage-benefits-grid">
-            {enhancedBenefits.map((benefit, index) => (
-              <div key={index} className="homepage-benefit-item">
-                <div className="homepage-benefit-icon">{benefit.icon}</div>
-                <h3>{benefit.title}</h3>
-                <p>{benefit.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="homepage-features">
-        <div className="homepage-container">
-          <div className="homepage-section-title">
-            <h2>Dịch Vụ Nổi Bật</h2>
-            <p>Khám phá những tiện ích vượt trội mà VaccineCare mang đến để nâng cao trải nghiệm chăm sóc sức khỏe của bạn.</p>
-          </div>
-          <div className="homepage-features-grid">
-            {features.map((feature, index) => (
-              <div key={index} className="homepage-feature-item">
-                <div className="homepage-feature-icon">{feature.icon}</div>
-                <h3>{feature.title}</h3>
-                <p>{feature.description}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -470,13 +424,9 @@ const HomePage = () => {
                           <h3>{combo.name}</h3>
                           <p>{combo.description}</p>
                         </div>
-                        <span className={`homepage-age-vaccine-status ${combo.active ? "active" : "inactive"}`}>
-                          {combo.active ? "Đang hoạt động" : "Không hoạt động"}
-                        </span>
                       </div>
                       <div className="homepage-age-vaccine-combo-footer">
                         <span>{formatPrice(combo.priceCombo)}</span>
-                        <button onClick={(e) => { e.stopPropagation(); handleComboClick(combo); }}>Chi tiết</button>
                       </div>
                     </div>
                   ))
@@ -550,7 +500,7 @@ const HomePage = () => {
                           <h4>Đặt lịch tiêm chủng</h4>
                           <p>Liên hệ với chúng tôi để đặt lịch tiêm chủng cho trẻ</p>
                         </div>
-                        <button onClick={() => (window.location.href = "/login")}>Đặt lịch ngay</button>
+                        <button onClick={() => (window.location.href = "#")}>Đặt lịch ngay</button>
                       </div>
                     )}
                   </div>
@@ -562,25 +512,6 @@ const HomePage = () => {
                   <p>Vui lòng chọn một gói combo vaccine từ danh sách bên trái để xem thông tin chi tiết về các loại vaccine có trong gói</p>
                 </div>
               )}
-            </div>
-          </div>
-          <div className="homepage-age-vaccine-footer">
-            <h3>Thông tin quan trọng về tiêm chủng</h3>
-            <div className="homepage-age-vaccine-footer-grid">
-              <div className="homepage-age-vaccine-footer-item">
-                <span>➕</span>
-                <div>
-                  <h4>Lợi ích của tiêm chủng</h4>
-                  <p>Tiêm chủng giúp bảo vệ trẻ khỏi nhiều bệnh nguy hiểm và phòng ngừa dịch bệnh trong cộng đồng.</p>
-                </div>
-              </div>
-              <div className="homepage-age-vaccine-footer-item">
-                <span>📅</span>
-                <div>
-                  <h4>Lịch tiêm chủng</h4>
-                  <p>Tuân thủ lịch tiêm chủng đầy đủ và đúng thời điểm để đảm bảo hiệu quả bảo vệ tối đa cho trẻ.</p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -758,60 +689,65 @@ const HomePage = () => {
           </AnimatePresence>
         </div>
       </section>
+
       {/* Process Section */}
       <section className="homepage-process">
         <div className="homepage-container">
-          <h2 className="homepage-section-title">Quy Trình Tiêm Chủng</h2>
-          <div className="homepage-process-grid">
-            {enhancedProcess.map((item, index) => (
-              <div key={index} className="homepage-process-item">
-                <div className="homepage-process-icon">{item.icon}</div>
-                <div className="homepage-process-step">Bước {item.step}</div>
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
-              </div>
-            ))}
+          <h2 className="section-title">Quy trình tiêm chủng</h2>
+          <div className="process-timeline">
+            <div className="timeline-line"></div>
+            <div className="timeline-steps">
+              {enhancedProcess.map((item) => (
+                <div key={item.step} className="timeline-step">
+                  <div className="step-marker">
+                    <span className="step-number">{item.step.toString().padStart(2, "0")}</span>
+                  </div>
+                  <h3>{item.title}</h3>
+                  <p>{item.description}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
       {/* Feedback Section */}
       <section className="homepage-feedback">
-        <div className="homepage-container">
-          <h2 className="homepage-section-title">Khách Hàng Nói Gì Về Chúng Tôi</h2>
-          {feedbacks.length > 0 ? (
-            <div className="homepage-feedback-overflow">
-              <div
-                ref={feedbackContainerRef}
-                className="homepage-feedback-container"
-                style={{ transform: `translateX(${translateX}px)` }}
-              >
-                {feedbacks.map((feedback, index) => (
-                  <div key={`${feedback.id}-${index}`} className="homepage-feedback-item">
-                    <div className="homepage-feedback-card">
-                      <div className="homepage-feedback-header">
-                        <div className="homepage-feedback-avatar">
-                          {feedback.booking.customer.firstName.charAt(0)}
-                        </div>
-                        <div>
-                          <h3 className="homepage-feedback-name">
-                            {feedback.booking.customer.firstName} {feedback.booking.customer.lastName}
-                          </h3>
-                          <p className="homepage-feedback-date">Ngày đặt: {feedback.booking.bookingDate}</p>
-                        </div>
-                      </div>
-                      <div className="homepage-feedback-rating">{renderStars(feedback.ranking)}</div>
-                      <p className="homepage-feedback-comment">"{feedback.comment}"</p>
-                    </div>
+  <div className="homepage-container">
+    <h2 className="homepage-section-title">Khách Hàng Nói Gì Về Chúng Tôi</h2>
+    {feedbacks.length > 0 ? (
+      <div className="homepage-feedback-overflow">
+        <div
+          ref={feedbackContainerRef}
+          className="homepage-feedback-container"
+          style={{ transform: `translateX(${translateX}px)` }}
+        >
+          {feedbacks.map((feedback, index) => (
+            <div key={`${feedback.id}-${index}`} className="homepage-feedback-item">
+              <div className="homepage-feedback-card">
+                <div className="homepage-feedback-header">
+                  <div className="homepage-feedback-avatar">
+                    {feedback.booking.customer.firstName.charAt(0)}
                   </div>
-                ))}
+                  <div>
+                    <h3 className="homepage-feedback-name">
+                      {feedback.booking.customer.firstName} {feedback.booking.customer.lastName}
+                    </h3>
+                    <p className="homepage-feedback-date">Ngày đặt: {feedback.booking.bookingDate}</p>
+                  </div>
+                </div>
+                <div className="homepage-feedback-rating">{renderStars(feedback.ranking)}</div>
+                <p className="homepage-feedback-comment">"{feedback.comment}"</p>
               </div>
             </div>
-          ) : (
-            <p className="homepage-feedback-placeholder">Chưa có đánh giá nào</p>
-          )}
+          ))}
         </div>
-      </section>
+      </div>
+    ) : (
+      <p className="homepage-feedback-placeholder">Chưa có đánh giá nào</p>
+    )}
+  </div>
+</section>
     </div>
   );
 };

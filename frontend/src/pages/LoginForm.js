@@ -2,6 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../components/AuthContext';
 import '../style/LoginForm.css';
+import { FcGoogle } from "react-icons/fc";
+import { HiEye, HiEyeOff } from "react-icons/hi";
+import { FaHospital } from "react-icons/fa";
+import { RiSyringeLine } from "react-icons/ri";
 
 function LoginForm() {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -16,16 +20,23 @@ function LoginForm() {
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isOtpVerified, setIsOtpVerified] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const navigate = useNavigate();
   const { checkLoginStatus } = useAuth();
   const otpRefs = useRef([]);
-
+  const handleGoBack = () => {
+    navigate(-1); // Quay lại trang trước đó trong lịch sử
+};
   // Xử lý đăng nhập
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
+    
     try {
       const response = await fetch('http://localhost:8080/login', {
         method: 'POST',
@@ -61,7 +72,6 @@ function LoginForm() {
   const handleGoogleLogin = () => {
     setIsLoading(true);
     setError('');
-    // Chuyển hướng đến endpoint OAuth2 của backend
     window.location.href = 'http://localhost:8080/oauth2/authorization/google';
   };
 
@@ -237,203 +247,396 @@ function LoginForm() {
     }
   }, [resendCooldown]);
 
-  const handleInputChange = (e, setter) => {
-    const value = e.target.value;
-    setter(value);
-    e.target.setAttribute('data-length', value.length);
-    e.target.setAttribute('data-value', value);
-  };
-
   return (
     <div className="login-form-container">
-      <div className="login-form-overlay"></div>
-      <div className="login-form-card">
-        <h1 className="login-form-welcome">
-          Chào mừng đến với <br /> Trung tâm Tiêm chủng Hoàng Tử Gió
-        </h1>
-        <h2 className="login-form-title">
-          {!isForgotPassword
-            ? 'Đăng nhập'
-            : isOtpVerified
-            ? 'Đặt lại mật khẩu'
-            : isOtpSent
-            ? 'Xác nhận OTP'
-            : 'Quên mật khẩu'}
-        </h2>
-        {error && <p className="login-form-error-message">{error}</p>}
+      <div className="login-form-content">
+        {/* Left Side: Branding and Background */}
+        <div className="login-form-left">
+          <div className="login-form-icons">
+            <RiSyringeLine className="login-form-icon" />
+            <FaHospital className="login-form-icon" />
+          </div>
+          <div className="login-form-left-content">
+            <h1 className="login-form-left-title">
+              Theo dõi lịch tiêm chủng cho bé
+            </h1>
+            <p className="login-form-left-text">
+              Đảm bảo bé yêu của bạn được bảo vệ với lịch tiêm chủng đầy đủ và
+              đúng thời gian.
+            </p>
+          </div>
+        </div>
 
-        {!isForgotPassword ? (
-          <form onSubmit={handleSubmit}>
-            <div className="login-form-group">
-              <label htmlFor="phoneNumber" className="login-form-label">
-                Số điện thoại:
-              </label>
-              <div className="login-form-input-wrapper">
+        {/* Right Side: Form */}
+        <div className="login-form-right">
+          <h2 className="login-form-title">
+            {!isForgotPassword
+              ? 'Đăng nhập'
+              : isOtpVerified
+                ? 'Đặt lại mật khẩu'
+                : isOtpSent
+                  ? 'Xác nhận OTP'
+                  : 'Quên mật khẩu'}
+          </h2>
+          <p className="login-form-subtitle">
+            {isForgotPassword ? (
+              'Vui lòng nhập email để nhận mã OTP'
+            ) : (
+              <span>
+                Bạn chưa có tài khoản?{' '}
+                <a href="/register" className="login-form-link">
+                  Đăng ký
+                </a>
+              </span>
+            )}
+          </p>
+
+          {/* Error message */}
+          {error && (
+            <div className="login-form-error">
+              <p className="login-form-error-text">{error}</p>
+            </div>
+          )}
+
+          {/* Login Form */}
+          {!isForgotPassword ? (
+            <form onSubmit={handleSubmit} className="login-form">
+              <div className="login-form-group">
+                <label className="login-form-label">Số điện thoại</label>
                 <input
-                  id="phoneNumber"
                   type="text"
                   value={phoneNumber}
-                  onChange={(e) => handleInputChange(e, setPhoneNumber)}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
                   required
                   disabled={isLoading}
                   className="login-form-input"
-                  data-length="0"
-                  data-value=""
+                  placeholder="Nhập số điện thoại"
                 />
-                <span className="login-form-input-highlight"></span>
               </div>
-            </div>
-            <div className="login-form-group">
-              <label htmlFor="password" className="login-form-label">
-                Mật khẩu:
-              </label>
-              <div className="login-form-input-wrapper">
-                <input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => handleInputChange(e, setPassword)}
-                  required
+
+              <div className="login-form-group">
+                <label className="login-form-label">Mật khẩu</label>
+                <div className="login-form-password-wrapper">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    disabled={isLoading}
+                    className="login-form-input"
+                    placeholder="Nhập mật khẩu"
+                  />
+                  <button
+                    type="button"
+                    className="login-form-eye-button"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <HiEyeOff className="login-form-eye-icon" />
+                    ) : (
+                      <HiEye className="login-form-eye-icon" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <button
+                  type="submit"
                   disabled={isLoading}
-                  className="login-form-input"
-                  data-length="0"
-                  data-value=""
-                />
-                <span className="login-form-input-highlight"></span>
+                  className="login-form-button"
+                >
+                  {isLoading ? (
+                    <>
+                      <svg
+                        className="login-form-loading-icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="login-form-loading-circle"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="login-form-loading-path"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Đang đăng nhập...
+                    </>
+                  ) : (
+                    'Đăng nhập'
+                  )}
+                </button>
               </div>
-            </div>
-            <button type="submit" disabled={isLoading} className="login-form-button">
-              {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
-            </button>
-            <button
-              type="button"
-              className="login-form-google-button" // Class mới để tùy chỉnh giao diện nếu cần
-              onClick={handleGoogleLogin}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Đang xử lý...' : 'Đăng nhập bằng Google'}
-            </button>
-            <button
-              type="button"
-              className="login-form-forgot-button"
-              onClick={() => setIsForgotPassword(true)}
-              disabled={isLoading}
-            >
-              Quên mật khẩu?
-            </button>
-          </form>
-        ) : !isOtpSent ? (
-          <form onSubmit={handleForgotPasswordSubmit}>
-            <div className="login-form-group">
-              <label htmlFor="email" className="login-form-label">
-                Nhập email của bạn:
-              </label>
-              <div className="login-form-input-wrapper">
+
+              <div className="login-form-divider">
+                <hr className="login-form-hr" />
+                <span className="login-form-divider-text">
+                  Hoặc đăng nhập với
+                </span>
+              </div>
+
+              <div>
+                <button
+                  type="button"
+                  onClick={handleGoogleLogin}
+                  disabled={isLoading}
+                  className="login-form-google-button"
+                >
+                  <FcGoogle className="login-form-google-icon" />
+                  {isLoading ? 'Đang xử lý...' : 'Đăng nhập bằng Google'}
+                </button>
+              </div>
+
+              <div className="login-form-forgot">
+                <button
+                  type="button"
+                  onClick={() => setIsForgotPassword(true)}
+                  disabled={isLoading}
+                  className="login-form-forgot-button"
+                >
+                  Quên mật khẩu?
+                </button>
+              
+              </div>
+            </form>
+          ) : !isOtpSent ? (
+            <form onSubmit={handleForgotPasswordSubmit} className="login-form">
+              <div className="login-form-group">
+                <label className="login-form-label">Email của bạn</label>
                 <input
-                  id="email"
                   type="email"
                   value={email}
-                  onChange={(e) => handleInputChange(e, setEmail)}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                   disabled={isLoading}
                   className="login-form-input"
-                  data-length="0"
-                  data-value=""
+                  placeholder="Nhập email của bạn"
                 />
-                <span className="login-form-input-highlight"></span>
               </div>
-            </div>
-            <button type="submit" disabled={isLoading} className="login-form-button">
-              {isLoading ? 'Đang gửi...' : 'Gửi OTP'}
-            </button>
-            <button
-              type="button"
-              className="login-form-forgot-button"
-              onClick={() => setIsForgotPassword(false)}
-              disabled={isLoading}
-            >
-              Quay lại đăng nhập
-            </button>
-          </form>
-        ) : !isOtpVerified ? (
-          <form onSubmit={handleOtpSubmit}>
-            <div className="login-form-group">
-              <label className="login-form-label">Nhập mã OTP (6 chữ số):</label>
-              <div className="otp-input-container">
-                {otp.map((digit, index) => (
+
+              <div>
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="login-form-button"
+                >
+                  {isLoading ? (
+                    <>
+                      <svg
+                        className="login-form-loading-icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="login-form-loading-circle"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="login-form-loading-path"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Đang gửi...
+                    </>
+                  ) : (
+                    'Gửi OTP'
+                  )}
+                </button>
+              </div>
+
+              <div className="login-form-forgot">
+                <button
+                  type="button"
+                  onClick={() => setIsForgotPassword(false)}
+                  disabled={isLoading}
+                  className="login-form-forgot-button"
+                >
+                  Quay lại đăng nhập
+                </button>
+              </div>
+            </form>
+          ) : !isOtpVerified ? (
+            <form onSubmit={handleOtpSubmit} className="login-form">
+              <div className="login-form-otp-group">
+                <label className="login-form-label">
+                  Nhập mã OTP đã gửi đến email của bạn
+                </label>
+                <p className="login-form-otp-subtitle">
+                  Vui lòng kiểm tra hộp thư đến và spam
+                </p>
+                <div className="login-form-otp-inputs">
+                  {otp.map((digit, index) => (
+                    <input
+                      key={index}
+                      type="text"
+                      maxLength="1"
+                      value={digit}
+                      onChange={(e) => handleOtpChange(e, index)}
+                      onKeyDown={(e) => handleOtpKeyDown(e, index)}
+                      ref={(el) => (otpRefs.current[index] = el)}
+                      disabled={isLoading}
+                      className="login-form-otp-input"
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="login-form-button"
+                >
+                  {isLoading ? (
+                    <>
+                      <svg
+                        className="login-form-loading-icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="login-form-loading-circle"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="login-form-loading-path"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Đang xác nhận...
+                    </>
+                  ) : (
+                    'Xác nhận'
+                  )}
+                </button>
+              </div>
+
+              <div className="login-form-forgot">
+                <button
+                  type="button"
+                  onClick={handleResendOtp}
+                  disabled={isLoading || resendCooldown > 0}
+                  className={`login-form-forgot-button ${resendCooldown > 0 ? 'login-form-disabled' : ''
+                    }`}
+                >
+                  {resendCooldown > 0
+                    ? `Gửi lại OTP (${resendCooldown}s)`
+                    : 'Gửi lại OTP'}
+                </button>
+              </div>
+            </form>
+          ) : (
+            <form onSubmit={handleResetPasswordSubmit} className="login-form">
+              <div className="login-form-group">
+                <label className="login-form-label">Mật khẩu mới</label>
+                <div className="login-form-password-wrapper">
                   <input
-                    key={index}
-                    type="text"
-                    maxLength="1"
-                    value={digit}
-                    onChange={(e) => handleOtpChange(e, index)}
-                    onKeyDown={(e) => handleOtpKeyDown(e, index)}
-                    ref={(el) => (otpRefs.current[index] = el)}
+                    type={showNewPassword ? 'text' : 'password'}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
                     disabled={isLoading}
-                    className="otp-input"
+                    className="login-form-input"
+                    placeholder="Nhập mật khẩu mới"
                   />
-                ))}
+                  <button
+                    type="button"
+                    className="login-form-eye-button"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                  >
+                    {showNewPassword ? (
+                      <HiEyeOff className="login-form-eye-icon" />
+                    ) : (
+                      <HiEye className="login-form-eye-icon" />
+                    )}
+                  </button>
+                </div>
               </div>
-            </div>
-            <button type="submit" disabled={isLoading} className="login-form-button">
-              {isLoading ? 'Đang xác nhận...' : 'Xác nhận'}
-            </button>
-            <button
-              type="button"
-              className="login-form-forgot-button"
-              onClick={handleResendOtp}
-              disabled={isLoading || resendCooldown > 0}
-            >
-              {resendCooldown > 0
-                ? `Gửi lại OTP (${resendCooldown}s)`
-                : 'Gửi lại OTP'}
-            </button>
-          </form>
-        ) : (
-          <form onSubmit={handleResetPasswordSubmit}>
-            <div className="login-form-group">
-              <label htmlFor="newPassword" className="login-form-label">
-                Nhập mật khẩu mới:
-              </label>
-              <div className="login-form-input-wrapper">
-                <input
-                  id="newPassword"
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => handleInputChange(e, setNewPassword)}
-                  required
+
+              <div className="login-form-group">
+                <label className="login-form-label">Xác nhận mật khẩu mới</label>
+                <div className="login-form-password-wrapper">
+                  <input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    disabled={isLoading}
+                    className="login-form-input"
+                    placeholder="Xác nhận mật khẩu mới"
+                  />
+                  <button
+                    type="button"
+                    className="login-form-eye-button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? (
+                      <HiEyeOff className="login-form-eye-icon" />
+                    ) : (
+                      <HiEye className="login-form-eye-icon" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <button
+                  type="submit"
                   disabled={isLoading}
-                  className="login-form-input"
-                  data-length="0"
-                  data-value=""
-                />
-                <span className="login-form-input-highlight"></span>
+                  className="login-form-button"
+                >
+                  {isLoading ? (
+                    <>
+                      <svg
+                        className="login-form-loading-icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="login-form-loading-circle"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="login-form-loading-path"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Đang cập nhật...
+                    </>
+                  ) : (
+                    'Cập nhật mật khẩu'
+                  )}
+                </button>
               </div>
-            </div>
-            <div className="login-form-group">
-              <label htmlFor="confirmPassword" className="login-form-label">
-                Xác nhận mật khẩu mới:
-              </label>
-              <div className="login-form-input-wrapper">
-                <input
-                  id="confirmPassword"
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => handleInputChange(e, setConfirmPassword)}
-                  required
-                  disabled={isLoading}
-                  className="login-form-input"
-                  data-length="0"
-                  data-value=""
-                />
-                <span className="login-form-input-highlight"></span>
-              </div>
-            </div>
-            <button type="submit" disabled={isLoading} className="login-form-button">
-              {isLoading ? 'Đang cập nhật...' : 'Cập nhật mật khẩu'}
-            </button>
-          </form>
-        )}
+            </form>
+          )}
+        </div>
       </div>
     </div>
   );
