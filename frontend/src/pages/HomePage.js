@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { Users, Heart, Stethoscope, Syringe, Search } from "lucide-react"; // Import biểu tượng từ Lucide React
+
 const HomePage = () => {
   const { userInfo } = useAuth();
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -25,21 +26,22 @@ const HomePage = () => {
   const animationRef = useRef(null);
   const navigate = useNavigate();
 
-  //Điều hướng role
-  if(userInfo!=null){// Lấy trạng thái đăng nhập từ AuthContext
-    localStorage.setItem("userId", userInfo.userId);}
+  // Điều hướng role
+  if (userInfo != null) {
+    localStorage.setItem("userId", userInfo.userId);
+  }
    
-    useEffect(() => {
-      if (userInfo!=null && userInfo!="anonymousUser") {
-        if (userInfo.authorities[0].authority === "ROLE_CUSTOMER") {
-          navigate("/"); // Dẫn người dùng tới trang Home
-        } else if (userInfo.authorities[0].authority === "ROLE_STAFF") {
-          navigate("/staff"); // Dẫn người dùng tới trang Staff
-        } else if (userInfo.authorities[0].authority === "ROLE_ADMIN") {
-          navigate("/admin"); // Dẫn người dùng tới trang Admin
-        }
+  useEffect(() => {
+    if (userInfo != null && userInfo != "anonymousUser") {
+      if (userInfo.authorities[0].authority === "ROLE_CUSTOMER") {
+        navigate("/"); // Dẫn người dùng tới trang Home
+      } else if (userInfo.authorities[0].authority === "ROLE_STAFF") {
+        navigate("/staff"); // Dẫn người dùng tới trang Staff
+      } else if (userInfo.authorities[0].authority === "ROLE_ADMIN") {
+        navigate("/admin"); // Dẫn người dùng tới trang Admin
       }
-    }, [userInfo, navigate]);
+    }
+  }, [userInfo, navigate]);
 
   // AgeVaccine2 State
   const [combos, setCombos] = useState([]);
@@ -115,7 +117,9 @@ const HomePage = () => {
         });
         if (response.ok) {
           const data = await response.json();
-          setFeedbacks(data);
+          // Lọc feedbacks có ranking > 3 sao
+          const filteredFeedbacks = data.filter(feedback => feedback.ranking >= 3);
+          setFeedbacks(filteredFeedbacks);
         }
       } catch (error) {
         console.error("Error fetching feedbacks:", error);
@@ -713,41 +717,41 @@ const HomePage = () => {
 
       {/* Feedback Section */}
       <section className="homepage-feedback">
-  <div className="homepage-container">
-    <h2 className="homepage-section-title">Khách Hàng Nói Gì Về Chúng Tôi</h2>
-    {feedbacks.length > 0 ? (
-      <div className="homepage-feedback-overflow">
-        <div
-          ref={feedbackContainerRef}
-          className="homepage-feedback-container"
-          style={{ transform: `translateX(${translateX}px)` }}
-        >
-          {feedbacks.map((feedback, index) => (
-            <div key={`${feedback.id}-${index}`} className="homepage-feedback-item">
-              <div className="homepage-feedback-card">
-                <div className="homepage-feedback-header">
-                  <div className="homepage-feedback-avatar">
-                    {feedback.booking.customer.firstName.charAt(0)}
+        <div className="homepage-container">
+          <h2 className="homepage-section-title">Khách Hàng Nói Gì Về Chúng Tôi</h2>
+          {feedbacks.length > 0 ? (
+            <div className="homepage-feedback-overflow">
+              <div
+                ref={feedbackContainerRef}
+                className="homepage-feedback-container"
+                style={{ transform: `translateX(${translateX}px)` }}
+              >
+                {feedbacks.map((feedback, index) => (
+                  <div key={`${feedback.id}-${index}`} className="homepage-feedback-item">
+                    <div className="homepage-feedback-card">
+                      <div className="homepage-feedback-header">
+                        <div className="homepage-feedback-avatar">
+                          {feedback.booking.customer.firstName.charAt(0)}
+                        </div>
+                        <div>
+                          <h3 className="homepage-feedback-name">
+                            {feedback.booking.customer.firstName} {feedback.booking.customer.lastName}
+                          </h3>
+                          <p className="homepage-feedback-date">Ngày đặt: {feedback.booking.bookingDate}</p>
+                        </div>
+                      </div>
+                      <div className="homepage-feedback-rating">{renderStars(feedback.ranking)}</div>
+                      <p className="homepage-feedback-comment">"{feedback.comment}"</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="homepage-feedback-name">
-                      {feedback.booking.customer.firstName} {feedback.booking.customer.lastName}
-                    </h3>
-                    <p className="homepage-feedback-date">Ngày đặt: {feedback.booking.bookingDate}</p>
-                  </div>
-                </div>
-                <div className="homepage-feedback-rating">{renderStars(feedback.ranking)}</div>
-                <p className="homepage-feedback-comment">"{feedback.comment}"</p>
+                ))}
               </div>
             </div>
-          ))}
+          ) : (
+            <p className="homepage-feedback-placeholder">Chưa có đánh giá trên 3 sao</p>
+          )}
         </div>
-      </div>
-    ) : (
-      <p className="homepage-feedback-placeholder">Chưa có đánh giá nào</p>
-    )}
-  </div>
-</section>
+      </section>
     </div>
   );
 };
