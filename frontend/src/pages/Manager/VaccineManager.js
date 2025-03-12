@@ -9,8 +9,7 @@ import {
 } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import '../../style/Vaccines.css';
-
+import "../../style/Vaccines.css";
 
 const Vaccines = () => {
   const [vaccines, setVaccines] = useState([]);
@@ -153,9 +152,23 @@ const Vaccines = () => {
     const isChanged = () =>
       JSON.stringify(editingVaccine) !== JSON.stringify(originalEditingVaccine);
 
+    // Hàm update vaccine mới với fetch
     const handleUpdate = () => {
-      onVaccineUpdated(editingVaccine);
-      setIsModalOpen(false);
+      fetch("http://localhost:8080/vaccine/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(editingVaccine),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("API update returned:", data);
+          onVaccineUpdated(data); // Cập nhật vaccine theo dữ liệu trả về từ API
+          setIsModalOpen(false);
+        })
+        .catch((err) => {
+          console.error("Lỗi khi update vaccine:", err);
+        });
     };
 
     const handleToggleActiveLocal = (e) => {
@@ -165,10 +178,7 @@ const Vaccines = () => {
 
     return (
       <>
-        <div
-          className="vaccine-item-vaccinemanager"
-          onClick={handleOpenModal}
-        >
+        <div className="vaccine-item-vaccinemanager" onClick={handleOpenModal}>
           <div className="vaccine-info-vaccinemanager">
             <div className="vaccine-icon-container-vaccinemanager">
               <FaVial className="vaccine-icon-vaccinemanager" />
@@ -268,9 +278,7 @@ const Vaccines = () => {
                   />
                 </div>
                 <div>
-                  <label className="modal-label-vaccinemanager">
-                    Xuất xứ:
-                  </label>
+                  <label className="modal-label-vaccinemanager">Xuất xứ:</label>
                   <input
                     type="text"
                     value={editingVaccine.country}
@@ -471,10 +479,14 @@ const Vaccines = () => {
               <h3 className="create-modal-title-vaccinemanager">
                 Tạo Vaccine Mới
               </h3>
-              <form onSubmit={handleCreateVaccine} className="create-form-vaccinemanager">
+              <form
+                onSubmit={handleCreateVaccine}
+                className="create-form-vaccinemanager"
+              >
                 <div>
                   <label className="create-label-vaccinemanager">
-                    Tên Vaccine <span className="required-vaccinemanager">*</span>
+                    Tên Vaccine{" "}
+                    <span className="required-vaccinemanager">*</span>
                   </label>
                   <input
                     type="text"
@@ -510,7 +522,8 @@ const Vaccines = () => {
                   </div>
                   <div>
                     <label className="create-label-vaccinemanager">
-                      Giá (VND) <span className="required-vaccinemanager">*</span>
+                      Giá (VND){" "}
+                      <span className="required-vaccinemanager">*</span>
                     </label>
                     <input
                       type="number"
