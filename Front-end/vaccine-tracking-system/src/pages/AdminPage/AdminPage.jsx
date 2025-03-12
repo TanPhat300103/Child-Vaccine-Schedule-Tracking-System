@@ -44,8 +44,6 @@ const AdminPage = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-
-
   const controlHeader = () => {
     if (window.scrollY > lastScrollY) {
       setShowHeader(false);
@@ -68,15 +66,13 @@ const AdminPage = () => {
     navigate("/");
   };
 
-
   // Kiểm tra xem có đang ở trang Vaccine không
   const isVaccineActive =
     location.pathname.startsWith("/admin/vaccines") ||
     location.pathname.startsWith("/admin/vaccine-combos");
 
-    const { isLoggedIn, logout, isLoading } = useAuth();
+  const { isLoggedIn, logout, isLoading } = useAuth();
   return (
-
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
       <aside
@@ -460,9 +456,9 @@ const AdminPage = () => {
                 </svg>
               </button>
               <div className="dropdown-item logout" onClick={handleLogout}>
-                    <LogOut size={16} />
-                    <span>Logout</span>
-                  </div>
+                <LogOut size={16} />
+                <span>Logout</span>
+              </div>
             </div>
           </div>
         </div>
