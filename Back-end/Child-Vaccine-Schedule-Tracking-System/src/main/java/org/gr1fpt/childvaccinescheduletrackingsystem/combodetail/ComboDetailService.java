@@ -29,10 +29,20 @@ public class ComboDetailService {
       return comboDetailRepository.save(comboDetail);
     }
 
+    // Chỉ gọi count 1 lần, sau đó cho nó tự tăng trong vong lặp để tránh tình trang trùng ID do cơ chế
+    // tự tăng không đồng bộ, laàm cho việc thêm dữ liệu thằng comboDetail chưa xuônống cơ sở dữ liệu mà thaănằng count
+    // Đã đếm nên sẽ bị truùng id,
+    // nguyên  nhân gốc rễ la do cơ chế cache của hibernate First-level Cache trong Persistence Context hoặc Second-level Cache nếu bạn bật) để lưu trữ kết quả của count()
+    @Transactional
     public String addListVaccineIntoCombo(List<ComboDetail> comboList){
+        long count = comboDetailRepository.count();
+        int index = 1;
         for(ComboDetail comboDetail : comboList){
-            comboDetail.setComboDetailId(generateId());
-            comboDetailRepository.save(comboDetail);
+            String newId = "CD" + String.format("%03d", count + index);
+            System.out.println("Gán ID mới: " + newId);
+            comboDetail.setComboDetailId(newId);
+            comboDetailRepository.saveAndFlush(comboDetail);
+            index++;
         }
         return "OK";
     }
