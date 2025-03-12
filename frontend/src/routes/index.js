@@ -26,6 +26,7 @@ import NotificationDetail from "../pages/NotificationDetail";
 import ChildInfoPage from "../pages/ChildInfoPage";
 import VaccinationNotes from "../pages/VaccinationNotes";
 import MyBookingsPage from "../pages/MyBookingsPage";
+import Register from "../pages/Register";
 //components
 import { AuthProvider } from "../components/AuthContext";
 import Chatbox from "../components/Chatbox";
@@ -82,6 +83,14 @@ function AppRoutes() {
             element={
               <Layout>
                 <LoginForm />
+              </Layout>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <Layout>
+                <Register />
               </Layout>
             }
           />
