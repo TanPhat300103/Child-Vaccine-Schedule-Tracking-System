@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+
 import VaccineList from "../pages/VaccineListPage";
 import VaccineCombo from "../components/VaccineCombo";
 import '../style/VaccinesPage.css';
 import Header from "../layout/Header";
 import Footer from "../layout/Footer";
+
 
 function VaccinesPage() {
   const [activeTab, setActiveTab] = useState('vaccine-list');

@@ -205,7 +205,7 @@ function ProfilePage() {
                         value={formData.phoneNumber}
                         onChange={handleInputChange}
                         placeholder="Nhập số điện thoại"
-                        disabled
+                       
                       />
                     </div>
                   </div>

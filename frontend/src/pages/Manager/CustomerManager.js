@@ -4,15 +4,12 @@ import {
   FaUser,
   FaUserPlus,
   FaSearch,
-  FaFilter,
   FaChild,
   FaPowerOff,
   FaEye,
   FaEyeSlash,
-  FaMars,
-  FaVenus,
 } from "react-icons/fa";
-import '../../style/Customers.css';
+import "../../style/Customers.css";
 
 const Customers = () => {
   const [customers, setCustomers] = useState([]);
@@ -249,16 +246,16 @@ const Customers = () => {
                   onClick={() => setFilterStatus("inactive")}
                   className={`filter-button ${filterStatus === "inactive" ? "active-inactive" : ""}`}
                 >
-                  Ngừng
+                  Không hoạt động
+                </button>
+                <button
+                  onClick={() => setShowAddForm(true)}
+                  className="add-customer-button"
+                >
+                  <FaUserPlus size={14} /> {/* Giảm kích thước icon xuống 14px */}
+                  <span>Thêm Khách Hàng</span>
                 </button>
               </div>
-              <button
-                onClick={() => setShowAddForm(true)}
-                className="add-customer-button"
-              >
-                <FaUserPlus />
-                <span>Thêm Khách Hàng</span>
-              </button>
             </div>
           </div>
         </div>
@@ -456,9 +453,7 @@ const Customers = () => {
                   />
                 </div>
               </div>
-              {updateError && (
-                <p className="error-text">{updateError}</p>
-              )}
+              {updateError && <p className="error-text">{updateError}</p>}
               <div className="modal-actions">
                 <button
                   onClick={handleSave}
@@ -634,10 +629,7 @@ const Customers = () => {
                 <p className="error-text">{newCustomerError}</p>
               )}
               <div className="modal-actions">
-                <button
-                  onClick={handleCreate}
-                  className="add-button"
-                >
+                <button onClick={handleCreate} className="add-button">
                   Thêm
                 </button>
                 <button
