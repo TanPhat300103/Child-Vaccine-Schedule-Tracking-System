@@ -1,4 +1,3 @@
-// Header.jsx
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "../style/header.css";
 import { useAuth } from '../components/AuthContext';
@@ -180,6 +179,12 @@ function Header() {
     : notifications.filter(n => !n.read);
   const unreadCount = notifications.filter(n => !n.read).length;
 
+  // Hàm cắt ngắn tên nếu vượt quá 15 ký tự
+  const truncateName = (name) => {
+    if (!name) return "User";
+    return name.length > 15 ? `${name.substring(0, 15)}...` : name;
+  };
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -204,6 +209,8 @@ function Header() {
     </header>;
   }
 
+  const fullName = customerData ? `${customerData.firstName} ${customerData.lastName}` : "User";
+
   return (  
     <header className="navbar">
       <div className="navbar-left">
@@ -211,7 +218,7 @@ function Header() {
           <div className="logo-icon">
             <Syringe size={24} />
           </div>
-          <span className="brand-name">Group 1</span>
+          <span className="brand-name">Thu Hà | Hoàng Tử Gió</span>
         </Link>
         <div className="mobile-menu-toggle" onClick={toggleMobileMenu}>
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -364,14 +371,15 @@ function Header() {
                   <User size={18} />
                 </div>
                 <span className="profile-username">
-                  {customerData ? `${customerData.firstName} ${customerData.lastName}` : 'User'}
+                  {truncateName(fullName)}
                 </span>
                 <ChevronDown size={16} className={`dropdown-arrow ${isDropdownOpen ? 'rotate' : ''}`} />
               </div>
               {isDropdownOpen && (
                 <div className="dropdown-menu">
                   <div className="dropdown-item" onClick={handleProfileClick}>
-                    <User size={16} /><span>My Profile</span>
+                    <User size={16} />
+                    <span>{truncateName(fullName) || "My Profile"}</span>
                   </div>
                   <div className="dropdown-item logout" onClick={handleLogout}>
                     <LogOut size={16} /><span>Logout</span>

@@ -275,10 +275,7 @@ function PaymentProcessPage() {
             <div className="method-section-paymentprocess">
               <h3>Chọn Phương Thức Thanh Toán:</h3>
               <div className="payment-methods-paymentprocess">
-                <label className={`method-card-paymentprocess ${paymentMethod === 'cash' ? 'selected-paymentprocess' : ''}`}>
-                  <input type="radio" value="cash" checked={paymentMethod === 'cash'} onChange={() => handlePaymentMethodChange('cash')} />
-                  <Wallet size={20} /> Tiền Mặt
-                </label>
+              
                 <div className="bank-method-wrapper-paymentprocess">
                   <label className={`method-card-paymentprocess ${paymentMethod === 'atm' ? 'selected-paymentprocess' : ''}`}>
                     <input type="radio" value="atm" checked={paymentMethod === 'atm'} onChange={() => handlePaymentMethodChange('atm')} />

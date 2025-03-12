@@ -11,6 +11,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../../style/Vaccines.css";
 
+
 const Vaccines = () => {
   const [vaccines, setVaccines] = useState([]);
   const [searchType, setSearchType] = useState("name");
