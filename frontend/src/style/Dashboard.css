@@ -1,0 +1,675 @@
+/* Container */
+.container-dashboard {
+  background-color: #f7fafc;
+}
+
+/* Content */
+.content-dashboard {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+/* Stats Grid */
+.stats-grid-dashboard {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .stats-grid-dashboard {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .stats-grid-dashboard {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Stat Card */
+.stat-card-container-dashboard {
+  position: relative;
+}
+
+.stat-card-dashboard {
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  border-left: 4px solid #14b8a6;
+  transition: all 0.3s;
+}
+
+.stat-card-dashboard:hover {
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon-dashboard {
+  background-color: #ccfbf1;
+  padding: 0.75rem;
+  border-radius: 50%;
+  color: #14b8a6;
+}
+
+.stat-content-dashboard {
+  flex: 1;
+  min-width: 0;
+  margin-left: 1rem;
+}
+
+.stat-title-dashboard {
+  color: #6b7280;
+  font-weight: 500;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat-value-dashboard {
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.stat-percentage-dashboard {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.stat-percentage-increase-dashboard {
+  color: #16a34a;
+}
+
+.stat-percentage-decrease-dashboard {
+  color: #dc2626;
+}
+
+.stat-arrow-dashboard {
+  margin-left: 0.25rem;
+  font-size: 1.125rem;
+}
+
+.stat-arrow-increase-dashboard {
+  color: #16a34a;
+}
+
+.stat-arrow-decrease-dashboard {
+  color: #dc2626;
+}
+
+.stat-dropdown-dashboard {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  margin-top: 0.5rem;
+  width: 100%;
+  background-color: white;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.stat-card-container-dashboard:hover .stat-dropdown-dashboard {
+  opacity: 1;
+}
+
+.stat-dropdown-text-dashboard {
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+/* Main Grid */
+.main-grid-dashboard {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .main-grid-dashboard {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.main-left-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.main-right-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Info Card */
+.info-card-dashboard {
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1.25rem;
+  transition: all 0.3s;
+}
+
+.info-card-dashboard:hover {
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.info-card-clickable-dashboard {
+  cursor: pointer;
+}
+
+.info-card-header-dashboard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.info-card-title-dashboard {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+}
+
+.info-card-icon-dashboard {
+  color: #14b8a6;
+  margin-right: 0.5rem;
+}
+
+.info-card-badge-dashboard {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  color: white;
+}
+
+.bg-red-500-dashboard {
+  background-color: #ef4444;
+}
+
+.bg-yellow-500-dashboard {
+  background-color: #eab308;
+}
+
+.bg-blue-500-dashboard {
+  background-color: #3b82f6;
+}
+
+.bg-green-500-dashboard {
+  background-color: #22c55e;
+}
+
+/* Date Range */
+.date-range-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .date-range-dashboard {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.date-input-dashboard {
+  flex: 1;
+}
+
+.date-label-dashboard {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4b5563;
+  margin-bottom: 0.25rem;
+}
+
+.date-picker-dashboard {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  outline: none;
+}
+
+.date-picker-dashboard:focus {
+  border-color: #14b8a6;
+  box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.5);
+}
+
+.apply-btn-dashboard {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background-color: #14b8a6;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .apply-btn-dashboard {
+    margin-top: 0;
+  }
+}
+
+.apply-btn-dashboard:hover {
+  background-color: #0d9488;
+}
+
+/* Chart Container */
+.chart-container-dashboard {
+  height: 16rem;
+}
+
+@media (min-width: 1024px) {
+  .chart-container-dashboard {
+    height: 20rem;
+  }
+}
+
+.loading-spinner-dashboard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.spinner-dashboard {
+  width: 3rem;
+  height: 3rem;
+  border: 2px solid #14b8a6;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.no-data-dashboard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.no-data-text-dashboard {
+  color: #6b7280;
+}
+
+/* Vaccine Status Grid */
+.vaccine-status-grid-dashboard {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .vaccine-status-grid-dashboard {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.vaccine-list-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.vaccine-empty-dashboard {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.vaccine-items-dashboard {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.vaccine-item-outofstock-dashboard {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: #fef2f2;
+  border-radius: 0.5rem;
+}
+
+.vaccine-item-expired-dashboard {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: #fefce8;
+  border-radius: 0.5rem;
+}
+
+.vaccine-dot-outofstock-dashboard {
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: #ef4444;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+.vaccine-dot-expired-dashboard {
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: #eab308;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+.vaccine-name-dashboard {
+  font-size: 0.875rem;
+}
+
+.vaccine-more-btn-dashboard {
+  font-size: 0.875rem;
+  color: #14b8a6;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.vaccine-more-btn-dashboard:hover {
+  color: #0d9488;
+}
+
+/* Booking and Top Vaccine Lists */
+.booking-list-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.booking-empty-dashboard {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.booking-items-dashboard {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.booking-item-dashboard {
+  display: flex;
+  justify-content: space-between;
+}
+
+.booking-info-dashboard {
+  flex: 1;
+}
+
+.booking-status-pending-dashboard {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  border-radius: 9999px;
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.booking-status-completed-dashboard {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  border-radius: 9999px;
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.booking-status-unknown-dashboard {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  border-radius: 9999px;
+  background-color: #f3f4f6;
+  color: #1f2937;
+}
+
+.booking-more-btn-dashboard {
+  font-size: 0.875rem;
+  color: #14b8a6;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.booking-more-btn-dashboard:hover {
+  color: #0d9488;
+}
+
+.top-vaccine-list-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.top-vaccine-empty-dashboard {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.top-vaccine-items-dashboard {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.top-vaccine-item-dashboard {
+  padding: 0.5rem;
+  background-color: #f0fdf4;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.top-vaccine-name-dashboard {
+  font-weight: 500;
+}
+
+.top-vaccine-more-btn-dashboard {
+  font-size: 0.875rem;
+  color: #14b8a6;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.top-vaccine-more-btn-dashboard:hover {
+  color: #0d9488;
+}
+
+/* Modal */
+.modal-overlay-dashboard {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  z-index: 50;
+}
+
+.modal-content-dashboard {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  width: 91.666667%;
+  max-width: 28rem;
+  position: relative;
+}
+
+.modal-content-large-dashboard {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  width: 91.666667%;
+  max-width: 32rem;
+  position: relative;
+}
+
+.modal-close-btn-dashboard {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 1.5rem;
+  color: #6b7280;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-close-btn-dashboard:hover {
+  color: #374151;
+}
+
+.modal-title-dashboard {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.modal-title-large-dashboard {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.modal-body-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 24rem;
+  overflow-y: auto;
+}
+
+.modal-item-dashboard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: #f3f4f6;
+  border-radius: 0.5rem;
+}
+
+.modal-item-info-dashboard {
+  flex: 1;
+}
+
+.modal-list-dashboard {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.modal-item-outofstock-dashboard {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: #fef2f2;
+  border-radius: 0.5rem;
+}
+
+.modal-item-expired-dashboard {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: #fefce8;
+  border-radius: 0.5rem;
+}
+
+.modal-dot-outofstock-dashboard {
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: #ef4444;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+.modal-dot-expired-dashboard {
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: #eab308;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+.modal-item-name-dashboard {
+  font-size: 0.875rem;
+}
+
+.modal-no-data-dashboard {
+  color: #6b7280;
+  text-align: center;
+}
+
+.modal-footer-dashboard {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.modal-close-btn-action-dashboard {
+  background-color: #14b8a6;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.modal-close-btn-action-dashboard:hover {
+  background-color: #0d9488;
+}
+
+/* Icons */
+.icon-dashboard {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #14b8a6;
+}
+
+.icon-small-dashboard {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #14b8a6;
+}

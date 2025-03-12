@@ -4,12 +4,15 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
+//layout
 import Header from "../layout/Header";
 import Footer from "../layout/Footer";
+import VaccinationHandbook from "../layout/VaccinationHandbook";
+import VaccinationFAQ from "../layout/VaccinationFAQ";
+//main pages
 import HomePage from "../pages/HomePage";
 import CustomerPage from "../pages/CustomerPage";
 import CustomerDetailPage from "../pages/CustomerDetailPage";
-import { AuthProvider } from "../components/AuthContext";
 import VaccinePage from "../pages/VaccinePage";
 import LoginForm from "../pages/LoginForm";
 import ProfilePage from "../pages/ProfilePage";
@@ -20,14 +23,16 @@ import PaymentReturnPage from "../pages/PaymentReturnPage";
 import BookingPage from "../pages/BookingPage";
 import Overview from "../pages/Overview";
 import NotificationDetail from "../pages/NotificationDetail";
-import Chatbox from "../components/Chatbox";
 import ChildInfoPage from "../pages/ChildInfoPage";
-import VaccinationHandbook from "../layout/VaccinationHandbook";
 import VaccinationNotes from "../pages/VaccinationNotes";
-import VaccinationFAQ from "../layout/VaccinationFAQ";
 import MyBookingsPage from "../pages/MyBookingsPage";
+//components
+import { AuthProvider } from "../components/AuthContext";
+import Chatbox from "../components/Chatbox";
+//Staff Page
 import StaffPage from "../pages/Staff/StaffPage";
 import Profile from "../pages/Staff/Profile";
+//Manager Page
 import Customers from "../pages/Manager/CustomerManager";
 import Childs from "../pages/Manager/ChildManager";
 import Bookings from "../pages/Manager/BookingManager";
@@ -40,7 +45,10 @@ import Vaccines from "../pages/Manager/VaccineManager";
 import VaccineDetailManager from "../pages/Manager/VaccineDetailManager";
 import VaccineCombos from "../pages/Manager/VaccineComboManager";
 import ComboDetail from "../pages/Manager/ComboDetailManager";
-// Component Layout cho các trang không phải staff
+//Admin Page
+import AdminPage from "../pages/Admin/AdminPage";
+import Staffs from "../pages/Admin/StaffManager";
+import Dashboard from "../pages/Admin/Dashboard";
 const Layout = ({ children }) => {
   const location = useLocation();
   const isStaffPage = location.pathname.startsWith("/staff");
@@ -214,6 +222,35 @@ function AppRoutes() {
               </Layout>
             }
           />
+          {/* Route cha cho staff với các route con */}
+          <Route path="/admin" element={<AdminPage />}>
+            <Route index element={<Dashboard />} />
+            <Route path="staffs" element={<Staffs />} />
+            <Route path="customers" element={<Customers />} />
+            <Route path="childs/:customerId" element={<Childs />} />
+            <Route path="bookings" element={<Bookings />} />
+            <Route
+              path="booking-detail/:bookingId"
+              element={<BookingDetail />}
+            />
+            <Route path="records" element={<Records />} />
+            <Route path="feedbacks" element={<Feedbacks />} />
+            <Route
+              path="marketing-campaigns"
+              element={<MarketingCampaigns />}
+            />
+            <Route path="payments" element={<Payments />} />
+            <Route path="vaccines" element={<Vaccines />} />
+            <Route
+              path="vaccine-detail/:vaccineId"
+              element={<VaccineDetailManager />}
+            />
+            <Route path="vaccine-combos" element={<VaccineCombos />} />
+            <Route
+              path="combo-detail/:vaccineComboId"
+              element={<ComboDetail />}
+            />
+          </Route>
 
           {/* Route cha cho staff với các route con */}
           <Route path="/staff" element={<StaffPage />}>

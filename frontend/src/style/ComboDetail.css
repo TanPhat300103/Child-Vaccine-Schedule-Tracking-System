@@ -275,4 +275,30 @@
   .error-combodetailmanager {
     color: #ef4444;
   }
-  
+  .modal-header-combodetailmanager {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 10;
+  padding: 10px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.modal-body-combodetailmanager {
+  max-height: 60vh; /* Chiều cao tối đa, có thể điều chỉnh */
+  overflow-y: auto;
+  padding-top: 10px;
+}
+
+.search-bar-combodetailmanager {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.modal-buttons-combodetailmanager {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}

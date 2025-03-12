@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
-import '../../style/ComboDetail.css';
+import "../../style/ComboDetail.css";
 
 // --- Custom hook: sử dụng API findbyvaccine để lấy ảnh ---
 const useVaccineImage = (vaccineId) => {
@@ -75,7 +75,6 @@ const ComboDetailItem = ({ vaccine, onRemove }) => {
             </span>
           </p>
         </div>
-        {/* Nút Loại Khỏi Combo */}
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -164,14 +163,10 @@ const ComboDetail = () => {
   const [comboDetails, setComboDetails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
-  // State cho modal Thêm Vaccine
   const [showAddModal, setShowAddModal] = useState(false);
   const [availableVaccines, setAvailableVaccines] = useState([]);
   const [selectedVaccineIds, setSelectedVaccineIds] = useState([]);
   const [adding, setAdding] = useState(false);
-
-  // State cho thanh tìm kiếm trong modal
   const [searchType, setSearchType] = useState("name");
   const [searchValue, setSearchValue] = useState("");
   const [searchValueMin, setSearchValueMin] = useState("");
@@ -183,7 +178,6 @@ const ComboDetail = () => {
     }
   }, [vaccineComboId]);
 
-  // Lấy danh sách vaccine đã có trong combo
   const fetchComboDetails = async () => {
     try {
       const apiUrl = `http://localhost:8080/combodetail/findcomboid?id=${vaccineComboId}`;
@@ -206,7 +200,6 @@ const ComboDetail = () => {
     }
   };
 
-  // Hàm xoá vaccine khỏi combo
   const handleRemoveFromCombo = async (vaccineId) => {
     try {
       await fetch(
@@ -228,7 +221,6 @@ const ComboDetail = () => {
     }
   };
 
-  // Khi mở modal, lấy danh sách vaccine hiện có từ API và lọc
   useEffect(() => {
     if (showAddModal) {
       fetch("http://localhost:8080/vaccine", {
@@ -263,7 +255,6 @@ const ComboDetail = () => {
     }
   }, [showAddModal, comboDetails]);
 
-  // Lọc danh sách vaccine trong modal theo thanh tìm kiếm
   const filteredAvailableVaccines = availableVaccines.filter((vaccine) => {
     if (searchType === "name") {
       return vaccine.name.toLowerCase().includes(searchValue.toLowerCase());
@@ -282,7 +273,6 @@ const ComboDetail = () => {
     return true;
   });
 
-  // Hàm toggle chọn vaccine trong modal
   const handleSelectVaccine = (vaccineId) => {
     setSelectedVaccineIds((prev) =>
       prev.includes(vaccineId)
@@ -291,28 +281,29 @@ const ComboDetail = () => {
     );
   };
 
-  // Hàm xác nhận thêm vaccine vào combo
   const handleConfirmAddVaccines = async () => {
     setAdding(true);
     try {
-      for (const vaccineId of selectedVaccineIds) {
-        const payload = {
-          vaccineCombo: { vaccineComboId },
-          vaccine: { vaccineId },
-        };
-        await fetch("http://localhost:8080/combodetail/create", {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
+      const comboList = selectedVaccineIds.map((vaccineId) => ({
+        vaccineCombo: { vaccineComboId },
+        vaccine: { vaccineId },
+      }));
+      console.log("Adding vaccines to combo:", comboList);
+      const response = await fetch("http://localhost:8080/combodetail/add", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(comboList),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to add vaccines to combo");
       }
       toast.success("Đã thêm vaccine thành công!", { autoClose: 2000 });
     } catch (err) {
-      console.error("Một số vaccine không thể thêm:", err);
-      toast.error("Một số vaccine không thể thêm vào combo do lỗi server.");
+      console.error("Error adding vaccines to combo:", err);
+      toast.error("Không thể thêm vaccine vào combo do lỗi server.");
     } finally {
       setAdding(false);
       fetchComboDetails();
@@ -355,90 +346,95 @@ const ComboDetail = () => {
         </div>
       </div>
 
-      {/* Modal Thêm Vaccine */}
       {showAddModal && (
         <div className="modal-overlay-combodetailmanager">
           <div className="modal-content-combodetailmanager">
-            <h2 className="modal-title-combodetailmanager">
-              Chọn Vaccine để thêm vào Combo
-            </h2>
-            <div className="search-bar-combodetailmanager">
-              <select
-                value={searchType}
-                onChange={(e) => {
-                  setSearchType(e.target.value);
-                  setSearchValue("");
-                  setSearchValueMin("");
-                  setSearchValueMax("");
-                }}
-                className="input-combodetailmanager"
-              >
-                <option value="name">Tìm theo tên</option>
-                <option value="price">Tìm theo giá</option>
-                <option value="age">Tìm theo độ tuổi</option>
-              </select>
-              {searchType === "name" && (
-                <input
-                  type="text"
-                  placeholder="Nhập tên vaccine"
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
+            <div className="modal-header-combodetailmanager">
+              <h2 className="modal-title-combodetailmanager">
+                Chọn Vaccine để thêm vào Combo
+              </h2>
+              <div className="search-bar-combodetailmanager">
+                <select
+                  value={searchType}
+                  onChange={(e) => {
+                    setSearchType(e.target.value);
+                    setSearchValue("");
+                    setSearchValueMin("");
+                    setSearchValueMax("");
+                  }}
                   className="input-combodetailmanager"
-                />
-              )}
-              {(searchType === "price" || searchType === "age") && (
-                <>
+                >
+                  <option value="name">Tìm theo tên</option>
+                  <option value="price">Tìm theo giá</option>
+                  <option value="age">Tìm theo độ tuổi</option>
+                </select>
+                {searchType === "name" && (
                   <input
-                    type="number"
-                    placeholder="Từ"
-                    value={searchValueMin}
-                    onChange={(e) => setSearchValueMin(e.target.value)}
+                    type="text"
+                    placeholder="Nhập tên vaccine"
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
                     className="input-combodetailmanager"
                   />
-                  <input
-                    type="number"
-                    placeholder="Đến"
-                    value={searchValueMax}
-                    onChange={(e) => setSearchValueMax(e.target.value)}
-                    className="input-combodetailmanager"
-                  />
-                </>
-              )}
+                )}
+                {(searchType === "price" || searchType === "age") && (
+                  <>
+                    <input
+                      type="number"
+                      placeholder="Từ"
+                      value={searchValueMin}
+                      onChange={(e) => setSearchValueMin(e.target.value)}
+                      className="input-combodetailmanager"
+                    />
+                    <input
+                      type="number"
+                      placeholder="Đến"
+                      value={searchValueMax}
+                      onChange={(e) => setSearchValueMax(e.target.value)}
+                      className="input-combodetailmanager"
+                    />
+                  </>
+                )}
+              </div>
+              <div className="modal-buttons-combodetailmanager">
+                <button
+                  onClick={() => {
+                    setShowAddModal(false);
+                    setSelectedVaccineIds([]);
+                  }}
+                  className="button-combodetailmanager cancel-button-combodetailmanager"
+                  disabled={adding}
+                >
+                  Hủy
+                </button>
+                <button
+                  onClick={handleConfirmAddVaccines}
+                  className="button-combodetailmanager add-button-combodetailmanager"
+                  disabled={selectedVaccineIds.length === 0 || adding}
+                >
+                  {adding ? "Đang thêm..." : "Thêm"}
+                </button>
+              </div>
             </div>
-            <div className="grid-combodetailmanager">
+            <div className="modal-body-combodetailmanager">
               {filteredAvailableVaccines.length === 0 ? (
                 <p className="no-results-combodetailmanager">
                   Không tìm thấy vaccine nào
                 </p>
               ) : (
-                filteredAvailableVaccines.map((vaccine) => (
-                  <SelectableVaccineItem
-                    key={vaccine.vaccineId}
-                    vaccine={vaccine}
-                    isSelected={selectedVaccineIds.includes(vaccine.vaccineId)}
-                    onSelect={handleSelectVaccine}
-                  />
-                ))
+                <div className="grid-combodetailmanager">
+                  {filteredAvailableVaccines.map((vaccine) => (
+                    <SelectableVaccineItem
+                      key={vaccine.vaccineId}
+                      vaccine={vaccine}
+                      isSelected={selectedVaccineIds.includes(
+                        vaccine.vaccineId
+                      )}
+                      onSelect={handleSelectVaccine}
+                    />
+                  ))}
+                </div>
               )}
-            </div>
-            <div className="modal-buttons-combodetailmanager">
-              <button
-                onClick={() => {
-                  setShowAddModal(false);
-                  setSelectedVaccineIds([]);
-                }}
-                className="button-combodetailmanager cancel-button-combodetailmanager"
-                disabled={adding}
-              >
-                Hủy
-              </button>
-              <button
-                onClick={handleConfirmAddVaccines}
-                className="button-combodetailmanager add-button-combodetailmanager"
-                disabled={selectedVaccineIds.length === 0 || adding}
-              >
-                {adding ? "Đang thêm..." : "Thêm"}
-              </button>
             </div>
           </div>
         </div>
