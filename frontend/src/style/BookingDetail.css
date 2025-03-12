@@ -663,3 +663,72 @@
       width: 100%;
     }
   }
+
+/* Action Buttons Container */
+.action-buttons-bookingdetailmanager {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+/* Reaction Button */
+.reaction-button-bookingdetailmanager {
+  padding: 6px 12px;
+  background-color: #f59e0b; /* yellow */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.15s;
+}
+
+.reaction-button-bookingdetailmanager:hover:not(.disabled) {
+  background-color: #d97706;
+}
+
+.reaction-button-bookingdetailmanager.disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Reaction Display */
+.reaction-display-bookingdetailmanager {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: #fef9c3;
+  color: #713f12;
+  border-radius: 8px;
+  font-size: 12px;
+  font-style: italic;
+  text-align: center;
+  max-width: 200px;
+  word-wrap: break-word;
+}
+
+/* Reaction Textarea in Modal */
+.reaction-textarea-bookingdetailmanager {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  resize: vertical;
+  font-size: 14px;
+}
+
+/* Modal Save Button */
+.modal-save-button-bookingdetailmanager {
+  padding: 8px 16px;
+  background-color: #14b8a6;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.modal-save-button-bookingdetailmanager:hover {
+  background-color: #0d9488;
+}

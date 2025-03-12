@@ -68,10 +68,33 @@ const BookingDetail = () => {
     }
   };
 
+  const updateReactionNote = async (id, reaction) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/bookingdetail/updatereaction?id=${id}&reaction=${encodeURIComponent(
+          reaction
+        )}`,
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+      if (!response.ok) throw new Error("Failed to update reaction");
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error updating reaction:", error);
+      throw error;
+    }
+  };
+
   const [isBookingInfoOpen, setIsBookingInfoOpen] = useState(true);
   const [isCustomerInfoOpen, setIsCustomerInfoOpen] = useState(true);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [detailIdToConfirm, setDetailIdToConfirm] = useState(null);
+  const [showReactionModal, setShowReactionModal] = useState(false);
+  const [detailIdForReaction, setDetailIdForReaction] = useState(null);
+  const [reactionText, setReactionText] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
   const fetchBookingData = async () => {
@@ -143,6 +166,56 @@ const BookingDetail = () => {
       console.error("Error confirming booking detail:", error);
       toast.update(loadingToast, {
         render: "Xác nhận tiêm thất bại. Vui lòng thử lại.",
+        type: "error",
+        isLoading: false,
+        autoClose: 2000,
+      });
+    }
+  };
+
+  const handleReaction = (detailId) => {
+    const detail = bookingDetails.find((d) => d.bookingDetailId === detailId);
+    setDetailIdForReaction(detailId);
+    setReactionText(detail.reaction || "");
+    setShowReactionModal(true);
+  };
+
+  const saveReaction = async () => {
+    setShowReactionModal(false);
+    const loadingToast = toast.loading("Đang cập nhật phản ứng...");
+
+    try {
+      const updatedDetail = await updateReactionNote(
+        detailIdForReaction,
+        reactionText
+      );
+      setBookingDetails((prevDetails) =>
+        prevDetails.map((detail) =>
+          detail.bookingDetailId === detailIdForReaction
+            ? updatedDetail
+            : detail
+        )
+      );
+
+      const updatedGroups = { ...groupedDetails };
+      Object.keys(updatedGroups).forEach((childKey) => {
+        updatedGroups[childKey] = updatedGroups[childKey].map((detail) =>
+          detail.bookingDetailId === detailIdForReaction
+            ? updatedDetail
+            : detail
+        );
+      });
+      setGroupedDetails(updatedGroups);
+
+      toast.update(loadingToast, {
+        render: "Cập nhật phản ứng thành công",
+        type: "success",
+        isLoading: false,
+        autoClose: 2000,
+      });
+    } catch (error) {
+      toast.update(loadingToast, {
+        render: "Cập nhật phản ứng thất bại. Vui lòng thử lại.",
         type: "error",
         isLoading: false,
         autoClose: 2000,
@@ -232,6 +305,37 @@ const BookingDetail = () => {
                 className="modal-confirm-button-bookingdetailmanager"
               >
                 Xác nhận
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showReactionModal && (
+        <div className="modal-overlay-bookingdetailmanager">
+          <div className="modal-content-bookingdetailmanager">
+            <h3 className="modal-title-bookingdetailmanager">
+              Phản Ứng Sau Tiêm
+            </h3>
+            <textarea
+              value={reactionText}
+              onChange={(e) => setReactionText(e.target.value)}
+              placeholder="Nhập phản ứng sau tiêm..."
+              className="reaction-textarea-bookingdetailmanager"
+              rows="4"
+            />
+            <div className="modal-buttons-bookingdetailmanager">
+              <button
+                onClick={() => setShowReactionModal(false)}
+                className="modal-cancel-button-bookingdetailmanager"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={saveReaction}
+                className="modal-save-button-bookingdetailmanager"
+              >
+                Lưu
               </button>
             </div>
           </div>
@@ -395,7 +499,10 @@ const BookingDetail = () => {
           {Object.keys(filteredGroupedDetails).length > 0 ? (
             <div className="details-list-bookingdetailmanager">
               {Object.keys(filteredGroupedDetails).map((childKey) => (
-                <div key={childKey} className="child-section-bookingdetailmanager">
+                <div
+                  key={childKey}
+                  className="child-section-bookingdetailmanager"
+                >
                   <div className="child-header-bookingdetailmanager">
                     <h2 className="child-title-bookingdetailmanager">
                       <UserIcon className="child-icon-bookingdetailmanager" />
@@ -417,8 +524,16 @@ const BookingDetail = () => {
                         >
                           <div className="detail-header-bookingdetailmanager">
                             <div className="vaccine-info">
-                              <span className="vaccine-name">{detail.vaccine.name}</span>
-                              <span className={`status ${isAdministered ? "administered" : "not-administered"}`}>
+                              <span className="vaccine-name">
+                                {detail.vaccine.name}
+                              </span>
+                              <span
+                                className={`status ${
+                                  isAdministered
+                                    ? "administered"
+                                    : "not-administered"
+                                }`}
+                              >
                                 {isAdministered ? (
                                   <CheckCircleIcon className="status-icon" />
                                 ) : (
@@ -427,36 +542,73 @@ const BookingDetail = () => {
                                 {isAdministered ? "Đã tiêm" : "Chưa tiêm"}
                               </span>
                             </div>
-                            <button
-                              onClick={() => !isAdministered && handleConfirm(detail.bookingDetailId)}
-                              className={`confirm-button ${isAdministered ? "disabled" : ""}`}
-                              disabled={isAdministered}
-                            >
-                              <CheckCircleIcon className="button-icon" />
-                              Xác nhận tiêm
-                            </button>
+                            <div className="action-buttons-bookingdetailmanager">
+                              <button
+                                onClick={() =>
+                                  !isAdministered &&
+                                  handleConfirm(detail.bookingDetailId)
+                                }
+                                className={`confirm-button ${
+                                  isAdministered ? "disabled" : ""
+                                }`}
+                                disabled={isAdministered}
+                              >
+                                <CheckCircleIcon className="button-icon" />
+                                Xác nhận tiêm
+                              </button>
+                              <button
+                                onClick={() =>
+                                  isAdministered &&
+                                  handleReaction(detail.bookingDetailId)
+                                }
+                                className={`reaction-button-bookingdetailmanager ${
+                                  !isAdministered ? "disabled" : ""
+                                }`}
+                                disabled={!isAdministered}
+                              >
+                                <AlertCircleIcon className="button-icon" />
+                                Phản Ứng Sau Tiêm
+                              </button>
+                              {detail.reaction && (
+                                <div className="reaction-display-bookingdetailmanager">
+                                  "{detail.reaction}"
+                                </div>
+                              )}
+                            </div>
                           </div>
                           <div className="detail-body-bookingdetailmanager">
                             <div className="schedule-info">
-                              <span className="schedule-label">Ngày dự kiến</span>
+                              <span className="schedule-label">
+                                Ngày dự kiến
+                              </span>
                               <span className="schedule-value">
                                 <CalendarIcon className="schedule-icon" />
-                                {format(new Date(detail.scheduledDate), "dd/MM/yyyy")}
+                                {format(
+                                  new Date(detail.scheduledDate),
+                                  "dd/MM/yyyy"
+                                )}
                               </span>
                             </div>
                             {isAdministered && (
                               <div className="administered-info">
-                                <span className="administered-label">Ngày tiêm</span>
+                                <span className="administered-label">
+                                  Ngày tiêm
+                                </span>
                                 <span className="administered-value">
                                   <CheckCircleIcon className="administered-icon" />
-                                  {format(new Date(detail.administeredDate), "dd/MM/yyyy")}
+                                  {format(
+                                    new Date(detail.administeredDate),
+                                    "dd/MM/yyyy"
+                                  )}
                                 </span>
                               </div>
                             )}
                             {detail.feedback && (
                               <div className="feedback-info">
                                 <span className="feedback-label">Ghi chú</span>
-                                <span className="feedback-value">"{detail.feedback}"</span>
+                                <span className="feedback-value">
+                                  "{detail.feedback}"
+                                </span>
                               </div>
                             )}
                           </div>
