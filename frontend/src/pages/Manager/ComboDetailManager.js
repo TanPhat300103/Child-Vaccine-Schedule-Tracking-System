@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 import "../../style/ComboDetail.css";
@@ -171,6 +171,7 @@ const ComboDetail = () => {
   const [searchValue, setSearchValue] = useState("");
   const [searchValueMin, setSearchValueMin] = useState("");
   const [searchValueMax, setSearchValueMax] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (vaccineComboId) {
@@ -334,6 +335,26 @@ const ComboDetail = () => {
         <h2 className="title-combodetailmanager">
           Danh sách Vaccine trong Combo: {vaccineComboId}
         </h2>
+        <button
+          className="back-button-combodetailmanager"
+          onClick={() => navigate(-1)}
+        >
+          <svg
+            className="back-button-icon-combodetailmanager"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+          <span className="back-button-text-combodetailmanager">Quay lại</span>
+        </button>
         <div className="grid-combodetailmanager">
           <AddVaccineCard onOpenModal={() => setShowAddModal(true)} />
           {comboDetails.map((item) => (
