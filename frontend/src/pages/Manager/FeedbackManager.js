@@ -10,22 +10,26 @@ import {
   FiBookmark,
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
-import '../../style/Feedbacks.css';
+import "../../style/Feedbacks.css";
 
-const API_BASE_URL = "http://localhost:8080"; // Replace with your actual API base URL
+const API_BASE_URL = "http://localhost:8080";
 
 const Feedbacks = () => {
   const [feedbacks, setFeedbacks] = useState([]);
   const [filteredFeedbacks, setFilteredFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchType, setSearchType] = useState("id");
+  const [searchText, setSearchText] = useState("");
+  const [rankingFilter, setRankingFilter] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedFeedback, setSelectedFeedback] = useState(null);
 
   const getAllFeedback = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/feedback`);
       if (!response.ok) throw new Error("Failed to fetch feedback");
       const data = await response.json();
-      console.log("API Response (getAllFeedback):", data);
       return data;
     } catch (error) {
       console.error("Error fetching feedback:", error);
@@ -33,19 +37,12 @@ const Feedbacks = () => {
     }
   };
 
-  const [searchType, setSearchType] = useState("id");
-  const [searchText, setSearchText] = useState("");
-  const [rankingFilter, setRankingFilter] = useState(0);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedFeedback, setSelectedFeedback] = useState(null);
-
   const fetchFeedbacks = async () => {
     try {
       const data = await getAllFeedback();
       setFeedbacks(data);
       setFilteredFeedbacks(data);
     } catch (err) {
-      console.error("Error fetching feedback:", err);
       setError("Không thể lấy thông tin feedback");
     } finally {
       setLoading(false);
@@ -110,48 +107,6 @@ const Feedbacks = () => {
     return stars;
   };
 
-  const RankingFilter = () => {
-    const handleStarClick = (star) => {
-      if (rankingFilter === star) {
-        setRankingFilter(0);
-      } else {
-        setRankingFilter(star);
-      }
-    };
-
-    return (
-      <div className="ranking-filter-container-feedbackmanager">
-        <span className="ranking-label-feedbackmanager">Đánh giá:</span>
-        <div className="stars-container-feedbackmanager">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <button
-              key={i}
-              onClick={() => handleStarClick(i)}
-              className="star-button-feedbackmanager"
-            >
-              {i <= rankingFilter ? (
-                <AiFillStar className="star-filled-feedbackmanager star-size-feedbackmanager" />
-              ) : (
-                <AiOutlineStar className="star-outline-feedbackmanager star-size-feedbackmanager star-hover-feedbackmanager" />
-              )}
-            </button>
-          ))}
-          {rankingFilter > 0 && (
-            <button
-              onClick={() => setRankingFilter(0)}
-              className="clear-button-feedbackmanager"
-            >
-              <FiX size={12} />
-            </button>
-          )}
-        </div>
-        {rankingFilter === 0 && (
-          <span className="all-text-feedbackmanager">Tất cả</span>
-        )}
-      </div>
-    );
-  };
-
   const openModal = (feedback) => {
     setSelectedFeedback(feedback);
     setModalVisible(true);
@@ -164,12 +119,18 @@ const Feedbacks = () => {
 
   const getRankingGradient = (ranking) => {
     switch (ranking) {
-      case 5: return "gradient-green-teal-feedbackmanager";
-      case 4: return "gradient-teal-cyan-feedbackmanager";
-      case 3: return "gradient-blue-indigo-feedbackmanager";
-      case 2: return "gradient-amber-orange-feedbackmanager";
-      case 1: return "gradient-red-rose-feedbackmanager";
-      default: return "gradient-gray-feedbackmanager";
+      case 5:
+        return "gradient-green-teal-feedbackmanager";
+      case 4:
+        return "gradient-teal-cyan-feedbackmanager";
+      case 3:
+        return "gradient-blue-indigo-feedbackmanager";
+      case 2:
+        return "gradient-amber-orange-feedbackmanager";
+      case 1:
+        return "gradient-red-rose-feedbackmanager";
+      default:
+        return "gradient-gray-feedbackmanager";
     }
   };
 
@@ -196,27 +157,41 @@ const Feedbacks = () => {
           {fb.booking.customer.firstName} {fb.booking.customer.lastName}
         </h3>
         <p className="booking-info-feedbackmanager">
-          <span className="booking-label-feedbackmanager">Booking:</span> {fb.booking.bookingId}
+          <span className="booking-label-feedbackmanager">Booking:</span>{" "}
+          {fb.booking.bookingId}
         </p>
       </div>
-      <div className="stars-display-feedbackmanager">{renderStars(fb.ranking)}</div>
+      <div className="stars-display-feedbackmanager">
+        {renderStars(fb.ranking)}
+      </div>
     </motion.div>
   );
 
+  const handleStarFilterClick = (star) => {
+    if (rankingFilter === star) {
+      setRankingFilter(0); // Reset filter nếu click lại vào cùng sao
+    } else {
+      setRankingFilter(star); // Set filter mới
+    }
+  };
+
   if (loading) return <SkeletonLoader />;
-  if (error) return (
-    <div className="error-container-feedbackmanager">
-      <p className="error-text-feedbackmanager">
-        <span className="error-icon-feedbackmanager">⚠️</span> {error}
-      </p>
-    </div>
-  );
+  if (error)
+    return (
+      <div className="error-container-feedbackmanager">
+        <p className="error-text-feedbackmanager">
+          <span className="error-icon-feedbackmanager">⚠️</span> {error}
+        </p>
+      </div>
+    );
 
   return (
     <div className="main-container-feedbackmanager">
       <header className="header-feedbackmanager">
         <h2 className="title-feedbackmanager">Đánh Giá & Phản Hồi</h2>
-        <p className="subtitle-feedbackmanager">Quản lý và theo dõi đánh giá từ khách hàng</p>
+        <p className="subtitle-feedbackmanager">
+          Quản lý và theo dõi đánh giá từ khách hàng
+        </p>
       </header>
 
       <div className="search-filter-container-feedbackmanager">
@@ -226,9 +201,13 @@ const Feedbacks = () => {
             <input
               type="text"
               placeholder={`Tìm kiếm theo ${
-                searchType === "id" ? "ID" :
-                searchType === "booking" ? "mã đặt lịch" :
-                searchType === "comment" ? "nội dung" : "tên khách hàng"
+                searchType === "id"
+                  ? "ID"
+                  : searchType === "booking"
+                  ? "mã đặt lịch"
+                  : searchType === "comment"
+                  ? "nội dung"
+                  : "tên khách hàng"
               }...`}
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
@@ -274,20 +253,26 @@ const Feedbacks = () => {
               />
             </svg>
           </div>
-
-          <div className="ranking-filter-wrapper-feedbackmanager">
-            <RankingFilter />
-          </div>
         </div>
       </div>
 
       <div className="dashboard-summary-feedbackmanager">
         {[5, 4, 3, 2, 1].map((star) => {
           const count = feedbacks.filter((fb) => fb.ranking === star).length;
-          const percentage = feedbacks.length ? Math.round((count / feedbacks.length) * 100) : 0;
+          const percentage = feedbacks.length
+            ? Math.round((count / feedbacks.length) * 100)
+            : 0;
+          const isActive = rankingFilter === star;
 
           return (
-            <div key={star} className="summary-card-feedbackmanager">
+            <div
+              key={star}
+              className={`summary-card-feedbackmanager ${
+                isActive ? "active-filter-feedbackmanager" : ""
+              }`}
+              onClick={() => handleStarFilterClick(star)}
+              style={{ cursor: "pointer" }}
+            >
               <div className="summary-header-feedbackmanager">
                 <div className="star-count-feedbackmanager">
                   <AiFillStar className="star-filled-feedbackmanager" />
@@ -297,7 +282,9 @@ const Feedbacks = () => {
               </div>
               <div className="progress-bar-container-feedbackmanager">
                 <div
-                  className={`progress-bar-feedbackmanager ${getRankingGradient(star)}`}
+                  className={`progress-bar-feedbackmanager ${getRankingGradient(
+                    star
+                  )}`}
                   style={{ width: `${percentage}%` }}
                 ></div>
               </div>
@@ -336,51 +323,81 @@ const Feedbacks = () => {
               exit={{ scale: 0.9, y: 20 }}
               className="modal-container-feedbackmanager"
             >
-              <div className={`modal-header-gradient-feedbackmanager ${getRankingGradient(selectedFeedback.ranking)}`}></div>
+              <div
+                className={`modal-header-gradient-feedbackmanager ${getRankingGradient(
+                  selectedFeedback.ranking
+                )}`}
+              ></div>
               <div className="modal-decor-top-feedbackmanager"></div>
               <div className="modal-decor-bottom-feedbackmanager"></div>
 
-              <button onClick={closeModal} className="modal-close-button-feedbackmanager">
+              <button
+                onClick={closeModal}
+                className="modal-close-button-feedbackmanager"
+              >
                 <FiX size={18} />
               </button>
 
               <div className="modal-content-feedbackmanager">
                 <div className="modal-header-content-feedbackmanager">
                   <div>
-                    <h3 className="modal-title-feedbackmanager">Đánh giá chi tiết</h3>
-                    <p className="modal-id-feedbackmanager">ID: {selectedFeedback.id}</p>
+                    <h3 className="modal-title-feedbackmanager">
+                      Đánh giá chi tiết
+                    </h3>
+                    <p className="modal-id-feedbackmanager">
+                      ID: {selectedFeedback.id}
+                    </p>
                   </div>
-                  <div className="modal-stars-feedbackmanager">{renderStars(selectedFeedback.ranking)}</div>
+                  <div className="modal-stars-feedbackmanager">
+                    {renderStars(selectedFeedback.ranking)}
+                  </div>
                 </div>
 
                 <div className="modal-body-feedbackmanager">
                   <div className="customer-info-feedbackmanager">
                     <div className="customer-info-header-feedbackmanager">
-                      <span className="info-label-feedbackmanager">Thông tin khách hàng</span>
+                      <span className="info-label-feedbackmanager">
+                        Thông tin khách hàng
+                      </span>
                       <h4 className="customer-name-modal-feedbackmanager">
-                        {selectedFeedback.booking.customer.firstName} {selectedFeedback.booking.customer.lastName}
+                        {selectedFeedback.booking.customer.firstName}{" "}
+                        {selectedFeedback.booking.customer.lastName}
                       </h4>
                     </div>
                     <div className="booking-info-modal-feedbackmanager">
-                      <FiBookmark className="booking-icon-feedbackmanager" size={16} />
+                      <FiBookmark
+                        className="booking-icon-feedbackmanager"
+                        size={16}
+                      />
                       <div>
-                        <span className="booking-label-modal-feedbackmanager">Mã đặt lịch</span>
-                        <p className="booking-id-modal-feedbackmanager">{selectedFeedback.booking.bookingId}</p>
+                        <span className="booking-label-modal-feedbackmanager">
+                          Mã đặt lịch
+                        </span>
+                        <p className="booking-id-modal-feedbackmanager">
+                          {selectedFeedback.booking.bookingId}
+                        </p>
                       </div>
                     </div>
                   </div>
 
                   <div className="comment-section-feedbackmanager">
                     <div className="comment-header-feedbackmanager">
-                      <FiMessageSquare className="comment-icon-feedbackmanager" size={16} />
-                      <h4 className="comment-title-feedbackmanager">Nội dung đánh giá</h4>
+                      <FiMessageSquare
+                        className="comment-icon-feedbackmanager"
+                        size={16}
+                      />
+                      <h4 className="comment-title-feedbackmanager">
+                        Nội dung đánh giá
+                      </h4>
                     </div>
                     <div className="comment-content-feedbackmanager">
                       <p className="comment-text-feedbackmanager">
                         {selectedFeedback.comment ? (
                           `"${selectedFeedback.comment}"`
                         ) : (
-                          <span className="no-comment-feedbackmanager">Khách hàng không để lại bình luận</span>
+                          <span className="no-comment-feedbackmanager">
+                            Khách hàng không để lại bình luận
+                          </span>
                         )}
                       </p>
                     </div>
@@ -388,7 +405,10 @@ const Feedbacks = () => {
                 </div>
 
                 <div className="modal-footer-feedbackmanager">
-                  <button onClick={closeModal} className="close-button-feedbackmanager">
+                  <button
+                    onClick={closeModal}
+                    className="close-button-feedbackmanager"
+                  >
                     Đóng
                   </button>
                 </div>
