@@ -19,93 +19,131 @@
     color: #6b7280;
     font-size: 16px;
   }
-  
   .search-filter-container-feedbackmanager {
-    margin-bottom: 32px;
-    background: #ffffff;
-    padding: 24px;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    border: 1px solid #f3f4f6;
-  }
-  
+  margin-bottom: 32px;
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #f3f4f6;
+  /* Thêm display: flex và justify-content: center để căn giữa */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* Đảm bảo chiếm toàn bộ chiều rộng */
+  max-width: 800px; /* Giới hạn chiều rộng tối đa */
+  margin-left: auto; /* Căn giữa */
+  margin-right: auto; /* Căn giữa */
+}
+
+.search-grid-feedbackmanager {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  width: 100%; /* Đảm bảo chiếm toàn bộ chiều rộng của container */
+}
+
+@media (min-width: 768px) {
   .search-grid-feedbackmanager {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 24px;
+    grid-template-columns: repeat(12, 1fr);
+    /* Điều chỉnh span để phù hợp với căn giữa */
+    grid-template-areas: 
+      "input input input input input input select select select select select select";
   }
-  
-  @media (min-width: 768px) {
-    .search-grid-feedbackmanager {
-      grid-template-columns: repeat(12, 1fr);
-    }
-    .search-input-container-feedbackmanager {
-      grid-column: span 6;
-    }
-    .search-type-container-feedbackmanager {
-      grid-column: span 3;
-    }
-    .ranking-filter-wrapper-feedbackmanager {
-      grid-column: span 3;
-    }
-  }
-  
   .search-input-container-feedbackmanager {
-    position: relative;
+    grid-column: span 6;
+    grid-area: input;
   }
-  
-  .search-icon-feedbackmanager {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #9ca3af;
-  }
-  
-  .search-input-feedbackmanager {
-    padding-left: 40px;
-    width: 100%;
-    padding: 12px;
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    transition: all 0.2s;
-  }
-  
-  .search-input-feedbackmanager:focus {
-    outline: none;
-    border-color: transparent;
-    box-shadow: 0 0 0 2px #14b8a6;
-  }
-  
   .search-type-container-feedbackmanager {
-    position: relative;
+    grid-column: span 3;
+    grid-area: select;
   }
-  
-  .search-type-select-feedbackmanager {
+  /* Xóa ranking-filter-wrapper vì đã bỏ component này */
+}
+
+.search-input-container-feedbackmanager {
+  position: relative;
+  /* Đảm bảo không có khoảng trống thừa */
+  margin: 0;
+}
+
+.search-icon-feedbackmanager {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  /* Thêm z-index để icon ở phía sau text */
+  z-index: 1;
+}
+
+.search-input-feedbackmanager {
+  padding-left: 40px; /* Tăng khoảng cách để tránh đè icon */
+  width: 100%;
+  padding: 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  transition: all 0.2s;
+  /* Đảm bảo text không bị đè */
+  position: relative;
+  z-index: 2;
+}
+
+.search-input-feedbackmanager:focus {
+  outline: none;
+  border-color: transparent;
+  box-shadow: 0 0 0 2px #14b8a6;
+}
+
+.search-type-container-feedbackmanager {
+  position: relative;
+  /* Đảm bảo không có khoảng trống thừa */
+  margin: 0;
+}
+
+.search-type-select-feedbackmanager {
+  width: 100%;
+  padding: 12px 40px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  appearance: none;
+  transition: all 0.2s;
+}
+
+.search-type-select-feedbackmanager:focus {
+  outline: none;
+  border-color: transparent;
+  box-shadow: 0 0 0 2px #14b8a6;
+}
+
+.search-type-icon-feedbackmanager {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  pointer-events: none;
+  z-index: 1; /* Đảm bảo icon ở phía sau text */
+}
+
+/* Thêm style để căn giữa hoàn toàn khi màn hình nhỏ */
+@media (max-width: 767px) {
+  .search-filter-container-feedbackmanager {
+    padding: 16px; /* Giảm padding trên màn hình nhỏ */
+  }
+  .search-grid-feedbackmanager {
+    grid-template-columns: 1fr;
     width: 100%;
-    padding: 12px 40px;
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    appearance: none;
-    transition: all 0.2s;
   }
-  
-  .search-type-select-feedbackmanager:focus {
-    outline: none;
-    border-color: transparent;
-    box-shadow: 0 0 0 2px #14b8a6;
+  .search-input-container-feedbackmanager {
+    grid-column: span 12;
   }
-  
-  .search-type-icon-feedbackmanager {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #9ca3af;
-    pointer-events: none;
+  .search-type-container-feedbackmanager {
+    grid-column: span 12;
   }
+}
   
   .dropdown-arrow-feedbackmanager {
     position: absolute;
@@ -599,3 +637,17 @@
   .error-icon-feedbackmanager {
     margin-right: 8px;
   }
+  
+  .summary-card-feedbackmanager {
+  transition: all 0.2s ease;
+}
+
+.summary-card-feedbackmanager:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.active-filter-feedbackmanager {
+  border: 2px solid #4a90e2;
+  background-color: rgba(74, 144, 226, 0.1);
+}
