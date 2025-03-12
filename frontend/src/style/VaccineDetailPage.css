@@ -1,0 +1,115 @@
+.vaccine-detail-page {
+    background: linear-gradient(to bottom, #f0f7f4, #e0f2e9);
+    min-height: 100vh;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 16px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.5s ease-in;
+  }
+  
+  .header h1 {
+    color:  #2196f3;
+    font-size: 24px;
+    margin: 0;
+  }
+  
+  .back-button {
+    background-color: #2196f3;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .back-button:hover {
+    background-color: #1976d2;
+    transform: translateY(-2px);
+  }
+  
+  .vaccine-detail-container {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .vaccine-detail-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    width: 100%;
+    max-width: 600px;
+    animation: fadeInUp 0.5s ease-in;
+  }
+  
+  .detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .detail-item:last-child {
+    border-bottom: none;
+  }
+  
+  .label {
+    color: #4b5563;
+    font-weight: 600;
+    font-size: 16px;
+  }
+  
+  .value {
+    color:  black
+  ;
+    font-size: 16px;
+  }
+  
+  .status {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  
+  .status.active {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .status.inactive {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeInUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  
+  .loading,
+  .error {
+    text-align: center;
+    padding: 20px;
+    color: #4b5563;
+    font-size: 18px;
+  }

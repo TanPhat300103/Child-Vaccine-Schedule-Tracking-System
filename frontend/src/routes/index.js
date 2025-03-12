@@ -50,6 +50,10 @@ import ComboDetail from "../pages/Manager/ComboDetailManager";
 import AdminPage from "../pages/Admin/AdminPage";
 import Staffs from "../pages/Admin/StaffManager";
 import Dashboard from "../pages/Admin/Dashboard";
+//vacine Page
+import VaccineListPage from "../pages/VaccineListPage";
+import VaccineDetailPage from "../pages/VaccineDetailPage";
+import VaccinesPage from "../pages/VaccinesPage";
 const Layout = ({ children }) => {
   const location = useLocation();
   const isStaffPage = location.pathname.startsWith("/staff");
@@ -83,6 +87,14 @@ function AppRoutes() {
             element={
               <Layout>
                 <LoginForm />
+              </Layout>
+            }
+          />
+          <Route
+            path="/vaccines"
+            element={
+              <Layout>
+                <VaccinesPage/>
               </Layout>
             }
           />
@@ -289,7 +301,9 @@ function AppRoutes() {
               element={<ComboDetail />}
             />
           </Route>
+         
         </Routes>
+        
       </AuthProvider>
     </Router>
   );

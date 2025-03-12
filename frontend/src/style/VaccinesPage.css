@@ -1,0 +1,61 @@
+.vaccines-page {
+    background: linear-gradient(to bottom, #f0f7ff, #e0ecff);
+    min-height: 100vh;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .vaccines-header {
+    width: 70%;
+    max-width: 1200px;
+    padding: 16px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .vaccines-header h1 {
+    color: #3b82f6;
+    font-size: 28px;
+    margin: 0;
+  }
+  
+  .vaccines-tabs {
+    width: 70%;
+    max-width: 1200px;
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .vaccines-tab {
+    flex: 1;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #4b5563;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .vaccines-tab:hover {
+    background-color: #e0ecff;
+  }
+  
+  .vaccines-tab-active {
+    background-color: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+  }
+  
+  .vaccines-content {
+    width: 70%;
+    max-width: 1200px;
+  }

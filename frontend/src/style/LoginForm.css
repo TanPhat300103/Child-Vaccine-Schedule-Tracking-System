@@ -343,4 +343,53 @@
   background: #f3f4f6;
   cursor: not-allowed;
 }
+/* LoginForm.css */
 
+/* ... (giữ nguyên các kiểu dáng hiện có) */
+
+/* LoginForm.css */
+
+/* ... (giữ nguyên các kiểu dáng hiện có) */
+
+/* Left Side */
+.login-form-left {
+  display: none;
+  width: 50%;
+  background: linear-gradient(to bottom right, #2563eb, #60a5fa);
+  padding: 32px;
+  color: #ffffff;
+  position: relative; /* Thêm position: relative để nút Back có thể định vị tương đối */
+}
+
+@media (min-width: 1024px) {
+  .login-form-left {
+    display: block;
+  }
+}
+
+/* Back Button */
+.login-form-back-button {
+  position: absolute;
+  bottom: 16px; /* Cách đáy 16px */
+  left: 16px; /* Cách trái 16px */
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.2); /* Nền trắng mờ để nổi bật trên gradient */
+  border: none;
+  border-radius: 50%; /* Bo tròn hoàn toàn */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.login-form-back-button:hover {
+  background: rgba(255, 255, 255, 0.4); /* Nền sáng hơn khi hover */
+}
+
+.login-form-back-icon {
+  width: 20px;
+  height: 20px;
+  color: #ffffff; /* Màu trắng để nổi bật trên nền gradient */
+}
