@@ -244,15 +244,6 @@ function MyPaymentPage() {
                                   Thanh Toán
                                 </button>
                               )}
-                              <button
-                                className="mypayment-download-btn"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleDownload(payment.paymentId);
-                                }}
-                              >
-                                <Download size={16} />
-                              </button>
                             </td>
                           </tr>
                           {isExpanded && (
