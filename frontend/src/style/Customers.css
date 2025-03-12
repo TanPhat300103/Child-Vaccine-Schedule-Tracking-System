@@ -106,21 +106,20 @@
 .filter-container {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .filter-buttons {
   display: flex;
-  gap: 8px;
-  background-color: #edf2f7;
-  border-radius: 8px;
-  padding: 4px;
+  gap: 4px;
+  border-radius: 6px;
+  padding: 2px;
 }
 
 .filter-button {
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
   font-weight: 500;
   color: #718096;
   background-color: transparent;
@@ -159,14 +158,20 @@
 .add-customer-button {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background-color: #2563eb;
   color: #ffffff;
-  padding: 12px 24px;
-  border-radius: 8px;
+  padding: 6px 12px; /* Đồng bộ kích thước với filter-button */
+  border-radius: 6px;
   border: none;
   cursor: pointer;
   transition: background-color 0.2s;
+  font-size: 13px; /* Đồng bộ font-size với filter-button */
+}
+
+/* Thêm margin-left để tạo khoảng cách với các nút trạng thái */
+.add-customer-button {
+  margin-left: 8px;
 }
 
 .add-customer-button:hover {

@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import VaccineList from "../pages/VaccineListPage"; // Import component VaccineList
 import VaccineCombo from "../components/VaccineCombo"; // Import component VaccineCombo
 import '../style/VaccinesPage.css'; // Style riêng cho page
-import Header from"../layout/Header";
-import Footer from "../layout/Footer";
 
 function VaccinesPage() {
   const [activeTab, setActiveTab] = useState('vaccine-list'); // Mặc định chọn Vaccine List

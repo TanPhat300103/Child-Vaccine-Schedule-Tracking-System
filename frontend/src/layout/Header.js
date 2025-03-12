@@ -211,7 +211,7 @@ function Header() {
           <div className="logo-icon">
             <Syringe size={24} />
           </div>
-          <span className="brand-name">Hoàng Tử Gió</span>
+          <span className="brand-name">Group 1</span>
         </Link>
         <div className="mobile-menu-toggle" onClick={toggleMobileMenu}>
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}

@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../style/HomePage.css"; // Import the CSS file
 import { FiSearch, FiX, FiInfo } from "react-icons/fi";
+import { useAuth } from "../components/AuthContext"; 
+import { useNavigate } from "react-router-dom";
 import {
   FaGlobe,
   FaSyringe,
@@ -12,6 +14,7 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import { Users, Heart, Stethoscope, Syringe, Search } from "lucide-react"; // Import biểu tượng từ Lucide React
 const HomePage = () => {
+  const { userInfo } = useAuth();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [feedbacks, setFeedbacks] = useState([]);
   const vaccinePricingRef = useRef(null);
@@ -20,6 +23,23 @@ const HomePage = () => {
   const feedbackContainerRef = useRef(null);
   const [translateX, setTranslateX] = useState(0);
   const animationRef = useRef(null);
+  const navigate = useNavigate();
+
+  //Điều hướng role
+  if(userInfo!=null){// Lấy trạng thái đăng nhập từ AuthContext
+    localStorage.setItem("userId", userInfo.userId);}
+   
+    useEffect(() => {
+      if (userInfo!=null && userInfo!="anonymousUser") {
+        if (userInfo.authorities[0].authority === "ROLE_CUSTOMER") {
+          navigate("/"); // Dẫn người dùng tới trang Home
+        } else if (userInfo.authorities[0].authority === "ROLE_STAFF") {
+          navigate("/staff"); // Dẫn người dùng tới trang Staff
+        } else if (userInfo.authorities[0].authority === "ROLE_ADMIN") {
+          navigate("/admin"); // Dẫn người dùng tới trang Admin
+        }
+      }
+    }, [userInfo, navigate]);
 
   // AgeVaccine2 State
   const [combos, setCombos] = useState([]);
