@@ -68,10 +68,10 @@ const BookingDetail = () => {
     }
   };
 
-  const updateReactionNote = async (id, reaction) => {
+  const updateReactionNote = async (detailId, reaction) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/bookingdetail/updatereaction?id=${id}&reaction=${encodeURIComponent(
+        `http://localhost:8080/bookingdetail/updatereaction?id=${detailId}&reaction=${encodeURIComponent(
           reaction
         )}`,
         {
@@ -79,11 +79,11 @@ const BookingDetail = () => {
           credentials: "include",
         }
       );
-      if (!response.ok) throw new Error("Failed to update reaction");
+      if (!response.ok) throw new Error("Failed to update reaction note");
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("Error updating reaction:", error);
+      console.error("Error updating reaction note:", error);
       throw error;
     }
   };
@@ -92,10 +92,10 @@ const BookingDetail = () => {
   const [isCustomerInfoOpen, setIsCustomerInfoOpen] = useState(true);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [detailIdToConfirm, setDetailIdToConfirm] = useState(null);
-  const [showReactionModal, setShowReactionModal] = useState(false);
-  const [detailIdForReaction, setDetailIdForReaction] = useState(null);
-  const [reactionText, setReactionText] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [showReactionModal, setShowReactionModal] = useState(false);
+  const [selectedDetailId, setSelectedDetailId] = useState(null);
+  const [reactionInput, setReactionInput] = useState("");
 
   const fetchBookingData = async () => {
     try {
@@ -175,47 +175,50 @@ const BookingDetail = () => {
 
   const handleReaction = (detailId) => {
     const detail = bookingDetails.find((d) => d.bookingDetailId === detailId);
-    setDetailIdForReaction(detailId);
-    setReactionText(detail.reaction || "");
+    setSelectedDetailId(detailId);
+    setReactionInput(detail.reactionNote || "");
     setShowReactionModal(true);
   };
 
-  const saveReaction = async () => {
+  const handleReactionSubmit = async () => {
+    if (!selectedDetailId) return;
     setShowReactionModal(false);
-    const loadingToast = toast.loading("Đang cập nhật phản ứng...");
+    const loadingToast = toast.loading("Đang cập nhật phản ứng sau tiêm...");
 
     try {
       const updatedDetail = await updateReactionNote(
-        detailIdForReaction,
-        reactionText
+        selectedDetailId,
+        reactionInput
       );
       setBookingDetails((prevDetails) =>
         prevDetails.map((detail) =>
-          detail.bookingDetailId === detailIdForReaction
-            ? updatedDetail
-            : detail
+          detail.bookingDetailId === selectedDetailId ? updatedDetail : detail
         )
       );
 
-      const updatedGroups = { ...groupedDetails };
-      Object.keys(updatedGroups).forEach((childKey) => {
-        updatedGroups[childKey] = updatedGroups[childKey].map((detail) =>
-          detail.bookingDetailId === detailIdForReaction
-            ? updatedDetail
-            : detail
-        );
-      });
+      const updatedGroups = bookingDetails
+        .map((detail) =>
+          detail.bookingDetailId === selectedDetailId ? updatedDetail : detail
+        )
+        .reduce((acc, detail) => {
+          const childKey = detail.child.firstName + " " + detail.child.lastName;
+          if (!acc[childKey]) {
+            acc[childKey] = [];
+          }
+          acc[childKey].push(detail);
+          return acc;
+        }, {});
       setGroupedDetails(updatedGroups);
 
       toast.update(loadingToast, {
-        render: "Cập nhật phản ứng thành công",
+        render: "Cập nhật phản ứng sau tiêm thành công",
         type: "success",
         isLoading: false,
         autoClose: 2000,
       });
     } catch (error) {
       toast.update(loadingToast, {
-        render: "Cập nhật phản ứng thất bại. Vui lòng thử lại.",
+        render: "Cập nhật phản ứng sau tiêm thất bại. Vui lòng thử lại.",
         type: "error",
         isLoading: false,
         autoClose: 2000,
@@ -318,11 +321,10 @@ const BookingDetail = () => {
               Phản Ứng Sau Tiêm
             </h3>
             <textarea
-              value={reactionText}
-              onChange={(e) => setReactionText(e.target.value)}
-              placeholder="Nhập phản ứng sau tiêm..."
+              value={reactionInput}
+              onChange={(e) => setReactionInput(e.target.value)}
               className="reaction-textarea-bookingdetailmanager"
-              rows="4"
+              placeholder="Nhập phản ứng sau tiêm"
             />
             <div className="modal-buttons-bookingdetailmanager">
               <button
@@ -332,8 +334,8 @@ const BookingDetail = () => {
                 Hủy
               </button>
               <button
-                onClick={saveReaction}
-                className="modal-save-button-bookingdetailmanager"
+                onClick={handleReactionSubmit}
+                className="modal-confirm-button-bookingdetailmanager"
               >
                 Lưu
               </button>
@@ -558,7 +560,6 @@ const BookingDetail = () => {
                               </button>
                               <button
                                 onClick={() =>
-                                  isAdministered &&
                                   handleReaction(detail.bookingDetailId)
                                 }
                                 className={`reaction-button-bookingdetailmanager ${
@@ -566,14 +567,8 @@ const BookingDetail = () => {
                                 }`}
                                 disabled={!isAdministered}
                               >
-                                <AlertCircleIcon className="button-icon" />
                                 Phản Ứng Sau Tiêm
                               </button>
-                              {detail.reaction && (
-                                <div className="reaction-display-bookingdetailmanager">
-                                  "{detail.reaction}"
-                                </div>
-                              )}
                             </div>
                           </div>
                           <div className="detail-body-bookingdetailmanager">
@@ -611,6 +606,18 @@ const BookingDetail = () => {
                                 </span>
                               </div>
                             )}
+                            {detail.reactionNote.trim() !== "none" &&
+                              detail.reactionNote &&
+                              detail.reactionNote.trim() && (
+                                <div className="reaction-info-bookingdetailmanager">
+                                  <span className="reaction-label-bookingdetailmanager">
+                                    Phản ứng sau tiêm
+                                  </span>
+                                  <span className="reaction-value-bookingdetailmanager">
+                                    "{detail.reactionNote}"
+                                  </span>
+                                </div>
+                              )}
                           </div>
                         </div>
                       );
