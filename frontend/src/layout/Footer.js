@@ -1,156 +1,140 @@
-import React from 'react';
-import { MapPin, Phone, Mail, Facebook, Instagram, Twitter, ArrowRight, Calendar, Shield, Clock, MessageSquare,Github } from 'lucide-react';
-import '../style/Footer.css';
+import React from "react";
+import {
+  MapPin,
+  Phone,
+  Mail,
+  Facebook,
+  Instagram,
+  Twitter,
+  ArrowRight,
+  Syringe,
+  Heart,
+  Shield,
+  User,
+} from "lucide-react";
+import "../style/Footer.css";
 
 const Footer = () => {
   return (
-    <footer className="footer-container">
-      <div className="footer-content">
-        <div className="footer-main">
-          <div className="footer-info">
-            <div className="footer-contact-card">
-              <div className="footer-contact-header">
-                <h4>Liên Hệ Nhanh</h4>
-              </div>
-              <div className="footer-contact-body">
-                <div className="footer-contact-item">
-                  <Phone size={16} className="footer-icon" />
-                  <span>+84 123 456 789</span>
-                </div>
-                <div className="footer-contact-item">
-                  <Mail size={16} className="footer-icon" />
-                  <span>khangqhse184031@fpt.edu.vn</span>
-                </div>
-                <div className="footer-contact-item">
-                  <MapPin size={16} className="footer-icon" />
-                  <span>123 Đường ABC, Q.1, TP.HCM</span>
-                </div>
-                <div className="footer-contact-item">
-                  <Github size={16} className="footer-icon" />
-                  <span>github.com/Kdz198</span>
-                </div>
-              </div>
-            </div>
+    <footer
+      className="footer"
+      style={{
+        background: "linear-gradient(135deg, #6e66e3 0%, #5db8e6 100%)",
+      }}
+    >
+      <div className="footer-container">
+        <div className="footer-top">
+          <div className="footer-health-theme">
+            <Syringe className="health-icon" style={{ color: "#fff" }} />
+            <h2>
+              Trung Tâm Tiêm Chủng <span>Sức Khỏe Toàn Diện</span>
+            </h2>
           </div>
 
-          <div className="footer-links-section">
-            <div className="footer-links-column">
-              <h4 className="footer-heading">Dịch Vụ</h4>
-              <div className="footer-links">
-                <a href="/services/regular" className="footer-link">
-                  <ArrowRight size={14} className="footer-link-icon" />
-                  <span>Tiêm chủng định kỳ</span>
-                </a>
-                <a href="/services/special" className="footer-link">
-                  <ArrowRight size={14} className="footer-link-icon" />
-                  <span>Vaccine đặc biệt</span>
-                </a>
-                <a href="/services/consultation" className="footer-link">
-                  <ArrowRight size={14} className="footer-link-icon" />
-                  <span>Tư vấn y tế</span>
-                </a>
-                <a href="/services/checkup" className="footer-link">
-                  <ArrowRight size={14} className="footer-link-icon" />
-                  <span>Khám sức khỏe</span>
-                </a>
+          <div className="footer-main">
+            <div className="footer-contact">
+              <h3>
+                Thông Tin Liên Hệ <Heart className="title-icon" />
+              </h3>
+              <div className="contact-items">
+                <div className="contact-item">
+                  <Phone className="contact-icon" />
+                  <span>+84 367921030</span>
+                </div>
+                <div className="contact-item">
+                  <Mail className="contact-icon" />
+                  <span>hanptse184261@fpt.edu.vn</span>
+                </div>
+                <div className="contact-item">
+                  <Mail className="contact-icon" />
+                  <span>khangqhse184031@fpt.edu.vn</span>
+                </div>
+                <div className="contact-item">
+                  <MapPin className="contact-icon" />
+                  <span>Biên Hòa, Đồng Nai</span>
+                </div>
               </div>
             </div>
 
-            <div className="footer-links-column">
-              <h4 className="footer-heading">Hỗ Trợ</h4>
-              <div className="footer-links">
-                <a href="/faq" className="footer-link">
-                  <ArrowRight size={14} className="footer-link-icon" />
-                  <span>Câu hỏi thường gặp</span>
-                </a>
-                <a href="/schedule" className="footer-link">
-                  <ArrowRight size={14} className="footer-link-icon" />
-                  <span>Lịch tiêm chủng</span>
-                </a>
-                <a href="/privacy" className="footer-link">
-                  <ArrowRight size={14} className="footer-link-icon" />
-                  <span>Chính sách bảo mật</span>
-                </a>
-                <a href="/contact" className="footer-link">
-                  <ArrowRight size={14} className="footer-link-icon" />
-                  <span>Liên hệ</span>
-                </a>
+            <div className="footer-links">
+              <div className="footer-links-column">
+                <h3>
+                  Dịch Vụ <Shield className="title-icon" />
+                </h3>
+                <ul>
+                  <li>
+                    <ArrowRight className="link-icon" />
+                    <a href="/services/vaccine">Tiêm chủng vaccine</a>
+                  </li>
+                  <li>
+                    <ArrowRight className="link-icon" />
+                    <a href="/services/health-check">Kiểm tra sức khỏe</a>
+                  </li>
+                  <li>
+                    <ArrowRight className="link-icon" />
+                    <a href="/services/consult">Tư vấn y tế</a>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="footer-links-column">
+                <h3>
+                  Hỗ Trợ <User className="title-icon" />
+                </h3>
+                <ul>
+                  <li>
+                    <ArrowRight className="link-icon" />
+                    <a href="/faq">Câu hỏi thường gặp</a>
+                  </li>
+                  <li>
+                    <ArrowRight className="link-icon" />
+                    <a href="/schedule">Lịch tiêm chủng</a>
+                  </li>
+                  <li>
+                    <ArrowRight className="link-icon" />
+                    <a href="/policy">Chính sách bảo mật</a>
+                  </li>
+                </ul>
               </div>
             </div>
 
             <div className="footer-newsletter">
-              <h4 className="footer-heading">Đăng Ký Nhận Tin</h4>
-              <p className="footer-newsletter-text">Nhận thông tin mới nhất về vaccine và sức khỏe trẻ em.</p>
-              <form className="footer-newsletter-form">
-                <input
-                  type="email"
-                  placeholder="Nhập email của bạn"
-                  className="footer-newsletter-input"
-                />
-                <button type="submit" className="footer-newsletter-button">
-                  Đăng Ký
-                </button>
+              <h3>Đăng Ký Nhận Tin</h3>
+              <p>Thông tin cập nhật về vaccine và sức khỏe</p>
+              <form className="newsletter-form">
+                <input type="email" placeholder="Nhập email của bạn" required />
+                <button type="submit">Đăng Ký</button>
               </form>
-            </div>
-          </div>
-        </div>
-
-        <div className="footer-features">
-          <div className="footer-feature">
-            <div className="footer-feature-icon">
-              <Calendar size={20} />
-            </div>
-            <div className="footer-feature-text">
-              <h5>Đặt Lịch Dễ Dàng</h5>
-              <p>Đặt lịch tiêm nhanh chóng</p>
-            </div>
-          </div>
-
-          <div className="footer-feature">
-            <div className="footer-feature-icon">
-              <Shield size={20} />
-            </div>
-            <div className="footer-feature-text">
-              <h5>Dịch Vụ An Toàn</h5>
-              <p>Tiêu chuẩn y tế cao cấp</p>
-            </div>
-          </div>
-
-          <div className="footer-feature">
-            <div className="footer-feature-icon">
-              <Clock size={20} />
-            </div>
-            <div className="footer-feature-text">
-              <h5>Hỗ Trợ 24/7</h5>
-              <p>Luôn sẵn sàng phục vụ</p>
-            </div>
-          </div>
-
-          <div className="footer-feature">
-            <div className="footer-feature-icon">
-              <MessageSquare size={20} />
-            </div>
-            <div className="footer-feature-text">
-              <h5>Tư Vấn Miễn Phí</h5>
-              <p>Đội ngũ bác sĩ chuyên nghiệp</p>
             </div>
           </div>
         </div>
 
         <div className="footer-bottom">
           <div className="footer-copyright">
-            <p>© 2025 Trung Tâm Tiêm Chủng Vaccine Hoàng Tử Gió. Đã đăng ký bản quyền.</p>
+            <p>© 2025 Trung Tâm Tiêm Chủng. Đã đăng ký bản quyền.</p>
           </div>
 
           <div className="footer-social">
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="footer-social-link">
-              <Facebook size={16} className="footer-social-icon" />
+            <a
+              href="https://facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Facebook className="social-icon" style={{ color: "#1877F2" }} />
             </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="footer-social-link">
-              <Instagram size={16} className="footer-social-icon" />
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Instagram className="social-icon" style={{ color: "#E4405F" }} />
             </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="footer-social-link">
-              <Twitter size={16} className="footer-social-icon" />
+            <a
+              href="https://twitter.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Twitter className="social-icon" style={{ color: "#1DA1F2" }} />
             </a>
           </div>
         </div>

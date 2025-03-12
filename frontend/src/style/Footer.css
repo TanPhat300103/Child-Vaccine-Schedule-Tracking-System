@@ -1,320 +1,243 @@
-/* Creative Modern Footer CSS Styles */
+.footer {
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  color: #ffffff;
+  width: 100%;
+}
 
 .footer-container {
-    position: relative;
-    font-family: 'Roboto', sans-serif;
-    margin-top: 3rem;
-    color: #ffffff;
-  }
-  
-  .footer-content {
-    background: linear-gradient(135deg, #6e66e3 0%, #5db8e6 100%);
-    border-radius: 12px 12px 0 0;
-    overflow: hidden;
-    box-shadow: 0 -8px 20px rgba(93, 184, 230, 0.1);
-  }
-  
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.footer-top,
+.footer-main,
+.footer-bottom {
+  padding: 1rem;
+}
+
+.footer-health-theme {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.health-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 0.5rem;
+}
+
+.footer-health-theme h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.footer-health-theme h2 span {
+  font-weight: 400;
+  font-size: 1rem;
+  color: #e6f0fa;
+}
+
+.footer-main {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr;
+  gap: 0.5rem;
+}
+
+.footer-contact h3,
+.footer-links-column h3,
+.footer-newsletter h3 {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.title-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.contact-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.contact-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.footer-links-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links-column ul li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.link-icon {
+  width: 12px;
+  height: 12px;
+  margin-right: 0.3rem;
+  transition: transform 0.2s ease;
+}
+
+.footer-links-column ul li a {
+  color: #e6f0fa;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.footer-links-column ul li:hover .link-icon {
+  transform: translateX(3px);
+}
+
+.footer-links-column ul li:hover a {
+  color: #ffffff;
+}
+
+.footer-newsletter p {
+  color: #e6f0fa;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  line-height: 1.3;
+}
+
+.newsletter-form {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.newsletter-form input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #e6f0fa;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  outline: none;
+  background-color: #fff;
+  color: #000;
+  transition: border-color 0.2s ease;
+}
+
+.newsletter-form input:focus {
+  border-color: #ffffff;
+}
+
+.newsletter-form button {
+  background: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: #6e66e3;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.newsletter-form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+}
+
+.footer-copyright p {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.footer-social {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.footer-social a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.social-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.footer-social a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive styles */
+@media (max-width: 1024px) {
   .footer-main {
-    display: grid;
-    grid-template-columns: 1fr 2fr; /* Giữ tỷ lệ 1:2 cho Liên Hệ Nhanh và phần còn lại */
-    gap: 1.5rem;
-    padding: 2rem 2.5rem 1rem;
+    grid-template-columns: 1fr 1fr;
   }
-  
-  .footer-info {
-    display: flex;
+  .footer-newsletter {
+    grid-column: span 2;
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-main {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .footer-links {
     flex-direction: column;
     gap: 1rem;
   }
-  
-  .footer-contact-card {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(4px);
-    border-radius: 10px;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    width: 100%;
-    max-width: 350px;
-  }
-  
-  .footer-contact-header {
-    background: rgba(255, 255, 255, 0.15);
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .footer-contact-header h4 {
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: 600;
-  }
-  
-  .footer-contact-body {
-    padding: 1rem 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .footer-contact-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.95rem;
-  }
-  
-  .footer-icon {
-    color: rgba(255, 255, 255, 0.9);
-  }
-  
-  .footer-links-section {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Chia thành 3 cột: Dịch Vụ, Hỗ Trợ, và Newsletter */
-    gap: 1.5rem;
-  }
-  
-  .footer-links-column {
-    display: flex;
+  .newsletter-form {
     flex-direction: column;
   }
-  
-  .footer-heading {
-    font-size: 1.15rem;
-    font-weight: 600;
-    margin-top: 0;
-    margin-bottom: 0.75rem;
-    position: relative;
-    padding-bottom: 0.4rem;
-  }
-  
-  .footer-heading::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    height: 2px;
-    width: 30px;
-    background: rgba(255, 255, 255, 0.5);
-  }
-  
-  .footer-links {
-    display: flex;
+  .footer-health-theme {
     flex-direction: column;
-    gap: 0.5rem;
+    text-align: center;
   }
-  
-  .footer-link {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: rgba(255, 255, 255, 0.85);
-    text-decoration: none;
-    font-size: 1rem;
-    transition: all 0.2s ease;
+  .health-icon {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
   }
-  
-  .footer-link:hover {
-    color: #ffffff;
-    transform: translateX(5px);
-  }
-  
-  .footer-link-icon {
-    opacity: 0.7;
-    transition: opacity 0.2s;
-  }
-  
-  .footer-link:hover .footer-link-icon {
-    opacity: 1;
-  }
-  
-  .footer-newsletter {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-  
-  .footer-newsletter-text {
-    margin: 0;
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.8);
-    line-height: 1.4;
-  }
-  
-  .footer-newsletter-form {
-    display: flex;
-    gap: 0.5rem;
-  }
-  
-  .footer-newsletter-input {
-    padding: 0.5rem 0.75rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
-    font-size: 0.9rem;
-    outline: none;
-    flex: 1;
-  }
-  
-  .footer-newsletter-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-  }
-  
-  .footer-newsletter-button {
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 8px;
-    background: #ffffff;
-    color: #6e66e3;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  
-  .footer-newsletter-button:hover {
-    background: #f0f0f0;
-  }
-  
-  .footer-features {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    padding: 1rem 2.5rem;
-    gap: 0.5rem;
-    background: rgba(0, 0, 0, 0.05);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .footer-feature {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .footer-feature-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-  }
-  
-  .footer-feature-text {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .footer-feature-text h5 {
-    margin: 0;
-    font-size: 0.95rem;
-    font-weight: 600;
-  }
-  
-  .footer-feature-text p {
-    margin: 0.2rem 0 0;
-    font-size: 0.8rem;
-    opacity: 0.8;
-  }
-  
-  .footer-bottom {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem 2.5rem;
-    gap: 0.75rem;
-  }
-  
-  .footer-copyright p {
-    margin: 0;
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.8);
-  }
-  
-  .footer-social {
-    display: flex;
-    gap: 0.5rem;
-  }
-  
-  .footer-social-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-  }
-  
-  .footer-social-link:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-3px);
-  }
-  
-  .footer-social-icon {
-    color: #ffffff;
-  }
-  
-  /* Responsive design */
-  @media (max-width: 1024px) {
-    .footer-main {
-      grid-template-columns: 1fr; /* Chuyển thành 1 cột */
-    }
-  
-    .footer-links-section {
-      grid-template-columns: repeat(2, 1fr); /* Dịch Vụ, Hỗ Trợ và Newsletter thành 2 cột */
-    }
-  
-    .footer-features {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
-      padding: 1rem 2rem;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .footer-main {
-      padding: 1.5rem 1.5rem 0.75rem;
-    }
-  
-    .footer-links-section {
-      grid-template-columns: 1fr; /* Xếp chồng tất cả */
-      gap: 1rem;
-    }
-  
-    .footer-bottom {
-      gap: 0.75rem;
-      padding: 1rem 1.5rem;
-    }
-  
-    .footer-contact-card {
-      max-width: 100%;
-    }
-  }
-  
-  @media (max-width: 576px) {
-    .footer-features {
-      grid-template-columns: 1fr;
-    }
-  
-    .footer-main {
-      padding: 1.5rem 1rem 0.75rem;
-    }
-  
-    .footer-bottom {
-      padding: 1rem 1rem;
-    }
-  
-    .footer-newsletter-form {
-      flex-direction: column;
-    }
-  
-    .footer-newsletter-input,
-    .footer-newsletter-button {
-      width: 100%;
-    }
-  }
+}
