@@ -243,10 +243,6 @@ const VaccinationFAQ = () => {
     <div className="vaccination-faq">
       <section className="faq-hero">
         <div className="hero-content">
-          <Link to="/" className="back-button">
-            <ArrowLeft size={20} />
-            <span>Quay lại</span>
-          </Link>
           <h1>Câu Hỏi Thường Gặp Về Tiêm Chủng</h1>
           <p>Những thông tin quan trọng giúp bạn hiểu rõ hơn về việc tiêm chủng cho trẻ em</p>
           <div className="search-bar">

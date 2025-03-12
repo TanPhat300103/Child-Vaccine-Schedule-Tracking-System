@@ -2,14 +2,16 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../components/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import '../style/MyBookingsPage.css';
-import { User, BookOpen, CreditCard, Calendar, Star, X } from 'lucide-react';
+import { User, BookOpen, CreditCard, Calendar, Star, X, Search } from 'lucide-react';
 
 function MyBookingsPage() {
   const navigate = useNavigate();
   const { userInfo } = useAuth();
   const [customer, setCustomer] = useState(null);
   const [bookings, setBookings] = useState([]);
+  const [filteredBookings, setFilteredBookings] = useState([]);
   const [feedbacks, setFeedbacks] = useState({});
+  const [children, setChildren] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
@@ -20,6 +22,10 @@ function MyBookingsPage() {
   const [editRating, setEditRating] = useState(0);
   const [editComment, setEditComment] = useState('');
   const [editFeedbackId, setEditFeedbackId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [feedbackFilter, setFeedbackFilter] = useState('all');
+  const [selectedChildId, setSelectedChildId] = useState(null); // Thêm state cho childId
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,6 +51,14 @@ function MyBookingsPage() {
         if (!bookingsResponse.ok) throw new Error('Không tìm thấy thông tin booking');
         const bookingsData = await bookingsResponse.json();
         setBookings(bookingsData);
+
+        const childrenResponse = await fetch(`http://localhost:8080/child/findbycustomer?id=${userInfo.userId}`, {
+          method: 'GET',
+          credentials: 'include',
+        });
+        if (!childrenResponse.ok) throw new Error('Không tìm thấy thông tin con');
+        const childrenData = await childrenResponse.json();
+        setChildren(childrenData);
 
         const feedbackPromises = bookingsData.map(booking =>
           fetch(`http://localhost:8080/feedback/getbybooking?bookingId=${booking.bookingId}`, {
@@ -73,6 +87,51 @@ function MyBookingsPage() {
     fetchData();
   }, [userInfo]);
 
+  useEffect(() => {
+    const fetchBookingDetailsAndFilter = async () => {
+      let result = [...bookings];
+
+      // Lọc theo searchTerm
+      if (searchTerm) {
+        result = result.filter(booking =>
+          booking.bookingId.toString().includes(searchTerm) ||
+          new Date(booking.bookingDate).toLocaleDateString().includes(searchTerm)
+        );
+      }
+
+      // Lọc theo statusFilter
+      if (statusFilter !== 'all') {
+        result = result.filter(booking => booking.status === parseInt(statusFilter));
+      }
+
+      // Lọc theo feedbackFilter
+      if (feedbackFilter !== 'all') {
+        result = result.filter(booking =>
+          feedbackFilter === 'with' ? !!feedbacks[booking.bookingId] : !feedbacks[booking.bookingId]
+        );
+      }
+
+      // Lọc theo selectedChildId (nếu có)
+      if (selectedChildId) {
+        const detailsPromises = result.map(booking =>
+          fetch(`http://localhost:8080/bookingdetail/findbybooking?id=${booking.bookingId}`, {
+            method: 'GET',
+            credentials: 'include',
+          }).then(res => res.ok ? res.json() : [])
+        );
+        const detailsResults = await Promise.all(detailsPromises);
+        result = result.filter((booking, index) => {
+          const details = detailsResults[index];
+          return details.some(detail => detail.child.childId === selectedChildId);
+        });
+      }
+
+      setFilteredBookings(result);
+    };
+
+    fetchBookingDetailsAndFilter();
+  }, [searchTerm, statusFilter, feedbackFilter, bookings, feedbacks, selectedChildId]);
+
   const handleFeedbackClick = (bookingId) => {
     setSelectedBookingId(bookingId);
     setRating(0);
@@ -90,13 +149,11 @@ function MyBookingsPage() {
 
   const handleSubmitFeedback = async () => {
     if (!selectedBookingId || rating === 0) return;
-
     const feedbackData = {
       booking: { bookingId: selectedBookingId },
       ranking: rating,
       comment: comment || 'none',
     };
-
     try {
       const response = await fetch('http://localhost:8080/feedback/create', {
         method: 'POST',
@@ -104,7 +161,6 @@ function MyBookingsPage() {
         credentials: 'include',
         body: JSON.stringify(feedbackData),
       });
-
       if (response.ok) {
         const newFeedback = await response.json();
         setFeedbacks(prev => ({ ...prev, [selectedBookingId]: newFeedback }));
@@ -119,14 +175,12 @@ function MyBookingsPage() {
 
   const handleUpdateFeedback = async () => {
     if (!selectedBookingId || editRating === 0) return;
-
     const feedbackData = {
       id: editFeedbackId,
       booking: { bookingId: selectedBookingId },
       ranking: editRating,
       comment: editComment || 'none',
     };
-
     try {
       const response = await fetch('http://localhost:8080/feedback/update', {
         method: 'POST',
@@ -134,7 +188,6 @@ function MyBookingsPage() {
         credentials: 'include',
         body: JSON.stringify(feedbackData),
       });
-
       if (response.ok) {
         const updatedFeedback = await response.json();
         setFeedbacks(prev => ({ ...prev, [selectedBookingId]: updatedFeedback }));
@@ -146,6 +199,11 @@ function MyBookingsPage() {
     } catch (err) {
       alert('Lỗi khi cập nhật feedback: ' + err.message);
     }
+  };
+
+  // Hàm xử lý khi click vào child để lọc booking
+  const handleChildClick = (childId) => {
+    setSelectedChildId(childId === selectedChildId ? null : childId); // Toggle child selection
   };
 
   if (loading) {
@@ -205,9 +263,62 @@ function MyBookingsPage() {
             <div className="profile-section-header">
               <h2>My Booking</h2>
             </div>
-            {bookings.length > 0 ? (
+
+            <div className="profile-search-bar">
+              <input
+                type="text"
+                className="profile-search-input"
+                placeholder="Tìm kiếm theo ID hoặc ngày đặt (dd/mm/yyyy)"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <button className="profile-search-btn">
+                <Search size={18} />
+                Tìm kiếm
+              </button>
+            </div>
+
+            <div className="profile-filter-and-children">
+              <div className="profile-filters">
+                <select
+                  className="profile-filter-select"
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                >
+                  <option value="all">Tất cả trạng thái</option>
+                  <option value="1">Đang tiến hành</option>
+                  <option value="2">Đã hoàn thành</option>
+                  <option value="3">Đã hủy</option>
+                </select>
+                <select
+                  className="profile-filter-select"
+                  value={feedbackFilter}
+                  onChange={(e) => setFeedbackFilter(e.target.value)}
+                >
+                  <option value="all">Tất cả feedback</option>
+                  <option value="with">Có feedback</option>
+                  <option value="without">Không có feedback</option>
+                </select>
+              </div>
+
+              <div className="profile-children-container">
+                {children.map(child => (
+                  <div
+                    key={child.childId}
+                    className={`profile-child-card ${selectedChildId === child.childId ? 'selected' : ''}`}
+                    onClick={() => handleChildClick(child.childId)}
+                  >
+                    <div className="profile-child-info">
+                      <h4>{child.firstName} {child.lastName}</h4>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {filteredBookings.length > 0 ? (
               <div className="profile-bookings-grid">
-                {bookings.map((booking) => (
+                {filteredBookings.map((booking) => (
                   <div key={booking.bookingId} className="profile-booking-card">
                     <div className="profile-booking-header">
                       <div className="profile-booking-info">
@@ -236,8 +347,7 @@ function MyBookingsPage() {
                       <div className="profile-booking-detail-item">
                         <span className="profile-booking-detail-label">Trạng thái:</span>
                         <span
-                          className={`profile-status ${booking.status === 1 ? 'active' : booking.status === 2 ? 'completed' : 'canceled'
-                            }`}
+                          className={`profile-status ${booking.status === 1 ? 'active' : booking.status === 2 ? 'completed' : 'canceled'}`}
                         >
                           {booking.status === 1
                             ? 'Đang tiến hành'
@@ -277,14 +387,13 @@ function MyBookingsPage() {
             ) : (
               <div className="profile-no-bookings">
                 <div className="profile-no-data-icon">📅</div>
-                <p>Bạn chưa có booking nào. Vui lòng tạo booking để bắt đầu.</p>
+                <p>Không tìm thấy booking nào phù hợp với bộ lọc.</p>
               </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* Feedback Modal (Viết đánh giá) */}
       {showFeedbackModal && (
         <div className="feedback-modal-overlay">
           <div className="feedback-modal">
@@ -329,7 +438,6 @@ function MyBookingsPage() {
         </div>
       )}
 
-      {/* Feedback Detail Modal (Xem và chỉnh sửa đánh giá) */}
       {showDetailModal && (
         <div className="feedback-modal-overlay">
           <div className="feedback-modal">
