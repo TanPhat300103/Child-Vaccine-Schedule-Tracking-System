@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import '../../style/PaymentManager.css';
+import "../../style/PaymentManager.css";
 
 const Payments = () => {
   const [payments, setPayments] = useState([]);
@@ -19,12 +19,7 @@ const Payments = () => {
   const [confirmModal, setConfirmModal] = useState({
     show: false,
     paymentId: null,
-  });
-
-  const [couponModal, setCouponModal] = useState({
-    show: false,
-    paymentId: null,
-    couponCode: "",
+    couponCode: "", // Thêm trường để lưu mã coupon
   });
 
   const [coupons, setCoupons] = useState([]);
@@ -85,7 +80,8 @@ const Payments = () => {
     if (customerSearchFilter === "id") {
       return customer.customerId.toLowerCase().includes(search);
     } else if (customerSearchFilter === "name") {
-      const fullName = `${customer.firstName} ${customer.lastName}`.toLowerCase();
+      const fullName =
+        `${customer.firstName} ${customer.lastName}`.toLowerCase();
       return fullName.includes(search);
     } else if (customerSearchFilter === "phone") {
       return customer.phoneNumber.toLowerCase().includes(search);
@@ -95,7 +91,9 @@ const Payments = () => {
     return true;
   });
 
-  const selectedPayments = selectedCustomer ? groupedPayments[selectedCustomer] || [] : [];
+  const selectedPayments = selectedCustomer
+    ? groupedPayments[selectedCustomer] || []
+    : [];
   let filteredPayments = selectedPayments.filter((payment) => {
     if (paymentFilter === false) {
       return payment.method === false && payment.status === false;
@@ -141,83 +139,35 @@ const Payments = () => {
   };
 
   const openConfirmModal = (paymentId) => {
-    setConfirmModal({ show: true, paymentId });
+    setConfirmModal({ show: true, paymentId, couponCode: "" });
   };
-
-  const openCouponModal = (paymentId) => {
-    setCouponModal({ show: true, paymentId, couponCode: "" });
-  };
-
-  const closeCouponModal = () => {
-    setCouponModal({ show: false, paymentId: null, couponCode: "" });
-  };
-
-  const addCoupon = () => {
-    const { paymentId, couponCode } = couponModal;
-    if (!couponCode) {
-      toast.error("Vui lòng nhập mã coupon");
-      return;
-    }
-
-    const matchedCoupon = coupons.find(
-      (coupon) => coupon.coupon.toLowerCase() === couponCode.toLowerCase()
-    );
-
-    if (!matchedCoupon) {
-      toast.error("Không có coupon này");
-      return;
-    } else if (!matchedCoupon.active) {
-      toast.error("Coupon này đã hết hạn");
-      return;
-    }
-
-    fetch(
-      `http://localhost:8080/payment/update?paymentId=${paymentId}&coupon=${couponCode}&method=false`,
-      {
-        method: "POST",
-        credentials: "include",
-      }
-    )
-      .then(() => {
-        toast.success("Thêm coupon thành công");
-        fetch("http://localhost:8080/payment", { credentials: "include" })
-          .then((res) => res.json())
-          .then((res) => {
-            setPayments(res);
-            closeCouponModal();
-          });
-      })
-      .catch((error) => {
-        toast.error("Lỗi khi thêm coupon");
-        console.error("Error updating payment:", error);
-      });
-  };
-
-  function isCouponValid(coupon) {
-    const regex = /^[A-Za-z0-9]{1,99}$/;
-    return regex.test(coupon);
-  }
 
   const confirmPayment = () => {
-    const { paymentId } = confirmModal;
-    setConfirmModal({ show: false, paymentId: null });
+    const { paymentId, couponCode } = confirmModal;
+    setConfirmModal({ show: false, paymentId: null, couponCode: "" });
 
-    const coupon = selectedPayment?.marketingCampaign?.coupon?.trim() || "";
-    if (coupon && !isCouponValid(coupon)) {
-      toast.error("Coupon không hợp lệ");
-      return;
+    const coupon = couponCode.trim() || null;
+    if (coupon) {
+      const matchedCoupon = coupons.find(
+        (c) => c.coupon.toLowerCase() === coupon.toLowerCase()
+      );
+      if (!matchedCoupon) {
+        toast.error("Không có coupon này");
+        return;
+      } else if (!matchedCoupon.active) {
+        toast.error("Coupon này đã hết hạn");
+        return;
+      }
     }
 
     setIsLoading(true);
     const loadingToast = toast.loading("Đang xử lý thanh toán...");
 
-    fetch(
-      `http://localhost:8080/payment/update?paymentId=${paymentId}&coupon=${coupon}&method=false`,
-      {
-        method: "POST",
-        credentials: "include",
-      }
-    )
+    const url = `http://localhost:8080/payment/update?paymentId=${paymentId}&coupon=${coupon}&method=false`;
+    fetch(url, {
+      method: "POST",
+      credentials: "include",
+    })
       .then((response) => response.json())
       .then((data) => {
         console.log("Nhận response từ POST /payment/update:", data);
@@ -265,7 +215,7 @@ const Payments = () => {
   };
 
   const cancelConfirm = () => {
-    setConfirmModal({ show: false, paymentId: null });
+    setConfirmModal({ show: false, paymentId: null, couponCode: "" });
   };
 
   const renderPaymentDetail = () => {
@@ -280,11 +230,19 @@ const Payments = () => {
       transactionId,
       marketingCampaign,
     } = selectedPayment;
-    const { bookingId, bookingDate, totalAmount, status: bookingStatus, customer } = booking;
+    const {
+      bookingId,
+      bookingDate,
+      totalAmount,
+      status: bookingStatus,
+      customer,
+    } = booking;
     return (
       <div className="payment-detail-container-paymentmanager">
         <div className="payment-detail-header-paymentmanager">
-          <h3 className="payment-detail-title-paymentmanager">Chi tiết thanh toán</h3>
+          <h3 className="payment-detail-title-paymentmanager">
+            Chi tiết thanh toán
+          </h3>
           <button onClick={handleBack} className="back-button-paymentmanager">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -338,7 +296,13 @@ const Payments = () => {
               </div>
               <div className="card-item-paymentmanager">
                 <span>Trạng thái thanh toán:</span>
-                <span className={status ? "status-paid-paymentmanager" : "status-pending-paymentmanager"}>
+                <span
+                  className={
+                    status
+                      ? "status-paid-paymentmanager"
+                      : "status-pending-paymentmanager"
+                  }
+                >
                   {status ? "Đã thanh toán" : "Chưa thanh toán"}
                 </span>
               </div>
@@ -348,7 +312,9 @@ const Payments = () => {
               </div>
               <div className="card-item-paymentmanager">
                 <span>Coupon:</span>
-                <span>{marketingCampaign ? marketingCampaign.coupon : "Không có"}</span>
+                <span>
+                  {marketingCampaign ? marketingCampaign.coupon : "Không có"}
+                </span>
               </div>
             </div>
           </div>
@@ -411,7 +377,9 @@ const Payments = () => {
                 </div>
                 <div className="card-item-paymentmanager">
                   <span>Tên:</span>
-                  <span>{customer.firstName} {customer.lastName}</span>
+                  <span>
+                    {customer.firstName} {customer.lastName}
+                  </span>
                 </div>
                 <div className="card-item-paymentmanager">
                   <span>SĐT:</span>
@@ -457,65 +425,40 @@ const Payments = () => {
                   />
                 </svg>
               </div>
-              <h3 className="modal-title-paymentmanager">Xác nhận thanh toán</h3>
+              <h3 className="modal-title-paymentmanager">
+                Xác nhận thanh toán
+              </h3>
               <p className="modal-text-paymentmanager">
-                Bạn có chắc chắn muốn xác nhận thanh toán này không?
-              </p>
-            </div>
-            <div className="modal-buttons-paymentmanager">
-              <button onClick={cancelConfirm} className="modal-cancel-button-paymentmanager">
-                Hủy
-              </button>
-              <button onClick={confirmPayment} className="modal-confirm-button-paymentmanager">
-                Xác nhận
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {couponModal.show && (
-        <div className="modal-overlay-paymentmanager">
-          <div className="modal-content-paymentmanager">
-            <div className="modal-header-paymentmanager">
-              <div className="modal-icon-container-paymentmanager">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="modal-icon-paymentmanager"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-              <h3 className="modal-title-paymentmanager">Thêm Coupon</h3>
-              <p className="modal-text-paymentmanager">
-                Nhập mã coupon để áp dụng cho thanh toán này.
+                Bạn có muốn thêm coupon không? Nếu có, vui lòng nhập mã coupon
+                bên dưới.
               </p>
             </div>
             <div className="modal-input-container-paymentmanager">
               <input
                 type="text"
-                placeholder="Nhập mã coupon"
-                value={couponModal.couponCode}
+                placeholder="Nhập mã coupon (nếu có)"
+                value={confirmModal.couponCode}
                 onChange={(e) =>
-                  setCouponModal({ ...couponModal, couponCode: e.target.value })
+                  setConfirmModal({
+                    ...confirmModal,
+                    couponCode: e.target.value,
+                  })
                 }
                 className="modal-input-paymentmanager"
               />
             </div>
             <div className="modal-buttons-paymentmanager">
-              <button onClick={closeCouponModal} className="modal-cancel-button-paymentmanager">
+              <button
+                onClick={cancelConfirm}
+                className="modal-cancel-button-paymentmanager"
+              >
                 Hủy
               </button>
-              <button onClick={addCoupon} className="modal-confirm-button-paymentmanager">
-                Thêm Coupon
+              <button
+                onClick={confirmPayment}
+                className="modal-confirm-button-paymentmanager"
+              >
+                Xác nhận thanh toán
               </button>
             </div>
           </div>
@@ -584,7 +527,9 @@ const Payments = () => {
                 key={customer.customerId}
                 onClick={() => handleCustomerSelect(customer.customerId)}
                 className={`customer-card-paymentmanager ${
-                  selectedCustomer === customer.customerId ? "selected-paymentmanager" : ""
+                  selectedCustomer === customer.customerId
+                    ? "selected-paymentmanager"
+                    : ""
                 }`}
               >
                 <div className="customer-info-paymentmanager">
@@ -596,7 +541,9 @@ const Payments = () => {
                     <p className="customer-name-paymentmanager">
                       {customer.firstName} {customer.lastName}
                     </p>
-                    <p className="customer-id-paymentmanager">{customer.customerId}</p>
+                    <p className="customer-id-paymentmanager">
+                      {customer.customerId}
+                    </p>
                   </div>
                 </div>
                 <div className="customer-contacts-paymentmanager">
@@ -781,7 +728,9 @@ const Payments = () => {
                           </svg>
                           Ngày: {payment.date}
                         </p>
-                        <p className="payment-total-paymentmanager">Tổng tiền: {payment.total}</p>
+                        <p className="payment-total-paymentmanager">
+                          Tổng tiền: {payment.total}
+                        </p>
                         {payment.marketingCampaign && (
                           <p className="payment-coupon-paymentmanager">
                             Coupon: {payment.marketingCampaign.coupon}
@@ -790,25 +739,16 @@ const Payments = () => {
                       </div>
                       <div className="payment-actions-paymentmanager">
                         {payment.status ? (
-                          <span className="payment-status-paid-paymentmanager">Đã thanh toán</span>
+                          <span className="payment-status-paid-paymentmanager">
+                            Đã thanh toán
+                          </span>
                         ) : (
                           <span className="payment-status-pending-paymentmanager">
                             Chưa thanh toán
                           </span>
                         )}
-                        {payment.method === false && payment.status === false && (
-                          <>
-                            {!payment.marketingCampaign && (
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  openCouponModal(payment.paymentId);
-                                }}
-                                className="add-coupon-button-paymentmanager"
-                              >
-                                Thêm Coupon
-                              </button>
-                            )}
+                        {payment.method === false &&
+                          payment.status === false && (
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -816,10 +756,9 @@ const Payments = () => {
                               }}
                               className="confirm-button-paymentmanager"
                             >
-                              Xác nhận
+                              Xác nhận thanh toán
                             </button>
-                          </>
-                        )}
+                          )}
                       </div>
                     </div>
                   </div>
@@ -866,7 +805,9 @@ const Payments = () => {
                 d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
               />
             </svg>
-            <p className="no-customer-text-paymentmanager">Chưa chọn bệnh nhân</p>
+            <p className="no-customer-text-paymentmanager">
+              Chưa chọn bệnh nhân
+            </p>
             <p className="no-customer-subtext-paymentmanager">
               Vui lòng chọn một bệnh nhân từ danh sách bên trái
             </p>
