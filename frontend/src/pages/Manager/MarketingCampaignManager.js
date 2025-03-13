@@ -464,7 +464,7 @@ const MarketingCampaigns = () => {
               className="create-button-marketing"
             >
               <FaPlus className="create-icon-marketing" />
-              Tạo mới Vaccine
+              Tạo mới sự kiện
             </button>
           </div>
         </div>
