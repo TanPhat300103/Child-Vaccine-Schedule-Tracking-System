@@ -233,7 +233,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+  background: linear-gradient(180deg, #1e3a8a 0%, #3b82f6 150%);
   color: #ffffff;
   padding: 1rem 1.5rem;
   border-bottom-left-radius: 12px;

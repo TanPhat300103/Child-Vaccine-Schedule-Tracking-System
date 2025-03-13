@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { FaNotesMedical, FaSyringe, FaUserMd } from "react-icons/fa";
 import { FiCalendar, FiUsers, FiAlertTriangle } from "react-icons/fi";
-import { useAuth } from '../../components/AuthContext';  
-import '../../style/Profile.css';
+import { useAuth } from "../../components/AuthContext";
+import BookingToday from "./BookingToday";
+import ReactionAll from "./ReactionAll";
+import "../../style/Profile.css";
 
 const StaffProfile = ({ initialStaffData }) => {
   const [staffData, setStaffData] = useState(initialStaffData);
@@ -56,11 +58,16 @@ const StaffProfile = ({ initialStaffData }) => {
   return (
     <div className="staff-profile-container-profilestaffcss">
       <h2 className="staff-profile-title-profilestaffcss">
-        <FaUserMd className="staff-profile-icon-profilestaffcss" /> Hồ Sơ Nhân Viên
+        <FaUserMd className="staff-profile-icon-profilestaffcss" /> Hồ Sơ Nhân
+        Viên
       </h2>
       {notification && (
         <div
-          className={`staff-profile-notification-profilestaffcss ${notification.type === "success" ? "notification-success-profilestaffcss" : "notification-error-profilestaffcss"}`}
+          className={`staff-profile-notification-profilestaffcss ${
+            notification.type === "success"
+              ? "notification-success-profilestaffcss"
+              : "notification-error-profilestaffcss"
+          }`}
         >
           <span>{notification.message}</span>
         </div>
@@ -68,7 +75,9 @@ const StaffProfile = ({ initialStaffData }) => {
       <form className="staff-profile-form-profilestaffcss">
         <div className="staff-profile-grid-profilestaffcss">
           <div>
-            <label className="staff-profile-label-profilestaffcss">Mã nhân viên</label>
+            <label className="staff-profile-label-profilestaffcss">
+              Mã nhân viên
+            </label>
             <input
               type="text"
               name="staffId"
@@ -98,7 +107,9 @@ const StaffProfile = ({ initialStaffData }) => {
             />
           </div>
           <div>
-            <label className="staff-profile-label-profilestaffcss">Số điện thoại</label>
+            <label className="staff-profile-label-profilestaffcss">
+              Số điện thoại
+            </label>
             <input
               type="text"
               name="phone"
@@ -108,7 +119,9 @@ const StaffProfile = ({ initialStaffData }) => {
             />
           </div>
           <div>
-            <label className="staff-profile-label-profilestaffcss">Ngày sinh</label>
+            <label className="staff-profile-label-profilestaffcss">
+              Ngày sinh
+            </label>
             <input
               type="date"
               name="dob"
@@ -118,7 +131,9 @@ const StaffProfile = ({ initialStaffData }) => {
             />
           </div>
           <div>
-            <label className="staff-profile-label-profilestaffcss">Địa chỉ</label>
+            <label className="staff-profile-label-profilestaffcss">
+              Địa chỉ
+            </label>
             <input
               type="text"
               name="address"
@@ -138,7 +153,9 @@ const StaffProfile = ({ initialStaffData }) => {
             />
           </div>
           <div>
-            <label className="staff-profile-label-profilestaffcss">Giới tính</label>
+            <label className="staff-profile-label-profilestaffcss">
+              Giới tính
+            </label>
             <select
               name="gender"
               value={formData.gender || ""}
@@ -152,7 +169,9 @@ const StaffProfile = ({ initialStaffData }) => {
             </select>
           </div>
           <div>
-            <label className="staff-profile-label-profilestaffcss">Mật khẩu</label>
+            <label className="staff-profile-label-profilestaffcss">
+              Mật khẩu
+            </label>
             <input
               type="password"
               name="password"
@@ -167,7 +186,11 @@ const StaffProfile = ({ initialStaffData }) => {
             type="button"
             onClick={handleSave}
             disabled={!formChanged}
-            className={`staff-profile-save-btn-profilestaffcss ${formChanged ? "btn-active-profilestaffcss" : "btn-disabled-profilestaffcss"}`}
+            className={`staff-profile-save-btn-profilestaffcss ${
+              formChanged
+                ? "btn-active-profilestaffcss"
+                : "btn-disabled-profilestaffcss"
+            }`}
           >
             Lưu Thay Đổi
           </button>
@@ -184,6 +207,11 @@ const Profile = () => {
   const [staffData, setStaffData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [bookingTodayCount, setBookingTodayCount] = useState(0);
+  const [customerCount, setCustomerCount] = useState(0);
+  const [vaccineCount, setVaccineCount] = useState(0);
+  const [reactionCount, setReactionCount] = useState(0);
+  const [currentView, setCurrentView] = useState("profile"); // "profile", "booking-today", "reactions"
 
   useEffect(() => {
     if (!staffId) return;
@@ -191,16 +219,47 @@ const Profile = () => {
     const fetchStaffData = async () => {
       setLoading(true);
       try {
-        const response = await fetch(
+        const staffResponse = await fetch(
           `http://localhost:8080/staff/findid?id=${staffId}`,
-          {
-            method: "GET",
-            credentials: "include",
-          }
+          { method: "GET", credentials: "include" }
         );
-        if (!response.ok) throw new Error("Lỗi khi lấy dữ liệu nhân viên");
-        const data = await response.json();
-        setStaffData(data);
+        if (!staffResponse.ok) throw new Error("Lỗi khi lấy dữ liệu nhân viên");
+        const staffData = await staffResponse.json();
+        setStaffData(staffData);
+
+        const bookingResponse = await fetch(
+          "http://localhost:8080/staffdashboard/get-booking-today",
+          { method: "GET", credentials: "include" }
+        );
+        if (!bookingResponse.ok)
+          throw new Error("Lỗi khi lấy lịch hẹn hôm nay");
+        const bookingData = await bookingResponse.json();
+        setBookingTodayCount(bookingData.length);
+
+        const customerResponse = await fetch(
+          "http://localhost:8080/staffdashboard/count-customer",
+          { method: "GET", credentials: "include" }
+        );
+        if (!customerResponse.ok) throw new Error("Lỗi khi đếm khách hàng");
+        const customerData = await customerResponse.json();
+        setCustomerCount(customerData);
+
+        const vaccineResponse = await fetch(
+          "http://localhost:8080/staffdashboard/count-active-vaccine",
+          { method: "GET", credentials: "include" }
+        );
+        if (!vaccineResponse.ok) throw new Error("Lỗi khi đếm vaccine");
+        const vaccineData = await vaccineResponse.json();
+        setVaccineCount(vaccineData);
+
+        const reactionResponse = await fetch(
+          "http://localhost:8080/staffdashboard/get-reaction",
+          { method: "GET", credentials: "include" }
+        );
+        if (!reactionResponse.ok)
+          throw new Error("Lỗi khi lấy báo cáo phản ứng");
+        const reactionData = await reactionResponse.json();
+        setReactionCount(reactionData.length);
       } catch (error) {
         setError(error.message);
       }
@@ -210,23 +269,39 @@ const Profile = () => {
     fetchStaffData();
   }, [staffId]);
 
+  const handleViewChange = (view) => {
+    setCurrentView(view);
+  };
+
   if (loading)
-    return <div className="profile-loading-profilestaffcss">Đang tải dữ liệu...</div>;
-  if (error) return <div className="profile-error-profilestaffcss">{error}</div>;
+    return (
+      <div className="profile-loading-profilestaffcss">Đang tải dữ liệu...</div>
+    );
+  if (error)
+    return <div className="profile-error-profilestaffcss">{error}</div>;
   if (!staffData)
-    return <div className="profile-no-data-profilestaffcss">Không có dữ liệu</div>;
+    return (
+      <div className="profile-no-data-profilestaffcss">Không có dữ liệu</div>
+    );
 
   return (
     <div className="profile-container-profilestaffcss">
       <div className="profile-content-profilestaffcss">
         <div className="profile-stats-profilestaffcss">
-          <div className="profile-stat-card-profilestaffcss profile-stat-teal-profilestaffcss">
+          <div
+            className="profile-stat-card-profilestaffcss profile-stat-teal-profilestaffcss"
+            onClick={() => handleViewChange("booking-today")}
+          >
             <div className="profile-stat-icon-container-profilestaffcss">
               <FiCalendar className="profile-stat-icon-profilestaffcss" />
             </div>
             <div className="profile-stat-text-profilestaffcss">
-              <p className="profile-stat-label-profilestaffcss">Lịch hẹn hôm nay</p>
-              <p className="profile-stat-value-profilestaffcss">24</p>
+              <p className="profile-stat-label-profilestaffcss">
+                Lịch hẹn hôm nay
+              </p>
+              <p className="profile-stat-value-profilestaffcss">
+                {bookingTodayCount}
+              </p>
             </div>
           </div>
           <div className="profile-stat-card-profilestaffcss profile-stat-green-profilestaffcss">
@@ -234,8 +309,12 @@ const Profile = () => {
               <FiUsers className="profile-stat-icon-profilestaffcss" />
             </div>
             <div className="profile-stat-text-profilestaffcss">
-              <p className="profile-stat-label-profilestaffcss">Tổng bệnh nhân</p>
-              <p className="profile-stat-value-profilestaffcss">1,248</p>
+              <p className="profile-stat-label-profilestaffcss">
+                Tổng khách hàng
+              </p>
+              <p className="profile-stat-value-profilestaffcss">
+                {customerCount}
+              </p>
             </div>
           </div>
           <div className="profile-stat-card-profilestaffcss profile-stat-blue-profilestaffcss">
@@ -243,23 +322,41 @@ const Profile = () => {
               <FaSyringe className="profile-stat-icon-profilestaffcss" />
             </div>
             <div className="profile-stat-text-profilestaffcss">
-              <p className="profile-stat-label-profilestaffcss">Vaccine có sẵn</p>
-              <p className="profile-stat-value-profilestaffcss">32</p>
+              <p className="profile-stat-label-profilestaffcss">
+                Vaccine có sẵn
+              </p>
+              <p className="profile-stat-value-profilestaffcss">
+                {vaccineCount}
+              </p>
             </div>
           </div>
-          <div className="profile-stat-card-profilestaffcss profile-stat-red-profilestaffcss">
+          <div
+            className="profile-stat-card-profilestaffcss profile-stat-red-profilestaffcss"
+            onClick={() => handleViewChange("reactions")}
+          >
             <div className="profile-stat-icon-container-profilestaffcss">
               <FiAlertTriangle className="profile-stat-icon-profilestaffcss" />
             </div>
             <div className="profile-stat-text-profilestaffcss">
-              <p className="profile-stat-label-profilestaffcss">Báo cáo phản ứng</p>
-              <p className="profile-stat-value-profilestaffcss">7</p>
+              <p className="profile-stat-label-profilestaffcss">
+                Báo cáo phản ứng
+              </p>
+              <p className="profile-stat-value-profilestaffcss">
+                {reactionCount}
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Luôn hiển thị StaffProfile mà không cần nút toggle */}
-        <StaffProfile initialStaffData={staffData} />
+        {currentView === "profile" && (
+          <StaffProfile initialStaffData={staffData} />
+        )}
+        {currentView === "booking-today" && (
+          <BookingToday onBack={() => handleViewChange("profile")} />
+        )}
+        {currentView === "reactions" && (
+          <ReactionAll onBack={() => handleViewChange("profile")} />
+        )}
       </div>
     </div>
   );
