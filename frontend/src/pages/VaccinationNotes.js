@@ -44,7 +44,7 @@ function VaccinationNotes() {
             <div className="hero-card__stats">
               <div className="hero-card__stat">
                 <div className="hero-card__stat-number">95%</div>
-                <div className="hero-card__stat-label">Hiệu quả bảo vệ khi tuân thủ hướng dẫn</div>
+                <div className="hero-card__stat-label">Hiệu quả khi tuân thủ hướng dẫn</div>
               </div>
               <div className="hero-card__stat">
                 <div className="hero-card__stat-number">30+</div>

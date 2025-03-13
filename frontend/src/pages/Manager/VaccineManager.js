@@ -11,7 +11,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../../style/Vaccines.css";
 
-
 const Vaccines = () => {
   const [vaccines, setVaccines] = useState([]);
   const [searchType, setSearchType] = useState("name");
@@ -31,6 +30,20 @@ const Vaccines = () => {
     active: true,
   });
   const [newVaccineError, setNewVaccineError] = useState(null);
+
+  // Validation functions
+  const validateVaccine = (vaccine) => {
+    if (vaccine.doseNumber <= 0) {
+      return "Số liều phải lớn hơn 0";
+    }
+    if (vaccine.price <= 0) {
+      return "Giá phải lớn hơn 0";
+    }
+    if (vaccine.ageMin > vaccine.ageMax) {
+      return "Tuổi tối thiểu không được lớn hơn tuổi tối đa";
+    }
+    return null;
+  };
 
   // Fetch vaccines từ API
   const fetchVaccines = () => {
@@ -107,6 +120,12 @@ const Vaccines = () => {
   // Xử lý tạo vaccine mới
   const handleCreateVaccine = (e) => {
     e.preventDefault();
+    const validationError = validateVaccine(newVaccine);
+    if (validationError) {
+      setNewVaccineError(validationError);
+      return;
+    }
+
     console.log("Creating vaccine:", newVaccine);
     fetch("http://localhost:8080/vaccine/create", {
       method: "POST",
@@ -114,7 +133,12 @@ const Vaccines = () => {
       credentials: "include",
       body: JSON.stringify(newVaccine),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Lỗi khi tạo vaccine từ server");
+        }
+        return res.json();
+      })
       .then((data) => {
         console.log("Vaccine created successfully:", data);
         setShowCreateModal(false);
@@ -143,11 +167,13 @@ const Vaccines = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingVaccine, setEditingVaccine] = useState(null);
     const [originalEditingVaccine, setOriginalEditingVaccine] = useState(null);
+    const [updateError, setUpdateError] = useState(null);
 
     const handleOpenModal = () => {
       setEditingVaccine({ ...vaccine });
       setOriginalEditingVaccine({ ...vaccine });
       setIsModalOpen(true);
+      setUpdateError(null);
     };
 
     const isChanged = () =>
@@ -155,20 +181,35 @@ const Vaccines = () => {
 
     // Hàm update vaccine mới với fetch
     const handleUpdate = () => {
+      const validationError = validateVaccine(editingVaccine);
+      if (validationError) {
+        setUpdateError(validationError);
+        return;
+      }
+
       fetch("http://localhost:8080/vaccine/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify(editingVaccine),
       })
-        .then((res) => res.json())
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error("Lỗi khi cập nhật vaccine từ server");
+          }
+          return res.json();
+        })
         .then((data) => {
           console.log("API update returned:", data);
-          onVaccineUpdated(data); // Cập nhật vaccine theo dữ liệu trả về từ API
+          onVaccineUpdated(data);
           setIsModalOpen(false);
+          setUpdateError(null);
         })
         .catch((err) => {
           console.error("Lỗi khi update vaccine:", err);
+          setUpdateError(
+            err.message || "Đã xảy ra lỗi khi cập nhật. Vui lòng thử lại!"
+          );
         });
     };
 
@@ -325,6 +366,9 @@ const Vaccines = () => {
                   />
                 </div>
               </div>
+              {updateError && (
+                <p className="error-text-vaccinemanager">{updateError}</p>
+              )}
               <div className="modal-buttons-vaccinemanager">
                 <button
                   type="button"

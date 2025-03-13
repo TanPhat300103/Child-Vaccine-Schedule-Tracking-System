@@ -20,6 +20,7 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
           priceCombo: 0,
         }
   );
+  const [error, setError] = useState(""); // Thêm state để lưu thông báo lỗi
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,6 +28,10 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
       ...prev,
       [name]: name === "priceCombo" ? Number(value) || 0 : value,
     }));
+    // Reset lỗi khi người dùng thay đổi giá trị
+    if (name === "priceCombo" && error) {
+      setError("");
+    }
   };
 
   const handleCheckboxChange = (e) => {
@@ -34,8 +39,22 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
     setFormData((prev) => ({ ...prev, [name]: checked }));
   };
 
+  const validateForm = () => {
+    if (formData.priceCombo <= 0) {
+      setError("Giá combo phải lớn hơn 0");
+      return false;
+    }
+    return true;
+  };
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
+    
+    // Kiểm tra validation trước khi submit
+    if (!validateForm()) {
+      return;
+    }
+    
     console.log("ModalForm - Gửi API dữ liệu:", formData);
     onSubmit(formData);
     onClose();
@@ -86,7 +105,13 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
               className="form-input-vaccinecombomanager"
               placeholder="Giá (VND)"
               required
+              min="1" // Thêm thuộc tính min để hỗ trợ HTML validation
             />
+            {error && (
+              <p className="error-message-vaccinecombomanager" style={{ color: 'red', fontSize: '0.9em', marginTop: '5px' }}>
+                {error}
+              </p>
+            )}
           </div>
           <div className="form-group-vaccinecombomanager flex-items-center-vaccinecombomanager">
             <input

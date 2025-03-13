@@ -36,6 +36,23 @@ const Customers = () => {
   const [newPasswordVisible, setNewPasswordVisible] = useState(false);
   const [editingPasswordVisible, setEditingPasswordVisible] = useState(false);
 
+  // Validation functions
+  const validatePhoneNumber = (phone) => {
+    const phoneRegex = /^0[0-9]{9,10}$/;
+    return phoneRegex.test(phone);
+  };
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validateDob = (dob) => {
+    const today = new Date();
+    const birthDate = new Date(dob);
+    return birthDate < today;
+  };
+
   useEffect(() => {
     fetch("http://localhost:8080/customer", {
       method: "GET",
@@ -91,6 +108,20 @@ const Customers = () => {
   };
 
   const handleSave = () => {
+    // Validation before save
+    if (!validatePhoneNumber(editingCustomer.phoneNumber)) {
+      setUpdateError("Số điện thoại không hợp lệ (10-11 số, bắt đầu bằng 0)");
+      return;
+    }
+    if (!validateEmail(editingCustomer.email)) {
+      setUpdateError("Email không hợp lệ");
+      return;
+    }
+    if (!validateDob(editingCustomer.dob)) {
+      setUpdateError("Ngày sinh phải là ngày trong quá khứ");
+      return;
+    }
+
     console.log("Gửi API cập nhật khách hàng với dữ liệu:", editingCustomer);
     fetch("http://localhost:8080/customer/update", {
       method: "POST",
@@ -127,6 +158,20 @@ const Customers = () => {
   };
 
   const handleCreate = () => {
+    // Validation before create
+    if (!validatePhoneNumber(newCustomer.phoneNumber)) {
+      setNewCustomerError("Số điện thoại không hợp lệ (10-11 số, bắt đầu bằng 0)");
+      return;
+    }
+    if (!validateEmail(newCustomer.email)) {
+      setNewCustomerError("Email không hợp lệ");
+      return;
+    }
+    if (!validateDob(newCustomer.dob)) {
+      setNewCustomerError("Ngày sinh phải là ngày trong quá khứ");
+      return;
+    }
+
     console.log("Gửi API tạo khách hàng với dữ liệu:", newCustomer);
     fetch("http://localhost:8080/customer/create", {
       method: "POST",
