@@ -205,8 +205,9 @@ const HomePage = () => {
     const fetchVaccineData = async () => {
       try {
         setPriceLoading(true);
-        const response = await fetch(`http://localhost:8080/vaccinedetail/${selectedVaccine.vaccineId}`, {
+        const response = await fetch(`http://localhost:8080/vaccinedetail/findbyvaccine?id=${selectedVaccine.vaccineId}`, {
           method: "GET",
+          credentials: "include",
         });
         if (!response.ok) throw new Error("Failed to fetch vaccine details");
         const data = await response.json();
@@ -352,8 +353,8 @@ const HomePage = () => {
                 VaccineCare cung cấp dịch vụ tiêm chủng chất lượng cao với đội ngũ y bác sĩ chuyên nghiệp, giúp bảo vệ sức khỏe toàn diện cho bạn và gia đình.
               </p>
               <div className="homepage-hero-buttons">
-                <button className="homepage-btn homepage-btn-primary">Đặt lịch ngay</button>
-                <button className="homepage-btn homepage-btn-secondary" onClick={() => window.location.href = "#"}>
+                <button className="homepage-btn homepage-btn-primary"onClick={() => window.location.href = "/booking"}>Đặt lịch ngay</button>
+                <button className="homepage-btn homepage-btn-secondary" onClick={() => window.location.href = "/vaccines"}>
                   Xem gói vaccine
                 </button>
               </div>
@@ -487,24 +488,11 @@ const HomePage = () => {
                                 </div>
                               </div>
                               <div className="homepage-age-vaccine-detail-footer">
-                                <div>
-                                  <span>✅</span>
-                                  <p>Phù hợp với trẻ em</p>
-                                </div>
                                 <span>{formatPrice(detail.vaccine.price)}</span>
                               </div>
                             </div>
                           </div>
                         ))}
-                      </div>
-                    )}
-                    {!loading && comboDetails.length > 0 && (
-                      <div className="homepage-age-vaccine-cta">
-                        <div>
-                          <h4>Đặt lịch tiêm chủng</h4>
-                          <p>Liên hệ với chúng tôi để đặt lịch tiêm chủng cho trẻ</p>
-                        </div>
-                        <button onClick={() => (window.location.href = "#")}>Đặt lịch ngay</button>
                       </div>
                     )}
                   </div>
