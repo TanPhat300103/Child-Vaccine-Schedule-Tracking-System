@@ -293,6 +293,12 @@
   }
 }
 
+.chart-container-modal-dashboard {
+  height: 24rem; /* Chiều cao biểu đồ */
+  min-width: 60rem; /* Đảm bảo chiều rộng đủ lớn để chứa tất cả nhãn */
+  overflow-x: auto; /* Thanh cuộn ngang nếu cần */
+}
+
 .loading-spinner-dashboard {
   display: flex;
   align-items: center;
@@ -546,7 +552,9 @@
   border-radius: 0.5rem;
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
   width: 91.666667%;
-  max-width: 32rem;
+  max-width: 80rem; /* Tăng chiều rộng modal để chứa tất cả nhãn */
+  max-height: 80vh; /* Giới hạn chiều cao tối đa */
+  overflow-y: auto; /* Thanh cuộn dọc nếu nội dung quá cao */
   position: relative;
 }
 
