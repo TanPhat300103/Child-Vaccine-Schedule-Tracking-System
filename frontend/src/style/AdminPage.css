@@ -14,6 +14,7 @@
   height: 100vh;
   z-index: 20;
   box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+  overflow-x: hidden;
   overflow-y: auto;
 }
 
@@ -127,6 +128,15 @@
   font-weight: 600;
 }
 
+.nav-logout-adminpage {
+  background: rgba(255, 0, 0, 0.2);
+}
+
+.nav-logout-adminpage:hover {
+  background: rgba(255, 0, 0, 0.3);
+  padding-left: 1.5rem;
+}
+
 .nav-icon-adminpage {
   width: 1.5rem;
   height: 1.5rem;
@@ -138,15 +148,6 @@
 
 .nav-text-adminpage {
   font-size: 0.875rem;
-}
-
-.nav-dropdown-icon-adminpage {
-  margin-left: auto;
-  transition: transform 0.3s ease;
-}
-
-.nav-group-adminpage .nav-item-adminpage:hover .nav-dropdown-icon-adminpage {
-  transform: rotate(180deg);
 }
 
 .nav-tooltip-adminpage {
@@ -169,6 +170,10 @@
   opacity: 1;
 }
 
+.nav-group-adminpage:hover .nav-sublist-adminpage {
+  max-height: 100px;
+}
+
 .nav-sublist-adminpage {
   max-height: 0;
   overflow: hidden;
@@ -176,22 +181,24 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-.nav-sublist-visible-adminpage {
+.nav-sublist-active-adminpage {
   max-height: 100px;
 }
 
 .nav-subitem-adminpage {
   display: flex;
   align-items: center;
-  padding: 0.4rem 1rem 0.4rem 2rem;
+  padding: 0.5rem 1rem;
+  gap: 0.5rem;
   color: #ffffff;
   text-decoration: none;
-  transition: background 0.3s ease;
-  margin: 0.3rem 0;
+  transition: background 0.3s ease, padding-left 0.3s ease;
+  margin: 0.5rem 0;
 }
 
 .nav-subitem-adminpage:hover {
   background: rgba(255, 255, 255, 0.15);
+  padding-left: 1.5rem;
 }
 
 /* Header */
@@ -201,14 +208,6 @@
   z-index: 10;
   padding: 0 1rem;
   transition: left 0.3s ease;
-}
-
-.sidebar-open-adminpage ~ .main-adminpage .header-adminpage {
-  left: 16rem;
-}
-
-.sidebar-closed-adminpage ~ .main-adminpage .header-adminpage {
-  left: 4rem;
 }
 
 .header-content-adminpage {
@@ -223,14 +222,6 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   max-width: 100%;
   height: 4.5rem;
-}
-
-.header-visible-adminpage {
-  transform: translateY(0);
-}
-
-.header-hidden-adminpage {
-  transform: translateY(-100%);
 }
 
 .header-left-adminpage {
@@ -249,30 +240,6 @@
   font-size: 0.875rem;
   opacity: 0.9;
   margin-top: 0.25rem;
-}
-
-.header-right-adminpage {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.logout-btn-adminpage {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: none;
-  border: none;
-  color: #ffffff;
-  font-size: 0.875rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  transition: background 0.3s ease;
-}
-
-.logout-btn-adminpage:hover {
-  background: rgba(255, 255, 255, 0.2);
 }
 
 /* Main Content */

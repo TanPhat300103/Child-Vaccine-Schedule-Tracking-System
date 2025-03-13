@@ -5,26 +5,23 @@ import {
   FiGrid,
   FiUsers,
   FiCalendar,
-  FiChevronDown,
   FiUser,
   FiBarChart2,
   FiShield,
   FiBox,
   FiHome,
   FiMessageSquare,
-  FiHelpCircle,
-  FiLogOut,
   FiActivity,
   FiAlertTriangle,
   FiMenu,
   FiX,
+  FiLogOut,
 } from "react-icons/fi";
 import { RiSyringeLine } from "react-icons/ri";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { FaCashRegister } from "react-icons/fa";
-import { LogOut } from "lucide-react";
-import "../../style/AdminPage.css"; // Import the CSS file
+import "../../style/AdminPage.css";
 
 const AdminPage = () => {
   const navigate = useNavigate();
@@ -32,28 +29,10 @@ const AdminPage = () => {
   const { userInfo, isLoggedIn, logout, isLoading } = useAuth();
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [showHeader, setShowHeader] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
-
-  const controlHeader = () => {
-    if (window.scrollY > lastScrollY) {
-      setShowHeader(false);
-    } else {
-      setShowHeader(true);
-    }
-    setLastScrollY(window.scrollY);
-  };
-
-  useEffect(() => {
-    window.addEventListener("scroll", controlHeader);
-    return () => {
-      window.removeEventListener("scroll", controlHeader);
-    };
-  }, [lastScrollY]);
 
   const handleLogout = async () => {
     await logout();
@@ -218,10 +197,7 @@ const AdminPage = () => {
                   }`}
                 />
                 {sidebarOpen && (
-                  <>
-                    <span className="nav-text-adminpage">Vaccine</span>
-                    <FiChevronDown className="nav-dropdown-icon-adminpage" />
-                  </>
+                  <span className="nav-text-adminpage">Vaccine</span>
                 )}
                 {!sidebarOpen && (
                   <span className="nav-tooltip-adminpage">Vaccine</span>
@@ -229,7 +205,7 @@ const AdminPage = () => {
               </div>
               <ul
                 className={`nav-sublist-adminpage ${
-                  isVaccineActive ? "nav-sublist-visible-adminpage" : ""
+                  isVaccineActive ? "nav-sublist-active-adminpage" : ""
                 }`}
               >
                 <li>
@@ -241,11 +217,7 @@ const AdminPage = () => {
                       }`
                     }
                   >
-                    <FiShield
-                      className={`nav-icon-adminpage ${
-                        !sidebarOpen && "nav-icon-center-adminpage"
-                      }`}
-                    />
+                    <FiShield className="nav-icon-adminpage" />
                     {sidebarOpen && (
                       <span className="nav-text-adminpage">
                         Quản Lý Vaccine
@@ -262,11 +234,7 @@ const AdminPage = () => {
                       }`
                     }
                   >
-                    <FiBox
-                      className={`nav-icon-adminpage ${
-                        !sidebarOpen && "nav-icon-center-adminpage"
-                      }`}
-                    />
+                    <FiBox className="nav-icon-adminpage" />
                     {sidebarOpen && (
                       <span className="nav-text-adminpage">Gói Vaccine</span>
                     )}
@@ -378,36 +346,45 @@ const AdminPage = () => {
                 )}
               </NavLink>
             </li>
+
+            <li>
+              <div
+                onClick={handleLogout}
+                className="nav-item-adminpage nav-logout-adminpage"
+              >
+                <FiLogOut
+                  className={`nav-icon-adminpage ${
+                    !sidebarOpen && "nav-icon-center-adminpage"
+                  }`}
+                />
+                {sidebarOpen && (
+                  <span className="nav-text-adminpage">Đăng Xuất</span>
+                )}
+                {!sidebarOpen && (
+                  <span className="nav-tooltip-adminpage">Đăng Xuất</span>
+                )}
+              </div>
+            </li>
           </ul>
         </nav>
       </aside>
 
       {/* Header */}
       <header
+        className="header-adminpage"
         style={{
-          left: sidebarOpen ? "calc(18rem + 20px)" : "calc(5rem + 20px)",
-          right: "20px",
+          left: sidebarOpen ? "16rem" : "4rem",
+          right: "0",
         }}
-        className={`header-adminpage ${
-          showHeader ? "header-visible-adminpage" : "header-hidden-adminpage"
-        }`}
       >
         <div className="header-content-adminpage">
           <div className="header-left-adminpage">
             <h1 className="header-title-adminpage">
               Trang Quản Trị Trung Tâm Tiêm Chủng
             </h1>
-            <div>
-              <p className="header-date-adminpage">
-                {format(new Date(), "EEEE, dd/MM/yyyy", { locale: vi })}
-              </p>
-            </div>
-          </div>
-          <div className="header-right-adminpage">
-            <div className="logout-btn-adminpage" onClick={handleLogout}>
-              <LogOut size={16} />
-              <span>Logout</span>
-            </div>
+            <p className="header-date-adminpage">
+              {format(new Date(), "EEEE, dd/MM/yyyy", { locale: vi })}
+            </p>
           </div>
         </div>
       </header>
