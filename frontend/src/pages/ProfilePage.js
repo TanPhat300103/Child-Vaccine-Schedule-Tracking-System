@@ -18,6 +18,7 @@ function ProfilePage() {
 
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
+  const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,7 +36,6 @@ function ProfilePage() {
         if (!customerResponse.ok) throw new Error('Không tìm thấy thông tin khách hàng');
         const customerData = await customerResponse.json();
         console.log('Dữ liệu từ server:', customerData);
-        // Gán avatarUrl mặc định nếu không có từ server
         setCustomer({
           ...customerData,
           avatarUrl: customerData.avatarUrl || 'https://avatars.githubusercontent.com/u/151855105?s=400&u=f3cf17c85ef8012beb3894ab9c2f9b12abaf3509&v=4',
@@ -66,16 +66,56 @@ function ProfilePage() {
       email: customer.email || '',
       roleId: customer.roleId,
       active: customer.active,
-      avatarUrl: customer.avatarUrl || 'https://avatars.githubusercontent.com/u/151855105?s=400&u=f3cf17c85ef8012beb3894ab9c2f9b12abaf3509&v=4', // Avatar mặc định
+      avatarUrl: customer.avatarUrl || 'https://avatars.githubusercontent.com/u/151855105?s=400&u=f3cf17c85ef8012beb3894ab9c2f9b12abaf3509&v=4',
     });
+    setFormErrors({});
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    let errors = { ...formErrors };
+
+    if (name === 'phoneNumber') {
+      if (!/^\d{10,11}$/.test(value) && value.length > 0) {
+        errors.phoneNumber = 'Số điện thoại phải là số và có 10-11 chữ số';
+      } else {
+        delete errors.phoneNumber;
+      }
+    }
+
+    if (name === 'email') {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (value && !emailRegex.test(value)) {
+        errors.email = 'Email không đúng định dạng';
+      } else {
+        delete errors.email;
+      }
+    }
+
+    if (name === 'dob') {
+      const selectedDate = new Date(value);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      if (selectedDate > today) {
+        errors.dob = 'Ngày sinh không được trong tương lai';
+      } else {
+        delete errors.dob;
+      }
+    }
+
+    setFormErrors(errors);
   };
 
   const handleSave = async () => {
+    if (Object.keys(formErrors).length > 0) {
+      setError('Vui lòng sửa các lỗi trước khi lưu');
+      return;
+    }
+
     try {
       const response = await fetch(`http://localhost:8080/customer/update`, {
         method: 'POST',
@@ -87,6 +127,7 @@ function ProfilePage() {
       if (response.ok) {
         setCustomer({ ...customer, ...formData, dob: formData.dob });
         setIsEditing(false);
+        setFormErrors({});
       } else {
         const errorText = await response.text();
         setError('Lỗi khi cập nhật thông tin khách hàng: ' + errorText);
@@ -209,16 +250,18 @@ function ProfilePage() {
                         onChange={handleInputChange}
                         placeholder="Nhập email"
                       />
+                      {formErrors.email && <span className="error-text">{formErrors.email}</span>}
                     </div>
                     <div className="profile-form-group">
                       <label>Số điện thoại</label>
                       <input
-                        type="text"
+                        type="tel"
                         name="phoneNumber"
                         value={formData.phoneNumber}
                         onChange={handleInputChange}
                         placeholder="Nhập số điện thoại"
                       />
+                      {formErrors.phoneNumber && <span className="error-text">{formErrors.phoneNumber}</span>}
                     </div>
                   </div>
                   <div className="profile-form-row">
@@ -229,7 +272,9 @@ function ProfilePage() {
                         name="dob"
                         value={formData.dob}
                         onChange={handleInputChange}
+                        max={new Date().toISOString().split('T')[0]} // Vô hiệu hóa ngày trong tương lai
                       />
+                      {formErrors.dob && <span className="error-text">{formErrors.dob}</span>}
                     </div>
                     <div className="profile-form-group full-width">
                       <label>Địa chỉ</label>
@@ -246,7 +291,7 @@ function ProfilePage() {
                     <div className="profile-form-group full-width">
                       <label>Ảnh đại diện (URL)</label>
                       <input
-                        type="text"
+                        type="url"
                         name="avatarUrl"
                         value={formData.avatarUrl}
                         onChange={handleInputChange}
@@ -255,7 +300,11 @@ function ProfilePage() {
                     </div>
                   </div>
                   <div className="profile-form-actions">
-                    <button className="profile-save-btn" onClick={handleSave}>
+                    <button 
+                      className="profile-save-btn" 
+                      onClick={handleSave}
+                      disabled={Object.keys(formErrors).length > 0} // Vô hiệu hóa nếu có lỗi
+                    >
                       <Save size={16} />
                       <span>Lưu thông tin</span>
                     </button>

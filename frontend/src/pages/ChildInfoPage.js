@@ -39,13 +39,17 @@ function ChildInfoPage() {
     dob: "",
     gender: true,
   });
+  const [validationErrors, setValidationErrors] = useState({
+    firstName: "",
+    lastName: "",
+    dob: "",
+  });
   const [medicalHistory, setMedicalHistory] = useState({});
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isEditingMedical, setIsEditingMedical] = useState(false);
   const [editingMedicalData, setEditingMedicalData] = useState(null);
   const [isReactionModalOpen, setIsReactionModalOpen] = useState(false);
-  const [selectedMedicalHistoryId, setSelectedMedicalHistoryId] =
-    useState(null);
+  const [selectedMedicalHistoryId, setSelectedMedicalHistoryId] = useState(null);
   const [reactionInput, setReactionInput] = useState("");
 
   useEffect(() => {
@@ -107,14 +111,66 @@ function ChildInfoPage() {
     }
   };
 
-  const handleChildInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditingChild((prev) => ({ ...prev, [name]: value }));
+  const validateField = (name, value) => {
+    let error = "";
+    switch (name) {
+      case "firstName":
+        if (!value.trim()) {
+          error = "Họ không được để trống";
+        } else if (value.length < 2) {
+          error = "Họ phải có ít nhất 2 ký tự";
+        }
+        break;
+      case "lastName":
+        if (!value.trim()) {
+          error = "Tên không được để trống";
+        } else if (value.length < 2) {
+          error = "Tên phải có ít nhất 2 ký tự";
+        }
+        break;
+      case "dob":
+        if (!value) {
+          error = "Ngày sinh không được để trống";
+        } else {
+          const selectedDate = new Date(value);
+          const currentDate = new Date();
+          if (selectedDate > currentDate) {
+            error = "Ngày sinh không được ở tương lai";
+          } else if (
+            currentDate.getFullYear() - selectedDate.getFullYear() > 18
+          ) {
+            error = "Tuổi không được lớn hơn 18";
+          }
+        }
+        break;
+      default:
+        break;
+    }
+    return error;
   };
 
   const handleNewChildInputChange = (e) => {
     const { name, value } = e.target;
     setNewChildData((prev) => ({ ...prev, [name]: value }));
+    
+    // Validate ngay khi người dùng nhập
+    const error = validateField(name, value);
+    setValidationErrors((prev) => ({ ...prev, [name]: error }));
+  };
+
+  const isFormValid = () => {
+    const errors = {
+      firstName: validateField("firstName", newChildData.firstName),
+      lastName: validateField("lastName", newChildData.lastName),
+      dob: validateField("dob", newChildData.dob),
+    };
+    setValidationErrors(errors);
+    return !Object.values(errors).some((error) => error !== "");
+  };
+
+  const handleChildInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditingChild((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleEditChild = (child) => {
@@ -147,6 +203,10 @@ function ChildInfoPage() {
   };
 
   const handleAddChild = async () => {
+    if (!isFormValid()) {
+      return;
+    }
+
     try {
       const childToAdd = {
         ...newChildData,
@@ -164,6 +224,7 @@ function ChildInfoPage() {
         setChildren((prev) => [...prev, addedChild]);
         setAddingChild(false);
         setNewChildData({ firstName: "", lastName: "", dob: "", gender: true });
+        setValidationErrors({ firstName: "", lastName: "", dob: "" });
       } else {
         const errorText = await response.text();
         setError("Lỗi khi thêm thông tin con: " + errorText);
@@ -281,6 +342,15 @@ function ChildInfoPage() {
     } catch (err) {
       setError("Lỗi khi cập nhật phản ứng: " + err.message);
     }
+  };
+
+  // Lấy ngày hiện tại định dạng YYYY-MM-DD
+  const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
   };
 
   if (loading) {
@@ -426,6 +496,11 @@ function ChildInfoPage() {
                       onChange={handleNewChildInputChange}
                       placeholder="Nhập họ"
                     />
+                    {validationErrors.firstName && (
+                      <span className="profile-error-text-childinfo">
+                        {validationErrors.firstName}
+                      </span>
+                    )}
                   </div>
                   <div className="profile-form-group-childinfo">
                     <label>Tên</label>
@@ -436,6 +511,11 @@ function ChildInfoPage() {
                       onChange={handleNewChildInputChange}
                       placeholder="Nhập tên"
                     />
+                    {validationErrors.lastName && (
+                      <span className="profile-error-text-childinfo">
+                        {validationErrors.lastName}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <div className="profile-form-row-childinfo">
@@ -446,7 +526,13 @@ function ChildInfoPage() {
                       name="dob"
                       value={newChildData.dob}
                       onChange={handleNewChildInputChange}
+                      max={getCurrentDate()} // Vô hiệu hóa ngày tương lai
                     />
+                    {validationErrors.dob && (
+                      <span className="profile-error-text-childinfo">
+                        {validationErrors.dob}
+                      </span>
+                    )}
                   </div>
                   <div className="profile-form-group-childinfo">
                     <label>Giới tính</label>
@@ -464,13 +550,19 @@ function ChildInfoPage() {
                   <button
                     className="profile-save-btn-childinfo"
                     onClick={handleAddChild}
+                    disabled={Object.values(validationErrors).some(
+                      (error) => error !== ""
+                    )}
                   >
                     <Save size={16} />
                     <span>Lưu</span>
                   </button>
                   <button
                     className="profile-cancel-btn-childinfo"
-                    onClick={() => setAddingChild(false)}
+                    onClick={() => {
+                      setAddingChild(false);
+                      setValidationErrors({ firstName: "", lastName: "", dob: "" });
+                    }}
                   >
                     <XCircle size={16} />
                     <span>Hủy</span>
@@ -584,6 +676,7 @@ function ChildInfoPage() {
                             name="dob"
                             value={editingMedicalData.dob}
                             onChange={handleMedicalInputChange}
+                            max={getCurrentDate()} // Vô hiệu hóa ngày tương lai trong edit medical
                           />
                         </div>
                         <div className="profile-medical-field-childinfo">
@@ -638,7 +731,7 @@ function ChildInfoPage() {
                                   : "var(--female)"
                               }
                             />
-                            {children.find((c) => c.chilId === expandedChildId)
+                            {children.find((c) => c.childId === expandedChildId)
                               ?.gender
                               ? "Nam"
                               : "Nữ"}

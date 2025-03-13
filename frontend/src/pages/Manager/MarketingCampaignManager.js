@@ -5,7 +5,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import '../../style/MarketingCampaigns.css';
 
-
 // Hàm định dạng ngày
 const parseLocalDateString = (str) => {
   if (!str) return null;
@@ -36,6 +35,7 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
           active: true,
         }
   );
+  const [errors, setErrors] = useState({}); // State để lưu lỗi validation
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,6 +43,9 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
       ...prev,
       [name]: name === "discount" ? Number(value) || 0 : value,
     }));
+    if (name !== "description") { // Không validate mô tả
+      validateField(name, name === "discount" ? Number(value) || 0 : value);
+    }
   };
 
   const handleCheckboxChange = (e) => {
@@ -51,10 +54,94 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
 
   const handleDateChange = (date, name) => {
     setFormData((prev) => ({ ...prev, [name]: date }));
+    validateField(name, date);
+  };
+
+  const validateField = (name, value) => {
+    const newErrors = { ...errors };
+
+    switch (name) {
+      case "name":
+        if (!value.trim()) {
+          newErrors.name = "Tên sự kiện không được để trống";
+        } else {
+          delete newErrors.name;
+        }
+        break;
+      case "coupon":
+        if (!value.trim()) {
+          newErrors.coupon = "Mã coupon không được để trống";
+        } else {
+          delete newErrors.coupon;
+        }
+        break;
+      case "startTime":
+        if (!value) {
+          newErrors.startTime = "Ngày bắt đầu không được để trống";
+        } else {
+          delete newErrors.startTime;
+          // Kiểm tra lại ngày kết thúc nếu ngày bắt đầu thay đổi
+          if (formData.endTime && dayjs(formData.endTime).isBefore(dayjs(value))) {
+            newErrors.endTime = "Ngày kết thúc phải sau ngày bắt đầu";
+          } else {
+            delete newErrors.endTime;
+          }
+        }
+        break;
+      case "endTime":
+        if (!value) {
+          newErrors.endTime = "Ngày kết thúc không được để trống";
+        } else if (formData.startTime && dayjs(value).isBefore(dayjs(formData.startTime))) {
+          newErrors.endTime = "Ngày kết thúc phải sau ngày bắt đầu";
+        } else {
+          delete newErrors.endTime;
+        }
+        break;
+      case "discount":
+        if (value <= 0) {
+          newErrors.discount = "Giảm giá phải lớn hơn 0";
+        } else {
+          delete newErrors.discount;
+        }
+        break;
+      default:
+        break;
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Trả về true nếu không có lỗi
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.name.trim()) newErrors.name = "Tên sự kiện không được để trống";
+    if (!formData.coupon.trim()) newErrors.coupon = "Mã coupon không được để trống";
+    if (!formData.startTime) newErrors.startTime = "Ngày bắt đầu không được để trống";
+    if (!formData.endTime) newErrors.endTime = "Ngày kết thúc không được để trống";
+    if (formData.startTime && formData.endTime && dayjs(formData.endTime).isBefore(dayjs(formData.startTime))) {
+      newErrors.endTime = "Ngày kết thúc phải sau ngày bắt đầu";
+    }
+    if (formData.discount <= 0) newErrors.discount = "Giảm giá phải lớn hơn 0";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Trả về true nếu không có lỗi
+  };
+
+  const isFormValid = () => {
+    return Object.keys(errors).length === 0 && 
+           formData.name.trim() && 
+           formData.coupon.trim() && 
+           formData.startTime && 
+           formData.endTime && 
+           formData.discount > 0 && 
+           (!dayjs(formData.endTime).isBefore(dayjs(formData.startTime)));
   };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return; // Ngừng submit nếu validation thất bại
+
     const payload = {
       ...formData,
       startTime: formatLocalDateString(formData.startTime),
@@ -85,6 +172,7 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
               placeholder="Tên sự kiện"
               required
             />
+            {errors.name && <span className="error-text-marketing">{errors.name}</span>}
           </div>
           <div className="form-group-marketing">
             <label className="form-label-marketing">Mã coupon</label>
@@ -97,6 +185,7 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
               placeholder="Mã coupon"
               required
             />
+            {errors.coupon && <span className="error-text-marketing">{errors.coupon}</span>}
           </div>
           <div className="date-picker-container-marketing">
             <div className="form-group-marketing">
@@ -109,6 +198,7 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
                 placeholderText="Chọn ngày"
                 required
               />
+              {errors.startTime && <span className="error-text-marketing">{errors.startTime}</span>}
             </div>
             <div className="form-group-marketing">
               <label className="form-label-marketing">Ngày kết thúc</label>
@@ -120,6 +210,7 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
                 placeholderText="Chọn ngày"
                 required
               />
+              {errors.endTime && <span className="error-text-marketing">{errors.endTime}</span>}
             </div>
           </div>
           <div className="form-group-marketing">
@@ -133,6 +224,7 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
               placeholder="Giảm giá (%)"
               required
             />
+            {errors.discount && <span className="error-text-marketing">{errors.discount}</span>}
           </div>
           <div className="form-group-marketing">
             <label className="form-label-marketing">Mô tả</label>
@@ -141,9 +233,8 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
               value={formData.description}
               onChange={handleChange}
               className="form-textarea-marketing"
-              placeholder="Mô tả sự kiện"
+              placeholder="Mô tả sự kiện (không bắt buộc)"
               rows="3"
-              required
             />
           </div>
           <div className="checkbox-group-marketing">
@@ -157,7 +248,11 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
             <label className="checkbox-label-marketing">Kích hoạt</label>
           </div>
           <div className="button-group-marketing">
-            <button type="submit" className="submit-button-marketing">
+            <button 
+              type="submit" 
+              className="submit-button-marketing"
+              disabled={!isFormValid()}
+            >
               {isEditMode ? "Lưu" : "Tạo"}
             </button>
             <button
