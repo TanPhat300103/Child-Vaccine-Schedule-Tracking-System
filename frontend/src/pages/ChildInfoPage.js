@@ -489,9 +489,7 @@ function ChildInfoPage() {
                           </button>
                         </>
                       )}
-                      <button className="profile-delete-btn-childinfo" onClick={() => handleDeleteChild(expandedChildId)}>
-                        <Trash2 size={18} />
-                      </button>
+                      
                     </div>
                   </div>
                   <div className="profile-medical-info-childinfo">
