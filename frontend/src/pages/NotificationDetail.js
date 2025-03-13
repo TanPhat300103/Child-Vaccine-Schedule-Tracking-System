@@ -2,22 +2,21 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import { ArrowLeft } from "lucide-react";
 import "../style/notification-detail.css";
-import { useAuth } from '../components/AuthContext'; // Import useAuth để lấy userInfo
+import { useAuth } from '../components/AuthContext';
 
 function NotificationDetail() {
-  const { notificationId } = useParams(); // Lấy notificationId từ URL
+  const { notificationId } = useParams();
   const navigate = useNavigate();
-  const { userInfo } = useAuth(); // Lấy thông tin user từ AuthContext
-  const [notification, setNotification] = useState(null); // Thông báo chi tiết
-  const [allNotifications, setAllNotifications] = useState([]); // Danh sách tất cả thông báo
+  const { userInfo } = useAuth();
+  const [notification, setNotification] = useState(null);
+  const [allNotifications, setAllNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('all'); // Bộ lọc: all, read, unread
+  const [activeTab, setActiveTab] = useState('all');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Lấy chi tiết thông báo
         const detailResponse = await fetch(`http://localhost:8080/notification/findid?id=${notificationId}`, {
           method: 'GET',
           headers: {
@@ -31,7 +30,6 @@ function NotificationDetail() {
         const detailData = await detailResponse.json();
         setNotification(detailData);
 
-        // Lấy tất cả thông báo
         const allResponse = await fetch(`http://localhost:8080/notification`, {
           method: 'GET',
           headers: {
@@ -44,16 +42,13 @@ function NotificationDetail() {
         }
         const allData = await allResponse.json();
 
-        // Lọc thông báo theo customerId hoặc roleId = 1
         const filteredNotifications = allData.filter(notification => {
           const matchesCustomerId = notification.customer && notification.customer.customerId === userInfo?.userId;
           const matchesRoleId = notification.role && notification.role.roleId === 1;
           return matchesCustomerId || matchesRoleId;
         });
 
-        // Sắp xếp theo ngày giảm dần
         setAllNotifications(filteredNotifications.sort((a, b) => new Date(b.date) - new Date(a.date)));
-
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -62,10 +57,10 @@ function NotificationDetail() {
     };
 
     fetchData();
-  }, [notificationId, userInfo]); // Thêm userInfo vào dependency array
+  }, [notificationId, userInfo]);
 
   const handleBack = () => {
-    navigate(-1); // Quay lại trang trước đó
+    navigate(-1);
   };
 
   const handleTabChange = (tab) => {
@@ -92,7 +87,6 @@ function NotificationDetail() {
     }
   };
 
-  // Lọc danh sách thông báo theo tab
   const filteredNotifications = () => {
     if (activeTab === 'all') return allNotifications;
     if (activeTab === 'read') return allNotifications.filter(n => n.read);
@@ -123,14 +117,13 @@ function NotificationDetail() {
   return (
     <div className="notification-detail-container">
       <div className="notification-detail-header">
-        <button onClick={handleBack} className="back-button">
-          <ArrowLeft size={18} /> Quay lại
-        </button>
         <h1>Chi tiết thông báo</h1>
       </div>
 
-      {/* Thông báo chi tiết */}
       <div className="notification-detail-content">
+        <button onClick={handleBack} className="back-arrow">
+          <ArrowLeft size={24} />
+        </button>
         <h2>{notification.tittle}</h2>
         <p className="notification-date">{notification.date}</p>
         <p className="notification-message">{notification.message}</p>
@@ -144,7 +137,6 @@ function NotificationDetail() {
         )}
       </div>
 
-      {/* Danh sách tất cả thông báo */}
       <div className="all-notifications-section">
         <h3>Tất cả thông báo</h3>
         <div className="notification-tabs">
