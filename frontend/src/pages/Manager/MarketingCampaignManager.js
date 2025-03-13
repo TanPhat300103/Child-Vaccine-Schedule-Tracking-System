@@ -98,8 +98,8 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
         }
         break;
       case "discount":
-        if (value <= 0) {
-          newErrors.discount = "Giảm giá phải lớn hơn 0";
+        if (value <= 0 | value >99) {
+          newErrors.discount = "Giảm giá không hợp lệ";
         } else {
           delete newErrors.discount;
         }

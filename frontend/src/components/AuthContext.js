@@ -57,6 +57,7 @@ export function AuthProvider({ children }) {
       if (response.ok) {
         setIsLoggedIn(false);
         setUserInfo(null);
+        await checkLoginStatus(); // Gọi lại để đồng bộ trạng thái với backend
         console.log('AuthContext - Logged out');
       } else {
         console.log('AuthContext - Logout failed:', response.status);

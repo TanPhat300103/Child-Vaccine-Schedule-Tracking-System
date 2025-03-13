@@ -118,7 +118,7 @@ function Header() {
     setIsNotificationOpen(false);
     setIsHandbookOpen(false);
     setActiveTab('all');
-    setIsChildMenuOpen(false); // Đóng child menu khi mở/đóng dropdown chính
+    setIsChildMenuOpen(false);
   };
 
   const toggleMobileMenu = () => {
@@ -158,8 +158,8 @@ function Header() {
 
   const handleChildClick = (childId) => {
     setIsDropdownOpen(false);
-    navigate(`/child-info?childId=${childId}`);
-  };
+    navigate(`/child-info`);
+     };
 
   const handleBookingClick = () => {
     setIsDropdownOpen(false);
@@ -227,7 +227,7 @@ function Header() {
       <div className="navbar-left">
         <Link to="/" className="navbar-logo">
           <div className="logo-icon"><Syringe size={24} /></div>
-          <span className="brand-name">Thu Hà | Hoàng Tử Gió</span>
+          <span className="brand-name">Công Chúa Bong Bóng | Hoàng Tử Gió</span>
         </Link>
         <div className="mobile-menu-toggle" onClick={toggleMobileMenu}>
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -302,7 +302,9 @@ function Header() {
             <div className="profile-container" ref={dropdownRef}>
               <div className="profile-icon ripple" onClick={toggleDropdown}>
                 <div className="avatar-circle"><User size={18} /></div>
-                <span className="profile-username">My Profile</span>
+                <span className="profile-username">
+                  {customerData ? `${customerData.firstName} ${customerData.lastName}` : 'Loading...'}
+                </span>
                 <ChevronDown size={16} className={`dropdown-arrow ${isDropdownOpen ? 'rotate' : ''}`} />
               </div>
               {isDropdownOpen && (
