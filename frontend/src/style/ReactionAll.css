@@ -1,0 +1,152 @@
+.reaction-all-container-reactionall {
+  padding: 20px;
+  background: linear-gradient(135deg, #fff1f1 0%, #ffe4e6 100%);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  max-width: 1000px;
+  margin: 20px auto;
+}
+
+.reaction-all-header-reactionall {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.reaction-all-header-reactionall h2 {
+  font-size: 28px;
+  color: #b91c1c;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.back-button-reactionall {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+.back-button-reactionall:hover {
+  background: #b91c1c;
+}
+
+.search-bar-reactionall {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.search-icon-reactionall {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  color: #6b7280;
+}
+
+.search-input-reactionall {
+  width: 100%;
+  padding: 12px 20px 12px 40px;
+  border: 2px solid #fecaca;
+  border-radius: 25px;
+  font-size: 16px;
+  color: #374151;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.search-input-reactionall:focus {
+  border-color: #dc2626;
+}
+
+.reaction-list-reactionall {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.reaction-card-reactionall {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.reaction-card-reactionall:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.reaction-card-reactionall.expanded-reactionall {
+  background: #fef2f2;
+}
+
+.reaction-card-header-reactionall {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.reaction-card-header-reactionall h3 {
+  font-size: 18px;
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.reaction-date-reactionall {
+  font-size: 14px;
+  color: #6b7280;
+  background: #fee2e2;
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.reaction-card-reactionall p {
+  font-size: 15px;
+  color: #374151;
+  margin: 5px 0;
+}
+
+.reaction-card-reactionall p strong {
+  color: #dc2626;
+}
+
+.reaction-details-reactionall {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #fecaca;
+}
+
+.loading-reactionall {
+  text-align: center;
+  font-size: 18px;
+  color: #dc2626;
+  padding: 20px;
+}
+
+.error-reactionall {
+  text-align: center;
+  font-size: 18px;
+  color: #ef4444;
+  padding: 20px;
+}
+
+.no-data-reactionall {
+  text-align: center;
+  font-size: 16px;
+  color: #6b7280;
+  padding: 20px;
+}
