@@ -232,19 +232,25 @@ const Customers = () => {
               <div className="filter-buttons">
                 <button
                   onClick={() => setFilterStatus("all")}
-                  className={`filter-button ${filterStatus === "all" ? "active-all" : ""}`}
+                  className={`filter-button ${
+                    filterStatus === "all" ? "active-all" : ""
+                  }`}
                 >
                   Tất cả
                 </button>
                 <button
                   onClick={() => setFilterStatus("active")}
-                  className={`filter-button ${filterStatus === "active" ? "active-active" : ""}`}
+                  className={`filter-button ${
+                    filterStatus === "active" ? "active-active" : ""
+                  }`}
                 >
                   Hoạt động
                 </button>
                 <button
                   onClick={() => setFilterStatus("inactive")}
-                  className={`filter-button ${filterStatus === "inactive" ? "active-inactive" : ""}`}
+                  className={`filter-button ${
+                    filterStatus === "inactive" ? "active-inactive" : ""
+                  }`}
                 >
                   Không hoạt động
                 </button>
@@ -252,7 +258,8 @@ const Customers = () => {
                   onClick={() => setShowAddForm(true)}
                   className="add-customer-button"
                 >
-                  <FaUserPlus size={14} /> {/* Giảm kích thước icon xuống 14px */}
+                  <FaUserPlus size={14} />{" "}
+                  {/* Giảm kích thước icon xuống 14px */}
                   <span>Thêm Khách Hàng</span>
                 </button>
               </div>
@@ -275,13 +282,17 @@ const Customers = () => {
                   <h2 className="customer-name">
                     {customer.firstName} {customer.lastName}
                   </h2>
-                  <p className="customer-id">Mã Khách Hàng: {customer.customerId}</p>
+                  <p className="customer-id">
+                    Mã Khách Hàng: {customer.customerId}
+                  </p>
                 </div>
               </div>
               <div className="customer-actions">
                 <button
                   onClick={(e) => handleActive(customer.customerId, e)}
-                  className={`status-button ${customer.active ? "deactivate" : "activate"}`}
+                  className={`status-button ${
+                    customer.active ? "deactivate" : "activate"
+                  }`}
                 >
                   <FaPowerOff />
                   <span>{customer.active ? "Ngừng" : "Hoạt Động"}</span>
