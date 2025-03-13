@@ -8,28 +8,29 @@ import {
   FaEye,
   FaEyeSlash,
 } from "react-icons/fa";
-import { useAuth } from "../../components/AuthContext";
 import "../../style/Staffs.css"; // Import the CSS file
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Staffs = () => {
   const [staffList, setStaffList] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newStaff, setNewStaff] = useState({
     firstName: "",
     lastName: "",
-    phone: "", // Đổi từ phoneNumber thành phone
+    phone: "",
     dob: "",
     address: "",
-    email: "",
+    mail: "",
     password: "",
-    roleId: 2,
+    roleId: 2, // Mặc định là 2, BE sẽ xử lý nếu cần
     active: true,
   });
   const [newPasswordVisible, setNewPasswordVisible] = useState(false);
   const [editStaff, setEditStaff] = useState(null);
   const [originalEditStaff, setOriginalEditStaff] = useState(null);
   const [editPasswordVisible, setEditPasswordVisible] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(""); // Thông báo chung
+  const [errors, setErrors] = useState({}); // Lưu lỗi chi tiết từ BE
   const [searchType, setSearchType] = useState("name");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
@@ -77,29 +78,36 @@ const Staffs = () => {
 
   const handleActive = (staffId, e) => {
     e.stopPropagation();
+    console.log("Request active gửi đi:", { id: staffId });
     fetch(`http://localhost:8080/staff/active?id=${staffId}`, {
       method: "POST",
       credentials: "include",
     })
-      .then((response) => {
+      .then(async (response) => {
         if (!response.ok) throw new Error("Network response was not ok");
-        return response.text();
+        const result = await response.text();
+        console.log("Response active nhận về:", result);
+        toast.success("Thay đổi trạng thái thành công!");
+        fetchStaffList();
       })
-      .then(() => fetchStaffList())
-      .catch((error) => console.error("API Active lỗi:", error));
+      .catch((error) => {
+        console.error("API Active lỗi:", error);
+        toast.error("Không thể thay đổi trạng thái.");
+      });
   };
 
   const handleEditOpen = (staff, e) => {
     e.stopPropagation();
     setMessage("");
+    setErrors({});
     const temp = {
       staffId: staff.staffId,
       firstName: staff.firstName,
       lastName: staff.lastName,
-      phone: staff.phone, // Đổi từ phoneNumber thành phone
+      phone: staff.phone,
       dob: staff.dob ? staff.dob.split("T")[0] : "",
       address: staff.address,
-      email: staff.mail,
+      mail: staff.mail,
       password: staff.password,
       roleId: staff.roleId,
       active: staff.active,
@@ -125,7 +133,8 @@ const Staffs = () => {
     e.preventDefault();
     if (!editStaff) return;
     setMessage("");
-    console.log(editStaff);
+    setErrors({});
+    console.log("Request gửi đi:", editStaff); // Log dữ liệu gửi đi
     try {
       const response = await fetch("http://localhost:8080/staff/update", {
         method: "POST",
@@ -134,16 +143,35 @@ const Staffs = () => {
         body: JSON.stringify(editStaff),
       });
       const result = await response.json();
-      if (!result.success) {
-        setMessage("Cập nhật nhân viên thành công!");
+      console.log("Response nhận về:", result); // Log dữ liệu nhận về
+
+      if (response.ok) {
+        toast.success("Cập nhật nhân viên thành công!");
         setEditStaff(null);
         setOriginalEditStaff(null);
-        fetchStaffList();
+        fetchStaffList(); // Tải lại danh sách
       } else {
-        setMessage(result.message || "Không thể cập nhật nhân viên.");
+        if (result.message) {
+          // Lỗi từ CustomException
+          const translatedMessage = translateError(result.message);
+          toast.error(translatedMessage);
+          setMessage(translatedMessage);
+        } else if (result.errors) {
+          // Lỗi validation từ BE
+          const errorMap = {};
+          result.errors.forEach((err) => {
+            errorMap[err.field] = translateError(err.defaultMessage);
+          });
+          setErrors(errorMap);
+          toast.error("Vui lòng kiểm tra lại thông tin nhập vào!");
+        } else {
+          toast.error("Không thể cập nhật nhân viên.");
+          setMessage("Không thể cập nhật nhân viên.");
+        }
       }
     } catch (err) {
       console.error("Error updating staff:", err);
+      toast.error("Có lỗi xảy ra khi cập nhật nhân viên.");
       setMessage("Có lỗi xảy ra khi cập nhật nhân viên.");
     }
   };
@@ -151,6 +179,7 @@ const Staffs = () => {
   const handleEditCancel = () => {
     setEditStaff(null);
     setOriginalEditStaff(null);
+    setErrors({});
   };
 
   const handleNewStaffChange = (e) => {
@@ -164,6 +193,8 @@ const Staffs = () => {
   const handleAddStaff = async (e) => {
     e.preventDefault();
     setMessage("");
+    setErrors({});
+    console.log("Request gửi đi:", newStaff); // Log dữ liệu gửi đi
     try {
       const response = await fetch("http://localhost:8080/staff/create", {
         method: "POST",
@@ -172,31 +203,64 @@ const Staffs = () => {
         body: JSON.stringify(newStaff),
       });
       const result = await response.json();
-      if (result.success) {
-        setMessage("Thêm nhân viên thành công!");
+      console.log("Response nhận về:", result); // Log dữ liệu nhận về
+
+      if (response.ok) {
+        toast.success("Thêm nhân viên thành công!");
         setNewStaff({
           firstName: "",
           lastName: "",
-          phone: "", // Đổi từ phoneNumber thành phone
+          phone: "",
           dob: "",
           address: "",
-          email: "",
+          mail: "",
           password: "",
+          roleId: 2,
           active: true,
         });
-        fetchStaffList();
+        fetchStaffList(); // Tải lại danh sách
         setShowAddModal(false);
       } else {
-        setMessage(result.message || "Không thể thêm nhân viên.");
+        if (result.message) {
+          // Lỗi từ CustomException
+          const translatedMessage = translateError(result.message);
+          toast.error(translatedMessage);
+          setMessage(translatedMessage);
+        } else if (result.errors) {
+          // Lỗi validation từ BE
+          const errorMap = {};
+          result.errors.forEach((err) => {
+            errorMap[err.field] = translateError(err.defaultMessage);
+          });
+          setErrors(errorMap);
+          toast.error("Vui lòng kiểm tra lại thông tin nhập vào!");
+        } else {
+          toast.error("Không thể thêm nhân viên.");
+          setMessage("Không thể thêm nhân viên.");
+        }
       }
     } catch (err) {
       console.error("Error creating staff:", err);
+      toast.error("Có lỗi xảy ra khi thêm nhân viên.");
       setMessage("Có lỗi xảy ra khi thêm nhân viên.");
     }
   };
-
+  const translateError = (message) => {
+    const errorMessages = {
+      "Email is exist": "Email đã tồn tại",
+      "Phone number is exist !!": "Số điện thoại đã tồn tại",
+      "Invalid phone number format": "Định dạng số điện thoại không hợp lệ",
+      "Phone number cannot be empty": "Số điện thoại không được để trống",
+      "Email should be valid": "Email không hợp lệ",
+      "Date of birth must be in the past":
+        "Ngày sinh phải là ngày trong quá khứ",
+      "Invalid Id": "ID vai trò không hợp lệ",
+    };
+    return errorMessages[message] || message; // Nếu không tìm thấy bản dịch, trả về nguyên gốc
+  };
   return (
     <div className="container-staffs">
+      <ToastContainer />
       <div className="content-wrapper-staffs">
         <header className="header-staffs">
           <div className="header-title-staffs">
@@ -275,6 +339,16 @@ const Staffs = () => {
           </div>
         </div>
 
+        {message && (
+          <p
+            className={`message-staffs ${
+              message.includes("thành công") ? "success-staffs" : "error-staffs"
+            }`}
+          >
+            {message}
+          </p>
+        )}
+
         <div className="staff-list-staffs">
           {filteredStaff.length === 0 ? (
             <div className="no-results-staffs">
@@ -331,17 +405,6 @@ const Staffs = () => {
                 ×
               </button>
               <h2 className="modal-title-staffs">Thêm Nhân Viên Mới</h2>
-              {message && (
-                <p
-                  className={`modal-message-staffs ${
-                    message.includes("thành công")
-                      ? "success-message-staffs"
-                      : "error-message-staffs"
-                  }`}
-                >
-                  {message}
-                </p>
-              )}
               <form onSubmit={handleAddStaff} className="modal-form-staffs">
                 <div className="form-group-staffs">
                   <label className="form-label-staffs">Họ</label>
@@ -353,6 +416,9 @@ const Staffs = () => {
                     className="form-input-staffs"
                     required
                   />
+                  {errors.firstName && (
+                    <p className="error-text-staffs">{errors.firstName}</p>
+                  )}
                 </div>
                 <div className="form-group-staffs">
                   <label className="form-label-staffs">Tên</label>
@@ -364,16 +430,22 @@ const Staffs = () => {
                     className="form-input-staffs"
                     required
                   />
+                  {errors.lastName && (
+                    <p className="error-text-staffs">{errors.lastName}</p>
+                  )}
                 </div>
                 <div className="form-group-staffs">
                   <label className="form-label-staffs">SĐT</label>
                   <input
                     type="text"
-                    name="phone" // Đổi từ phoneNumber thành phone
+                    name="phone"
                     value={newStaff.phone}
                     onChange={handleNewStaffChange}
                     className="form-input-staffs"
                   />
+                  {errors.phone && (
+                    <p className="error-text-staffs">{errors.phone}</p>
+                  )}
                 </div>
                 <div className="form-group-staffs">
                   <label className="form-label-staffs">Ngày Sinh</label>
@@ -384,6 +456,9 @@ const Staffs = () => {
                     onChange={handleNewStaffChange}
                     className="form-input-staffs"
                   />
+                  {errors.dob && (
+                    <p className="error-text-staffs">{errors.dob}</p>
+                  )}
                 </div>
                 <div className="form-group-staffs">
                   <label className="form-label-staffs">Địa chỉ</label>
@@ -394,16 +469,22 @@ const Staffs = () => {
                     onChange={handleNewStaffChange}
                     className="form-input-staffs"
                   />
+                  {errors.address && (
+                    <p className="error-text-staffs">{errors.address}</p>
+                  )}
                 </div>
                 <div className="form-group-staffs">
                   <label className="form-label-staffs">Email</label>
                   <input
                     type="email"
-                    name="email"
-                    value={newStaff.email}
+                    name="mail"
+                    value={newStaff.mail}
                     onChange={handleNewStaffChange}
                     className="form-input-staffs"
                   />
+                  {errors.mail && (
+                    <p className="error-text-staffs">{errors.mail}</p>
+                  )}
                 </div>
                 <div className="form-group-staffs form-group-password-staffs">
                   <label className="form-label-staffs">Mật khẩu</label>
@@ -425,6 +506,9 @@ const Staffs = () => {
                       <FaEye size={20} className="password-icon-staffs" />
                     )}
                   </button>
+                  {errors.password && (
+                    <p className="error-text-staffs">{errors.password}</p>
+                  )}
                 </div>
                 <div className="form-group-checkbox-staffs">
                   <input
@@ -463,17 +547,6 @@ const Staffs = () => {
                 ×
               </button>
               <h2 className="modal-title-staffs">Chỉnh Sửa Nhân Viên</h2>
-              {message && (
-                <p
-                  className={`modal-message-staffs ${
-                    message.includes("thành công")
-                      ? "success-message-staffs"
-                      : "error-message-staffs"
-                  }`}
-                >
-                  {message}
-                </p>
-              )}
               <form onSubmit={handleEditSave} className="modal-form-staffs">
                 <div className="form-group-staffs">
                   <label className="form-label-staffs">Họ</label>
@@ -485,6 +558,9 @@ const Staffs = () => {
                     className="form-input-staffs"
                     required
                   />
+                  {errors.firstName && (
+                    <p className="error-text-staffs">{errors.firstName}</p>
+                  )}
                 </div>
                 <div className="form-group-staffs">
                   <label className="form-label-staffs">Tên</label>
@@ -496,16 +572,22 @@ const Staffs = () => {
                     className="form-input-staffs"
                     required
                   />
+                  {errors.lastName && (
+                    <p className="error-text-staffs">{errors.lastName}</p>
+                  )}
                 </div>
                 <div className="form-group-staffs">
                   <label className="form-label-staffs">SĐT</label>
                   <input
                     type="text"
-                    name="phone" // Đổi từ phoneNumber thành phone
+                    name="phone"
                     value={editStaff.phone}
                     onChange={handleEditChange}
                     className="form-input-staffs"
                   />
+                  {errors.phone && (
+                    <p className="error-text-staffs">{errors.phone}</p>
+                  )}
                 </div>
                 <div className="form-group-staffs">
                   <label className="form-label-staffs">Ngày Sinh</label>
@@ -516,6 +598,9 @@ const Staffs = () => {
                     onChange={handleEditChange}
                     className="form-input-staffs"
                   />
+                  {errors.dob && (
+                    <p className="error-text-staffs">{errors.dob}</p>
+                  )}
                 </div>
                 <div className="form-group-staffs">
                   <label className="form-label-staffs">Địa chỉ</label>
@@ -526,16 +611,22 @@ const Staffs = () => {
                     onChange={handleEditChange}
                     className="form-input-staffs"
                   />
+                  {errors.address && (
+                    <p className="error-text-staffs">{errors.address}</p>
+                  )}
                 </div>
                 <div className="form-group-staffs">
                   <label className="form-label-staffs">Email</label>
                   <input
                     type="email"
-                    name="email"
-                    value={editStaff.email}
+                    name="mail"
+                    value={editStaff.mail}
                     onChange={handleEditChange}
                     className="form-input-staffs"
                   />
+                  {errors.mail && (
+                    <p className="error-text-staffs">{errors.mail}</p>
+                  )}
                 </div>
                 <div className="form-group-staffs form-group-password-staffs">
                   <label className="form-label-staffs">Mật khẩu</label>
@@ -557,6 +648,9 @@ const Staffs = () => {
                       <FaEye size={20} className="password-icon-staffs" />
                     )}
                   </button>
+                  {errors.password && (
+                    <p className="error-text-staffs">{errors.password}</p>
+                  )}
                 </div>
                 <div className="form-group-checkbox-staffs">
                   <input
