@@ -26,6 +26,10 @@
   --card-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
   --transition: all 0.3s ease-in-out;
 }
+.profile-save-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 /* Global Styles */
 body {
