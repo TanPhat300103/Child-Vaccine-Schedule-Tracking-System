@@ -21,9 +21,9 @@ import {
   FiLogOut,
 } from "react-icons/fi";
 import { FaHospital, FaSyringe, FaCashRegister } from "react-icons/fa";
-import { useAuth } from '../../components/AuthContext';  
+import { useAuth } from "../../components/AuthContext";
 import { LogOut } from "lucide-react";
-import '../../style/StaffPage.css';
+import "../../style/StaffPage.css";
 
 const StaffPage = () => {
   const { userInfo } = useAuth();
@@ -81,11 +81,7 @@ const StaffPage = () => {
 
   return (
     <>
-      {loading && (
-        <div className="loading-staffpage">
-          Đang tải dữ liệu...
-        </div>
-      )}
+      {loading && <div className="loading-staffpage">Đang tải dữ liệu...</div>}
       {error && <div className="error-staffpage">{error}</div>}
       {!loading && !error && !staffData && (
         <div className="no-data-staffpage">Không có dữ liệu</div>
@@ -94,7 +90,11 @@ const StaffPage = () => {
       {!loading && !error && staffData && (
         <div className="container-staffpage">
           <aside
-            className={`sidebar-staffpage ${sidebarOpen ? "sidebar-open-staffpage" : "sidebar-closed-staffpage"}`}
+            className={`sidebar-staffpage ${
+              sidebarOpen
+                ? "sidebar-open-staffpage"
+                : "sidebar-closed-staffpage"
+            }`}
           >
             {sidebarOpen ? (
               <div className="sidebar-header-staffpage">
@@ -102,13 +102,19 @@ const StaffPage = () => {
                   <FaHospital className="sidebar-icon-staffpage" />
                   <h1 className="sidebar-title-staffpage">VaccineCare Staff</h1>
                 </div>
-                <button onClick={toggleSidebar} className="sidebar-toggle-btn-staffpage">
+                <button
+                  onClick={toggleSidebar}
+                  className="sidebar-toggle-btn-staffpage"
+                >
                   <FiX size={24} />
                 </button>
               </div>
             ) : (
               <div className="sidebar-header-closed-staffpage">
-                <button onClick={toggleSidebar} className="sidebar-toggle-btn-staffpage">
+                <button
+                  onClick={toggleSidebar}
+                  className="sidebar-toggle-btn-staffpage"
+                >
                   <FiMenu size={24} />
                 </button>
               </div>
@@ -121,13 +127,21 @@ const StaffPage = () => {
                     to="/staff"
                     end
                     className={({ isActive }) =>
-                      `sidebar-nav-item-staffpage ${isActive ? "sidebar-nav-item-active-staffpage" : ""}`
+                      `sidebar-nav-item-staffpage ${
+                        isActive ? "sidebar-nav-item-active-staffpage" : ""
+                      }`
                     }
                   >
                     <FiHome className="sidebar-icon-staffpage" />
-                    {sidebarOpen && <span className="sidebar-nav-text-staffpage">Hồ Sơ Nhân Viên</span>}
+                    {sidebarOpen && (
+                      <span className="sidebar-nav-text-staffpage">
+                        Hồ Sơ Nhân Viên
+                      </span>
+                    )}
                     {!sidebarOpen && (
-                      <span className="sidebar-tooltip-staffpage">Hồ Sơ Nhân Viên</span>
+                      <span className="sidebar-tooltip-staffpage">
+                        Hồ Sơ Nhân Viên
+                      </span>
                     )}
                   </NavLink>
                 </li>
@@ -135,13 +149,21 @@ const StaffPage = () => {
                   <NavLink
                     to="/staff/customers"
                     className={({ isActive }) =>
-                      `sidebar-nav-item-staffpage ${isActive ? "sidebar-nav-item-active-staffpage" : ""}`
+                      `sidebar-nav-item-staffpage ${
+                        isActive ? "sidebar-nav-item-active-staffpage" : ""
+                      }`
                     }
                   >
                     <FiUsers className="sidebar-icon-staffpage" />
-                    {sidebarOpen && <span className="sidebar-nav-text-staffpage">Quản Lý Khách Hàng</span>}
+                    {sidebarOpen && (
+                      <span className="sidebar-nav-text-staffpage">
+                        Quản Lý Khách Hàng
+                      </span>
+                    )}
                     {!sidebarOpen && (
-                      <span className="sidebar-tooltip-staffpage">Quản Lý Khách Hàng</span>
+                      <span className="sidebar-tooltip-staffpage">
+                        Quản Lý Khách Hàng
+                      </span>
                     )}
                   </NavLink>
                 </li>
@@ -149,13 +171,21 @@ const StaffPage = () => {
                   <NavLink
                     to="/staff/bookings"
                     className={({ isActive }) =>
-                      `sidebar-nav-item-staffpage ${isActive ? "sidebar-nav-item-active-staffpage" : ""}`
+                      `sidebar-nav-item-staffpage ${
+                        isActive ? "sidebar-nav-item-active-staffpage" : ""
+                      }`
                     }
                   >
                     <FiCalendar className="sidebar-icon-staffpage" />
-                    {sidebarOpen && <span className="sidebar-nav-text-staffpage">Lịch Đăng Ký Tiêm</span>}
+                    {sidebarOpen && (
+                      <span className="sidebar-nav-text-staffpage">
+                        Lịch Đăng Ký Tiêm
+                      </span>
+                    )}
                     {!sidebarOpen && (
-                      <span className="sidebar-tooltip-staffpage">Lịch Đăng Ký Tiêm</span>
+                      <span className="sidebar-tooltip-staffpage">
+                        Lịch Đăng Ký Tiêm
+                      </span>
                     )}
                   </NavLink>
                 </li>
@@ -163,13 +193,21 @@ const StaffPage = () => {
                   <NavLink
                     to="/staff/records"
                     className={({ isActive }) =>
-                      `sidebar-nav-item-staffpage ${isActive ? "sidebar-nav-item-active-staffpage" : ""}`
+                      `sidebar-nav-item-staffpage ${
+                        isActive ? "sidebar-nav-item-active-staffpage" : ""
+                      }`
                     }
                   >
                     <FiAlertTriangle className="sidebar-icon-staffpage" />
-                    {sidebarOpen && <span className="sidebar-nav-text-staffpage">Báo Cáo Phản Ứng</span>}
+                    {sidebarOpen && (
+                      <span className="sidebar-nav-text-staffpage">
+                        Báo Cáo Phản Ứng
+                      </span>
+                    )}
                     {!sidebarOpen && (
-                      <span className="sidebar-tooltip-staffpage">Báo Cáo Phản Ứng</span>
+                      <span className="sidebar-tooltip-staffpage">
+                        Báo Cáo Phản Ứng
+                      </span>
                     )}
                   </NavLink>
                 </li>
@@ -177,13 +215,21 @@ const StaffPage = () => {
                   <NavLink
                     to="/staff/feedbacks"
                     className={({ isActive }) =>
-                      `sidebar-nav-item-staffpage ${isActive ? "sidebar-nav-item-active-staffpage" : ""}`
+                      `sidebar-nav-item-staffpage ${
+                        isActive ? "sidebar-nav-item-active-staffpage" : ""
+                      }`
                     }
                   >
                     <FiMessageSquare className="sidebar-icon-staffpage" />
-                    {sidebarOpen && <span className="sidebar-nav-text-staffpage">Phản Hồi</span>}
+                    {sidebarOpen && (
+                      <span className="sidebar-nav-text-staffpage">
+                        Phản Hồi
+                      </span>
+                    )}
                     {!sidebarOpen && (
-                      <span className="sidebar-tooltip-staffpage">Phản Hồi</span>
+                      <span className="sidebar-tooltip-staffpage">
+                        Phản Hồi
+                      </span>
                     )}
                   </NavLink>
                 </li>
@@ -191,13 +237,21 @@ const StaffPage = () => {
                   <NavLink
                     to="/staff/marketing-campaigns"
                     className={({ isActive }) =>
-                      `sidebar-nav-item-staffpage ${isActive ? "sidebar-nav-item-active-staffpage" : ""}`
+                      `sidebar-nav-item-staffpage ${
+                        isActive ? "sidebar-nav-item-active-staffpage" : ""
+                      }`
                     }
                   >
                     <FiBarChart2 className="sidebar-icon-staffpage" />
-                    {sidebarOpen && <span className="sidebar-nav-text-staffpage">Chiến Dịch Marketing</span>}
+                    {sidebarOpen && (
+                      <span className="sidebar-nav-text-staffpage">
+                        Chiến Dịch Marketing
+                      </span>
+                    )}
                     {!sidebarOpen && (
-                      <span className="sidebar-tooltip-staffpage">Chiến Dịch Marketing</span>
+                      <span className="sidebar-tooltip-staffpage">
+                        Chiến Dịch Marketing
+                      </span>
                     )}
                   </NavLink>
                 </li>
@@ -205,25 +259,37 @@ const StaffPage = () => {
                   <NavLink
                     to="/staff/payments"
                     className={({ isActive }) =>
-                      `sidebar-nav-item-staffpage ${isActive ? "sidebar-nav-item-active-staffpage" : ""}`
+                      `sidebar-nav-item-staffpage ${
+                        isActive ? "sidebar-nav-item-active-staffpage" : ""
+                      }`
                     }
                   >
                     <FaCashRegister className="sidebar-icon-staffpage" />
-                    {sidebarOpen && <span className="sidebar-nav-text-staffpage">Quản Lý Hóa Đơn</span>}
+                    {sidebarOpen && (
+                      <span className="sidebar-nav-text-staffpage">
+                        Quản Lý Hóa Đơn
+                      </span>
+                    )}
                     {!sidebarOpen && (
-                      <span className="sidebar-tooltip-staffpage">Quản Lý Hóa Đơn</span>
+                      <span className="sidebar-tooltip-staffpage">
+                        Quản Lý Hóa Đơn
+                      </span>
                     )}
                   </NavLink>
                 </li>
                 <li className="sidebar-nav-group-staffpage">
                   <div
-                    className={`sidebar-nav-item-staffpage ${isVaccineActive ? "sidebar-nav-item-active-staffpage" : ""}`}
+                    className={`sidebar-nav-item-staffpage ${
+                      isVaccineActive ? "sidebar-nav-item-active-staffpage" : ""
+                    }`}
                     onClick={toggleVaccineDropdown}
                   >
                     <FaSyringe className="sidebar-icon-staffpage" />
                     {sidebarOpen && (
                       <>
-                        <span className="sidebar-nav-text-staffpage">Vaccine</span>
+                        <span className="sidebar-nav-text-staffpage">
+                          Vaccine
+                        </span>
                         <FiChevronDown className="sidebar-icon-dropdown-staffpage" />
                       </>
                     )}
@@ -232,28 +298,44 @@ const StaffPage = () => {
                     )}
                   </div>
                   <ul
-                    className={`sidebar-subnav-staffpage ${vaccineDropdownOpen || isVaccineActive ? "sidebar-subnav-active-staffpage" : ""}`}
+                    className={`sidebar-subnav-staffpage ${
+                      vaccineDropdownOpen || isVaccineActive
+                        ? "sidebar-subnav-active-staffpage"
+                        : ""
+                    }`}
                   >
                     <li>
                       <NavLink
                         to="/staff/vaccines"
                         className={({ isActive }) =>
-                          `sidebar-subnav-item-staffpage ${isActive ? "sidebar-nav-item-active-staffpage" : ""}`
+                          `sidebar-subnav-item-staffpage ${
+                            isActive ? "sidebar-nav-item-active-staffpage" : ""
+                          }`
                         }
                       >
                         <FiShield className="sidebar-icon-staffpage" />
-                        {sidebarOpen && <span className="sidebar-subnav-text-staffpage">Quản Lý Vaccine</span>}
+                        {sidebarOpen && (
+                          <span className="sidebar-subnav-text-staffpage">
+                            Quản Lý Vaccine
+                          </span>
+                        )}
                       </NavLink>
                     </li>
                     <li>
                       <NavLink
                         to="/staff/vaccine-combos"
                         className={({ isActive }) =>
-                          `sidebar-subnav-item-staffpage ${isActive ? "sidebar-nav-item-active-staffpage" : ""}`
+                          `sidebar-subnav-item-staffpage ${
+                            isActive ? "sidebar-nav-item-active-staffpage" : ""
+                          }`
                         }
                       >
                         <FiBox className="sidebar-icon-staffpage" />
-                        {sidebarOpen && <span className="sidebar-subnav-text-staffpage">Gói Vaccine</span>}
+                        {sidebarOpen && (
+                          <span className="sidebar-subnav-text-staffpage">
+                            Gói Vaccine
+                          </span>
+                        )}
                       </NavLink>
                     </li>
                   </ul>
@@ -263,7 +345,10 @@ const StaffPage = () => {
 
             {sidebarOpen && (
               <div className="sidebar-footer-staffpage">
-                <button onClick={handleLogout} className="sidebar-logout-btn-staffpage">
+                <button
+                  onClick={handleLogout}
+                  className="sidebar-logout-btn-staffpage"
+                >
                   <FiLogOut className="sidebar-icon-staffpage" />
                   <span>Đăng Xuất</span>
                 </button>
@@ -271,12 +356,20 @@ const StaffPage = () => {
             )}
           </aside>
 
-          <div className={`main-content-staffpage ${sidebarOpen ? "main-content-open-staffpage" : "main-content-closed-staffpage"}`}>
+          <div
+            className={`main-content-staffpage ${
+              sidebarOpen
+                ? "main-content-open-staffpage"
+                : "main-content-closed-staffpage"
+            }`}
+          >
             <header className="header-staffpage">
               <div className="header-content-staffpage">
                 <div className="header-left-staffpage">
                   <h2 className="header-title-staffpage">Trang Nhân Viên</h2>
-                  <p className="header-subtitle-staffpage">Quản lý hệ thống VaccineCare</p>
+                  <p className="header-subtitle-staffpage">
+                    Quản lý hệ thống VaccineCare
+                  </p>
                 </div>
                 <div className="header-right-staffpage">
                   <div className="header-profile-staffpage">
@@ -286,8 +379,12 @@ const StaffPage = () => {
                       </div>
                       {sidebarOpen && (
                         <div className="header-profile-info-staffpage">
-                          <span className="header-profile-name-staffpage">{staffData?.name || "Nhân Viên"}</span>
-                          <span className="header-profile-role-staffpage">Staff</span>
+                          <span className="header-profile-name-staffpage">
+                            {staffData?.name || "Nhân Viên"}
+                          </span>
+                          <span className="header-profile-role-staffpage">
+                            Staff
+                          </span>
                         </div>
                       )}
                     </button>
@@ -305,4 +402,4 @@ const StaffPage = () => {
   );
 };
 
-export default StaffPage; 
+export default StaffPage;
