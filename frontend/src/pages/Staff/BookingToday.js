@@ -73,10 +73,10 @@ const BookingToday = ({ onBack }) => {
         {filteredBookings.length > 0 ? (
           filteredBookings.map((booking) => (
             <div
-              key={booking.bookingDetailId}
+              key={booking.booking.bookingId}
               className="booking-card-bookingtoday"
               onClick={() =>
-                navigate(`../booking-detail/${booking.bookingDetailId}`)
+                navigate(`/staff/booking-detail/${booking.booking.bookingId}`)
               }
             >
               <div className="booking-card-header-bookingtoday">
