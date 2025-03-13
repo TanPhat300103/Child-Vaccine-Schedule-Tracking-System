@@ -67,7 +67,9 @@ const formatPrice = (price) =>
   new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
-  }).format(price);
+  })
+    .format(price)
+    .replace("₫", "VNĐ"); // Thay "₫" bằng "VNĐ"
 
 const StatCard = ({ title, value, prevValue, icon }) => {
   const percentageChange =
@@ -88,6 +90,7 @@ const StatCard = ({ title, value, prevValue, icon }) => {
         <div className="stat-icon-dashboard">{icon}</div>
         <div className="stat-content-dashboard">
           <h4 className="stat-title-dashboard">{title}</h4>
+          <div className="stat-income-dashboard">{formatPrice(value)}</div>
           <div className="stat-value-dashboard">
             <span
               className={`stat-percentage-dashboard ${
@@ -109,11 +112,6 @@ const StatCard = ({ title, value, prevValue, icon }) => {
               {isIncrease ? "▲" : "▼"}
             </span>
           </div>
-        </div>
-      </div>
-      <div className="stat-dropdown-dashboard">
-        <div className="stat-dropdown-text-dashboard">
-          {title}: {formatPrice(value)}
         </div>
       </div>
     </div>
