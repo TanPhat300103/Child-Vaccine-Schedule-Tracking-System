@@ -1,40 +1,65 @@
 import React, { useEffect, useState } from "react";
 import { useParams, NavLink } from "react-router-dom";
 import { FaEdit, FaPowerOff } from "react-icons/fa";
-import '../../style/VaccineDetailManager.css';
-
+import { toast } from "react-toastify";
+import "../../style/VaccineDetailManager.css";
 
 // --- Component VaccineDetailItem ---
 const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState(detail.img || "");
+  const [updateError, setUpdateError] = useState(null); // Thêm trạng thái lỗi
 
-  const handleToggleStatus = () => {
-    onToggleStatus(detail.id, detail.status);
+  const handleToggleStatus = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/vaccinedetail/active?id=${detail.id}`,
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Chuyển trạng thái thất bại");
+      }
+      const data = await response.json();
+      console.log("API toggle status thành công:", data);
+      onToggleStatus(detail.id, detail.status);
+      toast.success("Trạng thái đã được cập nhật thành công!");
+    } catch (err) {
+      console.error("Lỗi chuyển trạng thái VaccineDetail:", err);
+      toast.error(err.message || "Đã xảy ra lỗi khi chuyển trạng thái!");
+    }
   };
 
-  const handleUpdate = (updatedData) => {
-    console.log("Gửi API cập nhật với dữ liệu:", updatedData);
-    fetch(`http://localhost:8080/vaccinedetail/update`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updatedData),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Cập nhật thất bại");
-        return res.json();
-      })
-      .then((data) => {
-        console.log("Cập nhật VaccineDetail thành công:", data);
-        onDetailUpdated(data);
-        setIsModalOpen(false);
-      })
-      .catch((err) => {
-        console.error("Cập nhật VaccineDetail thất bại:", err);
-      });
+  const handleUpdate = async (updatedData) => {
+    try {
+      console.log("Gửi API cập nhật với dữ liệu:", updatedData);
+      const response = await fetch(
+        `http://localhost:8080/vaccinedetail/update`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedData),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Cập nhật thất bại");
+      }
+      const data = await response.json();
+      console.log("Cập nhật VaccineDetail thành công:", data);
+      onDetailUpdated(data);
+      setIsModalOpen(false);
+      setUpdateError(null); // Xóa lỗi nếu thành công
+      toast.success("Cập nhật Vaccine Detail thành công!");
+    } catch (err) {
+      console.error("Cập nhật VaccineDetail thất bại:", err);
+      setUpdateError(err.message || "Đã xảy ra lỗi khi cập nhật!");
+      toast.error(err.message || "Đã xảy ra lỗi khi cập nhật!");
+    }
   };
 
   return (
@@ -50,14 +75,17 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
         </h3>
         <div className="card-content-vaccinedetailmanager">
           <p>
-            <span className="font-medium-vaccinedetailmanager">ID:</span> {detail.id}
+            <span className="font-medium-vaccinedetailmanager">ID:</span>{" "}
+            {detail.id}
           </p>
           <p>
             <span className="font-medium-vaccinedetailmanager">Ngày nhập:</span>{" "}
             {detail.entryDate}
           </p>
           <p>
-            <span className="font-medium-vaccinedetailmanager">Ngày hết hạn:</span>{" "}
+            <span className="font-medium-vaccinedetailmanager">
+              Ngày hết hạn:
+            </span>{" "}
             {detail.expiredDate}
           </p>
           <p>
@@ -73,7 +101,7 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
             {detail.quantity}
           </p>
         </div>
-        <div className="card-buttons-vaccinedetailmanager">
+        <div className="card-buttons-vaccined personallyccinedetailmanager">
           <button
             onClick={handleToggleStatus}
             className="status-button-vaccinedetailmanager"
@@ -104,6 +132,9 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
             <h2 className="modal-title-vaccinedetailmanager">
               Cập nhật Vaccine Detail
             </h2>
+            {updateError && (
+              <p className="error-text-vaccinedetailmanager">{updateError}</p>
+            )}
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -199,7 +230,10 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
                 >
                   Hủy
                 </button>
-                <button type="submit" className="submit-button-vaccinedetailmanager">
+                <button
+                  type="submit"
+                  className="submit-button-vaccinedetailmanager"
+                >
                   Cập nhật
                 </button>
               </div>
@@ -225,24 +259,36 @@ const VaccineDetailManager = () => {
     img: "",
   });
   const [createError, setCreateError] = useState(null);
+  const [fetchError, setFetchError] = useState(null); // Thêm trạng thái lỗi khi fetch
 
   useEffect(() => {
     fetchVaccineDetails();
   }, [vaccineId]);
 
-  const fetchVaccineDetails = () => {
-    fetch(`http://localhost:8080/vaccinedetail/findbyvaccine?id=${vaccineId}`, {
-      credentials: "include",
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Lấy dữ liệu thất bại");
-        return res.json();
-      })
-      .then((data) => {
-        console.log("API fetch VaccineDetail thành công:", data);
-        setVaccineDetails(data);
-      })
-      .catch((err) => console.error("Lỗi khi lấy VaccineDetail:", err));
+  const fetchVaccineDetails = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/vaccinedetail/findbyvaccine?id=${vaccineId}`,
+        {
+          credentials: "include",
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Lấy dữ liệu thất bại");
+      }
+      const data = await response.json();
+      console.log("API fetch VaccineDetail thành công:", data);
+      setVaccineDetails(data);
+      setFetchError(null); // Xóa lỗi nếu thành công
+    } catch (err) {
+      console.error("Lỗi khi lấy VaccineDetail:", err);
+      setFetchError(
+        err.message || "Đã xảy ra lỗi khi lấy danh sách Vaccine Detail!"
+      );
+      toast.error(
+        err.message || "Đã xảy ra lỗi khi lấy danh sách Vaccine Detail!"
+      );
+    }
   };
 
   const handleDetailUpdated = (updatedDetail) => {
@@ -252,34 +298,14 @@ const VaccineDetailManager = () => {
   };
 
   const handleToggleStatus = (detailId, currentStatus) => {
-    console.log(
-      "Đang chuyển trạng thái cho detailId:",
-      detailId,
-      "Trạng thái hiện tại:",
-      currentStatus
+    setVaccineDetails((prev) =>
+      prev.map((d) =>
+        d.id === detailId ? { ...d, status: !currentStatus } : d
+      )
     );
-    fetch(`http://localhost:8080/vaccinedetail/active?id=${detailId}`, {
-      method: "POST",
-      credentials: "include",
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Chuyển trạng thái thất bại");
-        return res.json();
-      })
-      .then((data) => {
-        console.log("API toggle status thành công:", data);
-        setVaccineDetails((prev) =>
-          prev.map((d) =>
-            d.id === detailId ? { ...d, status: !currentStatus } : d
-          )
-        );
-      })
-      .catch((err) =>
-        console.error("Lỗi chuyển trạng thái VaccineDetail:", err)
-      );
   };
 
-  const handleCreateDetail = (e) => {
+  const handleCreateDetail = async (e) => {
     e.preventDefault();
     const payload = {
       vaccine: { vaccineId: vaccineId },
@@ -291,39 +317,44 @@ const VaccineDetailManager = () => {
       img: newDetail.img || null,
       status: true,
     };
-    fetch("http://localhost:8080/vaccinedetail/create", {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Tạo mới thất bại");
-        return res.json();
-      })
-      .then((data) => {
-        console.log("Vaccine Detail created successfully:", data);
-        setShowCreateModal(false);
-        setNewDetail({
-          entryDate: "",
-          expiredDate: "",
-          day: 0,
-          tolerance: 0,
-          quantity: 0,
-          img: "",
-        });
-        setCreateError(null);
-        fetchVaccineDetails();
-      })
-      .catch((err) => {
-        console.error("Lỗi khi tạo Vaccine Detail:", err);
-        setCreateError(
-          err.message ||
-            "Đã xảy ra lỗi khi tạo Vaccine Detail. Vui lòng thử lại!"
-        );
+    try {
+      const response = await fetch(
+        "http://localhost:8080/vaccinedetail/create",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Tạo mới thất bại");
+      }
+      const data = await response.json();
+      console.log("Vaccine Detail created successfully:", data);
+      setShowCreateModal(false);
+      setNewDetail({
+        entryDate: "",
+        expiredDate: "",
+        day: 0,
+        tolerance: 0,
+        quantity: 0,
+        img: "",
       });
+      setCreateError(null);
+      fetchVaccineDetails();
+      toast.success("Tạo mới Vaccine Detail thành công!");
+    } catch (err) {
+      console.error("Lỗi khi tạo Vaccine Detail:", err);
+      setCreateError(
+        err.message || "Đã xảy ra lỗi khi tạo Vaccine Detail. Vui lòng thử lại!"
+      );
+      toast.error(
+        err.message || "Đã xảy ra lỗi khi tạo Vaccine Detail. Vui lòng thử lại!"
+      );
+    }
   };
 
   return (
@@ -333,7 +364,10 @@ const VaccineDetailManager = () => {
           Danh sách Vaccine Detail cho Vaccine {vaccineId}
         </h2>
         <div className="back-button-wrapper-vaccinedetailmanager">
-          <NavLink to="../vaccines" className="back-button-vaccinedetailmanager">
+          <NavLink
+            to="../vaccines"
+            className="back-button-vaccinedetailmanager"
+          >
             Quay lại Vaccine
           </NavLink>
         </div>
@@ -345,6 +379,9 @@ const VaccineDetailManager = () => {
             Tạo mới Vaccine Detail
           </button>
         </div>
+        {fetchError && (
+          <p className="error-text-vaccinedetailmanager">{fetchError}</p>
+        )}
         {showCreateModal && (
           <div className="modal-overlay-create-vaccinedetailmanager">
             <div
@@ -355,7 +392,13 @@ const VaccineDetailManager = () => {
               <h3 className="modal-title-create-vaccinedetailmanager">
                 Tạo mới Vaccine Detail
               </h3>
-              <form onSubmit={handleCreateDetail} className="form-create-vaccinedetailmanager">
+              {createError && (
+                <p className="error-text-vaccinedetailmanager">{createError}</p>
+              )}
+              <form
+                onSubmit={handleCreateDetail}
+                className="form-create-vaccinedetailmanager"
+              >
                 <label className="form-label-vaccinedetailmanager">
                   Ngày nhập:
                   <input
@@ -431,9 +474,6 @@ const VaccineDetailManager = () => {
                     placeholder="Nhập URL hình ảnh (nếu có)"
                   />
                 </label>
-                {createError && (
-                  <p className="error-text-vaccinedetailmanager">{createError}</p>
-                )}
                 <div className="modal-buttons-create-vaccinedetailmanager">
                   <button
                     type="button"
@@ -453,7 +493,7 @@ const VaccineDetailManager = () => {
             </div>
           </div>
         )}
-        {vaccineDetails.length === 0 ? (
+        {vaccineDetails.length === 0 && !fetchError ? (
           <p className="no-data-text-vaccinedetailmanager">
             Không tìm thấy Vaccine Detail nào
           </p>

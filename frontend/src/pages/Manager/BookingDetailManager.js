@@ -28,7 +28,18 @@ const BookingDetail = () => {
   const [groupedDetails, setGroupedDetails] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [canCancel, setCanCancel] = useState(false); // Thêm state mới
   const navigate = useNavigate();
+
+  const [isBookingInfoOpen, setIsBookingInfoOpen] = useState(true);
+  const [isCustomerInfoOpen, setIsCustomerInfoOpen] = useState(true);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [detailIdToConfirm, setDetailIdToConfirm] = useState(null);
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [showReactionModal, setShowReactionModal] = useState(false);
+  const [selectedDetailId, setSelectedDetailId] = useState(null);
+  const [reactionInput, setReactionInput] = useState("");
+  const [showCancelModal, setShowCancelModal] = useState(false);
 
   const getBookingDetailsByBookID = async (bookingId) => {
     try {
@@ -68,6 +79,23 @@ const BookingDetail = () => {
     }
   };
 
+  const cancelBooking = async (bookingId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/booking/cancel?bookingId=${bookingId}`,
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+      if (!response.ok) throw new Error("Failed to cancel booking");
+      console.log("Hủy đặt lịch thành công.");
+    } catch (error) {
+      console.error("Lỗi khi hủy đặt lịch:", error);
+      throw error;
+    }
+  };
+
   const updateReactionNote = async (detailId, reaction) => {
     try {
       const response = await fetch(
@@ -88,21 +116,17 @@ const BookingDetail = () => {
     }
   };
 
-  const [isBookingInfoOpen, setIsBookingInfoOpen] = useState(true);
-  const [isCustomerInfoOpen, setIsCustomerInfoOpen] = useState(true);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [detailIdToConfirm, setDetailIdToConfirm] = useState(null);
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [showReactionModal, setShowReactionModal] = useState(false);
-  const [selectedDetailId, setSelectedDetailId] = useState(null);
-  const [reactionInput, setReactionInput] = useState("");
-
   const fetchBookingData = async () => {
     try {
       const detailsData = await getBookingDetailsByBookID(bookingId);
       setBookingDetails(detailsData);
       if (detailsData.length > 0) {
         setBooking(detailsData[0].booking);
+        // Kiểm tra nếu tất cả booking details có status khác 2
+        const allNotCompleted = detailsData.every(
+          (detail) => detail.status !== 2
+        );
+        setCanCancel(allNotCompleted);
       }
 
       const groups = detailsData.reduce((acc, detail) => {
@@ -166,6 +190,35 @@ const BookingDetail = () => {
       console.error("Error confirming booking detail:", error);
       toast.update(loadingToast, {
         render: "Xác nhận tiêm thất bại. Vui lòng thử lại.",
+        type: "error",
+        isLoading: false,
+        autoClose: 2000,
+      });
+    }
+  };
+
+  const handleCancel = () => {
+    setShowCancelModal(true);
+  };
+  const confirmCancelAction = async () => {
+    setShowCancelModal(false);
+    const loadingToast = toast.loading("Đang xử lý hủy đặt lịch...");
+    try {
+      await cancelBooking(bookingId);
+      toast.update(loadingToast, {
+        render: "Hủy đặt lịch thành công",
+        type: "success",
+        isLoading: false,
+        autoClose: 2000, // Toast tự đóng sau 2 giây
+      });
+      // Chờ 2 giây sau khi toast hiển thị rồi chuyển hướng
+      setTimeout(() => {
+        navigate(-1);
+      }, 2000); // Thời gian chờ khớp với autoClose của toast
+    } catch (error) {
+      console.error("Error canceling booking:", error);
+      toast.update(loadingToast, {
+        render: "Hủy đặt lịch thất bại. Vui lòng thử lại.",
         type: "error",
         isLoading: false,
         autoClose: 2000,
@@ -305,6 +358,31 @@ const BookingDetail = () => {
               </button>
               <button
                 onClick={confirmAction}
+                className="modal-confirm-button-bookingdetailmanager"
+              >
+                Xác nhận
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showCancelModal && (
+        <div className="modal-overlay-bookingdetailmanager">
+          <div className="modal-content-bookingdetailmanager">
+            <h3 className="modal-title-bookingdetailmanager">Hủy Đặt Lịch</h3>
+            <p className="modal-text-bookingdetailmanager">
+              Bạn có thật sự muốn hủy đặt lịch tiêm này không?
+            </p>
+            <div className="modal-buttons-bookingdetailmanager">
+              <button
+                onClick={() => setShowCancelModal(false)}
+                className="modal-cancel-button-bookingdetailmanager"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={confirmCancelAction}
                 className="modal-confirm-button-bookingdetailmanager"
               >
                 Xác nhận
@@ -455,6 +533,14 @@ const BookingDetail = () => {
                 </div>
               )}
             </div>
+            {canCancel && (
+              <button
+                onClick={handleCancel}
+                className="cancel-booking-button-bookingdetailmanager"
+              >
+                Hủy Đặt Lịch
+              </button>
+            )}
           </div>
         </div>
 

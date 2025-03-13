@@ -17,7 +17,7 @@ const Staffs = () => {
   const [newStaff, setNewStaff] = useState({
     firstName: "",
     lastName: "",
-    phoneNumber: "",
+    phone: "", // Đổi từ phoneNumber thành phone
     dob: "",
     address: "",
     email: "",
@@ -96,7 +96,7 @@ const Staffs = () => {
       staffId: staff.staffId,
       firstName: staff.firstName,
       lastName: staff.lastName,
-      phoneNumber: staff.phone,
+      phone: staff.phone, // Đổi từ phoneNumber thành phone
       dob: staff.dob ? staff.dob.split("T")[0] : "",
       address: staff.address,
       email: staff.mail,
@@ -125,18 +125,16 @@ const Staffs = () => {
     e.preventDefault();
     if (!editStaff) return;
     setMessage("");
+    console.log(editStaff);
     try {
-      const response = await fetch(
-        `http://localhost:8080/staff/${editStaff.staffId}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify(editStaff),
-        }
-      );
+      const response = await fetch("http://localhost:8080/staff/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(editStaff),
+      });
       const result = await response.json();
-      if (result.success) {
+      if (!result.success) {
         setMessage("Cập nhật nhân viên thành công!");
         setEditStaff(null);
         setOriginalEditStaff(null);
@@ -167,7 +165,7 @@ const Staffs = () => {
     e.preventDefault();
     setMessage("");
     try {
-      const response = await fetch("http://localhost:8080/staff", {
+      const response = await fetch("http://localhost:8080/staff/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -179,7 +177,7 @@ const Staffs = () => {
         setNewStaff({
           firstName: "",
           lastName: "",
-          phoneNumber: "",
+          phone: "", // Đổi từ phoneNumber thành phone
           dob: "",
           address: "",
           email: "",
@@ -333,6 +331,17 @@ const Staffs = () => {
                 ×
               </button>
               <h2 className="modal-title-staffs">Thêm Nhân Viên Mới</h2>
+              {message && (
+                <p
+                  className={`modal-message-staffs ${
+                    message.includes("thành công")
+                      ? "success-message-staffs"
+                      : "error-message-staffs"
+                  }`}
+                >
+                  {message}
+                </p>
+              )}
               <form onSubmit={handleAddStaff} className="modal-form-staffs">
                 <div className="form-group-staffs">
                   <label className="form-label-staffs">Họ</label>
@@ -360,8 +369,8 @@ const Staffs = () => {
                   <label className="form-label-staffs">SĐT</label>
                   <input
                     type="text"
-                    name="phoneNumber"
-                    value={newStaff.phoneNumber}
+                    name="phone" // Đổi từ phoneNumber thành phone
+                    value={newStaff.phone}
                     onChange={handleNewStaffChange}
                     className="form-input-staffs"
                   />
@@ -454,6 +463,17 @@ const Staffs = () => {
                 ×
               </button>
               <h2 className="modal-title-staffs">Chỉnh Sửa Nhân Viên</h2>
+              {message && (
+                <p
+                  className={`modal-message-staffs ${
+                    message.includes("thành công")
+                      ? "success-message-staffs"
+                      : "error-message-staffs"
+                  }`}
+                >
+                  {message}
+                </p>
+              )}
               <form onSubmit={handleEditSave} className="modal-form-staffs">
                 <div className="form-group-staffs">
                   <label className="form-label-staffs">Họ</label>
@@ -481,8 +501,8 @@ const Staffs = () => {
                   <label className="form-label-staffs">SĐT</label>
                   <input
                     type="text"
-                    name="phoneNumber"
-                    value={editStaff.phoneNumber}
+                    name="phone" // Đổi từ phoneNumber thành phone
+                    value={editStaff.phone}
                     onChange={handleEditChange}
                     className="form-input-staffs"
                   />
