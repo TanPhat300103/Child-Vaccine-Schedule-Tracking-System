@@ -1,8 +1,27 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '../components/AuthContext';
-import { Link, useNavigate } from 'react-router-dom';
-import { User, Calendar, MapPin, Phone, Mail, Shield, Edit2, Save, XCircle, ChevronDown, ChevronUp, Trash2, Plus, BookOpen, CreditCard, Syringe, Heart, User as UserIcon } from 'lucide-react';
-import '../style/ChildInfoPage.css';
+import { useState, useEffect } from "react";
+import { useAuth } from "../components/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  User,
+  Calendar,
+  MapPin,
+  Phone,
+  Mail,
+  Shield,
+  Edit2,
+  Save,
+  XCircle,
+  ChevronDown,
+  ChevronUp,
+  Trash2,
+  Plus,
+  BookOpen,
+  CreditCard,
+  Syringe,
+  Heart,
+  User as UserIcon,
+} from "lucide-react";
+import "../style/ChildInfoPage.css";
 
 function ChildInfoPage() {
   const navigate = useNavigate();
@@ -15,9 +34,9 @@ function ChildInfoPage() {
   const [expandedChildId, setExpandedChildId] = useState(null);
   const [addingChild, setAddingChild] = useState(false);
   const [newChildData, setNewChildData] = useState({
-    firstName: '',
-    lastName: '',
-    dob: '',
+    firstName: "",
+    lastName: "",
+    dob: "",
     gender: true,
   });
   const [medicalHistory, setMedicalHistory] = useState({});
@@ -25,35 +44,44 @@ function ChildInfoPage() {
   const [isEditingMedical, setIsEditingMedical] = useState(false);
   const [editingMedicalData, setEditingMedicalData] = useState(null);
   const [isReactionModalOpen, setIsReactionModalOpen] = useState(false);
-  const [selectedMedicalHistoryId, setSelectedMedicalHistoryId] = useState(null);
-  const [reactionInput, setReactionInput] = useState('');
+  const [selectedMedicalHistoryId, setSelectedMedicalHistoryId] =
+    useState(null);
+  const [reactionInput, setReactionInput] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       if (!userInfo?.userId) {
-        setError('Không tìm thấy ID người dùng');
+        setError("Không tìm thấy ID người dùng");
         setLoading(false);
         return;
       }
 
       try {
-        const customerResponse = await fetch(`http://localhost:8080/customer/findid?id=${userInfo.userId}`, {
-          method: 'GET',
-          credentials: 'include',
-        });
-        if (!customerResponse.ok) throw new Error('Không tìm thấy thông tin khách hàng');
+        const customerResponse = await fetch(
+          `http://localhost:8080/customer/findid?id=${userInfo.userId}`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+        if (!customerResponse.ok)
+          throw new Error("Không tìm thấy thông tin khách hàng");
         const customerData = await customerResponse.json();
         setCustomer(customerData);
 
-        const childrenResponse = await fetch(`http://localhost:8080/child/findbycustomer?id=${userInfo.userId}`, {
-          method: 'GET',
-          credentials: 'include',
-        });
-        if (!childrenResponse.ok) throw new Error('Không tìm thấy thông tin con');
+        const childrenResponse = await fetch(
+          `http://localhost:8080/child/findbycustomer?id=${userInfo.userId}`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+        if (!childrenResponse.ok)
+          throw new Error("Không tìm thấy thông tin con");
         const childrenData = await childrenResponse.json();
         setChildren(childrenData);
       } catch (err) {
-        setError('Lỗi khi lấy thông tin: ' + err.message);
+        setError("Lỗi khi lấy thông tin: " + err.message);
       } finally {
         setLoading(false);
       }
@@ -64,15 +92,18 @@ function ChildInfoPage() {
 
   const fetchMedicalHistory = async (childId) => {
     try {
-      const response = await fetch(`http://localhost:8080/medicalhistory/findbychildid?id=${childId}`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-      if (!response.ok) throw new Error('Không tìm thấy lịch sử tiêm chủng');
+      const response = await fetch(
+        `http://localhost:8080/medicalhistory/findbychildid?id=${childId}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+      if (!response.ok) throw new Error("Không tìm thấy lịch sử tiêm chủng");
       const data = await response.json();
       setMedicalHistory((prev) => ({ ...prev, [childId]: data }));
     } catch (err) {
-      setError('Lỗi khi lấy lịch sử tiêm chủng: ' + err.message);
+      setError("Lỗi khi lấy lịch sử tiêm chủng: " + err.message);
     }
   };
 
@@ -93,33 +124,38 @@ function ChildInfoPage() {
   const handleSaveChild = async () => {
     try {
       const response = await fetch(`http://localhost:8080/child/update`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(editingChild),
       });
 
       if (response.ok) {
         setChildren((prev) =>
-          prev.map((child) => (child.childId === editingChild.childId ? editingChild : child))
+          prev.map((child) =>
+            child.childId === editingChild.childId ? editingChild : child
+          )
         );
         setEditingChild(null);
       } else {
         const errorText = await response.text();
-        setError('Lỗi khi cập nhật thông tin con: ' + errorText);
+        setError("Lỗi khi cập nhật thông tin con: " + errorText);
       }
     } catch (err) {
-      setError('Lỗi khi cập nhật: ' + err.message);
+      setError("Lỗi khi cập nhật: " + err.message);
     }
   };
 
   const handleAddChild = async () => {
     try {
-      const childToAdd = { ...newChildData, customer: { customerId: customer.customerId } };
+      const childToAdd = {
+        ...newChildData,
+        customer: { customerId: customer.customerId },
+      };
       const response = await fetch(`http://localhost:8080/child/create`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(childToAdd),
       });
 
@@ -127,36 +163,13 @@ function ChildInfoPage() {
         const addedChild = await response.json();
         setChildren((prev) => [...prev, addedChild]);
         setAddingChild(false);
-        setNewChildData({ firstName: '', lastName: '', dob: '', gender: true });
+        setNewChildData({ firstName: "", lastName: "", dob: "", gender: true });
       } else {
         const errorText = await response.text();
-        setError('Lỗi khi thêm thông tin con: ' + errorText);
+        setError("Lỗi khi thêm thông tin con: " + errorText);
       }
     } catch (err) {
-      setError('Lỗi khi thêm: ' + err.message);
-    }
-  };
-
-  const handleDeleteChild = async (childId) => {
-    try {
-      const response = await fetch(`http://localhost:8080/child/delete?id=${childId}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        setChildren((prev) => prev.filter((child) => child.childId !== childId));
-        setMedicalHistory((prev) => {
-          const newHistory = { ...prev };
-          delete newHistory[childId];
-          return newHistory;
-        });
-      } else {
-        const errorText = await response.text();
-        setError('Lỗi khi xóa thông tin con: ' + errorText);
-      }
-    } catch (err) {
-      setError('Lỗi khi xóa: ' + err.message);
+      setError("Lỗi khi thêm: " + err.message);
     }
   };
 
@@ -181,9 +194,9 @@ function ChildInfoPage() {
       childId: child.childId,
       firstName: child.firstName,
       lastName: child.lastName,
-      dob: child.dob.split('T')[0],
+      dob: child.dob.split("T")[0],
       gender: child.gender,
-      contraindications: child.contraindications || '',
+      contraindications: child.contraindications || "",
       customer: { customerId: customer.customerId },
     });
     setIsEditingMedical(true);
@@ -197,26 +210,28 @@ function ChildInfoPage() {
   const handleSaveMedical = async () => {
     try {
       const response = await fetch(`http://localhost:8080/child/update`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(editingMedicalData),
       });
 
       if (response.ok) {
         setChildren((prev) =>
           prev.map((child) =>
-            child.childId === editingMedicalData.childId ? { ...child, ...editingMedicalData } : child
+            child.childId === editingMedicalData.childId
+              ? { ...child, ...editingMedicalData }
+              : child
           )
         );
         setIsEditingMedical(false);
         setEditingMedicalData(null);
       } else {
         const errorText = await response.text();
-        setError('Lỗi khi cập nhật hồ sơ tiêm chủng: ' + errorText);
+        setError("Lỗi khi cập nhật hồ sơ tiêm chủng: " + errorText);
       }
     } catch (err) {
-      setError('Lỗi khi cập nhật: ' + err.message);
+      setError("Lỗi khi cập nhật: " + err.message);
     }
   };
 
@@ -227,23 +242,25 @@ function ChildInfoPage() {
 
   const handleOpenReactionModal = (medicalHistoryId, currentReaction) => {
     setSelectedMedicalHistoryId(medicalHistoryId);
-    setReactionInput(currentReaction || '');
+    setReactionInput(currentReaction || "");
     setIsReactionModalOpen(true);
   };
 
   const handleCloseReactionModal = () => {
     setIsReactionModalOpen(false);
     setSelectedMedicalHistoryId(null);
-    setReactionInput('');
+    setReactionInput("");
   };
 
   const handleUpdateReaction = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/medicalhistory/updatereaction?id=${selectedMedicalHistoryId}&reaction=${encodeURIComponent(reactionInput)}`,
+        `http://localhost:8080/medicalhistory/updatereaction?id=${selectedMedicalHistoryId}&reaction=${encodeURIComponent(
+          reactionInput
+        )}`,
         {
-          method: 'POST',
-          credentials: 'include',
+          method: "POST",
+          credentials: "include",
         }
       );
 
@@ -259,10 +276,10 @@ function ChildInfoPage() {
         handleCloseReactionModal();
       } else {
         const errorText = await response.text();
-        setError('Lỗi khi cập nhật phản ứng: ' + errorText);
+        setError("Lỗi khi cập nhật phản ứng: " + errorText);
       }
     } catch (err) {
-      setError('Lỗi khi cập nhật phản ứng: ' + err.message);
+      setError("Lỗi khi cập nhật phản ứng: " + err.message);
     }
   };
 
@@ -289,10 +306,13 @@ function ChildInfoPage() {
       <div className="profile-header-childinfo">
         <div className="profile-user-info-childinfo">
           <div className="profile-avatar-childinfo">
-            {customer?.firstName?.charAt(0)}{customer?.lastName?.charAt(0)}
+            {customer?.firstName?.charAt(0)}
+            {customer?.lastName?.charAt(0)}
           </div>
           <div className="profile-user-text-childinfo">
-            <h1>{customer?.firstName} {customer?.lastName}</h1>
+            <h1>
+              {customer?.firstName} {customer?.lastName}
+            </h1>
             <p>{customer?.phoneNumber}</p>
           </div>
         </div>
@@ -300,9 +320,11 @@ function ChildInfoPage() {
 
       <div className="profile-content-childinfo">
         <div className="profile-sidebar-childinfo">
-          <div 
-            className={`profile-sidebar-item-childinfo ${false ? 'active' : ''}`}
-            onClick={() => navigate('/profile?tab=profile')}
+          <div
+            className={`profile-sidebar-item-childinfo ${
+              false ? "active" : ""
+            }`}
+            onClick={() => navigate("/profile?tab=profile")}
           >
             <div className="profile-sidebar-content-childinfo">
               <User size={18} />
@@ -310,8 +332,8 @@ function ChildInfoPage() {
             </div>
             <div className="profile-sidebar-placeholder-childinfo"></div>
           </div>
-          <div 
-            className={`profile-sidebar-item-childinfo ${true ? 'active' : ''}`}
+          <div
+            className={`profile-sidebar-item-childinfo ${true ? "active" : ""}`}
             onClick={toggleDropdown}
           >
             <div className="profile-sidebar-content-childinfo">
@@ -319,7 +341,11 @@ function ChildInfoPage() {
               <span>Thông Tin Con</span>
             </div>
             <button className="profile-sidebar-dropdown-toggle-childinfo">
-              {isDropdownOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+              {isDropdownOpen ? (
+                <ChevronUp size={18} />
+              ) : (
+                <ChevronDown size={18} />
+              )}
             </button>
           </div>
           {isDropdownOpen && (
@@ -328,11 +354,17 @@ function ChildInfoPage() {
                 children.map((child) => (
                   <div
                     key={child.childId}
-                    className={`profile-sidebar-child-item-childinfo ${child.childId === expandedChildId ? 'active' : ''}`}
+                    className={`profile-sidebar-child-item-childinfo ${
+                      child.childId === expandedChildId ? "active" : ""
+                    }`}
                     onClick={() => handleChildSelect(child.childId)}
                   >
-                    <span className="profile-sidebar-child-name">{child.firstName} {child.lastName}</span>
-                    <span className="profile-sidebar-child-date">{new Date(child.dob).toLocaleDateString()}</span>
+                    <span className="profile-sidebar-child-name">
+                      {child.firstName} {child.lastName}
+                    </span>
+                    <span className="profile-sidebar-child-date">
+                      {new Date(child.dob).toLocaleDateString()}
+                    </span>
                   </div>
                 ))
               ) : (
@@ -342,9 +374,11 @@ function ChildInfoPage() {
               )}
             </div>
           )}
-          <div 
-            className={`profile-sidebar-item-childinfo ${false ? 'active' : ''}`}
-            onClick={() => navigate('/my-bookings')}
+          <div
+            className={`profile-sidebar-item-childinfo ${
+              false ? "active" : ""
+            }`}
+            onClick={() => navigate("/my-bookings")}
           >
             <div className="profile-sidebar-content-childinfo">
               <BookOpen size={18} />
@@ -352,9 +386,11 @@ function ChildInfoPage() {
             </div>
             <div className="profile-sidebar-placeholder-childinfo"></div>
           </div>
-          <div 
-            className={`profile-sidebar-item-childinfo ${false ? 'active' : ''}`}
-            onClick={() => navigate('/my-payments')}
+          <div
+            className={`profile-sidebar-item-childinfo ${
+              false ? "active" : ""
+            }`}
+            onClick={() => navigate("/my-payments")}
           >
             <div className="profile-sidebar-content-childinfo">
               <CreditCard size={18} />
@@ -368,7 +404,10 @@ function ChildInfoPage() {
           <div className="profile-section-childinfo">
             <div className="profile-section-header-childinfo">
               <h2>Thông Tin Con</h2>
-              <button className="profile-add-btn-childinfo" onClick={() => setAddingChild(true)}>
+              <button
+                className="profile-add-btn-childinfo"
+                onClick={() => setAddingChild(true)}
+              >
                 <Plus size={16} />
                 <span>Thêm con</span>
               </button>
@@ -422,11 +461,17 @@ function ChildInfoPage() {
                   </div>
                 </div>
                 <div className="profile-form-actions-childinfo">
-                  <button className="profile-save-btn-childinfo" onClick={handleAddChild}>
+                  <button
+                    className="profile-save-btn-childinfo"
+                    onClick={handleAddChild}
+                  >
                     <Save size={16} />
                     <span>Lưu</span>
                   </button>
-                  <button className="profile-cancel-btn-childinfo" onClick={() => setAddingChild(false)}>
+                  <button
+                    className="profile-cancel-btn-childinfo"
+                    onClick={() => setAddingChild(false)}
+                  >
                     <XCircle size={16} />
                     <span>Hủy</span>
                   </button>
@@ -438,18 +483,22 @@ function ChildInfoPage() {
               <div className="profile-children-row-childinfo">
                 {children.map((child) => {
                   const isExpanded = child.childId === expandedChildId;
-                  const genderClass = child.gender ? 'male' : 'female';
+                  const genderClass = child.gender ? "male" : "female";
                   return (
                     <div
                       key={child.childId}
-                      className={`profile-child-card-modern-childinfo ${genderClass} ${isExpanded ? 'active' : ''}`}
+                      className={`profile-child-card-modern-childinfo ${genderClass} ${
+                        isExpanded ? "active" : ""
+                      }`}
                       onClick={() => toggleChildDetail(child.childId)}
                     >
                       <div className="profile-child-avatar-modern-childinfo">
                         {child.firstName.charAt(0)}
                       </div>
                       <div className="profile-child-info-modern-childinfo">
-                        <h3>{child.firstName} {child.lastName}</h3>
+                        <h3>
+                          {child.firstName} {child.lastName}
+                        </h3>
                         <p>{new Date(child.dob).toLocaleDateString()}</p>
                       </div>
                     </div>
@@ -459,7 +508,9 @@ function ChildInfoPage() {
             ) : (
               <div className="profile-no-children-childinfo">
                 <div className="profile-no-data-icon-childinfo">👶</div>
-                <p>Bạn chưa có thông tin con. Vui lòng thêm thông tin để bắt đầu.</p>
+                <p>
+                  Bạn chưa có thông tin con. Vui lòng thêm thông tin để bắt đầu.
+                </p>
               </div>
             )}
 
@@ -475,21 +526,32 @@ function ChildInfoPage() {
                       {!isEditingMedical ? (
                         <button
                           className="profile-edit-btn-childinfo"
-                          onClick={() => handleEditMedical(children.find((c) => c.childId === expandedChildId))}
+                          onClick={() =>
+                            handleEditMedical(
+                              children.find(
+                                (c) => c.childId === expandedChildId
+                              )
+                            )
+                          }
                         >
                           <Edit2 size={18} />
                         </button>
                       ) : (
                         <>
-                          <button className="profile-save-btn-childinfo" onClick={handleSaveMedical}>
+                          <button
+                            className="profile-save-btn-childinfo"
+                            onClick={handleSaveMedical}
+                          >
                             <Save size={18} />
                           </button>
-                          <button className="profile-cancel-btn-childinfo" onClick={handleCancelEditMedical}>
+                          <button
+                            className="profile-cancel-btn-childinfo"
+                            onClick={handleCancelEditMedical}
+                          >
                             <XCircle size={18} />
                           </button>
                         </>
                       )}
-                      
                     </div>
                   </div>
                   <div className="profile-medical-info-childinfo">
@@ -550,22 +612,54 @@ function ChildInfoPage() {
                       <>
                         <div className="profile-medical-field-childinfo">
                           <label>Họ và tên</label>
-                          <p>{children.find((c) => c.childId === expandedChildId)?.firstName} {children.find((c) => c.childId === expandedChildId)?.lastName}</p>
+                          <p>
+                            {
+                              children.find(
+                                (c) => c.childId === expandedChildId
+                              )?.firstName
+                            }{" "}
+                            {
+                              children.find(
+                                (c) => c.childId === expandedChildId
+                              )?.lastName
+                            }
+                          </p>
                         </div>
                         <div className="profile-medical-field-childinfo gender">
                           <label>Giới tính</label>
                           <p>
-                            <UserIcon size={18} color={children.find((c) => c.childId === expandedChildId)?.gender ? 'var(--male)' : 'var(--female)'} />
-                            {children.find((c) => c.chilId === expandedChildId)?.gender ? 'Nam' : 'Nữ'}
+                            <UserIcon
+                              size={18}
+                              color={
+                                children.find(
+                                  (c) => c.childId === expandedChildId
+                                )?.gender
+                                  ? "var(--male)"
+                                  : "var(--female)"
+                              }
+                            />
+                            {children.find((c) => c.chilId === expandedChildId)
+                              ?.gender
+                              ? "Nam"
+                              : "Nữ"}
                           </p>
                         </div>
                         <div className="profile-medical-field-childinfo">
                           <label>Ngày sinh</label>
-                          <p>{new Date(children.find((c) => c.childId === expandedChildId)?.dob).toLocaleDateString()}</p>
+                          <p>
+                            {new Date(
+                              children.find(
+                                (c) => c.childId === expandedChildId
+                              )?.dob
+                            ).toLocaleDateString()}
+                          </p>
                         </div>
                         <div className="profile-medical-field-childinfo">
                           <label>Chống chỉ định</label>
-                          <p>{children.find((c) => c.childId === expandedChildId)?.contraindications || 'Không có'}</p>
+                          <p>
+                            {children.find((c) => c.childId === expandedChildId)
+                              ?.contraindications || "Không có"}
+                          </p>
                         </div>
                       </>
                     )}
@@ -587,26 +681,33 @@ function ChildInfoPage() {
                           </tr>
                         </thead>
                         <tbody>
-                          {medicalHistory[expandedChildId].map((history, index) => (
-                            <tr key={history.medicalHistoryId}>
-                              <td>{index + 1}</td>
-                              <td>{history.vaccine.name}</td>
-                              <td>{new Date(history.date).toLocaleDateString()}</td>
-                              <td>{history.dose}</td>
-                              <td>
-                                {history.reaction || 'Không có'}
-                                <button
-                                  className="profile-update-reaction-btn-childinfo"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleOpenReactionModal(history.medicalHistoryId, history.reaction);
-                                  }}
-                                >
-                                  <Edit2 size={16} />
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
+                          {medicalHistory[expandedChildId].map(
+                            (history, index) => (
+                              <tr key={history.medicalHistoryId}>
+                                <td>{index + 1}</td>
+                                <td>{history.vaccine.name}</td>
+                                <td>
+                                  {new Date(history.date).toLocaleDateString()}
+                                </td>
+                                <td>{history.dose}</td>
+                                <td>
+                                  {history.reaction || "Không có"}
+                                  <button
+                                    className="profile-update-reaction-btn-childinfo"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleOpenReactionModal(
+                                        history.medicalHistoryId,
+                                        history.reaction
+                                      );
+                                    }}
+                                  >
+                                    <Edit2 size={16} />
+                                  </button>
+                                </td>
+                              </tr>
+                            )
+                          )}
                         </tbody>
                       </table>
                     ) : (
@@ -632,11 +733,17 @@ function ChildInfoPage() {
                         />
                       </div>
                       <div className="profile-form-actions-childinfo">
-                        <button className="profile-save-btn-childinfo" onClick={handleUpdateReaction}>
+                        <button
+                          className="profile-save-btn-childinfo"
+                          onClick={handleUpdateReaction}
+                        >
                           <Save size={16} />
                           <span>Lưu</span>
                         </button>
-                        <button className="profile-cancel-btn-childinfo" onClick={handleCloseReactionModal}>
+                        <button
+                          className="profile-cancel-btn-childinfo"
+                          onClick={handleCloseReactionModal}
+                        >
                           <XCircle size={16} />
                           <span>Hủy</span>
                         </button>

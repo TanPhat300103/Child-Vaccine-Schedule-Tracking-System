@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Link,
-  Outlet,
-  useNavigate,
-  NavLink,
-  useLocation,
-} from "react-router-dom";
+import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
   FiHome,
   FiUsers,
@@ -17,12 +11,10 @@ import {
   FiBox,
   FiMenu,
   FiX,
-  FiChevronDown,
   FiLogOut,
 } from "react-icons/fi";
 import { FaHospital, FaSyringe, FaCashRegister } from "react-icons/fa";
 import { useAuth } from "../../components/AuthContext";
-import { LogOut } from "lucide-react";
 import "../../style/StaffPage.css";
 
 const StaffPage = () => {
@@ -33,7 +25,6 @@ const StaffPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [vaccineDropdownOpen, setVaccineDropdownOpen] = useState(false);
 
   const { isLoggedIn, logout, isLoading } = useAuth();
   const navigate = useNavigate();
@@ -69,10 +60,6 @@ const StaffPage = () => {
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
-  };
-
-  const toggleVaccineDropdown = () => {
-    setVaccineDropdownOpen(!vaccineDropdownOpen);
   };
 
   const isVaccineActive =
@@ -282,16 +269,12 @@ const StaffPage = () => {
                     className={`sidebar-nav-item-staffpage ${
                       isVaccineActive ? "sidebar-nav-item-active-staffpage" : ""
                     }`}
-                    onClick={toggleVaccineDropdown}
                   >
                     <FaSyringe className="sidebar-icon-staffpage" />
                     {sidebarOpen && (
-                      <>
-                        <span className="sidebar-nav-text-staffpage">
-                          Vaccine
-                        </span>
-                        <FiChevronDown className="sidebar-icon-dropdown-staffpage" />
-                      </>
+                      <span className="sidebar-nav-text-staffpage">
+                        Vaccine
+                      </span>
                     )}
                     {!sidebarOpen && (
                       <span className="sidebar-tooltip-staffpage">Vaccine</span>
@@ -299,9 +282,7 @@ const StaffPage = () => {
                   </div>
                   <ul
                     className={`sidebar-subnav-staffpage ${
-                      vaccineDropdownOpen || isVaccineActive
-                        ? "sidebar-subnav-active-staffpage"
-                        : ""
+                      isVaccineActive ? "sidebar-subnav-active-staffpage" : ""
                     }`}
                   >
                     <li>
@@ -315,7 +296,7 @@ const StaffPage = () => {
                       >
                         <FiShield className="sidebar-icon-staffpage" />
                         {sidebarOpen && (
-                          <span className="sidebar-subnav-text-staffpage">
+                          <span className="sidebar-nav-text-staffpage">
                             Quản Lý Vaccine
                           </span>
                         )}
@@ -332,7 +313,7 @@ const StaffPage = () => {
                       >
                         <FiBox className="sidebar-icon-staffpage" />
                         {sidebarOpen && (
-                          <span className="sidebar-subnav-text-staffpage">
+                          <span className="sidebar-nav-text-staffpage">
                             Gói Vaccine
                           </span>
                         )}
@@ -340,20 +321,26 @@ const StaffPage = () => {
                     </li>
                   </ul>
                 </li>
+                <li>
+                  <div
+                    onClick={handleLogout}
+                    className="sidebar-nav-item-staffpage sidebar-logout-staffpage"
+                  >
+                    <FiLogOut className="sidebar-icon-staffpage" />
+                    {sidebarOpen && (
+                      <span className="sidebar-nav-text-staffpage">
+                        Đăng Xuất
+                      </span>
+                    )}
+                    {!sidebarOpen && (
+                      <span className="sidebar-tooltip-staffpage">
+                        Đăng Xuất
+                      </span>
+                    )}
+                  </div>
+                </li>
               </ul>
             </nav>
-
-            {sidebarOpen && (
-              <div className="sidebar-footer-staffpage">
-                <button
-                  onClick={handleLogout}
-                  className="sidebar-logout-btn-staffpage"
-                >
-                  <FiLogOut className="sidebar-icon-staffpage" />
-                  <span>Đăng Xuất</span>
-                </button>
-              </div>
-            )}
           </aside>
 
           <div
@@ -363,7 +350,13 @@ const StaffPage = () => {
                 : "main-content-closed-staffpage"
             }`}
           >
-            <header className="header-staffpage">
+            <header
+              className="header-staffpage"
+              style={{
+                left: sidebarOpen ? "16rem" : "4rem",
+                right: "0",
+              }}
+            >
               <div className="header-content-staffpage">
                 <div className="header-left-staffpage">
                   <h2 className="header-title-staffpage">Trang Nhân Viên</h2>
@@ -375,7 +368,9 @@ const StaffPage = () => {
                   <div className="header-profile-staffpage">
                     <button className="header-profile-btn-staffpage">
                       <div className="header-avatar-staffpage">
-                        {staffData?.name ? staffData.name[0] : "S"}
+                        <NavLink to="/staff">
+                          {staffData?.name ? staffData.name[0] : "S"}
+                        </NavLink>
                       </div>
                       {sidebarOpen && (
                         <div className="header-profile-info-staffpage">

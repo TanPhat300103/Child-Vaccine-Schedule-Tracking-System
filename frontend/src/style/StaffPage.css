@@ -32,7 +32,8 @@
   height: 100vh;
   z-index: 20;
   box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
-  overflow-y: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .sidebar-open-staffpage {
@@ -120,17 +121,17 @@
   font-weight: 600;
 }
 
+.sidebar-logout-staffpage {
+  background: rgba(255, 0, 0, 0.2);
+}
+
+.sidebar-logout-staffpage:hover {
+  background: rgba(255, 0, 0, 0.3);
+  padding-left: 1.5rem;
+}
+
 .sidebar-nav-text-staffpage {
   font-size: 0.875rem;
-}
-
-.sidebar-icon-dropdown-staffpage {
-  margin-left: auto;
-  transition: transform 0.3s ease;
-}
-
-.sidebar-nav-group-staffpage .sidebar-nav-item-staffpage:hover .sidebar-icon-dropdown-staffpage {
-  transform: rotate(180deg);
 }
 
 .sidebar-tooltip-staffpage {
@@ -154,6 +155,10 @@
 }
 
 /* Submenu */
+.sidebar-nav-group-staffpage:hover .sidebar-subnav-staffpage {
+  max-height: 100px;
+}
+
 .sidebar-subnav-staffpage {
   max-height: 0;
   overflow: hidden;
@@ -168,65 +173,26 @@
 .sidebar-subnav-item-staffpage {
   display: flex;
   align-items: center;
-  padding: 0.4rem 1rem 0.4rem 2rem;
+  padding: 0.5rem 1rem;
+  gap: 0.5rem;
   color: #ffffff;
   text-decoration: none;
-  transition: background 0.3s ease;
-  margin: 0.3rem 0;
+  transition: background 0.3s ease, padding-left 0.3s ease;
+  margin: 0.5rem 0;
 }
 
 .sidebar-subnav-item-staffpage:hover {
   background: rgba(255, 255, 255, 0.15);
+  padding-left: 1.5rem;
 }
 
-.sidebar-subnav-text-staffpage {
-  font-size: 0.75rem;
-}
-
-/* Sidebar Footer (Logout) */
-.sidebar-footer-staffpage {
-  padding: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  margin-top: auto;
-}
-
-.sidebar-logout-btn-staffpage {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: none;
-  border: none;
-  color: #ffffff;
-  font-size: 0.875rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  width: 100%;
-  text-align: left;
-  border-radius: 0.5rem;
-  transition: background 0.3s ease;
-}
-
-.sidebar-logout-btn-staffpage:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* Header (Thiết kế mềm mại, tinh tế) */
+/* Header */
 .header-staffpage {
   position: fixed;
   top: 0;
-  left: 0;
-  right: 0;
   z-index: 10;
   padding: 0 1rem;
   transition: left 0.3s ease;
-}
-
-.sidebar-open-staffpage ~ .main-content-staffpage .header-staffpage {
-  left: 16rem;
-}
-
-.sidebar-closed-staffpage ~ .main-content-staffpage .header-staffpage {
-  left: 4rem;
 }
 
 .header-content-staffpage {
@@ -323,14 +289,14 @@
 }
 
 .main-content-open-staffpage {
-  margin-left: 16rem; /* Điều chỉnh để phù hợp với sidebar */
+  margin-left: 16rem;
 }
 
 .main-content-closed-staffpage {
-  margin-left: 4rem; /* Điều chỉnh để phù hợp với sidebar */
+  margin-left: 4rem;
 }
 
 .main-staffpage {
-  padding-top: 5rem; /* Tạo khoảng cách cho header */
+  padding-top: 5rem;
   padding: 5rem 1.5rem 1.5rem;
 }

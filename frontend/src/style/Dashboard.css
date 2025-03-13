@@ -35,6 +35,14 @@
   position: relative;
 }
 
+/* Stat Income */
+.stat-income-dashboard {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f2937; /* Màu xám đậm cho số tiền */
+  margin: 8px 0; /* Khoảng cách trên dưới */
+}
+
 .stat-card-dashboard {
   background-color: white;
   border-radius: 0.75rem;
