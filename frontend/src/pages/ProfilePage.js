@@ -35,7 +35,11 @@ function ProfilePage() {
         if (!customerResponse.ok) throw new Error('Không tìm thấy thông tin khách hàng');
         const customerData = await customerResponse.json();
         console.log('Dữ liệu từ server:', customerData);
-        setCustomer(customerData);
+        // Gán avatarUrl mặc định nếu không có từ server
+        setCustomer({
+          ...customerData,
+          avatarUrl: customerData.avatarUrl || 'https://avatars.githubusercontent.com/u/151855105?s=400&u=f3cf17c85ef8012beb3894ab9c2f9b12abaf3509&v=4',
+        });
       } catch (err) {
         setError('Lỗi khi lấy thông tin: ' + err.message);
       } finally {
@@ -47,14 +51,14 @@ function ProfilePage() {
   }, [userInfo]);
 
   const handleUpdateClick = () => {
-    console.log('customer.dob trước khi truyền:', customer.dob); // Kiểm tra giá trị dob
+    console.log('customer.dob trước khi truyền:', customer.dob);
     setIsEditing(true);
     setFormData({
       customerId: customer.customerId,
       phoneNumber: customer.phoneNumber,
       firstName: customer.firstName,
       lastName: customer.lastName,
-      dob: customer.dob || '', // Sử dụng customer.dob thay vì dateOfBirth
+      dob: customer.dob || '',
       gender: customer.gender,
       password: customer.password,
       address: customer.address || '',
@@ -62,6 +66,7 @@ function ProfilePage() {
       email: customer.email || '',
       roleId: customer.roleId,
       active: customer.active,
+      avatarUrl: customer.avatarUrl || 'https://avatars.githubusercontent.com/u/151855105?s=400&u=f3cf17c85ef8012beb3894ab9c2f9b12abaf3509&v=4', // Avatar mặc định
     });
   };
 
@@ -80,7 +85,7 @@ function ProfilePage() {
       });
 
       if (response.ok) {
-        setCustomer({ ...customer, ...formData, dob: formData.dob }); // Sử dụng dob thay vì dateOfBirth
+        setCustomer({ ...customer, ...formData, dob: formData.dob });
         setIsEditing(false);
       } else {
         const errorText = await response.text();
@@ -114,7 +119,15 @@ function ProfilePage() {
       <div className="profile-header">
         <div className="profile-user-info">
           <div className="profile-avatar">
-            {customer?.firstName?.charAt(0)}{customer?.lastName?.charAt(0)}
+            {customer?.avatarUrl ? (
+              <img
+                src={customer.avatarUrl}
+                alt={`${customer.firstName} ${customer.lastName}`}
+                className="profile-avatar-img"
+              />
+            ) : (
+              `${customer?.firstName?.charAt(0)}${customer?.lastName?.charAt(0)}`
+            )}
           </div>
           <div className="profile-user-text">
             <h1>{customer?.firstName} {customer?.lastName}</h1>
@@ -205,7 +218,6 @@ function ProfilePage() {
                         value={formData.phoneNumber}
                         onChange={handleInputChange}
                         placeholder="Nhập số điện thoại"
-                       
                       />
                     </div>
                   </div>
@@ -227,6 +239,18 @@ function ProfilePage() {
                         value={formData.address}
                         onChange={handleInputChange}
                         placeholder="Nhập địa chỉ"
+                      />
+                    </div>
+                  </div>
+                  <div className="profile-form-row">
+                    <div className="profile-form-group full-width">
+                      <label>Ảnh đại diện (URL)</label>
+                      <input
+                        type="text"
+                        name="avatarUrl"
+                        value={formData.avatarUrl}
+                        onChange={handleInputChange}
+                        placeholder="Nhập URL ảnh đại diện"
                       />
                     </div>
                   </div>

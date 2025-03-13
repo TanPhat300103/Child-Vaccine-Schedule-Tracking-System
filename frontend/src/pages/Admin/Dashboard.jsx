@@ -597,18 +597,18 @@ const Dashboard = () => {
   };
 
   const formatBookingStatus = (status) => {
-    if (status === 0)
-      return (
-        <span className="booking-status-pending-dashboard">Đang xử lý</span>
-      );
     if (status === 1)
+      return (
+        <span className="booking-status-pending-dashboard">Đang tiến hành</span>
+      );
+    if (status === 2)
       return (
         <span className="booking-status-completed-dashboard">
           Đã hoàn thành
         </span>
       );
     return (
-      <span className="booking-status-unknown-dashboard">Không xác định</span>
+      <span className="booking-status-unknown-dashboard">Đã hủy</span>
     );
   };
 
@@ -874,59 +874,94 @@ const Dashboard = () => {
         </div>
       )}
 
-      {topVaccineModalOpen && (
-        <div className="modal-overlay-dashboard">
-          <div className="modal-content-large-dashboard">
-            <button
-              onClick={() => setTopVaccineModalOpen(false)}
-              className="modal-close-btn-dashboard"
-            >
-              ×
-            </button>
-            <h2 className="modal-title-large-dashboard">
-              Top 10 Vaccine Bán Chạy
-            </h2>
-            {top10Vaccine.length > 0 ? (
-              <Bar
-                data={{
-                  labels: top10Vaccine.map(([name]) => name),
-                  datasets: [
-                    {
-                      label: "Số lượng",
-                      data: top10Vaccine.map(([, count]) => count),
-                      backgroundColor: "rgba(56, 178, 172, 0.6)",
-                      borderColor: "rgba(56, 178, 172, 1)",
-                      borderWidth: 1,
-                      borderRadius: 4,
+{topVaccineModalOpen && (
+  <div className="modal-overlay-dashboard">
+    <div className="modal-content-large-dashboard">
+      <button
+        onClick={() => setTopVaccineModalOpen(false)}
+        className="modal-close-btn-dashboard"
+      >
+        ×
+      </button>
+      <h2 className="modal-title-large-dashboard">
+        Top 10 Vaccine Bán Chạy
+      </h2>
+      {top10Vaccine.length > 0 ? (
+        <div className="chart-container-modal-dashboard">
+          <Bar
+            data={{
+              labels: top10Vaccine.map(([name]) => name),
+              datasets: [
+                {
+                  label: "Số lượng",
+                  data: top10Vaccine.map(([, count]) => count),
+                  backgroundColor: "rgba(56, 178, 172, 0.6)",
+                  borderColor: "rgba(56, 178, 172, 1)",
+                  borderWidth: 1,
+                  borderRadius: 4,
+                },
+              ],
+            }}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      return `${context.dataset.label}: ${context.raw}`;
                     },
-                  ],
-                }}
-                options={{
-                  indexAxis: "y",
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  plugins: { legend: { display: false } },
-                  scales: {
-                    x: { grid: { display: false } },
-                    y: { grid: { display: false } },
+                    title: function (context) {
+                      return context[0].label; // Hiển thị tên đầy đủ khi hover
+                    },
                   },
-                }}
-              />
-            ) : (
-              <p className="modal-no-data-dashboard">Chưa có dữ liệu</p>
-            )}
-            <div className="modal-footer-dashboard">
-              <button
-                onClick={() => setTopVaccineModalOpen(false)}
-                className="modal-close-btn-action-dashboard"
-              >
-                Đóng
-              </button>
-            </div>
-          </div>
+                },
+              },
+              scales: {
+                x: {
+                  grid: { display: false },
+                  ticks: {
+                    maxRotation: 0, // Giữ tên ngang
+                    minRotation: 0,
+                    autoSkip: false, // Không bỏ qua nhãn nào
+                    maxTicksLimit: Infinity, // Hiển thị tất cả nhãn
+                    font: {
+                      size: 12, // Kích thước font chữ nhỏ hơn để chứa nhiều nhãn
+                    },
+                    callback: function (value, index, values) {
+                      const label = this.getLabelForValue(value);
+                      return label.length > 15 ? label.substring(0, 15) + "..." : label;
+                    },
+                  },
+                },
+                y: {
+                  grid: { display: true, color: "rgba(0, 0, 0, 0.05)" },
+                  beginAtZero: true,
+                  ticks: {
+                    callback: function (value) {
+                      return value.toLocaleString("vi-VN");
+                    },
+                  },
+                },
+              },
+            }}
+          />
         </div>
+      ) : (
+        <p className="modal-no-data-dashboard">Chưa có dữ liệu</p>
       )}
-
+      <div className="modal-footer-dashboard">
+        <button
+          onClick={() => setTopVaccineModalOpen(false)}
+          className="modal-close-btn-action-dashboard"
+        >
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+)}
       {outOfStockModalOpen && (
         <div className="modal-overlay-dashboard">
           <div className="modal-content-dashboard">

@@ -109,7 +109,7 @@
 .nav-item-adminpage {
   display: flex;
   align-items: center;
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 1rem;
   gap: 0.5rem;
   color: #ffffff;
   text-decoration: none;
@@ -126,15 +126,6 @@
 .nav-item-active-adminpage {
   background: rgba(255, 255, 255, 0.2);
   font-weight: 600;
-}
-
-.nav-logout-adminpage {
-  background: rgba(255, 0, 0, 0.2);
-}
-
-.nav-logout-adminpage:hover {
-  background: rgba(255, 0, 0, 0.3);
-  padding-left: 1.5rem;
 }
 
 .nav-icon-adminpage {
