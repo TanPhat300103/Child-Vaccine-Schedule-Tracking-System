@@ -28,7 +28,7 @@ const BookingDetail = () => {
   const [groupedDetails, setGroupedDetails] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [canCancel, setCanCancel] = useState(false); // Thêm state mới
+  const [canCancel, setCanCancel] = useState(true); // Thêm state mới
   const navigate = useNavigate();
 
   const [isBookingInfoOpen, setIsBookingInfoOpen] = useState(true);
@@ -115,18 +115,17 @@ const BookingDetail = () => {
       throw error;
     }
   };
-
   const fetchBookingData = async () => {
     try {
       const detailsData = await getBookingDetailsByBookID(bookingId);
       setBookingDetails(detailsData);
       if (detailsData.length > 0) {
         setBooking(detailsData[0].booking);
-        // Kiểm tra nếu tất cả booking details có status khác 2
-        const allNotCompleted = detailsData.every(
-          (detail) => detail.status !== 2
+        // Kiểm tra nếu có ít nhất một booking.status bằng 1
+        const hasBookingStatusOne = detailsData.some(
+          (detail) => detail.booking.status === 1
         );
-        setCanCancel(allNotCompleted);
+        setCanCancel(hasBookingStatusOne);
       }
 
       const groups = detailsData.reduce((acc, detail) => {
