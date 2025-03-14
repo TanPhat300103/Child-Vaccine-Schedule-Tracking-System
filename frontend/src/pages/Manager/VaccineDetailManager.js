@@ -24,7 +24,8 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include",
         }
@@ -142,7 +143,8 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include",
 
@@ -521,7 +523,8 @@ const VaccineDetailManager = () => {
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include",
           body: JSON.stringify(payload),

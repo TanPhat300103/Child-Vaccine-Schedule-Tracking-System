@@ -38,7 +38,8 @@ const StaffProfile = ({ initialStaffData }) => {
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include",
           withCredentials: true,
@@ -234,7 +235,8 @@ const Profile = () => {
           {
             method: "GET",
             headers: {
-              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+              "ngrok-skip-browser-warning": "true",
+              "Content-Type": "application/json", // Bỏ qua warning page
             },
             credentials: "include",
           }
@@ -260,7 +262,8 @@ const Profile = () => {
           {
             method: "GET",
             headers: {
-              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+              "ngrok-skip-browser-warning": "true",
+              "Content-Type": "application/json", // Bỏ qua warning page
             },
             credentials: "include",
           }
@@ -297,7 +300,8 @@ const Profile = () => {
           {
             method: "GET",
             headers: {
-              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+              "ngrok-skip-browser-warning": "true",
+              "Content-Type": "application/json", // Bỏ qua warning page
             },
             credentials: "include",
           }
@@ -318,7 +322,8 @@ const Profile = () => {
           {
             method: "GET",
             headers: {
-              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+              "ngrok-skip-browser-warning": "true",
+              "Content-Type": "application/json", // Bỏ qua warning page
             },
             credentials: "include",
           }
@@ -339,7 +344,8 @@ const Profile = () => {
           {
             method: "GET",
             headers: {
-              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+              "ngrok-skip-browser-warning": "true",
+              "Content-Type": "application/json", // Bỏ qua warning page
             },
             credentials: "include",
           }

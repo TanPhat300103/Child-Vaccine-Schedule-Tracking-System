@@ -53,7 +53,8 @@ function CustomerTable() {
       {
         method: "POST",
         headers: {
-          "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          "ngrok-skip-browser-warning": "true",
+          "Content-Type": "application/json", // Bỏ qua warning page
         },
       }
     )
@@ -106,7 +107,8 @@ function CustomerTable() {
     fetch(`${process.env.REACT_APP_API_BASE_URL}/customer/update`, {
       method: "POST",
       headers: {
-        "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+        "ngrok-skip-browser-warning": "true",
+        "Content-Type": "application/json", // Bỏ qua warning page
       },
       body: JSON.stringify({ ...selectedCustomer, ...formData }),
     })

@@ -46,7 +46,8 @@ const Staffs = () => {
         {
           method: "GET",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include",
         }
@@ -88,7 +89,8 @@ const Staffs = () => {
     fetch(`${process.env.REACT_APP_API_BASE_URL}/staff/active?id=${staffId}`, {
       method: "POST",
       headers: {
-        "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+        "ngrok-skip-browser-warning": "true",
+        "Content-Type": "application/json", // Bỏ qua warning page
       },
       credentials: "include",
     })
@@ -150,7 +152,8 @@ const Staffs = () => {
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include",
           body: JSON.stringify(editStaff),
@@ -211,7 +214,8 @@ const Staffs = () => {
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include",
           body: JSON.stringify(newStaff),

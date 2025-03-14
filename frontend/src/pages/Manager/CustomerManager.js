@@ -57,7 +57,8 @@ const Customers = () => {
     fetch(`${process.env.REACT_APP_API_BASE_URL}/customer`, {
       method: "GET",
       headers: {
-        "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+        "ngrok-skip-browser-warning": "true",
+        "Content-Type": "application/json", // Bỏ qua warning page
       },
       credentials: "include",
       withCredentials: true,
@@ -80,7 +81,8 @@ const Customers = () => {
       {
         method: "POST",
         headers: {
-          "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          "ngrok-skip-browser-warning": "true",
+          "Content-Type": "application/json", // Bỏ qua warning page
         },
         credentials: "include",
         withCredentials: true,
@@ -135,7 +137,8 @@ const Customers = () => {
     fetch(`${process.env.REACT_APP_API_BASE_URL}/customer/update`, {
       method: "POST",
       headers: {
-        "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+        "ngrok-skip-browser-warning": "true",
+        "Content-Type": "application/json", // Bỏ qua warning page
       },
       credentials: "include",
       withCredentials: true,
@@ -189,7 +192,8 @@ const Customers = () => {
     fetch(`${process.env.REACT_APP_API_BASE_URL}/customer/create`, {
       method: "POST",
       headers: {
-        "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+        "ngrok-skip-browser-warning": "true",
+        "Content-Type": "application/json", // Bỏ qua warning page
       },
       credentials: "include",
       withCredentials: true,

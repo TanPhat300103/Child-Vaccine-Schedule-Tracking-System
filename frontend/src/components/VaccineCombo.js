@@ -25,7 +25,8 @@ function VaccineCombo() {
         {
           method: "GET",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include",
         }
@@ -46,7 +47,15 @@ function VaccineCombo() {
       const response = await fetch(
         `${
           process.env.REACT_APP_API_BASE_URL
-        }/combodetail/findcomboid?id=${comboId.toLowerCase()}`
+        }/combodetail/findcomboid?id=${comboId.toLowerCase()}`,
+        {
+          method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
+          },
+          credentials: "include",
+        }
       );
       if (!response.ok) throw new Error("Không thể tải chi tiết combo vaccine");
       const data = await response.json();

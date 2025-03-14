@@ -195,7 +195,8 @@ const HomePage = () => {
           {
             method: "GET",
             headers: {
-              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+              "ngrok-skip-browser-warning": "true",
+              "Content-Type": "application/json", // Bỏ qua warning page
             },
             credentials: "include",
           }
@@ -251,7 +252,8 @@ const HomePage = () => {
           {
             method: "GET",
             headers: {
-              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+              "ngrok-skip-browser-warning": "true",
+              "Content-Type": "application/json", // Bỏ qua warning page
             },
           }
         );
@@ -284,10 +286,12 @@ const HomePage = () => {
         {
           method: "GET",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
         }
       );
@@ -314,7 +318,8 @@ const HomePage = () => {
           {
             method: "GET",
             headers: {
-              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+              "ngrok-skip-browser-warning": "true",
+              "Content-Type": "application/json", // Bỏ qua warning page
             },
             credentials: "include",
           }
@@ -343,7 +348,8 @@ const HomePage = () => {
           {
             method: "GET",
             headers: {
-              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+              "ngrok-skip-browser-warning": "true",
+              "Content-Type": "application/json", // Bỏ qua warning page
             },
           }
         );

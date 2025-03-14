@@ -44,9 +44,7 @@ function LoginForm() {
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
-          },
-          headers: {
+            "ngrok-skip-browser-warning": "true",
             "Content-Type": "application/x-www-form-urlencoded",
           },
           credentials: "include",
@@ -94,9 +92,7 @@ function LoginForm() {
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
-          },
-          headers: {
+            "ngrok-skip-browser-warning": "true",
             "Content-Type": "application/x-www-form-urlencoded",
           },
           body: new URLSearchParams({ email }).toString(),
@@ -130,9 +126,7 @@ function LoginForm() {
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
-          },
-          headers: {
+            "ngrok-skip-browser-warning": "true",
             "Content-Type": "application/x-www-form-urlencoded",
           },
           body: new URLSearchParams({ email }).toString(),
@@ -169,9 +163,7 @@ function LoginForm() {
         {
           method: "GET",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
-          },
-          headers: {
+            "ngrok-skip-browser-warning": "true",
             "Content-Type": "application/x-www-form-urlencoded",
           },
         }
@@ -210,9 +202,7 @@ function LoginForm() {
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
-          },
-          headers: {
+            "ngrok-skip-browser-warning": "true",
             "Content-Type": "application/x-www-form-urlencoded",
           },
           body: new URLSearchParams({

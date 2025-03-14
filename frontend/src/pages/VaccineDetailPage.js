@@ -12,7 +12,15 @@ function VaccineDetailPage() {
 
   useEffect(() => {
     fetch(
-      `${process.env.REACT_APP_API_BASE_URL}/vaccine/findid?id=${vaccineId}`
+      `${process.env.REACT_APP_API_BASE_URL}/vaccine/findid?id=${vaccineId}`,
+      {
+        method: "GET",
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+          "Content-Type": "application/json", // Bỏ qua warning page
+        },
+        credentials: "include",
+      }
     )
       .then((response) => {
         if (!response.ok) throw new Error("Network response was not ok");
