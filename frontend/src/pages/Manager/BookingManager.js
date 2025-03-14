@@ -13,7 +13,7 @@ import {
   MapPinIcon,
   ShieldIcon,
 } from "lucide-react";
-import '../../style/BookingManager.css';
+import "../../style/BookingManager.css";
 
 const Bookings = () => {
   const navigate = useNavigate();
@@ -31,11 +31,11 @@ const Bookings = () => {
 
   const getAllBookings = async () => {
     try {
-      const response = await fetch('http://localhost:8080/booking', {
-        method: 'GET',
-        credentials: 'include',
+      const response = await fetch("http://localhost:8080/booking", {
+        method: "GET",
+        credentials: "include",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
 
@@ -54,10 +54,14 @@ const Bookings = () => {
 
   useEffect(() => {
     if (location.state) {
-      if (location.state.selectedCustomer) setSelectedCustomer(location.state.selectedCustomer);
-      if (location.state.customerSearchValue) setCustomerSearchValue(location.state.customerSearchValue);
-      if (location.state.bookingSearchValue) setBookingSearchValue(location.state.bookingSearchValue);
-      if (location.state.selectedStatus) setSelectedStatus(location.state.selectedStatus);
+      if (location.state.selectedCustomer)
+        setSelectedCustomer(location.state.selectedCustomer);
+      if (location.state.customerSearchValue)
+        setCustomerSearchValue(location.state.customerSearchValue);
+      if (location.state.bookingSearchValue)
+        setBookingSearchValue(location.state.bookingSearchValue);
+      if (location.state.selectedStatus)
+        setSelectedStatus(location.state.selectedStatus);
     }
   }, [location.state]);
 
@@ -81,16 +85,21 @@ const Bookings = () => {
   );
 
   const filteredCustomers = customers.filter((cust) => {
-    if (!customerSearchValue) return true;
+    if (!customerSearchValue) return true; // Nếu không có giá trị tìm kiếm, trả về tất cả
+
+    const searchValue = customerSearchValue.toLowerCase(); // Chỉ gọi toLowerCase một lần cho giá trị tìm kiếm
+
     switch (customerSearchType) {
       case "customerId":
-        return cust.customerId.toLowerCase().includes(customerSearchValue.toLowerCase());
+        return cust.customerId?.toLowerCase().includes(searchValue) || false;
       case "customerName":
-        return (cust.firstName + " " + cust.lastName).toLowerCase().includes(customerSearchValue.toLowerCase());
+        return `${cust.firstName || ""} ${cust.lastName || ""}`
+          .toLowerCase()
+          .includes(searchValue);
       case "phone":
-        return cust.phoneNumber.toLowerCase().includes(customerSearchValue.toLowerCase());
+        return cust.phoneNumber?.toLowerCase().includes(searchValue) || false;
       case "email":
-        return cust.email?.toLowerCase().includes(customerSearchValue.toLowerCase());
+        return cust.email?.toLowerCase().includes(searchValue) || false;
       default:
         return true;
     }
@@ -98,20 +107,20 @@ const Bookings = () => {
 
   let customerBookings = [];
   if (selectedCustomer) {
-    customerBookings = bookings.filter((b) => b.customer.customerId === selectedCustomer.customerId);
+    customerBookings = bookings.filter(
+      (b) => b.customer.customerId === selectedCustomer.customerId
+    );
     if (bookingSearchValue) {
       customerBookings = customerBookings.filter((b) => {
         switch (bookingSearchType) {
           case "bookingId":
-            return b.bookingId.toLowerCase().includes(bookingSearchValue.toLowerCase());
+            return b.bookingId
+              .toLowerCase()
+              .includes(bookingSearchValue.toLowerCase());
           case "bookingDate":
-            return format(new Date(b.bookingDate), "yyyy-MM-dd").includes(bookingSearchValue);
-          case "childName":
-            return (b.childName || "").toLowerCase().includes(bookingSearchValue.toLowerCase());
-          case "scheduledDate":
-            return (b.scheduledDate || "").includes(bookingSearchValue);
-          case "vaccine":
-            return (b.vaccine || "").toLowerCase().includes(bookingSearchValue.toLowerCase());
+            return format(new Date(b.bookingDate), "yyyy-MM-dd").includes(
+              bookingSearchValue
+            );
           default:
             return true;
         }
@@ -133,7 +142,12 @@ const Bookings = () => {
   useEffect(() => {
     const savedState = localStorage.getItem("bookingsState");
     if (savedState) {
-      const { selectedCustomer, customerSearchValue, bookingSearchValue, selectedStatus } = JSON.parse(savedState);
+      const {
+        selectedCustomer,
+        customerSearchValue,
+        bookingSearchValue,
+        selectedStatus,
+      } = JSON.parse(savedState);
       if (selectedCustomer) setSelectedCustomer(selectedCustomer);
       if (customerSearchValue) setCustomerSearchValue(customerSearchValue);
       if (bookingSearchValue) setBookingSearchValue(bookingSearchValue);
@@ -144,9 +158,19 @@ const Bookings = () => {
   useEffect(() => {
     localStorage.setItem(
       "bookingsState",
-      JSON.stringify({ selectedCustomer, customerSearchValue, bookingSearchValue, selectedStatus })
+      JSON.stringify({
+        selectedCustomer,
+        customerSearchValue,
+        bookingSearchValue,
+        selectedStatus,
+      })
     );
-  }, [selectedCustomer, customerSearchValue, bookingSearchValue, selectedStatus]);
+  }, [
+    selectedCustomer,
+    customerSearchValue,
+    bookingSearchValue,
+    selectedStatus,
+  ]);
 
   const handleBookingClick = (booking) => {
     navigate(`../booking-detail/${booking.bookingId}`);
@@ -157,31 +181,41 @@ const Bookings = () => {
       case 1:
         return { label: "Đã Đặt", bgColor: "#dbeafe", textColor: "#1e40af" };
       case 2:
-        return { label: "Đã Hoàn Thành", bgColor: "#d1fae5", textColor: "#065f46" };
+        return {
+          label: "Đã Hoàn Thành",
+          bgColor: "#d1fae5",
+          textColor: "#065f46",
+        };
       case 3:
         return { label: "Đã Hủy", bgColor: "#fee2e2", textColor: "#991b1b" };
       default:
-        return { label: "Không xác định", bgColor: "#f3f4f6", textColor: "#4b5563" };
+        return {
+          label: "Không xác định",
+          bgColor: "#f3f4f6",
+          textColor: "#4b5563",
+        };
     }
   };
 
-  if (loading) return (
-    <div className="loading-container-bookingmanager">
-      <div className="loading-content-bookingmanager">
-        <div className="spinner-bookingmanager"></div>
-        <p>Đang tải thông tin đặt lịch...</p>
+  if (loading)
+    return (
+      <div className="loading-container-bookingmanager">
+        <div className="loading-content-bookingmanager">
+          <div className="spinner-bookingmanager"></div>
+          <p>Đang tải thông tin đặt lịch...</p>
+        </div>
       </div>
-    </div>
-  );
+    );
 
-  if (error) return (
-    <div className="error-container-bookingmanager">
-      <div className="error-content-bookingmanager">
-        <AlertCircleIcon className="error-icon-bookingmanager" />
-        <p>{error}</p>
+  if (error)
+    return (
+      <div className="error-container-bookingmanager">
+        <div className="error-content-bookingmanager">
+          <AlertCircleIcon className="error-icon-bookingmanager" />
+          <p>{error}</p>
+        </div>
       </div>
-    </div>
-  );
+    );
 
   return (
     <div className="container-bookingmanager">
@@ -204,7 +238,10 @@ const Bookings = () => {
               <div className="search-container-bookingmanager">
                 <select
                   value={customerSearchType}
-                  onChange={(e) => { setCustomerSearchType(e.target.value); setCustomerSearchValue(""); }}
+                  onChange={(e) => {
+                    setCustomerSearchType(e.target.value);
+                    setCustomerSearchValue("");
+                  }}
                   className="search-select-bookingmanager"
                 >
                   <option value="customerId">Mã KH</option>
@@ -216,7 +253,15 @@ const Bookings = () => {
                   type="text"
                   value={customerSearchValue}
                   onChange={(e) => setCustomerSearchValue(e.target.value)}
-                  placeholder={`Tìm kiếm ${customerSearchType === "customerId" ? "mã khách hàng" : customerSearchType === "customerName" ? "tên khách hàng" : customerSearchType === "phone" ? "số điện thoại" : "email"}`}
+                  placeholder={`Tìm kiếm ${
+                    customerSearchType === "customerId"
+                      ? "mã khách hàng"
+                      : customerSearchType === "customerName"
+                      ? "tên khách hàng"
+                      : customerSearchType === "phone"
+                      ? "số điện thoại"
+                      : "email"
+                  }`}
                   className="search-input-bookingmanager"
                 />
               </div>
@@ -227,15 +272,26 @@ const Bookings = () => {
                   <div
                     key={cust.customerId}
                     onClick={() => handleCustomerClick(cust)}
-                    className={`customer-item-bookingmanager ${selectedCustomer && selectedCustomer.customerId === cust.customerId ? "selected-bookingmanager" : ""}`}
+                    className={`customer-item-bookingmanager ${
+                      selectedCustomer &&
+                      selectedCustomer.customerId === cust.customerId
+                        ? "selected-bookingmanager"
+                        : ""
+                    }`}
                   >
                     <div>
-                      <p className="customer-id-bookingmanager">Mã: {cust.customerId}</p>
-                      <p>Tên: {cust.firstName} {cust.lastName}</p>
+                      <p className="customer-id-bookingmanager">
+                        Mã: {cust.customerId}
+                      </p>
+                      <p>
+                        Tên: {cust.firstName} {cust.lastName}
+                      </p>
                     </div>
                     <div className="customer-details-bookingmanager">
                       <p>SĐT: {cust.phoneNumber}</p>
-                      <p className="customer-email-bookingmanager">Email: {cust.email || "---"}</p>
+                      <p className="customer-email-bookingmanager">
+                        Email: {cust.email || "---"}
+                      </p>
                     </div>
                   </div>
                 ))
@@ -253,21 +309,24 @@ const Bookings = () => {
           {selectedCustomer ? (
             <>
               <div className="bookings-header-bookingmanager">
-                <h2>Booking của: {selectedCustomer.firstName} {selectedCustomer.lastName}</h2>
+                <h2>
+                  Booking của: {selectedCustomer.firstName}{" "}
+                  {selectedCustomer.lastName}
+                </h2>
                 <div className="search-section-bookingmanager">
                   <div className="search-container-bookingmanager">
                     <select
                       value={bookingSearchType}
-                      onChange={(e) => { setBookingSearchType(e.target.value); setBookingSearchValue(""); }}
+                      onChange={(e) => {
+                        setBookingSearchType(e.target.value);
+                        setBookingSearchValue("");
+                      }}
                       className="search-select-bookingmanager"
                     >
                       <option value="bookingId">Mã booking</option>
                       <option value="bookingDate">Ngày đặt</option>
-                      <option value="childName">Tên đứa trẻ</option>
-                      <option value="scheduledDate">Ngày tiêm</option>
-                      <option value="vaccine">Vaccine</option>
                     </select>
-                    {bookingSearchType === "bookingDate" || bookingSearchType === "scheduledDate" ? (
+                    {bookingSearchType === "bookingDate" ? (
                       <input
                         type="date"
                         value={bookingSearchValue}
@@ -279,7 +338,11 @@ const Bookings = () => {
                         type="text"
                         value={bookingSearchValue}
                         onChange={(e) => setBookingSearchValue(e.target.value)}
-                        placeholder={`Tìm kiếm ${bookingSearchType === "bookingId" ? "mã booking" : bookingSearchType === "childName" ? "tên đứa trẻ" : "vaccine"}`}
+                        placeholder={`Tìm kiếm ${
+                          bookingSearchType === "bookingId"
+                            ? "mã booking"
+                            : "ngày đặt"
+                        }`}
                         className="search-input-bookingmanager"
                       />
                     )}
@@ -288,25 +351,41 @@ const Bookings = () => {
                 <div className="status-filter-bookingmanager">
                   <button
                     onClick={() => setSelectedStatus("all")}
-                    className={`filter-button-bookingmanager ${selectedStatus === "all" ? "active-all-bookingmanager" : ""}`}
+                    className={`filter-button-bookingmanager ${
+                      selectedStatus === "all"
+                        ? "active-all-bookingmanager"
+                        : ""
+                    }`}
                   >
                     Tất cả
                   </button>
                   <button
                     onClick={() => setSelectedStatus("daDat")}
-                    className={`filter-button-bookingmanager ${selectedStatus === "daDat" ? "active-daDat-bookingmanager" : ""}`}
+                    className={`filter-button-bookingmanager ${
+                      selectedStatus === "daDat"
+                        ? "active-daDat-bookingmanager"
+                        : ""
+                    }`}
                   >
                     Đã Đặt
                   </button>
                   <button
                     onClick={() => setSelectedStatus("daHoanThanh")}
-                    className={`filter-button-bookingmanager ${selectedStatus === "daHoanThanh" ? "active-daHoanThanh-bookingmanager" : ""}`}
+                    className={`filter-button-bookingmanager ${
+                      selectedStatus === "daHoanThanh"
+                        ? "active-daHoanThanh-bookingmanager"
+                        : ""
+                    }`}
                   >
                     Đã Hoàn Thành
                   </button>
                   <button
                     onClick={() => setSelectedStatus("daHuy")}
-                    className={`filter-button-bookingmanager ${selectedStatus === "daHuy" ? "active-daHuy-bookingmanager" : ""}`}
+                    className={`filter-button-bookingmanager ${
+                      selectedStatus === "daHuy"
+                        ? "active-daHuy-bookingmanager"
+                        : ""
+                    }`}
                   >
                     Đã Hủy
                   </button>
@@ -323,19 +402,30 @@ const Bookings = () => {
                         className="booking-item-bookingmanager"
                       >
                         <div>
-                          <p className="booking-id-bookingmanager">Mã: {booking.bookingId}</p>
+                          <p className="booking-id-bookingmanager">
+                            Mã: {booking.bookingId}
+                          </p>
                           <p className="booking-date-bookingmanager">
-                            Ngày đặt: {format(new Date(booking.bookingDate), "dd/MM/yyyy")}
+                            Ngày đặt:{" "}
+                            {format(
+                              new Date(booking.bookingDate),
+                              "dd/MM/yyyy"
+                            )}
                           </p>
                         </div>
                         <div className="booking-status-amount-bookingmanager">
                           <span
                             className="status-label-bookingmanager"
-                            style={{ backgroundColor: statusInfo.bgColor, color: statusInfo.textColor }}
+                            style={{
+                              backgroundColor: statusInfo.bgColor,
+                              color: statusInfo.textColor,
+                            }}
                           >
                             {statusInfo.label}
                           </span>
-                          <p className="booking-amount-bookingmanager">{booking.totalAmount.toLocaleString()} VNĐ</p>
+                          <p className="booking-amount-bookingmanager">
+                            {booking.totalAmount.toLocaleString()} VNĐ
+                          </p>
                         </div>
                       </div>
                     );
@@ -352,7 +442,9 @@ const Bookings = () => {
             <div className="no-customer-selected-bookingmanager">
               <AlertCircleIcon className="no-customer-icon-bookingmanager" />
               <p>Vui lòng chọn khách hàng từ danh sách bên trái</p>
-              <p className="hint-bookingmanager">Hoặc tìm kiếm khách hàng bằng ô tìm kiếm</p>
+              <p className="hint-bookingmanager">
+                Hoặc tìm kiếm khách hàng bằng ô tìm kiếm
+              </p>
             </div>
           )}
         </div>

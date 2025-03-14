@@ -151,19 +151,15 @@ const Staffs = () => {
         setOriginalEditStaff(null);
         fetchStaffList(); // Tải lại danh sách
       } else {
-        if (result.message) {
-          // Lỗi từ CustomException
-          const translatedMessage = translateError(result.message);
-          toast.error(translatedMessage);
-          setMessage(translatedMessage);
-        } else if (result.errors) {
-          // Lỗi validation từ BE
-          const errorMap = {};
-          result.errors.forEach((err) => {
-            errorMap[err.field] = translateError(err.defaultMessage);
-          });
-          setErrors(errorMap);
-          toast.error("Vui lòng kiểm tra lại thông tin nhập vào!");
+        // Kiểm tra nếu result là object chứa các lỗi theo field
+        if (result && typeof result === "object" && !Array.isArray(result)) {
+          const translatedErrors = {};
+          for (const [field, message] of Object.entries(result)) {
+            translatedErrors[field] = translateError(message);
+          }
+          setErrors(translatedErrors); // Lưu lỗi để hiển thị dưới input
+          const errorMessages = Object.values(translatedErrors).join(", ");
+          toast.error(errorMessages); // Hiển thị tất cả lỗi qua toast
         } else {
           toast.error("Không thể cập nhật nhân viên.");
           setMessage("Không thể cập nhật nhân viên.");
@@ -221,19 +217,15 @@ const Staffs = () => {
         fetchStaffList(); // Tải lại danh sách
         setShowAddModal(false);
       } else {
-        if (result.message) {
-          // Lỗi từ CustomException
-          const translatedMessage = translateError(result.message);
-          toast.error(translatedMessage);
-          setMessage(translatedMessage);
-        } else if (result.errors) {
-          // Lỗi validation từ BE
-          const errorMap = {};
-          result.errors.forEach((err) => {
-            errorMap[err.field] = translateError(err.defaultMessage);
-          });
-          setErrors(errorMap);
-          toast.error("Vui lòng kiểm tra lại thông tin nhập vào!");
+        // Kiểm tra nếu result là object chứa các lỗi theo field
+        if (result && typeof result === "object" && !Array.isArray(result)) {
+          const translatedErrors = {};
+          for (const [field, message] of Object.entries(result)) {
+            translatedErrors[field] = translateError(message);
+          }
+          setErrors(translatedErrors); // Lưu lỗi để hiển thị dưới input
+          const errorMessages = Object.values(translatedErrors).join(", ");
+          toast.error(errorMessages); // Hiển thị tất cả lỗi qua toast
         } else {
           toast.error("Không thể thêm nhân viên.");
           setMessage("Không thể thêm nhân viên.");
@@ -245,6 +237,7 @@ const Staffs = () => {
       setMessage("Có lỗi xảy ra khi thêm nhân viên.");
     }
   };
+
   const translateError = (message) => {
     const errorMessages = {
       "Email is exist": "Email đã tồn tại",

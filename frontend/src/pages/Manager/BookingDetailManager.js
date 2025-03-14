@@ -28,7 +28,7 @@ const BookingDetail = () => {
   const [groupedDetails, setGroupedDetails] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [canCancel, setCanCancel] = useState(true); // Thêm state mới
+  const [canCancel, setCanCancel] = useState(true);
   const navigate = useNavigate();
 
   const [isBookingInfoOpen, setIsBookingInfoOpen] = useState(true);
@@ -41,18 +41,33 @@ const BookingDetail = () => {
   const [reactionInput, setReactionInput] = useState("");
   const [showCancelModal, setShowCancelModal] = useState(false);
 
+  const getStatusTextAndIcon = (status) => {
+    switch (status) {
+      case 1:
+        return { text: "Đã đặt", icon: <ClockIcon className="status-icon" /> };
+      case 2:
+        return {
+          text: "Đã hoàn thành",
+          icon: <CheckCircleIcon className="status-icon" />,
+        };
+      case 3:
+        return {
+          text: "Đã huỷ",
+          icon: <AlertCircleIcon className="status-icon" />,
+        };
+      default:
+        return { text: "Không xác định", icon: null };
+    }
+  };
+
   const getBookingDetailsByBookID = async (bookingId) => {
     try {
       const response = await fetch(
         `http://localhost:8080/bookingdetail/findbybooking?id=${bookingId}`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
+        { method: "GET", credentials: "include" }
       );
       if (!response.ok) throw new Error("Failed to fetch booking details");
-      const data = await response.json();
-      return data;
+      return await response.json();
     } catch (error) {
       console.error("Error fetching booking details:", error);
       throw error;
@@ -63,16 +78,10 @@ const BookingDetail = () => {
     try {
       const response = await fetch(
         `http://localhost:8080/bookingdetail/confirmdate?id=${bookingId}`,
-        {
-          method: "POST",
-          credentials: "include",
-        }
+        { method: "POST", credentials: "include" }
       );
       if (!response.ok) throw new Error("Failed to confirm booking");
-      const data = await response.json();
-      console.log("API Response (confirmBooking):", data);
-      console.log("Xác nhận booking thành công.");
-      return data;
+      return await response.json();
     } catch (error) {
       console.error("Lỗi khi xác nhận booking:", error);
       throw error;
@@ -83,10 +92,7 @@ const BookingDetail = () => {
     try {
       const response = await fetch(
         `http://localhost:8080/booking/cancel?bookingId=${bookingId}`,
-        {
-          method: "POST",
-          credentials: "include",
-        }
+        { method: "POST", credentials: "include" }
       );
       if (!response.ok) throw new Error("Failed to cancel booking");
       console.log("Hủy đặt lịch thành công.");
@@ -102,37 +108,27 @@ const BookingDetail = () => {
         `http://localhost:8080/bookingdetail/updatereaction?id=${detailId}&reaction=${encodeURIComponent(
           reaction
         )}`,
-        {
-          method: "POST",
-          credentials: "include",
-        }
+        { method: "POST", credentials: "include" }
       );
       if (!response.ok) throw new Error("Failed to update reaction note");
-      const data = await response.json();
-      return data;
+      return await response.json();
     } catch (error) {
       console.error("Error updating reaction note:", error);
       throw error;
     }
   };
+
   const fetchBookingData = async () => {
     try {
       const detailsData = await getBookingDetailsByBookID(bookingId);
       setBookingDetails(detailsData);
       if (detailsData.length > 0) {
         setBooking(detailsData[0].booking);
-        // Kiểm tra nếu có ít nhất một booking.status bằng 1
-        const hasBookingStatusOne = detailsData.some(
-          (detail) => detail.booking.status === 1
-        );
-        setCanCancel(hasBookingStatusOne);
+        setCanCancel(detailsData.some((detail) => detail.booking.status === 1));
       }
-
       const groups = detailsData.reduce((acc, detail) => {
         const childKey = detail.child.firstName + " " + detail.child.lastName;
-        if (!acc[childKey]) {
-          acc[childKey] = [];
-        }
+        acc[childKey] = acc[childKey] || [];
         acc[childKey].push(detail);
         return acc;
       }, {});
@@ -156,29 +152,24 @@ const BookingDetail = () => {
   const confirmAction = async () => {
     setShowConfirmModal(false);
     const loadingToast = toast.loading("Đang xử lý xác nhận tiêm...");
-
     try {
       const updatedDetail = await confirmBooking(detailIdToConfirm);
-      setBookingDetails((prevDetails) =>
-        prevDetails.map((detail) =>
-          detail.bookingDetailId === detailIdToConfirm ? updatedDetail : detail
+      setBookingDetails((prev) =>
+        prev.map((d) =>
+          d.bookingDetailId === detailIdToConfirm ? updatedDetail : d
         )
       );
-
       const updatedGroups = bookingDetails
-        .map((detail) =>
-          detail.bookingDetailId === detailIdToConfirm ? updatedDetail : detail
+        .map((d) =>
+          d.bookingDetailId === detailIdToConfirm ? updatedDetail : d
         )
         .reduce((acc, detail) => {
           const childKey = detail.child.firstName + " " + detail.child.lastName;
-          if (!acc[childKey]) {
-            acc[childKey] = [];
-          }
+          acc[childKey] = acc[childKey] || [];
           acc[childKey].push(detail);
           return acc;
         }, {});
       setGroupedDetails(updatedGroups);
-
       toast.update(loadingToast, {
         render: "Xác nhận tiêm thành công",
         type: "success",
@@ -186,7 +177,6 @@ const BookingDetail = () => {
         autoClose: 2000,
       });
     } catch (error) {
-      console.error("Error confirming booking detail:", error);
       toast.update(loadingToast, {
         render: "Xác nhận tiêm thất bại. Vui lòng thử lại.",
         type: "error",
@@ -196,9 +186,8 @@ const BookingDetail = () => {
     }
   };
 
-  const handleCancel = () => {
-    setShowCancelModal(true);
-  };
+  const handleCancel = () => setShowCancelModal(true);
+
   const confirmCancelAction = async () => {
     setShowCancelModal(false);
     const loadingToast = toast.loading("Đang xử lý hủy đặt lịch...");
@@ -208,14 +197,10 @@ const BookingDetail = () => {
         render: "Hủy đặt lịch thành công",
         type: "success",
         isLoading: false,
-        autoClose: 2000, // Toast tự đóng sau 2 giây
+        autoClose: 2000,
       });
-      // Chờ 2 giây sau khi toast hiển thị rồi chuyển hướng
-      setTimeout(() => {
-        navigate(-1);
-      }, 2000); // Thời gian chờ khớp với autoClose của toast
+      setTimeout(() => navigate(-1), 2000);
     } catch (error) {
-      console.error("Error canceling booking:", error);
       toast.update(loadingToast, {
         render: "Hủy đặt lịch thất bại. Vui lòng thử lại.",
         type: "error",
@@ -236,32 +221,27 @@ const BookingDetail = () => {
     if (!selectedDetailId) return;
     setShowReactionModal(false);
     const loadingToast = toast.loading("Đang cập nhật phản ứng sau tiêm...");
-
     try {
       const updatedDetail = await updateReactionNote(
         selectedDetailId,
         reactionInput
       );
-      setBookingDetails((prevDetails) =>
-        prevDetails.map((detail) =>
-          detail.bookingDetailId === selectedDetailId ? updatedDetail : detail
+      setBookingDetails((prev) =>
+        prev.map((d) =>
+          d.bookingDetailId === selectedDetailId ? updatedDetail : d
         )
       );
-
       const updatedGroups = bookingDetails
-        .map((detail) =>
-          detail.bookingDetailId === selectedDetailId ? updatedDetail : detail
+        .map((d) =>
+          d.bookingDetailId === selectedDetailId ? updatedDetail : d
         )
         .reduce((acc, detail) => {
           const childKey = detail.child.firstName + " " + detail.child.lastName;
-          if (!acc[childKey]) {
-            acc[childKey] = [];
-          }
+          acc[childKey] = acc[childKey] || [];
           acc[childKey].push(detail);
           return acc;
         }, {});
       setGroupedDetails(updatedGroups);
-
       toast.update(loadingToast, {
         render: "Cập nhật phản ứng sau tiêm thành công",
         type: "success",
@@ -287,10 +267,7 @@ const BookingDetail = () => {
         if (statusFilter === "notAdministered") return !isAdministered;
         return true;
       });
-
-      if (filteredDetails.length > 0) {
-        acc[childKey] = filteredDetails;
-      }
+      if (filteredDetails.length > 0) acc[childKey] = filteredDetails;
       return acc;
     },
     {}
@@ -338,6 +315,12 @@ const BookingDetail = () => {
             <ShieldIcon className="header-icon-bookingdetailmanager" />
             Chi Tiết Lịch Tiêm Chủng
           </h1>
+          <div className="booking-status-bookingdetailmanager">
+            {getStatusTextAndIcon(booking.status).icon}
+            <span className={`status-text-${booking.status}`}>
+              {getStatusTextAndIcon(booking.status).text}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -602,6 +585,10 @@ const BookingDetail = () => {
                   <div className="child-details-bookingdetailmanager">
                     {filteredGroupedDetails[childKey].map((detail) => {
                       const isAdministered = !!detail.administeredDate;
+                      const isCancelled = booking.status === 3;
+                      const canConfirm = !isCancelled && !isAdministered;
+                      const canReact = isAdministered;
+
                       return (
                         <div
                           key={detail.bookingDetailId}
@@ -614,43 +601,30 @@ const BookingDetail = () => {
                               <span className="vaccine-name">
                                 {detail.vaccine.name}
                               </span>
-                              <span
-                                className={`status ${
-                                  isAdministered
-                                    ? "administered"
-                                    : "not-administered"
-                                }`}
-                              >
-                                {isAdministered ? (
-                                  <CheckCircleIcon className="status-icon" />
-                                ) : (
-                                  <ClockIcon className="status-icon" />
-                                )}
-                                {isAdministered ? "Đã tiêm" : "Chưa tiêm"}
-                              </span>
                             </div>
                             <div className="action-buttons-bookingdetailmanager">
                               <button
                                 onClick={() =>
-                                  !isAdministered &&
+                                  canConfirm &&
                                   handleConfirm(detail.bookingDetailId)
                                 }
                                 className={`confirm-button ${
-                                  isAdministered ? "disabled" : ""
+                                  !canConfirm ? "disabled" : ""
                                 }`}
-                                disabled={isAdministered}
+                                disabled={!canConfirm}
                               >
                                 <CheckCircleIcon className="button-icon" />
                                 Xác nhận tiêm
                               </button>
                               <button
                                 onClick={() =>
+                                  canReact &&
                                   handleReaction(detail.bookingDetailId)
                                 }
                                 className={`reaction-button-bookingdetailmanager ${
-                                  !isAdministered ? "disabled" : ""
+                                  !canReact ? "disabled" : ""
                                 }`}
-                                disabled={!isAdministered}
+                                disabled={!canReact}
                               >
                                 Phản Ứng Sau Tiêm
                               </button>
