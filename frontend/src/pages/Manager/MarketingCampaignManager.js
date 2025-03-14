@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
-import { FaPlus, FaSearch, FaFilter, FaPowerOff, FaSyringe } from "react-icons/fa";
+import {
+  FaPlus,
+  FaSearch,
+  FaFilter,
+  FaPowerOff,
+  FaSyringe,
+} from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import '../../style/MarketingCampaigns.css';
+import "../../style/MarketingCampaigns.css";
 
 // Hàm định dạng ngày
 const parseLocalDateString = (str) => {
@@ -43,7 +49,8 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
       ...prev,
       [name]: name === "discount" ? Number(value) || 0 : value,
     }));
-    if (name !== "description") { // Không validate mô tả
+    if (name !== "description") {
+      // Không validate mô tả
       validateField(name, name === "discount" ? Number(value) || 0 : value);
     }
   };
@@ -81,7 +88,10 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
         } else {
           delete newErrors.startTime;
           // Kiểm tra lại ngày kết thúc nếu ngày bắt đầu thay đổi
-          if (formData.endTime && dayjs(formData.endTime).isBefore(dayjs(value))) {
+          if (
+            formData.endTime &&
+            dayjs(formData.endTime).isBefore(dayjs(value))
+          ) {
             newErrors.endTime = "Ngày kết thúc phải sau ngày bắt đầu";
           } else {
             delete newErrors.endTime;
@@ -91,14 +101,17 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
       case "endTime":
         if (!value) {
           newErrors.endTime = "Ngày kết thúc không được để trống";
-        } else if (formData.startTime && dayjs(value).isBefore(dayjs(formData.startTime))) {
+        } else if (
+          formData.startTime &&
+          dayjs(value).isBefore(dayjs(formData.startTime))
+        ) {
           newErrors.endTime = "Ngày kết thúc phải sau ngày bắt đầu";
         } else {
           delete newErrors.endTime;
         }
         break;
       case "discount":
-        if (value <= 0 | value >99) {
+        if ((value <= 0) | (value > 99)) {
           newErrors.discount = "Giảm giá không hợp lệ";
         } else {
           delete newErrors.discount;
@@ -115,11 +128,19 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.name.trim()) newErrors.name = "Tên sự kiện không được để trống";
-    if (!formData.coupon.trim()) newErrors.coupon = "Mã coupon không được để trống";
-    if (!formData.startTime) newErrors.startTime = "Ngày bắt đầu không được để trống";
-    if (!formData.endTime) newErrors.endTime = "Ngày kết thúc không được để trống";
-    if (formData.startTime && formData.endTime && dayjs(formData.endTime).isBefore(dayjs(formData.startTime))) {
+    if (!formData.name.trim())
+      newErrors.name = "Tên sự kiện không được để trống";
+    if (!formData.coupon.trim())
+      newErrors.coupon = "Mã coupon không được để trống";
+    if (!formData.startTime)
+      newErrors.startTime = "Ngày bắt đầu không được để trống";
+    if (!formData.endTime)
+      newErrors.endTime = "Ngày kết thúc không được để trống";
+    if (
+      formData.startTime &&
+      formData.endTime &&
+      dayjs(formData.endTime).isBefore(dayjs(formData.startTime))
+    ) {
       newErrors.endTime = "Ngày kết thúc phải sau ngày bắt đầu";
     }
     if (formData.discount <= 0) newErrors.discount = "Giảm giá phải lớn hơn 0";
@@ -129,13 +150,15 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
   };
 
   const isFormValid = () => {
-    return Object.keys(errors).length === 0 && 
-           formData.name.trim() && 
-           formData.coupon.trim() && 
-           formData.startTime && 
-           formData.endTime && 
-           formData.discount > 0 && 
-           (!dayjs(formData.endTime).isBefore(dayjs(formData.startTime)));
+    return (
+      Object.keys(errors).length === 0 &&
+      formData.name.trim() &&
+      formData.coupon.trim() &&
+      formData.startTime &&
+      formData.endTime &&
+      formData.discount > 0 &&
+      !dayjs(formData.endTime).isBefore(dayjs(formData.startTime))
+    );
   };
 
   const handleFormSubmit = async (e) => {
@@ -172,7 +195,9 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
               placeholder="Tên sự kiện"
               required
             />
-            {errors.name && <span className="error-text-marketing">{errors.name}</span>}
+            {errors.name && (
+              <span className="error-text-marketing">{errors.name}</span>
+            )}
           </div>
           <div className="form-group-marketing">
             <label className="form-label-marketing">Mã coupon</label>
@@ -185,7 +210,9 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
               placeholder="Mã coupon"
               required
             />
-            {errors.coupon && <span className="error-text-marketing">{errors.coupon}</span>}
+            {errors.coupon && (
+              <span className="error-text-marketing">{errors.coupon}</span>
+            )}
           </div>
           <div className="date-picker-container-marketing">
             <div className="form-group-marketing">
@@ -198,7 +225,9 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
                 placeholderText="Chọn ngày"
                 required
               />
-              {errors.startTime && <span className="error-text-marketing">{errors.startTime}</span>}
+              {errors.startTime && (
+                <span className="error-text-marketing">{errors.startTime}</span>
+              )}
             </div>
             <div className="form-group-marketing">
               <label className="form-label-marketing">Ngày kết thúc</label>
@@ -210,7 +239,9 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
                 placeholderText="Chọn ngày"
                 required
               />
-              {errors.endTime && <span className="error-text-marketing">{errors.endTime}</span>}
+              {errors.endTime && (
+                <span className="error-text-marketing">{errors.endTime}</span>
+              )}
             </div>
           </div>
           <div className="form-group-marketing">
@@ -224,7 +255,9 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
               placeholder="Giảm giá (%)"
               required
             />
-            {errors.discount && <span className="error-text-marketing">{errors.discount}</span>}
+            {errors.discount && (
+              <span className="error-text-marketing">{errors.discount}</span>
+            )}
           </div>
           <div className="form-group-marketing">
             <label className="form-label-marketing">Mô tả</label>
@@ -248,8 +281,8 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
             <label className="checkbox-label-marketing">Kích hoạt</label>
           </div>
           <div className="button-group-marketing">
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="submit-button-marketing"
               disabled={!isFormValid()}
             >
@@ -275,12 +308,15 @@ const CampaignItem = ({ campaign, onCampaignSelected, onCampaignUpdated }) => {
     e.stopPropagation();
     const updatedCampaign = { ...campaign, active: !campaign.active };
     try {
-      const res = await fetch("http://localhost:8080/marketing/update", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedCampaign),
-      });
+      const res = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/marketing/update`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedCampaign),
+        }
+      );
       if (!res.ok) throw new Error("Failed to toggle campaign status");
       const updated = await res.json();
       onCampaignUpdated(updated);
@@ -337,10 +373,13 @@ const MarketingCampaigns = () => {
 
   const fetchCampaigns = async () => {
     try {
-      const response = await fetch("http://localhost:8080/marketing", {
-        method: "GET",
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/marketing`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
       if (!response.ok) throw new Error("Failed to fetch campaigns");
       const data = await response.json();
       setCampaigns(data);
@@ -363,12 +402,15 @@ const MarketingCampaigns = () => {
 
   const handleCampaignCreated = async (newCampaign) => {
     try {
-      const response = await fetch("http://localhost:8080/marketing/create", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newCampaign),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/marketing/create`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newCampaign),
+        }
+      );
       if (!response.ok) throw new Error("Failed to create campaign");
       const created = await response.json();
       setCampaigns((prev) => [created, ...prev]);
@@ -390,12 +432,15 @@ const MarketingCampaigns = () => {
         startTime: formatLocalDateString(updatedCampaign.startTime),
         endTime: formatLocalDateString(updatedCampaign.endTime),
       };
-      const response = await fetch("http://localhost:8080/marketing/update", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/marketing/update`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
       if (!response.ok) throw new Error("Failed to update campaign");
       const updated = await response.json();
       setCampaigns((prev) =>
@@ -419,9 +464,7 @@ const MarketingCampaigns = () => {
   return (
     <div className="container-marketing">
       <div className="content-marketing">
-        <h2 className="title-marketing">
-          Quản Lý Chương Trình Tiêm Chủng
-        </h2>
+        <h2 className="title-marketing">Quản Lý Chương Trình Tiêm Chủng</h2>
 
         <div className="controls-marketing">
           <div className="search-container-marketing">
@@ -478,7 +521,9 @@ const MarketingCampaigns = () => {
         />
 
         {filteredCampaigns.length === 0 ? (
-          <p className="no-results-marketing">Không tìm thấy chương trình nào</p>
+          <p className="no-results-marketing">
+            Không tìm thấy chương trình nào
+          </p>
         ) : (
           <div className="campaigns-list-marketing">
             {filteredCampaigns.map((campaign) => (

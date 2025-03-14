@@ -9,10 +9,13 @@ const useVaccineImage = (vaccineId) => {
   const [img, setImg] = useState(null);
   useEffect(() => {
     if (!vaccineId) return;
-    fetch(`http://localhost:8080/vaccinedetail/findbyvaccine?id=${vaccineId}`, {
-      method: "GET",
-      credentials: "include",
-    })
+    fetch(
+      `${process.env.REACT_APP_API_BASE_URL}/vaccinedetail/findbyvaccine?id=${vaccineId}`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -181,7 +184,7 @@ const ComboDetail = () => {
 
   const fetchComboDetails = async () => {
     try {
-      const apiUrl = `http://localhost:8080/combodetail/findcomboid?id=${vaccineComboId}`;
+      const apiUrl = `${process.env.REACT_APP_API_BASE_URL}/combodetail/findcomboid?id=${vaccineComboId}`;
       console.log(`Requesting API: ${apiUrl}`);
       const response = await fetch(apiUrl, {
         method: "GET",
@@ -204,7 +207,7 @@ const ComboDetail = () => {
   const handleRemoveFromCombo = async (vaccineId) => {
     try {
       await fetch(
-        `http://localhost:8080/combodetail/deletevaccine?id=${vaccineId}`,
+        `${process.env.REACT_APP_API_BASE_URL}/combodetail/deletevaccine?id=${vaccineId}`,
         {
           method: "POST",
           credentials: "include",
@@ -224,7 +227,7 @@ const ComboDetail = () => {
 
   useEffect(() => {
     if (showAddModal) {
-      fetch("http://localhost:8080/vaccine", {
+      fetch(`${process.env.REACT_APP_API_BASE_URL}/vaccine`, {
         method: "GET",
         credentials: "include",
       })
@@ -290,14 +293,17 @@ const ComboDetail = () => {
         vaccine: { vaccineId },
       }));
       console.log("Adding vaccines to combo:", comboList);
-      const response = await fetch("http://localhost:8080/combodetail/add", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(comboList),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/combodetail/add`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(comboList),
+        }
+      );
       if (!response.ok) {
         throw new Error("Failed to add vaccines to combo");
       }

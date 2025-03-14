@@ -1,9 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, Calendar, X, ChevronDown, ChevronUp } from 'lucide-react';
-import { FaMale, FaFemale } from 'react-icons/fa';
-import { useAuth } from '../components/AuthContext';
-import '../style/OverviewPage.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Calendar,
+  X,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
+import { FaMale, FaFemale } from "react-icons/fa";
+import { useAuth } from "../components/AuthContext";
+import "../style/OverviewPage.css";
 
 function Overview() {
   const navigate = useNavigate();
@@ -24,29 +31,36 @@ function Overview() {
   useEffect(() => {
     const fetchData = async () => {
       if (!userInfo?.userId) {
-        setError('Không tìm thấy ID người dùng');
+        setError("Không tìm thấy ID người dùng");
         setLoading(false);
         return;
       }
 
       try {
         const bookingsResponse = await fetch(
-          `http://localhost:8080/booking/findbycustomer?customerId=${userInfo.userId}`,
+          `${process.env.REACT_APP_API_BASE_URL}/booking/findbycustomer?customerId=${userInfo.userId}`,
           {
-            method: 'GET',
-            credentials: 'include',
+            method: "GET",
+            credentials: "include",
           }
         );
-        if (!bookingsResponse.ok) throw new Error('Không tìm thấy danh sách booking');
+        if (!bookingsResponse.ok)
+          throw new Error("Không tìm thấy danh sách booking");
         const bookingsData = await bookingsResponse.json();
         setBookings(bookingsData);
 
-        const detailsPromises = bookingsData.map(booking =>
-          fetch(`http://localhost:8080/bookingdetail/findbybooking?id=${booking.bookingId}`, {
-            method: 'GET',
-            credentials: 'include',
-          }).then(res => {
-            if (!res.ok) throw new Error(`Không tìm thấy chi tiết booking ${booking.bookingId}`);
+        const detailsPromises = bookingsData.map((booking) =>
+          fetch(
+            `${process.env.REACT_APP_API_BASE_URL}/bookingdetail/findbybooking?id=${booking.bookingId}`,
+            {
+              method: "GET",
+              credentials: "include",
+            }
+          ).then((res) => {
+            if (!res.ok)
+              throw new Error(
+                `Không tìm thấy chi tiết booking ${booking.bookingId}`
+              );
             return res.json();
           })
         );
@@ -55,44 +69,53 @@ function Overview() {
         setBookingDetails(flattenedDetails);
 
         const childrenResponse = await fetch(
-          `http://localhost:8080/child/findbycustomer?id=${userInfo.userId}`,
+          `${process.env.REACT_APP_API_BASE_URL}/child/findbycustomer?id=${userInfo.userId}`,
           {
-            method: 'GET',
-            credentials: 'include',
+            method: "GET",
+            credentials: "include",
           }
         );
-        if (!childrenResponse.ok) throw new Error('Không tìm thấy danh sách trẻ');
+        if (!childrenResponse.ok)
+          throw new Error("Không tìm thấy danh sách trẻ");
         const childrenData = await childrenResponse.json();
         setChildren(childrenData);
 
-        const notificationsResponse = await fetch('http://localhost:8080/notification', {
-          method: 'GET',
-          credentials: 'include',
-        });
-        if (!notificationsResponse.ok) throw new Error('Không tìm thấy danh sách thông báo');
+        const notificationsResponse = await fetch(
+          `${process.env.REACT_APP_API_BASE_URL}/notification`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+        if (!notificationsResponse.ok)
+          throw new Error("Không tìm thấy danh sách thông báo");
         const notificationsData = await notificationsResponse.json();
 
         const filteredNotifications = notificationsData.filter(
-          notification =>
+          (notification) =>
             (notification.role && notification.role.roleId === 1) ||
-            (notification.customer && notification.customer.customerId === userInfo.userId)
+            (notification.customer &&
+              notification.customer.customerId === userInfo.userId)
         );
         setNotifications(filteredNotifications);
 
         const paymentsResponse = await fetch(
-          `http://localhost:8080/payment/getbycustomerid?customerId=${userInfo.userId}`,
+          `${process.env.REACT_APP_API_BASE_URL}/payment/getbycustomerid?customerId=${userInfo.userId}`,
           {
-            method: 'GET',
-            credentials: 'include',
+            method: "GET",
+            credentials: "include",
           }
         );
-        if (!paymentsResponse.ok) throw new Error('Không tìm thấy danh sách hóa đơn');
+        if (!paymentsResponse.ok)
+          throw new Error("Không tìm thấy danh sách hóa đơn");
         const paymentsData = await paymentsResponse.json();
         // Sắp xếp: hóa đơn chưa thanh toán (status: false) lên đầu
-        const sortedPayments = paymentsData.sort((a, b) => (a.status === b.status ? 0 : a.status ? 1 : -1));
+        const sortedPayments = paymentsData.sort((a, b) =>
+          a.status === b.status ? 0 : a.status ? 1 : -1
+        );
         setPayments(sortedPayments);
       } catch (err) {
-        setError('Lỗi khi lấy dữ liệu: ' + err.message);
+        setError("Lỗi khi lấy dữ liệu: " + err.message);
       } finally {
         setLoading(false);
       }
@@ -103,19 +126,23 @@ function Overview() {
 
   const fetchMedicalHistory = async (childId) => {
     try {
-      const response = await fetch(`http://localhost:8080/medicalhistory/findbychildid?id=${childId}`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-      if (!response.ok) throw new Error(`Không tìm thấy lịch sử tiêm chủng cho trẻ ${childId}`);
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/medicalhistory/findbychildid?id=${childId}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+      if (!response.ok)
+        throw new Error(`Không tìm thấy lịch sử tiêm chủng cho trẻ ${childId}`);
       const data = await response.json();
-      setMedicalHistories(prev => ({
+      setMedicalHistories((prev) => ({
         ...prev,
         [childId]: data,
       }));
     } catch (err) {
-      console.error('Lỗi khi lấy lịch sử tiêm chủng:', err.message);
-      setMedicalHistories(prev => ({
+      console.error("Lỗi khi lấy lịch sử tiêm chủng:", err.message);
+      setMedicalHistories((prev) => ({
         ...prev,
         [childId]: [],
       }));
@@ -133,9 +160,17 @@ function Overview() {
     }
   };
 
-  const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
-  const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
-  const adjustedFirstDay = (firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1);
+  const daysInMonth = new Date(
+    currentMonth.getFullYear(),
+    currentMonth.getMonth() + 1,
+    0
+  ).getDate();
+  const firstDayOfMonth = new Date(
+    currentMonth.getFullYear(),
+    currentMonth.getMonth(),
+    1
+  ).getDay();
+  const adjustedFirstDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
   const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
   const emptyDays = Array.from({ length: adjustedFirstDay }, (_, i) => i);
 
@@ -154,8 +189,13 @@ function Overview() {
         childName: childName,
         bookingDetailId: detail.bookingDetailId,
         scheduledDate: detail.scheduledDate,
-        status: detail.status === 1 ? 'Chưa tiêm' : detail.status === 2 ? 'Đã tiêm' : 'Đã hủy',
-        reactionNote: detail.reactionNote || 'Không có',
+        status:
+          detail.status === 1
+            ? "Chưa tiêm"
+            : detail.status === 2
+            ? "Đã tiêm"
+            : "Đã hủy",
+        reactionNote: detail.reactionNote || "Không có",
         vaccineCombo: detail.vaccineCombo,
       });
     }
@@ -163,18 +203,24 @@ function Overview() {
   }, {});
 
   const calculateProgress = (bookingId) => {
-    const details = bookingDetails.filter(detail => detail.booking.bookingId === bookingId);
-    const totalValid = details.filter(detail => detail.status !== 3).length;
-    const completed = details.filter(detail => detail.status === 2).length;
+    const details = bookingDetails.filter(
+      (detail) => detail.booking.bookingId === bookingId
+    );
+    const totalValid = details.filter((detail) => detail.status !== 3).length;
+    const completed = details.filter((detail) => detail.status === 2).length;
     return { completed, totalValid };
   };
 
   const handlePreviousMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
+    setCurrentMonth(
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1)
+    );
   };
 
   const handleNextMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
+    setCurrentMonth(
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1)
+    );
   };
 
   const handleDayClick = (day) => {
@@ -190,9 +236,9 @@ function Overview() {
   };
 
   const calculateAge = (dob) => {
-    if (!dob) return 'Chưa có';
+    if (!dob) return "Chưa có";
     const birthDate = new Date(dob);
-    const today = new Date('2025-03-05');
+    const today = new Date("2025-03-05");
     let ageInYears = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
     const dayDiff = today.getDate() - birthDate.getDate();
@@ -201,7 +247,7 @@ function Overview() {
       ageInYears--;
     }
 
-    return ageInYears > 0 ? `${ageInYears} tuổi` : 'Dưới 1 tuổi';
+    return ageInYears > 0 ? `${ageInYears} tuổi` : "Dưới 1 tuổi";
   };
 
   const groupVaccinationsByChild = (details) => {
@@ -223,7 +269,10 @@ function Overview() {
   };
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(amount);
   };
 
   if (loading) {
@@ -253,7 +302,9 @@ function Overview() {
           </div>
           <div className="overviewpage-header-text">
             <h1>Tổng Quan</h1>
-            <p>Dưới đây là tổng quan về lịch tiêm chủng và thông tin của bạn.</p>
+            <p>
+              Dưới đây là tổng quan về lịch tiêm chủng và thông tin của bạn.
+            </p>
           </div>
         </div>
       </div>
@@ -263,14 +314,20 @@ function Overview() {
           <div className="overviewpage-section">
             <h2 className="overviewpage-section-title">Lịch Tiêm Sắp Tới</h2>
             <div className="overviewpage-calendar-header">
-              <button onClick={handlePreviousMonth} className="overviewpage-calendar-btn">
+              <button
+                onClick={handlePreviousMonth}
+                className="overviewpage-calendar-btn"
+              >
                 <ChevronLeft size={18} />
                 Trước
               </button>
               <span>
                 Tháng {currentMonth.getMonth() + 1}/{currentMonth.getFullYear()}
               </span>
-              <button onClick={handleNextMonth} className="overviewpage-calendar-btn">
+              <button
+                onClick={handleNextMonth}
+                className="overviewpage-calendar-btn"
+              >
                 Sau
                 <ChevronRight size={18} />
               </button>
@@ -285,14 +342,17 @@ function Overview() {
               <div className="overviewpage-day-name">CN</div>
 
               {emptyDays.map((_, index) => (
-                <div key={`empty-${index}`} className="overviewpage-day overviewpage-day-empty"></div>
+                <div
+                  key={`empty-${index}`}
+                  className="overviewpage-day overviewpage-day-empty"
+                ></div>
               ))}
 
-              {daysArray.map(day => (
+              {daysArray.map((day) => (
                 <div
                   key={day}
                   className={`overviewpage-day ${
-                    vaccinationDates[day] ? 'overviewpage-day-has-vaccine' : ''
+                    vaccinationDates[day] ? "overviewpage-day-has-vaccine" : ""
                   }`}
                   onClick={() => handleDayClick(day)}
                 >
@@ -305,7 +365,7 @@ function Overview() {
           <div className="overviewpage-section">
             <h2 className="overviewpage-section-title">Thông Tin Trẻ</h2>
             {children.length > 0 ? (
-              children.map(child => (
+              children.map((child) => (
                 <div key={child.childId} className="overviewpage-child-card">
                   <div
                     className="overviewpage-child-header"
@@ -313,22 +373,45 @@ function Overview() {
                   >
                     <h3>
                       {child.gender === true ? (
-                        <FaMale size={18} color="#1e90ff" className="gender-icon" />
+                        <FaMale
+                          size={18}
+                          color="#1e90ff"
+                          className="gender-icon"
+                        />
                       ) : child.gender === false ? (
-                        <FaFemale size={18} color="#ff69b4" className="gender-icon" />
+                        <FaFemale
+                          size={18}
+                          color="#ff69b4"
+                          className="gender-icon"
+                        />
                       ) : (
-                        <FaMale size={18} color="#666" className="gender-icon" />
+                        <FaMale
+                          size={18}
+                          color="#666"
+                          className="gender-icon"
+                        />
                       )}
                       {` ${child.firstName} ${child.lastName}`}
-                      <span className="child-age">({calculateAge(child.dob)})</span>
+                      <span className="child-age">
+                        ({calculateAge(child.dob)})
+                      </span>
                     </h3>
                     <span className="overviewpage-toggle-icon">
-                      {expandedChildId === child.childId ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                      {expandedChildId === child.childId ? (
+                        <ChevronUp size={18} />
+                      ) : (
+                        <ChevronDown size={18} />
+                      )}
                     </span>
                   </div>
                   {expandedChildId === child.childId && (
                     <div className="overviewpage-child-details">
-                      <p>Ngày sinh: {child.dob ? new Date(child.dob).toLocaleDateString('vi-VN') : 'Chưa có'}</p>
+                      <p>
+                        Ngày sinh:{" "}
+                        {child.dob
+                          ? new Date(child.dob).toLocaleDateString("vi-VN")
+                          : "Chưa có"}
+                      </p>
                       <div className="overviewpage-medical-history">
                         <h4>Lịch Sử Tiêm Chủng</h4>
                         {medicalHistories[child.childId] ? (
@@ -343,14 +426,20 @@ function Overview() {
                                 </tr>
                               </thead>
                               <tbody>
-                                {medicalHistories[child.childId].map(history => (
-                                  <tr key={history.medicalHistoryId}>
-                                    <td>{new Date(history.date).toLocaleDateString('vi-VN')}</td>
-                                    <td>{history.vaccine.name}</td>
-                                    <td>{history.dose}</td>
-                                    <td>{history.reaction || 'Không có'}</td>
-                                  </tr>
-                                ))}
+                                {medicalHistories[child.childId].map(
+                                  (history) => (
+                                    <tr key={history.medicalHistoryId}>
+                                      <td>
+                                        {new Date(
+                                          history.date
+                                        ).toLocaleDateString("vi-VN")}
+                                      </td>
+                                      <td>{history.vaccine.name}</td>
+                                      <td>{history.dose}</td>
+                                      <td>{history.reaction || "Không có"}</td>
+                                    </tr>
+                                  )
+                                )}
                               </tbody>
                             </table>
                           ) : (
@@ -375,17 +464,17 @@ function Overview() {
             <h2 className="overviewpage-section-title">Thông Báo</h2>
             <div className="overviewpage-notification-container">
               {notifications.length > 0 ? (
-                notifications.map(notification => (
+                notifications.map((notification) => (
                   <div
                     key={notification.id}
                     className="overviewpage-notification"
                     onClick={() => navigate(`/notification/${notification.id}`)}
-                    style={{ cursor: 'pointer' }}
+                    style={{ cursor: "pointer" }}
                   >
                     <h4>{notification.tittle}</h4>
                     <p>{notification.message}</p>
                     <span className="overviewpage-notification-date">
-                      {new Date(notification.date).toLocaleDateString('vi-VN')}
+                      {new Date(notification.date).toLocaleDateString("vi-VN")}
                     </span>
                   </div>
                 ))
@@ -394,7 +483,10 @@ function Overview() {
               )}
             </div>
             {notifications.length > 0 && (
-              <a href="http://localhost:3000/notification/1" className="overviewpage-view-all">
+              <a
+                href="http://localhost:3000/notification/1"
+                className="overviewpage-view-all"
+              >
                 Xem tất cả
               </a>
             )}
@@ -404,26 +496,38 @@ function Overview() {
             <h2 className="overviewpage-section-title">Tiến Độ Tiêm Chủng</h2>
             <div className="overviewpage-progress-container">
               {bookings.length > 0 ? (
-                bookings.map(booking => {
-                  const { completed, totalValid } = calculateProgress(booking.bookingId);
-                  const progressPercentage = totalValid > 0 ? (completed / totalValid) * 100 : 0;
+                bookings.map((booking) => {
+                  const { completed, totalValid } = calculateProgress(
+                    booking.bookingId
+                  );
+                  const progressPercentage =
+                    totalValid > 0 ? (completed / totalValid) * 100 : 0;
 
                   return (
                     <div
                       key={booking.bookingId}
                       className="overviewpage-progress-item"
-                      onClick={() => navigate(`/booking-detail/${booking.bookingId}`)}
-                      style={{ cursor: 'pointer' }}
+                      onClick={() =>
+                        navigate(`/booking-detail/${booking.bookingId}`)
+                      }
+                      style={{ cursor: "pointer" }}
                     >
                       <h4>Booking #{booking.bookingId}</h4>
-                      <p>Ngày: {new Date(booking.bookingDate).toLocaleDateString('vi-VN')}</p>
+                      <p>
+                        Ngày:{" "}
+                        {new Date(booking.bookingDate).toLocaleDateString(
+                          "vi-VN"
+                        )}
+                      </p>
                       <div className="overviewpage-progress-bar">
                         <div
                           className="overviewpage-progress-bar-fill"
                           style={{ width: `${progressPercentage}%` }}
                         ></div>
                       </div>
-                      <p>{completed}/{totalValid} mũi đã hoàn thành</p>
+                      <p>
+                        {completed}/{totalValid} mũi đã hoàn thành
+                      </p>
                     </div>
                   );
                 })
@@ -437,7 +541,7 @@ function Overview() {
                 className="overviewpage-view-all"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate('/my-bookings');
+                  navigate("/my-bookings");
                 }}
               >
                 Xem tất cả
@@ -449,29 +553,33 @@ function Overview() {
             <h2 className="overviewpage-section-title">Hóa Đơn</h2>
             <div className="overviewpage-payment-container">
               {payments.length > 0 ? (
-                payments.map(payment => (
+                payments.map((payment) => (
                   <div
                     key={payment.paymentId}
                     className={`overviewpage-payment-item ${
-                      payment.status ? 'overviewpage-payment-item-paid' : ''
+                      payment.status ? "overviewpage-payment-item-paid" : ""
                     }`}
                   >
                     <h4>Hóa đơn #{payment.paymentId}</h4>
-                    <p>Ngày: {new Date(payment.date).toLocaleDateString('vi-VN')}</p>
+                    <p>
+                      Ngày: {new Date(payment.date).toLocaleDateString("vi-VN")}
+                    </p>
                     <p>Tổng: {formatCurrency(payment.total)}</p>
                     <p>
-                      Trạng thái:{' '}
+                      Trạng thái:{" "}
                       <span
                         className={`overviewpage-status overviewpage-status-${
-                          payment.status ? 'đã\ thanh\ toán' : 'chưa\ thanh\ toán'
+                          payment.status ? "đã thanh toán" : "chưa thanh toán"
                         }`}
                       >
-                        {payment.status ? 'Đã thanh toán' : 'Chưa thanh toán'}
+                        {payment.status ? "Đã thanh toán" : "Chưa thanh toán"}
                       </span>
                     </p>
                     {!payment.status && (
                       <button
-                        onClick={() => navigate(`/payment-process/${payment.paymentId}`)}
+                        onClick={() =>
+                          navigate(`/payment-process/${payment.paymentId}`)
+                        }
                         className="overviewpage-payment-btn"
                       >
                         Thanh toán
@@ -489,7 +597,7 @@ function Overview() {
                 className="overviewpage-view-all"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate('/my-payments');
+                  navigate("/my-payments");
                 }}
               >
                 Xem tất cả
@@ -503,45 +611,58 @@ function Overview() {
         <div className="overviewpage-modal-overlay">
           <div className="overviewpage-modal">
             <div className="overviewpage-modal-header">
-              <h3>Lịch Tiêm Ngày {selectedDay}/{currentMonth.getMonth() + 1}/{currentMonth.getFullYear()}</h3>
-              <button onClick={closeModal} className="overviewpage-modal-close-btn">
+              <h3>
+                Lịch Tiêm Ngày {selectedDay}/{currentMonth.getMonth() + 1}/
+                {currentMonth.getFullYear()}
+              </h3>
+              <button
+                onClick={closeModal}
+                className="overviewpage-modal-close-btn"
+              >
                 <X size={18} />
               </button>
             </div>
             <div className="overviewpage-modal-body">
-              {Object.entries(groupVaccinationsByChild(vaccinationDates[selectedDay].details)).map(
-                ([childName, vaccinations], index) => (
-                  <div key={index} className="overviewpage-child-vaccination-group">
-                    <h4 className="overviewpage-child-name">{childName}</h4>
-                    <table className="overviewpage-vaccination-table">
-                      <thead>
-                        <tr>
-                          <th>Tên Vaccine</th>
-                          <th>Vaccine Combo</th>
-                          <th>Trạng Thái</th>
-                          <th>Ghi Chú</th>
+              {Object.entries(
+                groupVaccinationsByChild(vaccinationDates[selectedDay].details)
+              ).map(([childName, vaccinations], index) => (
+                <div
+                  key={index}
+                  className="overviewpage-child-vaccination-group"
+                >
+                  <h4 className="overviewpage-child-name">{childName}</h4>
+                  <table className="overviewpage-vaccination-table">
+                    <thead>
+                      <tr>
+                        <th>Tên Vaccine</th>
+                        <th>Vaccine Combo</th>
+                        <th>Trạng Thái</th>
+                        <th>Ghi Chú</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {vaccinations.map((vaccination, idx) => (
+                        <tr key={idx}>
+                          <td>{vaccination.vaccineName}</td>
+                          <td>
+                            {vaccination.vaccineCombo
+                              ? "Thuộc Combo"
+                              : "Vaccine Lẻ"}
+                          </td>
+                          <td>
+                            <span
+                              className={`overviewpage-status overviewpage-status-${vaccination.status.toLowerCase()}`}
+                            >
+                              {vaccination.status}
+                            </span>
+                          </td>
+                          <td>{vaccination.reactionNote}</td>
                         </tr>
-                      </thead>
-                      <tbody>
-                        {vaccinations.map((vaccination, idx) => (
-                          <tr key={idx}>
-                            <td>{vaccination.vaccineName}</td>
-                            <td>{vaccination.vaccineCombo ? 'Thuộc Combo' : 'Vaccine Lẻ'}</td>
-                            <td>
-                              <span
-                                className={`overviewpage-status overviewpage-status-${vaccination.status.toLowerCase()}`}
-                              >
-                                {vaccination.status}
-                              </span>
-                            </td>
-                            <td>{vaccination.reactionNote}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )
-              )}
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ))}
             </div>
           </div>
         </div>

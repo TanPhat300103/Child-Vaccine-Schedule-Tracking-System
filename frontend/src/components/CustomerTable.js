@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import '../style/CustomerTable.css';
+import React, { useEffect, useState } from "react";
+import "../style/CustomerTable.css";
 import { useNavigate } from "react-router-dom";
 
 function CustomerTable() {
@@ -12,32 +12,32 @@ function CustomerTable() {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
   const [formData, setFormData] = useState({
-    phoneNumber: '',
-    firstName: '',
-    lastName: '',
-    dob: '',
+    phoneNumber: "",
+    firstName: "",
+    lastName: "",
+    dob: "",
     gender: false,
-    password: '',
-    address: '',
-    banking: '',
-    email: ''
+    password: "",
+    address: "",
+    banking: "",
+    email: "",
   });
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterKey, setFilterKey] = useState('id');
-  const [sortOrder, setSortOrder] = useState('asc');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterKey, setFilterKey] = useState("id");
+  const [sortOrder, setSortOrder] = useState("asc");
 
   const fetchCustomers = () => {
-    fetch('http://localhost:8080/customer')
-      .then(response => {
-        if (!response.ok) throw new Error('Network response was not ok');
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/customer`)
+      .then((response) => {
+        if (!response.ok) throw new Error("Network response was not ok");
         return response.json();
       })
-      .then(data => {
+      .then((data) => {
         setCustomers(data);
         setLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         setError(err);
         setLoading(false);
       });
@@ -48,23 +48,26 @@ function CustomerTable() {
   }, []);
 
   const toggleStatus = (customerId) => {
-    fetch(`http://localhost:8080/customer/inactive?id=${customerId}`, {
-      method: 'POST'
-    })
-      .then(response => {
-        if (!response.ok) throw new Error('Failed to update status');
+    fetch(
+      `${process.env.REACT_APP_API_BASE_URL}/customer/inactive?id=${customerId}`,
+      {
+        method: "POST",
+      }
+    )
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to update status");
         return response.json();
       })
       .then(() => {
-        setCustomers(prevCustomers =>
-          prevCustomers.map(customer =>
+        setCustomers((prevCustomers) =>
+          prevCustomers.map((customer) =>
             customer.customerId === customerId
               ? { ...customer, active: !customer.active }
               : customer
           )
         );
       })
-      .catch(err => {
+      .catch((err) => {
         alert(`Error: ${err.message}`);
       });
   };
@@ -72,15 +75,15 @@ function CustomerTable() {
   const openUpdateModal = (customer) => {
     setSelectedCustomer(customer);
     setFormData({
-      phoneNumber: customer.phoneNumber || '',
-      firstName: customer.firstName || '',
-      lastName: customer.lastName || '',
-      dob: customer.dob || '',
+      phoneNumber: customer.phoneNumber || "",
+      firstName: customer.firstName || "",
+      lastName: customer.lastName || "",
+      dob: customer.dob || "",
       gender: customer.gender || false,
-      password: customer.password || '',
-      address: customer.address || '',
-      banking: customer.banking || '',
-      email: customer.email || ''
+      password: customer.password || "",
+      address: customer.address || "",
+      banking: customer.banking || "",
+      email: customer.email || "",
     });
     setShowModal(true);
   };
@@ -92,33 +95,37 @@ function CustomerTable() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch('http://localhost:8080/customer/update', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...selectedCustomer, ...formData })
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/customer/update`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...selectedCustomer, ...formData }),
     })
-      .then(response => {
-        if (!response.ok) throw new Error('Failed to update customer');
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to update customer");
         return response.json();
       })
       .then(() => {
         fetchCustomers();
         closeModal();
       })
-      .catch(err => {
+      .catch((err) => {
         alert(`Error: ${err.message}`);
       });
   };
 
-  const filteredCustomers = customers.filter(customer => {
-    const fullName = (customer.firstName + ' ' + customer.lastName).toLowerCase();
-    const email = (customer.email || '').toLowerCase();
-    const phone = (customer.phoneNumber || '').toLowerCase();
+  const filteredCustomers = customers.filter((customer) => {
+    const fullName = (
+      customer.firstName +
+      " " +
+      customer.lastName
+    ).toLowerCase();
+    const email = (customer.email || "").toLowerCase();
+    const phone = (customer.phoneNumber || "").toLowerCase();
     return (
       fullName.includes(searchTerm.toLowerCase()) ||
       email.includes(searchTerm.toLowerCase()) ||
@@ -133,24 +140,27 @@ function CustomerTable() {
   };
 
   const sortedCustomers = [...filteredCustomers].sort((a, b) => {
-    if (filterKey === 'id') {
-      return sortOrder === 'asc'
+    if (filterKey === "id") {
+      return sortOrder === "asc"
         ? a.customerId.localeCompare(b.customerId)
         : b.customerId.localeCompare(a.customerId);
     } else {
-      return sortOrder === 'asc'
+      return sortOrder === "asc"
         ? compareDate(a.dob, b.dob)
         : compareDate(b.dob, a.dob);
     }
   });
 
   const toggleSortOrder = () => {
-    setSortOrder(prev => (prev === 'asc' ? 'desc' : 'asc'));
+    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
   };
 
   const handleCardClick = (e, customerId) => {
     const target = e.target;
-    if (target.closest('.switch-customer') || target.closest('.btn-update-customer')) {
+    if (
+      target.closest(".switch-customer") ||
+      target.closest(".btn-update-customer")
+    ) {
       return;
     }
     navigate(`/customer/detail/${customerId}`);
@@ -187,7 +197,7 @@ function CustomerTable() {
         </div>
         <div className="icon-right-customer">
           <button className="btn-sort-customer" onClick={toggleSortOrder}>
-            {sortOrder === 'asc' ? (
+            {sortOrder === "asc" ? (
               <i className="fa-solid fa-arrow-up"></i>
             ) : (
               <i className="fa-solid fa-arrow-down"></i>
@@ -197,22 +207,38 @@ function CustomerTable() {
       </div>
 
       <div className="customer-grid-customer">
-        {sortedCustomers.map(customer => (
+        {sortedCustomers.map((customer) => (
           <div
             key={customer.customerId}
             className="customer-card-customer"
             onClick={(e) => handleCardClick(e, customer.customerId)}
           >
             <div className="card-header-customer">
-              <h3>{customer.firstName} {customer.lastName}</h3>
-              <span className={`gender-icon-customer ${customer.gender ? 'male-customer' : 'female-customer'}`}>
-                {customer.gender ? <i className="fa-solid fa-mars"></i> : <i className="fa-solid fa-venus"></i>}
+              <h3>
+                {customer.firstName} {customer.lastName}
+              </h3>
+              <span
+                className={`gender-icon-customer ${
+                  customer.gender ? "male-customer" : "female-customer"
+                }`}
+              >
+                {customer.gender ? (
+                  <i className="fa-solid fa-mars"></i>
+                ) : (
+                  <i className="fa-solid fa-venus"></i>
+                )}
               </span>
             </div>
             <div className="card-body-customer">
-              <p><i className="fa-solid fa-phone"></i> {customer.phoneNumber}</p>
-              <p><i className="fa-solid fa-envelope"></i> {customer.email}</p>
-              <p><i className="fa-solid fa-calendar"></i> {customer.dob}</p>
+              <p>
+                <i className="fa-solid fa-phone"></i> {customer.phoneNumber}
+              </p>
+              <p>
+                <i className="fa-solid fa-envelope"></i> {customer.email}
+              </p>
+              <p>
+                <i className="fa-solid fa-calendar"></i> {customer.dob}
+              </p>
             </div>
             <div className="card-footer-customer">
               <label className="switch-customer">
@@ -246,26 +272,55 @@ function CustomerTable() {
             <form onSubmit={handleSubmit}>
               <div className="form-group-customer">
                 <label>First Name</label>
-                <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} required />
+                <input
+                  type="text"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div className="form-group-customer">
                 <label>Last Name</label>
-                <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} required />
+                <input
+                  type="text"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div className="form-group-customer">
                 <label>Phone Number</label>
-                <input type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} required />
+                <input
+                  type="text"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div className="form-group-customer">
                 <label>Date of Birth</label>
-                <input type="date" name="dob" value={formData.dob} onChange={handleChange} required />
+                <input
+                  type="date"
+                  name="dob"
+                  value={formData.dob}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div className="form-group-customer">
                 <label>Gender</label>
                 <select
                   name="gender"
-                  value={formData.gender ? 'true' : 'false'}
-                  onChange={(e) => setFormData(prev => ({ ...prev, gender: e.target.value === 'true' }))}
+                  value={formData.gender ? "true" : "false"}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      gender: e.target.value === "true",
+                    }))
+                  }
                 >
                   <option value="true">Male</option>
                   <option value="false">Female</option>
@@ -273,22 +328,48 @@ function CustomerTable() {
               </div>
               <div className="form-group-customer">
                 <label>Password</label>
-                <input type="text" name="password" value={formData.password} onChange={handleChange} required />
+                <input
+                  type="text"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div className="form-group-customer full-width-customer">
                 <label>Email</label>
-                <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div className="form-group-customer full-width-customer">
                 <label>Address</label>
-                <input type="text" name="address" value={formData.address} onChange={handleChange} />
+                <input
+                  type="text"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                />
               </div>
               <div className="form-group-customer full-width-customer">
                 <label>Banking</label>
-                <input type="text" name="banking" value={formData.banking} onChange={handleChange} />
+                <input
+                  type="text"
+                  name="banking"
+                  value={formData.banking}
+                  onChange={handleChange}
+                />
               </div>
               <div className="modal-actions-customer">
-                <button type="button" className="btn-cancel-customer" onClick={closeModal}>
+                <button
+                  type="button"
+                  className="btn-cancel-customer"
+                  onClick={closeModal}
+                >
                   Cancel
                 </button>
                 <button type="submit" className="btn-submit-customer">

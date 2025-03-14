@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../components/AuthContext';
-import '../style/LoginForm.css';
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../components/AuthContext";
+import "../style/LoginForm.css";
 import { FcGoogle } from "react-icons/fc";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import { FaHospital } from "react-icons/fa";
@@ -9,13 +9,13 @@ import { RiSyringeLine } from "react-icons/ri";
 import { FaArrowLeft } from "react-icons/fa";
 
 function LoginForm() {
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [isOtpSent, setIsOtpSent] = useState(false);
@@ -30,42 +30,43 @@ function LoginForm() {
   const otpRefs = useRef([]);
   const handleGoBack = () => {
     navigate(-1); // Quay lại trang trước đó trong lịch sử
-};
-
+  };
 
   // Xử lý đăng nhập
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setIsLoading(true);
 
-    
     try {
-      const response = await fetch('http://localhost:8080/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        credentials: 'include',
-        body: new URLSearchParams({
-          username: phoneNumber,
-          password,
-        }).toString(),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          credentials: "include",
+          body: new URLSearchParams({
+            username: phoneNumber,
+            password,
+          }).toString(),
+        }
+      );
 
       if (response.ok) {
-        console.log('Login successful - Updating status...');
+        console.log("Login successful - Updating status...");
         await checkLoginStatus();
-        navigate('/');
+        navigate("/");
       } else if (response.status === 401) {
-        setError('Số điện thoại hoặc mật khẩu không đúng');
+        setError("Số điện thoại hoặc mật khẩu không đúng");
       } else {
         const errorText = await response.text();
-        throw new Error(errorText || 'Đã xảy ra lỗi khi đăng nhập');
+        throw new Error(errorText || "Đã xảy ra lỗi khi đăng nhập");
       }
     } catch (err) {
       setError(err.message);
-      console.error('Lỗi đăng nhập:', err);
+      console.error("Lỗi đăng nhập:", err);
     } finally {
       setIsLoading(false);
     }
@@ -74,35 +75,38 @@ function LoginForm() {
   // Xử lý đăng nhập bằng Google
   const handleGoogleLogin = () => {
     setIsLoading(true);
-    setError('');
-    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+    setError("");
+    window.location.href = `${process.env.REACT_APP_API_BASE_URL}/oauth2/authorization/google`;
   };
 
   // Gửi yêu cầu OTP
   const handleForgotPasswordSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8080/otp/send', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({ email }).toString(),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/otp/send`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({ email }).toString(),
+        }
+      );
 
       const result = await response.text();
-      if (response.ok && result === 'OTP sent successfully') {
+      if (response.ok && result === "OTP sent successfully") {
         setIsOtpSent(true);
         setResendCooldown(60);
       } else {
-        setError(result || 'Không thể gửi OTP, vui lòng thử lại');
+        setError(result || "Không thể gửi OTP, vui lòng thử lại");
       }
     } catch (err) {
-      setError('Đã xảy ra lỗi khi gửi OTP');
-      console.error('Lỗi gửi OTP:', err);
+      setError("Đã xảy ra lỗi khi gửi OTP");
+      console.error("Lỗi gửi OTP:", err);
     } finally {
       setIsLoading(false);
     }
@@ -112,27 +116,30 @@ function LoginForm() {
   const handleResendOtp = async () => {
     if (resendCooldown > 0) return;
     setIsLoading(true);
-    setError('');
+    setError("");
 
     try {
-      const response = await fetch('http://localhost:8080/otp/send', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({ email }).toString(),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/otp/send`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({ email }).toString(),
+        }
+      );
 
       const result = await response.text();
-      if (response.ok && result === 'OTP sent successfully') {
+      if (response.ok && result === "OTP sent successfully") {
         setResendCooldown(60);
-        setError('OTP đã được gửi lại');
+        setError("OTP đã được gửi lại");
       } else {
-        setError(result || 'Không thể gửi OTP, vui lòng thử lại');
+        setError(result || "Không thể gửi OTP, vui lòng thử lại");
       }
     } catch (err) {
-      setError('Đã xảy ra lỗi khi gửi OTP');
-      console.error('Lỗi gửi OTP:', err);
+      setError("Đã xảy ra lỗi khi gửi OTP");
+      console.error("Lỗi gửi OTP:", err);
     } finally {
       setIsLoading(false);
     }
@@ -141,30 +148,32 @@ function LoginForm() {
   // Xử lý xác nhận OTP
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setIsLoading(true);
 
-    const otpValue = otp.join('');
+    const otpValue = otp.join("");
     try {
       const response = await fetch(
-        `http://localhost:8080/otp/verify?email=${encodeURIComponent(email)}&otp=${otpValue}`,
+        `${
+          process.env.REACT_APP_API_BASE_URL
+        }/otp/verify?email=${encodeURIComponent(email)}&otp=${otpValue}`,
         {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            "Content-Type": "application/x-www-form-urlencoded",
           },
         }
       );
 
       const result = await response.text();
-      if (response.ok && result === 'OTP verified successfully') {
+      if (response.ok && result === "OTP verified successfully") {
         setIsOtpVerified(true);
       } else {
-        setError(result || 'Mã OTP không hợp lệ hoặc đã hết hạn');
+        setError(result || "Mã OTP không hợp lệ hoặc đã hết hạn");
       }
     } catch (err) {
-      setError('Đã xảy ra lỗi khi xác nhận OTP');
-      console.error('Lỗi xác nhận OTP:', err);
+      setError("Đã xảy ra lỗi khi xác nhận OTP");
+      console.error("Lỗi xác nhận OTP:", err);
     } finally {
       setIsLoading(false);
     }
@@ -173,47 +182,50 @@ function LoginForm() {
   // Xử lý đặt lại mật khẩu
   const handleResetPasswordSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setIsLoading(true);
 
     if (newPassword !== confirmPassword) {
-      setError('Mật khẩu mới và xác nhận mật khẩu không khớp');
+      setError("Mật khẩu mới và xác nhận mật khẩu không khớp");
       setIsLoading(false);
       return;
     }
 
-    const otpValue = otp.join('');
+    const otpValue = otp.join("");
     try {
-      const response = await fetch('http://localhost:8080/otp/reset-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          email,
-          otp: otpValue,
-          newPassword,
-        }).toString(),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/otp/reset-password`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({
+            email,
+            otp: otpValue,
+            newPassword,
+          }).toString(),
+        }
+      );
 
       const result = await response.text();
-      if (response.ok && result === 'Password reset successfully') {
-        setError('Đặt lại mật khẩu thành công, vui lòng đăng nhập lại');
+      if (response.ok && result === "Password reset successfully") {
+        setError("Đặt lại mật khẩu thành công, vui lòng đăng nhập lại");
         setTimeout(() => {
           setIsForgotPassword(false);
           setIsOtpSent(false);
           setIsOtpVerified(false);
-          setEmail('');
-          setOtp(['', '', '', '', '', '']);
-          setNewPassword('');
-          setConfirmPassword('');
+          setEmail("");
+          setOtp(["", "", "", "", "", ""]);
+          setNewPassword("");
+          setConfirmPassword("");
         }, 2000);
       } else {
-        setError(result || 'Không thể đặt lại mật khẩu, vui lòng thử lại');
+        setError(result || "Không thể đặt lại mật khẩu, vui lòng thử lại");
       }
     } catch (err) {
-      setError('Đã xảy ra lỗi khi đặt lại mật khẩu');
-      console.error('Lỗi đặt lại mật khẩu:', err);
+      setError("Đã xảy ra lỗi khi đặt lại mật khẩu");
+      console.error("Lỗi đặt lại mật khẩu:", err);
     } finally {
       setIsLoading(false);
     }
@@ -222,12 +234,12 @@ function LoginForm() {
   // Xử lý thay đổi giá trị trong ô OTP
   const handleOtpChange = (e, index) => {
     const value = e.target.value;
-    if (/^\d$/.test(value) || value === '') {
+    if (/^\d$/.test(value) || value === "") {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
 
-      if (value !== '' && index < 5) {
+      if (value !== "" && index < 5) {
         otpRefs.current[index + 1].focus();
       }
     }
@@ -235,7 +247,7 @@ function LoginForm() {
 
   // Xử lý phím Backspace
   const handleOtpKeyDown = (e, index) => {
-    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
       otpRefs.current[index - 1].focus();
     }
   };
@@ -255,7 +267,6 @@ function LoginForm() {
       <div className="login-form-content">
         {/* Left Side: Branding and Background */}
         <div className="login-form-left">
-        
           <div className="login-form-icons">
             <RiSyringeLine className="login-form-icon" />
             <FaHospital className="login-form-icon" />
@@ -277,22 +288,21 @@ function LoginForm() {
 
         {/* Right Side: Form */}
         <div className="login-form-right">
-       
           <h2 className="login-form-title">
             {!isForgotPassword
-              ? 'Đăng nhập'
+              ? "Đăng nhập"
               : isOtpVerified
-                ? 'Đặt lại mật khẩu'
-                : isOtpSent
-                  ? 'Xác nhận OTP'
-                  : 'Quên mật khẩu'}
+              ? "Đặt lại mật khẩu"
+              : isOtpSent
+              ? "Xác nhận OTP"
+              : "Quên mật khẩu"}
           </h2>
           <p className="login-form-subtitle">
             {isForgotPassword ? (
-              'Vui lòng nhập email để nhận mã OTP'
+              "Vui lòng nhập email để nhận mã OTP"
             ) : (
               <span>
-                Bạn chưa có tài khoản?{' '}
+                Bạn chưa có tài khoản?{" "}
                 <a href="/register" className="login-form-link">
                   Đăng ký
                 </a>
@@ -327,7 +337,7 @@ function LoginForm() {
                 <label className="login-form-label">Mật khẩu</label>
                 <div className="login-form-password-wrapper">
                   <input
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -380,7 +390,7 @@ function LoginForm() {
                       Đang đăng nhập...
                     </>
                   ) : (
-                    'Đăng nhập'
+                    "Đăng nhập"
                   )}
                 </button>
               </div>
@@ -400,7 +410,7 @@ function LoginForm() {
                   className="login-form-google-button"
                 >
                   <FcGoogle className="login-form-google-icon" />
-                  {isLoading ? 'Đang xử lý...' : 'Đăng nhập bằng Google'}
+                  {isLoading ? "Đang xử lý..." : "Đăng nhập bằng Google"}
                 </button>
               </div>
 
@@ -413,7 +423,6 @@ function LoginForm() {
                 >
                   Quên mật khẩu?
                 </button>
-              
               </div>
             </form>
           ) : !isOtpSent ? (
@@ -462,7 +471,7 @@ function LoginForm() {
                       Đang gửi...
                     </>
                   ) : (
-                    'Gửi OTP'
+                    "Gửi OTP"
                   )}
                 </button>
               </div>
@@ -535,7 +544,7 @@ function LoginForm() {
                       Đang xác nhận...
                     </>
                   ) : (
-                    'Xác nhận'
+                    "Xác nhận"
                   )}
                 </button>
               </div>
@@ -545,12 +554,13 @@ function LoginForm() {
                   type="button"
                   onClick={handleResendOtp}
                   disabled={isLoading || resendCooldown > 0}
-                  className={`login-form-forgot-button ${resendCooldown > 0 ? 'login-form-disabled' : ''
-                    }`}
+                  className={`login-form-forgot-button ${
+                    resendCooldown > 0 ? "login-form-disabled" : ""
+                  }`}
                 >
                   {resendCooldown > 0
                     ? `Gửi lại OTP (${resendCooldown}s)`
-                    : 'Gửi lại OTP'}
+                    : "Gửi lại OTP"}
                 </button>
               </div>
             </form>
@@ -560,7 +570,7 @@ function LoginForm() {
                 <label className="login-form-label">Mật khẩu mới</label>
                 <div className="login-form-password-wrapper">
                   <input
-                    type={showNewPassword ? 'text' : 'password'}
+                    type={showNewPassword ? "text" : "password"}
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     required
@@ -583,10 +593,12 @@ function LoginForm() {
               </div>
 
               <div className="login-form-group">
-                <label className="login-form-label">Xác nhận mật khẩu mới</label>
+                <label className="login-form-label">
+                  Xác nhận mật khẩu mới
+                </label>
                 <div className="login-form-password-wrapper">
                   <input
-                    type={showConfirmPassword ? 'text' : 'password'}
+                    type={showConfirmPassword ? "text" : "password"}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
@@ -639,7 +651,7 @@ function LoginForm() {
                       Đang cập nhật...
                     </>
                   ) : (
-                    'Cập nhật mật khẩu'
+                    "Cập nhật mật khẩu"
                   )}
                 </button>
               </div>

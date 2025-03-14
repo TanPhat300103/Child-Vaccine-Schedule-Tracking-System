@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../style/HomePage.css"; // Import the CSS file
 import { FiSearch, FiX, FiInfo } from "react-icons/fi";
-import { useAuth } from "../components/AuthContext"; 
+import { useAuth } from "../components/AuthContext";
 import { useNavigate } from "react-router-dom";
 import {
   FaGlobe,
@@ -30,7 +30,7 @@ const HomePage = () => {
   if (userInfo != null) {
     localStorage.setItem("userId", userInfo.userId);
   }
-   
+
   useEffect(() => {
     if (userInfo != null && userInfo != "anonymousUser") {
       if (userInfo.authorities[0].authority === "ROLE_CUSTOMER") {
@@ -70,33 +70,112 @@ const HomePage = () => {
   ];
 
   const enhancedBenefits = [
-    { icon: "🛡️", title: "Bảo Vệ Sức Khỏe", description: "Vắc-xin giúp ngăn ngừa các bệnh truyền nhiễm nguy hiểm, bảo vệ sức khỏe cộng đồng." },
-    { icon: "❤️", title: "Tăng Cường Miễn Dịch", description: "Tiêm chủng giúp cơ thể tăng cường khả năng miễn dịch, giảm nguy cơ mắc bệnh." },
-    { icon: "👶", title: "An Toàn Cho Trẻ Em", description: "Vắc-xin được kiểm định nghiêm ngặt, đảm bảo an toàn cho trẻ em và người lớn." },
-    { icon: "👨‍⚕️", title: "Chăm Sóc Chuyên Nghiệp", description: "Đội ngũ y bác sĩ giàu kinh nghiệm, tận tâm chăm sóc sức khỏe của bạn." },
-    { icon: "🏥", title: "Cơ Sở Vật Chất Hiện Đại", description: "Hệ thống phòng tiêm hiện đại, vô trùng, đảm bảo tiêu chuẩn y tế quốc tế." },
-    { icon: "🩺", title: "Theo Dõi Sau Tiêm", description: "Hệ thống theo dõi sức khỏe sau tiêm chủng, hỗ trợ 24/7 khi cần thiết." },
+    {
+      icon: "🛡️",
+      title: "Bảo Vệ Sức Khỏe",
+      description:
+        "Vắc-xin giúp ngăn ngừa các bệnh truyền nhiễm nguy hiểm, bảo vệ sức khỏe cộng đồng.",
+    },
+    {
+      icon: "❤️",
+      title: "Tăng Cường Miễn Dịch",
+      description:
+        "Tiêm chủng giúp cơ thể tăng cường khả năng miễn dịch, giảm nguy cơ mắc bệnh.",
+    },
+    {
+      icon: "👶",
+      title: "An Toàn Cho Trẻ Em",
+      description:
+        "Vắc-xin được kiểm định nghiêm ngặt, đảm bảo an toàn cho trẻ em và người lớn.",
+    },
+    {
+      icon: "👨‍⚕️",
+      title: "Chăm Sóc Chuyên Nghiệp",
+      description:
+        "Đội ngũ y bác sĩ giàu kinh nghiệm, tận tâm chăm sóc sức khỏe của bạn.",
+    },
+    {
+      icon: "🏥",
+      title: "Cơ Sở Vật Chất Hiện Đại",
+      description:
+        "Hệ thống phòng tiêm hiện đại, vô trùng, đảm bảo tiêu chuẩn y tế quốc tế.",
+    },
+    {
+      icon: "🩺",
+      title: "Theo Dõi Sau Tiêm",
+      description:
+        "Hệ thống theo dõi sức khỏe sau tiêm chủng, hỗ trợ 24/7 khi cần thiết.",
+    },
   ];
 
   const features = [
-    { icon: "📅", title: "Đặt Lịch Trực Tuyến", description: "Đặt lịch tiêm chủng trực tuyến dễ dàng, tiết kiệm thời gian chờ đợi." },
-    { icon: "💉", title: "Đa Dạng Vắc-xin", description: "Cung cấp đầy đủ các loại vắc-xin trong và ngoài chương trình tiêm chủng." },
-    { icon: "⏰", title: "Linh Hoạt Thời Gian", description: "Hoạt động 7 ngày/tuần, sáng chiều tối để phục vụ mọi nhu cầu của khách hàng." },
-    { icon: "👤", title: "Hồ Sơ Điện Tử", description: "Lưu trữ thông tin tiêm chủng trên hệ thống điện tử, dễ dàng tra cứu." },
+    {
+      icon: "📅",
+      title: "Đặt Lịch Trực Tuyến",
+      description:
+        "Đặt lịch tiêm chủng trực tuyến dễ dàng, tiết kiệm thời gian chờ đợi.",
+    },
+    {
+      icon: "💉",
+      title: "Đa Dạng Vắc-xin",
+      description:
+        "Cung cấp đầy đủ các loại vắc-xin trong và ngoài chương trình tiêm chủng.",
+    },
+    {
+      icon: "⏰",
+      title: "Linh Hoạt Thời Gian",
+      description:
+        "Hoạt động 7 ngày/tuần, sáng chiều tối để phục vụ mọi nhu cầu của khách hàng.",
+    },
+    {
+      icon: "👤",
+      title: "Hồ Sơ Điện Tử",
+      description:
+        "Lưu trữ thông tin tiêm chủng trên hệ thống điện tử, dễ dàng tra cứu.",
+    },
   ];
 
   const enhancedProcess = [
-    { step: 1, title: "Đăng ký trực tuyến", description: "Truy cập website hoặc ứng dụng để đặt lịch. Chọn vaccine, ngày giờ, nhận mã QR qua email/SMS trong 2-3 phút." },
-    { step: 2, title: "Chuẩn bị trước khi đến", description: "Mang CMND/CCCD, mã QR hoặc số y tế (nếu có). Đeo khẩu trang, đến nhẹ, tắm sạch." },
-    { step: 3, title: "Khám sàng lọc", description: "Bác sĩ kiểm tra nhiệt độ, huyết áp, tiến sử bệnh lý. Thời gian 5-10 phút để xác định điều kiện tiêm." },
-    { step: 4, title: "Tiêm vaccine", description: "Nhân viên y tế thực hiện trong phòng vô trùng, nhanh chóng và không đau." },
-    { step: 5, title: "Theo dõi sau tiêm", description: "Nghỉ ngơi 30 phút, nhận giấy chứng nhận và hướng dẫn chăm sóc của ứng dụng/giấy in." },
+    {
+      step: 1,
+      title: "Đăng ký trực tuyến",
+      description:
+        "Truy cập website hoặc ứng dụng để đặt lịch. Chọn vaccine, ngày giờ, nhận mã QR qua email/SMS trong 2-3 phút.",
+    },
+    {
+      step: 2,
+      title: "Chuẩn bị trước khi đến",
+      description:
+        "Mang CMND/CCCD, mã QR hoặc số y tế (nếu có). Đeo khẩu trang, đến nhẹ, tắm sạch.",
+    },
+    {
+      step: 3,
+      title: "Khám sàng lọc",
+      description:
+        "Bác sĩ kiểm tra nhiệt độ, huyết áp, tiến sử bệnh lý. Thời gian 5-10 phút để xác định điều kiện tiêm.",
+    },
+    {
+      step: 4,
+      title: "Tiêm vaccine",
+      description:
+        "Nhân viên y tế thực hiện trong phòng vô trùng, nhanh chóng và không đau.",
+    },
+    {
+      step: 5,
+      title: "Theo dõi sau tiêm",
+      description:
+        "Nghỉ ngơi 30 phút, nhận giấy chứng nhận và hướng dẫn chăm sóc của ứng dụng/giấy in.",
+    },
   ];
 
   const stats = [
     { value: "5,000+", label: "Khách hàng", icon: <Users size={32} /> },
     { value: "90.8%", label: "Độ hài lòng", icon: <Heart size={32} /> },
-    { value: "20+", label: "Bác sĩ chuyên khoa", icon: <Stethoscope size={32} /> },
+    {
+      value: "20+",
+      label: "Bác sĩ chuyên khoa",
+      icon: <Stethoscope size={32} />,
+    },
     { value: "100+", label: "Loại vắc-xin", icon: <Syringe size={32} /> },
   ];
 
@@ -111,17 +190,22 @@ const HomePage = () => {
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
-        const response = await fetch("https://644c-183-81-127-39.ngrok-free.app/feedback", {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
-          },
-        });
+        const response = await fetch(
+          `${process.env.REACT_APP_API_BASE_URL}/feedback`,
+          {
+            method: "GET",
+            credentials: "include",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
+          }
+        );
         if (response.ok) {
           const data = await response.json();
           // Lọc feedbacks có ranking > 3 sao
-          const filteredFeedbacks = data.filter(feedback => feedback.ranking >= 3);
+          const filteredFeedbacks = data.filter(
+            (feedback) => feedback.ranking >= 3
+          );
           setFeedbacks(filteredFeedbacks);
         }
       } catch (error) {
@@ -162,13 +246,17 @@ const HomePage = () => {
   useEffect(() => {
     const fetchCombos = async () => {
       try {
-        const response = await fetch("https://644c-183-81-127-39.ngrok-free.app/vaccinecombo", {
-          method: "GET",
-          headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
-          },
-        });
-        if (!response.ok) throw new Error("Không thể tải danh sách combo vaccine");
+        const response = await fetch(
+          `${process.env.REACT_APP_API_BASE_URL}/vaccinecombo`,
+          {
+            method: "GET",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
+          }
+        );
+        if (!response.ok)
+          throw new Error("Không thể tải danh sách combo vaccine");
         const data = await response.json();
         setCombos(data);
 
@@ -190,12 +278,15 @@ const HomePage = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://644c-183-81-127-39.ngrok-free.app/combodetail/findcomboid?id=${comboId.toLowerCase()}`,
-        { method: "GET",
+        `${
+          process.env.REACT_APP_API_BASE_URL
+        }/combodetail/findcomboid?id=${comboId.toLowerCase()}`,
+        {
+          method: "GET",
           headers: {
             "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
           },
-         }
+        }
       );
       if (!response.ok) throw new Error("Không thể tải chi tiết combo vaccine");
       const data = await response.json();
@@ -215,13 +306,16 @@ const HomePage = () => {
     const fetchVaccineData = async () => {
       try {
         setPriceLoading(true);
-        const response = await fetch(`https://644c-183-81-127-39.ngrok-free.app/vaccinedetail/findbyvaccine?id=${selectedVaccine.vaccineId}`, {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
-          },
-        });
+        const response = await fetch(
+          `${process.env.REACT_APP_API_BASE_URL}/vaccinedetail/findbyvaccine?id=${selectedVaccine.vaccineId}`,
+          {
+            method: "GET",
+            credentials: "include",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
+          }
+        );
         if (!response.ok) throw new Error("Failed to fetch vaccine details");
         const data = await response.json();
         if (data?.length > 0) {
@@ -241,15 +335,20 @@ const HomePage = () => {
     const fetchVaccineData = async () => {
       try {
         setPriceLoading(true);
-        const response = await fetch("https://644c-183-81-127-39.ngrok-free.app/vaccine", {
-          method: "GET",
-          headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
-          },
-        });
+        const response = await fetch(
+          `${process.env.REACT_APP_API_BASE_URL}/vaccine`,
+          {
+            method: "GET",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
+          }
+        );
         if (!response.ok) {
           const errorText = await response.text();
-          throw new Error(`Failed to fetch vaccines: ${response.status} - ${errorText}`);
+          throw new Error(
+            `Failed to fetch vaccines: ${response.status} - ${errorText}`
+          );
         }
         const data = await response.json();
         setPricePackages(data);
@@ -290,7 +389,9 @@ const HomePage = () => {
 
   const filteredVaccinesByPriceAndAge = filteredVaccines.filter((vaccine) => {
     let isPriceValid = vaccine.price >= minPrice && vaccine.price <= maxPrice;
-    let isCountryValid = selectedCountry ? vaccine.country === selectedCountry : true;
+    let isCountryValid = selectedCountry
+      ? vaccine.country === selectedCountry
+      : true;
     let isTabValid = true;
     if (activeTab === "infant") {
       isTabValid = vaccine.ageMax <= 2;
@@ -346,7 +447,12 @@ const HomePage = () => {
     return (
       <div className="homepage-feedback-stars">
         {[...Array(5)].map((_, index) => (
-          <span key={index} className={index < ranking ? "homepage-star-filled" : "homepage-star-empty"}>
+          <span
+            key={index}
+            className={
+              index < ranking ? "homepage-star-filled" : "homepage-star-empty"
+            }
+          >
             ★
           </span>
         ))}
@@ -366,17 +472,30 @@ const HomePage = () => {
                 <span className="homepage-text-blue">cho mọi gia đình</span>
               </h1>
               <p className="homepage-hero-subtitle">
-                VaccineCare cung cấp dịch vụ tiêm chủng chất lượng cao với đội ngũ y bác sĩ chuyên nghiệp, giúp bảo vệ sức khỏe toàn diện cho bạn và gia đình.
+                VaccineCare cung cấp dịch vụ tiêm chủng chất lượng cao với đội
+                ngũ y bác sĩ chuyên nghiệp, giúp bảo vệ sức khỏe toàn diện cho
+                bạn và gia đình.
               </p>
               <div className="homepage-hero-buttons">
-                <button className="homepage-btn homepage-btn-primary"onClick={() => window.location.href = "/booking"}>Đặt lịch ngay</button>
-                <button className="homepage-btn homepage-btn-secondary" onClick={() => window.location.href = "/vaccines"}>
+                <button
+                  className="homepage-btn homepage-btn-primary"
+                  onClick={() => (window.location.href = "/booking")}
+                >
+                  Đặt lịch ngay
+                </button>
+                <button
+                  className="homepage-btn homepage-btn-secondary"
+                  onClick={() => (window.location.href = "/vaccines")}
+                >
                   Xem gói vaccine
                 </button>
               </div>
             </div>
             <div className="homepage-hero-image">
-              <img src="https://images.unsplash.com/photo-1584515933487-779824d29309" alt="Healthcare" />
+              <img
+                src="https://images.unsplash.com/photo-1584515933487-779824d29309"
+                alt="Healthcare"
+              />
             </div>
           </div>
         </div>
@@ -390,7 +509,10 @@ const HomePage = () => {
               <motion.div
                 key={index}
                 className="homepage-stat-item"
-                whileHover={{ scale: 1.05, boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)" }}
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)",
+                }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
                 <div className="homepage-stat-icon">{stat.icon}</div>
@@ -407,7 +529,10 @@ const HomePage = () => {
         <div className="homepage-container">
           <div className="homepage-age-vaccine-header">
             <h1>Lịch Tiêm Chủng Cho Trẻ Em</h1>
-            <p>Lựa chọn combo vaccine phù hợp cho trẻ từ các chuyên gia y tế hàng đầu</p>
+            <p>
+              Lựa chọn combo vaccine phù hợp cho trẻ từ các chuyên gia y tế hàng
+              đầu
+            </p>
           </div>
           {error && (
             <div className="homepage-age-vaccine-error">
@@ -437,7 +562,11 @@ const HomePage = () => {
                   filteredCombos.map((combo) => (
                     <div
                       key={combo.vaccineComboId}
-                      className={`homepage-age-vaccine-combo-item ${selectedCombo?.vaccineComboId === combo.vaccineComboId ? "homepage-age-vaccine-combo-item-selected" : ""}`}
+                      className={`homepage-age-vaccine-combo-item ${
+                        selectedCombo?.vaccineComboId === combo.vaccineComboId
+                          ? "homepage-age-vaccine-combo-item-selected"
+                          : ""
+                      }`}
                       onClick={() => handleComboClick(combo)}
                     >
                       <div className="homepage-age-vaccine-combo-content">
@@ -480,7 +609,10 @@ const HomePage = () => {
                     ) : (
                       <div className="homepage-age-vaccine-details-grid">
                         {comboDetails.map((detail) => (
-                          <div key={detail.comboDetailId} className="homepage-age-vaccine-detail-item">
+                          <div
+                            key={detail.comboDetailId}
+                            className="homepage-age-vaccine-detail-item"
+                          >
                             <div className="homepage-age-vaccine-detail-header">
                               <h4>{detail.vaccine.name}</h4>
                             </div>
@@ -496,11 +628,17 @@ const HomePage = () => {
                                 </div>
                                 <div>
                                   <p>Số liều:</p>
-                                  <p>{detail.vaccine.doseNumber} <span>Liều</span></p>
+                                  <p>
+                                    {detail.vaccine.doseNumber}{" "}
+                                    <span>Liều</span>
+                                  </p>
                                 </div>
                                 <div>
                                   <p>Độ tuổi:</p>
-                                  <p>{detail.vaccine.ageMin} - {detail.vaccine.ageMax} <span>Tuổi</span></p>
+                                  <p>
+                                    {detail.vaccine.ageMin} -{" "}
+                                    {detail.vaccine.ageMax} <span>Tuổi</span>
+                                  </p>
                                 </div>
                               </div>
                               <div className="homepage-age-vaccine-detail-footer">
@@ -517,7 +655,10 @@ const HomePage = () => {
                 <div className="homepage-age-vaccine-placeholder">
                   <span>ℹ️</span>
                   <h2>Chọn Combo Vaccine</h2>
-                  <p>Vui lòng chọn một gói combo vaccine từ danh sách bên trái để xem thông tin chi tiết về các loại vaccine có trong gói</p>
+                  <p>
+                    Vui lòng chọn một gói combo vaccine từ danh sách bên trái để
+                    xem thông tin chi tiết về các loại vaccine có trong gói
+                  </p>
                 </div>
               )}
             </div>
@@ -532,7 +673,9 @@ const HomePage = () => {
             <h2 className="price-vaccine-title">
               <FaShieldVirus className="price-vaccine-icon" /> Danh mục vắc xin
             </h2>
-            <p className="price-vaccine-subtitle">Theo dõi và lựa chọn vắc xin phù hợp cho lịch tiêm chủng của trẻ</p>
+            <p className="price-vaccine-subtitle">
+              Theo dõi và lựa chọn vắc xin phù hợp cho lịch tiêm chủng của trẻ
+            </p>
           </div>
 
           {/* Filter Section */}
@@ -587,14 +730,22 @@ const HomePage = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`price-vaccine-tab ${activeTab === tab.id ? "price-vaccine-tab-active" : ""}`}
+                  className={`price-vaccine-tab ${
+                    activeTab === tab.id ? "price-vaccine-tab-active" : ""
+                  }`}
                 >
                   <span>{tab.icon}</span> {tab.label}
                 </button>
               ))}
             </div>
-            {(selectedCountry || minPrice > 0 || maxPrice < 3000000 || searchQuery) && (
-              <button onClick={resetFilters} className="price-vaccine-reset-btn">
+            {(selectedCountry ||
+              minPrice > 0 ||
+              maxPrice < 3000000 ||
+              searchQuery) && (
+              <button
+                onClick={resetFilters}
+                className="price-vaccine-reset-btn"
+              >
                 <FiX /> Xóa bộ lọc
               </button>
             )}
@@ -603,7 +754,8 @@ const HomePage = () => {
           {/* Results Count */}
           <div className="price-vaccine-results">
             <p>
-              Hiển thị <span>{filteredVaccinesByPriceAndAge.length}</span> vắc xin
+              Hiển thị <span>{filteredVaccinesByPriceAndAge.length}</span> vắc
+              xin
             </p>
           </div>
 
@@ -616,7 +768,9 @@ const HomePage = () => {
             <div className="price-vaccine-no-results">
               <FiInfo className="price-vaccine-no-results-icon" />
               <h3>Không tìm thấy vắc xin</h3>
-              <p>Không có vắc xin nào phù hợp với điều kiện tìm kiếm của bạn.</p>
+              <p>
+                Không có vắc xin nào phù hợp với điều kiện tìm kiếm của bạn.
+              </p>
               <button onClick={resetFilters}>Xóa bộ lọc</button>
             </div>
           ) : (
@@ -635,7 +789,9 @@ const HomePage = () => {
                   </div>
                   <p>{vaccine.description}</p>
                   <div className="price-vaccine-item-info">
-                    <span className={getBadgeColor(vaccine.country)}>{vaccine.country}</span>
+                    <span className={getBadgeColor(vaccine.country)}>
+                      {vaccine.country}
+                    </span>
                     <span>
                       <FaSyringe /> {vaccine.doseNumber} liều
                     </span>
@@ -664,30 +820,48 @@ const HomePage = () => {
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   className="price-vaccine-modal"
                 >
-                  <button onClick={closeModal} className="price-vaccine-modal-close">
+                  <button
+                    onClick={closeModal}
+                    className="price-vaccine-modal-close"
+                  >
                     <FaTimes />
                   </button>
                   <h3>{vaccineData?.vaccine.name}</h3>
                   <div className="price-vaccine-modal-age">
-                    <FaChild /> {vaccineData?.vaccine.ageMin} - {vaccineData?.vaccine.ageMax} tuổi
+                    <FaChild /> {vaccineData?.vaccine.ageMin} -{" "}
+                    {vaccineData?.vaccine.ageMax} tuổi
                   </div>
-                  <div className="price-vaccine-modal-price">{vaccineData?.vaccine.price.toLocaleString()} VND</div>
+                  <div className="price-vaccine-modal-price">
+                    {vaccineData?.vaccine.price.toLocaleString()} VND
+                  </div>
                   <p>{vaccineData?.vaccine.description}</p>
                   <div className="price-vaccine-modal-details">
                     <div>
-                      <span><FaSyringe /> Số liều:</span>
+                      <span>
+                        <FaSyringe /> Số liều:
+                      </span>
                       <span>{vaccineData?.vaccine.doseNumber}</span>
                     </div>
                     <div>
-                      <span><FaGlobe /> Quốc gia:</span>
-                      <span className={getBadgeColor(vaccineData?.vaccine.country)}>{vaccineData?.vaccine.country}</span>
+                      <span>
+                        <FaGlobe /> Quốc gia:
+                      </span>
+                      <span
+                        className={getBadgeColor(vaccineData?.vaccine.country)}
+                      >
+                        {vaccineData?.vaccine.country}
+                      </span>
                     </div>
                     <div>
-                      <span><FaUserClock /> Khoảng cách tiêm:</span>
+                      <span>
+                        <FaUserClock /> Khoảng cách tiêm:
+                      </span>
                       <span>{vaccineData?.day} ngày</span>
                     </div>
                     <div>
-                      <span><FaUserClock /> Dung sai:</span>
+                      <span>
+                        <FaUserClock /> Dung sai:
+                      </span>
                       <span>±{vaccineData?.tolerance} ngày</span>
                     </div>
                   </div>
@@ -708,7 +882,9 @@ const HomePage = () => {
               {enhancedProcess.map((item) => (
                 <div key={item.step} className="timeline-step">
                   <div className="step-marker">
-                    <span className="step-number">{item.step.toString().padStart(2, "0")}</span>
+                    <span className="step-number">
+                      {item.step.toString().padStart(2, "0")}
+                    </span>
                   </div>
                   <h3>{item.title}</h3>
                   <p>{item.description}</p>
@@ -722,7 +898,9 @@ const HomePage = () => {
       {/* Feedback Section */}
       <section className="homepage-feedback">
         <div className="homepage-container">
-          <h2 className="homepage-section-title">Khách Hàng Nói Gì Về Chúng Tôi</h2>
+          <h2 className="homepage-section-title">
+            Khách Hàng Nói Gì Về Chúng Tôi
+          </h2>
           {feedbacks.length > 0 ? (
             <div className="homepage-feedback-overflow">
               <div
@@ -731,7 +909,10 @@ const HomePage = () => {
                 style={{ transform: `translateX(${translateX}px)` }}
               >
                 {feedbacks.map((feedback, index) => (
-                  <div key={`${feedback.id}-${index}`} className="homepage-feedback-item">
+                  <div
+                    key={`${feedback.id}-${index}`}
+                    className="homepage-feedback-item"
+                  >
                     <div className="homepage-feedback-card">
                       <div className="homepage-feedback-header">
                         <div className="homepage-feedback-avatar">
@@ -739,20 +920,29 @@ const HomePage = () => {
                         </div>
                         <div>
                           <h3 className="homepage-feedback-name">
-                            {feedback.booking.customer.firstName} {feedback.booking.customer.lastName}
+                            {feedback.booking.customer.firstName}{" "}
+                            {feedback.booking.customer.lastName}
                           </h3>
-                          <p className="homepage-feedback-date">Ngày đặt: {feedback.booking.bookingDate}</p>
+                          <p className="homepage-feedback-date">
+                            Ngày đặt: {feedback.booking.bookingDate}
+                          </p>
                         </div>
                       </div>
-                      <div className="homepage-feedback-rating">{renderStars(feedback.ranking)}</div>
-                      <p className="homepage-feedback-comment">"{feedback.comment}"</p>
+                      <div className="homepage-feedback-rating">
+                        {renderStars(feedback.ranking)}
+                      </div>
+                      <p className="homepage-feedback-comment">
+                        "{feedback.comment}"
+                      </p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
           ) : (
-            <p className="homepage-feedback-placeholder">Chưa có đánh giá trên 3 sao</p>
+            <p className="homepage-feedback-placeholder">
+              Chưa có đánh giá trên 3 sao
+            </p>
           )}
         </div>
       </section>

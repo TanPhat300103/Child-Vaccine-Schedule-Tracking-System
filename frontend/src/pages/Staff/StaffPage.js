@@ -41,7 +41,7 @@ const StaffPage = () => {
       setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:8080/staff/findid?id=${staffId}`,
+          `${process.env.REACT_APP_API_BASE_URL}/staff/findid?id=${staffId}`,
           {
             method: "GET",
             credentials: "include",

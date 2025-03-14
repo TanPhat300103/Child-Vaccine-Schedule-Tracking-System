@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { FiSearch, FiCalendar, FiFilter, FiEdit, FiX } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
-import '../../style/Record.css';
+import "../../style/Record.css";
 
 const Records = () => {
   const [records, setRecords] = useState([]);
@@ -14,7 +14,7 @@ const Records = () => {
   const getMedicalHistoryByChildId = async (childId) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/medicalhistory/findbychildid?id=${childId}`,
+        `${process.env.REACT_APP_API_BASE_URL}/medicalhistory/findbychildid?id=${childId}`,
         {
           method: "GET",
           credentials: "include", // Tương đương với withCredentials: true trong axios
@@ -70,7 +70,7 @@ const Records = () => {
   const fetchRecords = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8080/medicalhistory", // Giả sử đây là endpoint tổng quát
+        `${process.env.REACT_APP_API_BASE_URL}/medicalhistory`, // Giả sử đây là endpoint tổng quát
         {
           method: "GET",
           credentials: "include",
@@ -166,9 +166,17 @@ const Records = () => {
 
   const ReactionBadge = ({ reaction }) => {
     if (!reaction) {
-      return <span className="reaction-badge-record reaction-badge-none-record">None</span>;
+      return (
+        <span className="reaction-badge-record reaction-badge-none-record">
+          None
+        </span>
+      );
     }
-    return <span className="reaction-badge-record reaction-badge-has-reaction-record">Has Reaction</span>;
+    return (
+      <span className="reaction-badge-record reaction-badge-has-reaction-record">
+        Has Reaction
+      </span>
+    );
   };
 
   const SkeletonLoader = () => (
@@ -228,19 +236,29 @@ const Records = () => {
         <div className="filter-buttons-record">
           <button
             onClick={() => setReactionFilter("all")}
-            className={`filter-button-record ${reactionFilter === "all" ? "filter-button-active-record" : ""}`}
+            className={`filter-button-record ${
+              reactionFilter === "all" ? "filter-button-active-record" : ""
+            }`}
           >
             All
           </button>
           <button
             onClick={() => setReactionFilter("hasReaction")}
-            className={`filter-button-record ${reactionFilter === "hasReaction" ? "filter-button-has-reaction-record" : "filter-button-has-reaction-inactive-record"}`}
+            className={`filter-button-record ${
+              reactionFilter === "hasReaction"
+                ? "filter-button-has-reaction-record"
+                : "filter-button-has-reaction-inactive-record"
+            }`}
           >
             Has Reaction
           </button>
           <button
             onClick={() => setReactionFilter("noReaction")}
-            className={`filter-button-record ${reactionFilter === "noReaction" ? "filter-button-no-reaction-record" : "filter-button-no-reaction-inactive-record"}`}
+            className={`filter-button-record ${
+              reactionFilter === "noReaction"
+                ? "filter-button-no-reaction-record"
+                : "filter-button-no-reaction-inactive-record"
+            }`}
           >
             No Reaction
           </button>
@@ -251,7 +269,10 @@ const Records = () => {
             <div className="search-input-wrapper-record">
               <input
                 type="text"
-                placeholder={`Search by ${searchOptions.find((opt) => opt.key === searchMethod)?.label || ""}...`}
+                placeholder={`Search by ${
+                  searchOptions.find((opt) => opt.key === searchMethod)
+                    ?.label || ""
+                }...`}
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
                 className="search-input-record"
@@ -361,7 +382,9 @@ const Records = () => {
                 </div>
                 <div>
                   <p className="modal-text-record">
-                    <span className="modal-label-record">Vaccination Date:</span>{" "}
+                    <span className="modal-label-record">
+                      Vaccination Date:
+                    </span>{" "}
                     {format(new Date(selectedRecord.date), "dd/MM/yyyy")}
                   </p>
                 </div>

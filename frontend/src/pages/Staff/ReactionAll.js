@@ -13,7 +13,7 @@ const ReactionAll = ({ onBack }) => {
     const fetchReactions = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/staffdashboard/get-reaction",
+          `${process.env.REACT_APP_API_BASE_URL}/staffdashboard/get-reaction`,
           { method: "GET", credentials: "include" }
         );
         if (!response.ok) throw new Error("Lỗi khi lấy báo cáo phản ứng");

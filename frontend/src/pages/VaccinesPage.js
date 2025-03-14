@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 import VaccineList from "../pages/VaccineListPage";
 import VaccineCombo from "../components/VaccineCombo";
-import '../style/VaccinesPage.css';
+import "../style/VaccinesPage.css";
 import Header from "../layout/Header";
 import Footer from "../layout/Footer";
 
-
 function VaccinesPage() {
-  const [activeTab, setActiveTab] = useState('vaccine-list');
+  const [activeTab, setActiveTab] = useState("vaccine-list");
   const [combos, setCombos] = useState([]);
   const [selectedCombo, setSelectedCombo] = useState(null);
   const [comboDetails, setComboDetails] = useState([]);
@@ -19,10 +18,14 @@ function VaccinesPage() {
   useEffect(() => {
     const fetchCombos = async () => {
       try {
-        const response = await fetch("http://localhost:8080/vaccinecombo", {
-          method: "GET",
-        });
-        if (!response.ok) throw new Error("Không thể tải danh sách combo vaccine");
+        const response = await fetch(
+          `${process.env.REACT_APP_API_BASE_URL}/vaccinecombo`,
+          {
+            method: "GET",
+          }
+        );
+        if (!response.ok)
+          throw new Error("Không thể tải danh sách combo vaccine");
         const data = await response.json();
         setCombos(data);
 
@@ -43,7 +46,9 @@ function VaccinesPage() {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:8080/combodetail/findcomboid?id=${comboId.toLowerCase()}`,
+        `${
+          process.env.REACT_APP_API_BASE_URL
+        }/combodetail/findcomboid?id=${comboId.toLowerCase()}`,
         { method: "GET" }
       );
       if (!response.ok) throw new Error("Không thể tải chi tiết combo vaccine");
@@ -77,7 +82,9 @@ function VaccinesPage() {
           <h1>Bảng Giá</h1>
           <div className="quote">
             <p>
-              Bác sĩ nói rằng khoảnh khắc cuối cùng của con người sau khi mất đi là thính giác, vì vậy đừng ôm anh mà khóc, hãy nói rằng em yêu anh...
+              Bác sĩ nói rằng khoảnh khắc cuối cùng của con người sau khi mất đi
+              là thính giác, vì vậy đừng ôm anh mà khóc, hãy nói rằng em yêu
+              anh...
             </p>
           </div>
         </div>
@@ -92,21 +99,25 @@ function VaccinesPage() {
 
       <div className="vaccines-tabs">
         <button
-          className={`vaccines-tab ${activeTab === 'vaccine-list' ? 'vaccines-tab-active' : ''}`}
-          onClick={() => setActiveTab('vaccine-list')}
+          className={`vaccines-tab ${
+            activeTab === "vaccine-list" ? "vaccines-tab-active" : ""
+          }`}
+          onClick={() => setActiveTab("vaccine-list")}
         >
           Danh sách Vaccine
         </button>
         <button
-          className={`vaccines-tab ${activeTab === 'vaccine-combo' ? 'vaccines-tab-active' : ''}`}
-          onClick={() => setActiveTab('vaccine-combo')}
+          className={`vaccines-tab ${
+            activeTab === "vaccine-combo" ? "vaccines-tab-active" : ""
+          }`}
+          onClick={() => setActiveTab("vaccine-combo")}
         >
           Combo Vaccine
         </button>
       </div>
       <div className="vaccines-content">
-        {activeTab === 'vaccine-list' && <VaccineList />}
-        {activeTab === 'vaccine-combo' && (
+        {activeTab === "vaccine-list" && <VaccineList />}
+        {activeTab === "vaccine-combo" && (
           <VaccineCombo
             combos={combos}
             selectedCombo={selectedCombo}

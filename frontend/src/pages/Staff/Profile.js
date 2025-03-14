@@ -33,13 +33,16 @@ const StaffProfile = ({ initialStaffData }) => {
 
   const handleSave = async () => {
     try {
-      const response = await fetch("http://localhost:8080/staff/update", {
-        method: "POST",
-        credentials: "include",
-        withCredentials: true,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/staff/update`,
+        {
+          method: "POST",
+          credentials: "include",
+          withCredentials: true,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
       console.log("Request gửi đi:", JSON.stringify(formData));
       console.log("Response từ server:", response);
       if (!response.ok) throw new Error("Lỗi khi cập nhật thông tin");
@@ -225,12 +228,12 @@ const Profile = () => {
       try {
         // Lấy dữ liệu nhân viên
         const staffResponse = await fetch(
-          `http://localhost:8080/staff/findid?id=${staffId}`,
+          `${process.env.REACT_APP_API_BASE_URL}/staff/findid?id=${staffId}`,
           { method: "GET", credentials: "include" }
         );
         console.log(
           "Request lấy dữ liệu nhân viên:",
-          `http://localhost:8080/staff/findid?id=${staffId}`
+          `${process.env.REACT_APP_API_BASE_URL}/staff/findid?id=${staffId}`
         );
         console.log("Response từ API nhân viên:", staffResponse);
         if (!staffResponse.ok) throw new Error("Lỗi khi lấy dữ liệu nhân viên");
@@ -245,12 +248,12 @@ const Profile = () => {
 
         // Lấy lịch hẹn hôm nay
         const bookingResponse = await fetch(
-          "http://localhost:8080/staffdashboard/get-booking-today",
+          `${process.env.REACT_APP_API_BASE_URL}/staffdashboard/get-booking-today`,
           { method: "GET", credentials: "include" }
         );
         console.log(
           "Request lấy lịch hẹn hôm nay:",
-          "http://localhost:8080/staffdashboard/get-booking-today"
+          `${process.env.REACT_APP_API_BASE_URL}/staffdashboard/get-booking-today`
         );
         console.log("Response từ API lịch hẹn:", bookingResponse);
 
@@ -276,12 +279,12 @@ const Profile = () => {
 
         // Lấy số lượng khách hàng
         const customerResponse = await fetch(
-          "http://localhost:8080/staffdashboard/count-customer",
+          `${process.env.REACT_APP_API_BASE_URL}/staffdashboard/count-customer`,
           { method: "GET", credentials: "include" }
         );
         console.log(
           "Request đếm khách hàng:",
-          "http://localhost:8080/staffdashboard/count-customer"
+          `${process.env.REACT_APP_API_BASE_URL}/staffdashboard/count-customer`
         );
         console.log("Response từ API khách hàng:", customerResponse);
         if (!customerResponse.ok) throw new Error("Lỗi khi đếm khách hàng");
@@ -291,12 +294,12 @@ const Profile = () => {
 
         // Lấy số lượng vaccine
         const vaccineResponse = await fetch(
-          "http://localhost:8080/staffdashboard/count-active-vaccine",
+          `${process.env.REACT_APP_API_BASE_URL}/staffdashboard/count-active-vaccine`,
           { method: "GET", credentials: "include" }
         );
         console.log(
           "Request đếm vaccine:",
-          "http://localhost:8080/staffdashboard/count-active-vaccine"
+          `${process.env.REACT_APP_API_BASE_URL}/staffdashboard/count-active-vaccine`
         );
         console.log("Response từ API vaccine:", vaccineResponse);
         if (!vaccineResponse.ok) throw new Error("Lỗi khi đếm vaccine");
@@ -306,12 +309,12 @@ const Profile = () => {
 
         // Lấy báo cáo phản ứng
         const reactionResponse = await fetch(
-          "http://localhost:8080/staffdashboard/get-reaction",
+          `${process.env.REACT_APP_API_BASE_URL}/staffdashboard/get-reaction`,
           { method: "GET", credentials: "include" }
         );
         console.log(
           "Request lấy báo cáo phản ứng:",
-          "http://localhost:8080/staffdashboard/get-reaction"
+          `${process.env.REACT_APP_API_BASE_URL}/staffdashboard/get-reaction`
         );
         console.log("Response từ API phản ứng:", reactionResponse);
         if (!reactionResponse.ok)

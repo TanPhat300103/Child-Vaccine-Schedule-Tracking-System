@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { FaPowerOff, FaChild, FaSearch, FaPlus, FaArrowLeft } from "react-icons/fa";
-import '../../style/Childs.css';
+import {
+  FaPowerOff,
+  FaChild,
+  FaSearch,
+  FaPlus,
+  FaArrowLeft,
+} from "react-icons/fa";
+import "../../style/Childs.css";
 
 const Childs = () => {
   const { customerId } = useParams();
@@ -22,11 +28,14 @@ const Childs = () => {
   const [childUpdateError, setChildUpdateError] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:8080/customer/findid?id=${customerId}`, {
-      method: "GET",
-      credentials: "include",
-      withCredentials: true,
-    })
+    fetch(
+      `${process.env.REACT_APP_API_BASE_URL}/customer/findid?id=${customerId}`,
+      {
+        method: "GET",
+        credentials: "include",
+        withCredentials: true,
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
         console.log("GET API thông tin khách hàng:", data);
@@ -38,11 +47,14 @@ const Childs = () => {
   }, [customerId]);
 
   useEffect(() => {
-    fetch(`http://localhost:8080/child/findbycustomer?id=${customerId}`, {
-      method: "GET",
-      credentials: "include",
-      withCredentials: true,
-    })
+    fetch(
+      `${process.env.REACT_APP_API_BASE_URL}/child/findbycustomer?id=${customerId}`,
+      {
+        method: "GET",
+        credentials: "include",
+        withCredentials: true,
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
         console.log("GET API hồ sơ trẻ em:", data);
@@ -52,7 +64,7 @@ const Childs = () => {
   }, [customerId]);
 
   const handleCreateChild = () => {
-    fetch("http://localhost:8080/child/create", {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/child/create`, {
       method: "POST",
       credentials: "include",
       withCredentials: true,
@@ -93,7 +105,7 @@ const Childs = () => {
   };
 
   const handleChildSave = () => {
-    fetch("http://localhost:8080/child/update", {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/child/update`, {
       method: "POST",
       credentials: "include",
       withCredentials: true,
@@ -125,7 +137,7 @@ const Childs = () => {
 
   const handleChildInactive = (childId, e) => {
     e.stopPropagation();
-    fetch(`http://localhost:8080/child/active?id=${childId}`, {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/child/active?id=${childId}`, {
       method: "POST",
       credentials: "include",
       withCredentials: true,
@@ -246,14 +258,17 @@ const Childs = () => {
                           {new Date(child.dob).toLocaleDateString()}
                         </p>
                         <p className="child-info-child">
-                          Chống chỉ định: {child.contraindications || "Không có"}
+                          Chống chỉ định:{" "}
+                          {child.contraindications || "Không có"}
                         </p>
                       </div>
                     </div>
                     <div className="child-card-right-child">
                       <button
                         onClick={(e) => handleChildInactive(child.childId, e)}
-                        className={`status-button-child ${child.active ? "deactivate-child" : "activate-child"}`}
+                        className={`status-button-child ${
+                          child.active ? "deactivate-child" : "activate-child"
+                        }`}
                       >
                         <FaPowerOff />
                         <span>{child.active ? "Ngưng" : "Kích hoạt"}</span>
@@ -275,7 +290,10 @@ const Childs = () => {
         {/* Modal Tạo Hồ Sơ Trẻ Em */}
         {showAddChildForm && (
           <div className="modal-overlay-child">
-            <div className="modal-backdrop-child" onClick={() => setShowAddChildForm(false)}></div>
+            <div
+              className="modal-backdrop-child"
+              onClick={() => setShowAddChildForm(false)}
+            ></div>
             <div className="modal-content-child">
               <h3 className="modal-title-child">Thêm Hồ Sơ Trẻ Em Mới</h3>
               <form
@@ -382,7 +400,10 @@ const Childs = () => {
         {/* Modal Cập Nhật Hồ Sơ Trẻ Em */}
         {editingChild && (
           <div className="modal-overlay-child">
-            <div className="modal-backdrop-child" onClick={() => setEditingChild(null)}></div>
+            <div
+              className="modal-backdrop-child"
+              onClick={() => setEditingChild(null)}
+            ></div>
             <div className="modal-content-child">
               <h3 className="modal-title-child">Cập Nhật Hồ Sơ Trẻ Em</h3>
               <form

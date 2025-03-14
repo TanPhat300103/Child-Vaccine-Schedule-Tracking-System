@@ -54,7 +54,7 @@ const Customers = () => {
   };
 
   useEffect(() => {
-    fetch("http://localhost:8080/customer", {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/customer`, {
       method: "GET",
       credentials: "include",
       withCredentials: true,
@@ -72,11 +72,14 @@ const Customers = () => {
   const handleActive = (customerId, e) => {
     e.stopPropagation();
     console.log("Gửi API cập nhật trạng thái active cho:", customerId);
-    fetch(`http://localhost:8080/customer/inactive?id=${customerId}`, {
-      method: "POST",
-      credentials: "include",
-      withCredentials: true,
-    })
+    fetch(
+      `${process.env.REACT_APP_API_BASE_URL}/customer/inactive?id=${customerId}`,
+      {
+        method: "POST",
+        credentials: "include",
+        withCredentials: true,
+      }
+    )
       .then((response) => response.json())
       .then((updatedCustomer) => {
         console.log("API Active thành công:", updatedCustomer);
@@ -123,7 +126,7 @@ const Customers = () => {
     }
 
     console.log("Gửi API cập nhật khách hàng với dữ liệu:", editingCustomer);
-    fetch("http://localhost:8080/customer/update", {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/customer/update`, {
       method: "POST",
       credentials: "include",
       withCredentials: true,
@@ -160,7 +163,9 @@ const Customers = () => {
   const handleCreate = () => {
     // Validation before create
     if (!validatePhoneNumber(newCustomer.phoneNumber)) {
-      setNewCustomerError("Số điện thoại không hợp lệ (10-11 số, bắt đầu bằng 0)");
+      setNewCustomerError(
+        "Số điện thoại không hợp lệ (10-11 số, bắt đầu bằng 0)"
+      );
       return;
     }
     if (!validateEmail(newCustomer.email)) {
@@ -173,7 +178,7 @@ const Customers = () => {
     }
 
     console.log("Gửi API tạo khách hàng với dữ liệu:", newCustomer);
-    fetch("http://localhost:8080/customer/create", {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/customer/create`, {
       method: "POST",
       credentials: "include",
       withCredentials: true,

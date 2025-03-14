@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import CountryFlag from 'react-country-flag';
+import React, { useState, useEffect } from "react";
+import CountryFlag from "react-country-flag";
 import { FaShieldVirus, FaTimes } from "react-icons/fa";
 import { FiSearch, FiX } from "react-icons/fi";
-import '../style/VaccineCombo.css'; // Style đồng bộ với VaccineListPage.css
+import "../style/VaccineCombo.css"; // Style đồng bộ với VaccineListPage.css
 
 function VaccineCombo() {
   const [combos, setCombos] = useState([]);
@@ -20,8 +20,11 @@ function VaccineCombo() {
   const fetchCombos = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:8080/vaccinecombo");
-      if (!response.ok) throw new Error("Không thể tải danh sách combo vaccine");
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/vaccinecombo`
+      );
+      if (!response.ok)
+        throw new Error("Không thể tải danh sách combo vaccine");
       const data = await response.json();
       setCombos(data);
       setLoading(false);
@@ -33,7 +36,11 @@ function VaccineCombo() {
 
   const fetchComboDetails = async (comboId) => {
     try {
-      const response = await fetch(`http://localhost:8080/combodetail/findcomboid?id=${comboId.toLowerCase()}`);
+      const response = await fetch(
+        `${
+          process.env.REACT_APP_API_BASE_URL
+        }/combodetail/findcomboid?id=${comboId.toLowerCase()}`
+      );
       if (!response.ok) throw new Error("Không thể tải chi tiết combo vaccine");
       const data = await response.json();
       setComboDetails(data);
@@ -50,7 +57,8 @@ function VaccineCombo() {
     const matchesQuery =
       combo.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       combo.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const isPriceValid = combo.priceCombo >= minPrice && combo.priceCombo <= maxPrice;
+    const isPriceValid =
+      combo.priceCombo >= minPrice && combo.priceCombo <= maxPrice;
     return matchesQuery && isPriceValid;
   });
 
@@ -92,7 +100,6 @@ function VaccineCombo() {
 
   return (
     <div className="vaccine-combo-page">
-     
       {/* Bộ lọc */}
       <div className="filter-container">
         <div className="price-vaccine-filter-price">
@@ -135,7 +142,9 @@ function VaccineCombo() {
         {filteredCombos.length === 0 ? (
           <div className="vaccine-no-results">
             <h3>Không tìm thấy combo vaccine</h3>
-            <p>Không có combo vaccine nào phù hợp với điều kiện tìm kiếm của bạn.</p>
+            <p>
+              Không có combo vaccine nào phù hợp với điều kiện tìm kiếm của bạn.
+            </p>
             <button onClick={resetFilters}>Xóa bộ lọc</button>
           </div>
         ) : (
@@ -196,12 +205,14 @@ function VaccineCombo() {
                           <CountryFlag
                             countryCode={getCountryCode(detail.vaccine.country)}
                             svg
-                            style={{ width: '18px', marginRight: '6px' }}
+                            style={{ width: "18px", marginRight: "6px" }}
                           />
                           {detail.vaccine.country}
                         </td>
                         <td>{detail.vaccine.price.toLocaleString()}</td>
-                        <td>{detail.vaccine.ageMin} - {detail.vaccine.ageMax}</td>
+                        <td>
+                          {detail.vaccine.ageMin} - {detail.vaccine.ageMax}
+                        </td>
                         <td>{detail.vaccine.doseNumber}</td>
                       </tr>
                     ))}
@@ -219,7 +230,10 @@ function VaccineCombo() {
       {selectedVaccine && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <button className="modal-close-btn" onClick={() => setSelectedVaccine(null)}>
+            <button
+              className="modal-close-btn"
+              onClick={() => setSelectedVaccine(null)}
+            >
               <FaTimes />
             </button>
             <h2>Chi tiết Vaccine: {selectedVaccine.name}</h2>
@@ -234,18 +248,22 @@ function VaccineCombo() {
                   <CountryFlag
                     countryCode={getCountryCode(selectedVaccine.country)}
                     svg
-                    style={{ width: '20px', marginRight: '8px' }}
+                    style={{ width: "20px", marginRight: "8px" }}
                   />
                   {selectedVaccine.country}
                 </span>
               </div>
               <div className="detail-item">
                 <span className="label">Giá (VND):</span>
-                <span className="value">{selectedVaccine.price.toLocaleString()} VND</span>
+                <span className="value">
+                  {selectedVaccine.price.toLocaleString()} VND
+                </span>
               </div>
               <div className="detail-item">
                 <span className="label">Độ tuổi:</span>
-                <span className="value">{selectedVaccine.ageMin} - {selectedVaccine.ageMax}</span>
+                <span className="value">
+                  {selectedVaccine.ageMin} - {selectedVaccine.ageMax}
+                </span>
               </div>
               <div className="detail-item">
                 <span className="label">Số liều:</span>
@@ -253,7 +271,9 @@ function VaccineCombo() {
               </div>
               <div className="detail-item">
                 <span className="label">Mô tả:</span>
-                <span className="value">{selectedVaccine.description || 'Không có mô tả'}</span>
+                <span className="value">
+                  {selectedVaccine.description || "Không có mô tả"}
+                </span>
               </div>
             </div>
           </div>
@@ -265,19 +285,44 @@ function VaccineCombo() {
 
 function getCountryCode(countryName) {
   const countryCodes = {
-    'Vietnam': 'VN', 'United States': 'US', 'USA': 'US', 'China': 'CN', 'Japan': 'JP',
-    'France': 'FR', 'Germany': 'DE', 'United Kingdom': 'GB', 'UK': 'GB', 'India': 'IN',
-    'Brazil': 'BR', 'Russia': 'RU', 'Canada': 'CA', 'Australia': 'AU', 'Italy': 'IT',
-    'Spain': 'ES', 'Mexico': 'MX', 'South Korea': 'KR', 'South Africa': 'ZA', 'Argentina': 'AR',
-    'Indonesia': 'ID', 'Thailand': 'TH', 'Malaysia': 'MY', 'Singapore': 'SG', 'Philippines': 'PH',
-    'New Zealand': 'NZ', 'Sweden': 'SE', 'Norway': 'NO', 'Denmark': 'DK', 'Netherlands': 'NL',
-    'Switzerland': 'CH', 'Turkey': 'TR',
+    Vietnam: "VN",
+    "United States": "US",
+    USA: "US",
+    China: "CN",
+    Japan: "JP",
+    France: "FR",
+    Germany: "DE",
+    "United Kingdom": "GB",
+    UK: "GB",
+    India: "IN",
+    Brazil: "BR",
+    Russia: "RU",
+    Canada: "CA",
+    Australia: "AU",
+    Italy: "IT",
+    Spain: "ES",
+    Mexico: "MX",
+    "South Korea": "KR",
+    "South Africa": "ZA",
+    Argentina: "AR",
+    Indonesia: "ID",
+    Thailand: "TH",
+    Malaysia: "MY",
+    Singapore: "SG",
+    Philippines: "PH",
+    "New Zealand": "NZ",
+    Sweden: "SE",
+    Norway: "NO",
+    Denmark: "DK",
+    Netherlands: "NL",
+    Switzerland: "CH",
+    Turkey: "TR",
   };
   const normalizedCountryName = countryName.toLowerCase().trim();
   for (const [name, code] of Object.entries(countryCodes)) {
     if (name.toLowerCase().trim() === normalizedCountryName) return code;
   }
-  return 'XX';
+  return "XX";
 }
 
 export default VaccineCombo;

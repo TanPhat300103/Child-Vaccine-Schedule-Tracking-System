@@ -15,12 +15,12 @@ const BookingToday = ({ onBack }) => {
       setLoading(true);
       try {
         const response = await fetch(
-          "http://localhost:8080/staffdashboard/get-booking-today",
+          `${process.env.REACT_APP_API_BASE_URL}/staffdashboard/get-booking-today`,
           { method: "GET", credentials: "include" }
         );
         console.log(
           "Request lấy lịch hẹn hôm nay:",
-          "http://localhost:8080/staffdashboard/get-booking-today"
+          `${process.env.REACT_APP_API_BASE_URL}/staffdashboard/get-booking-today`
         );
         console.log("Response từ API:", response);
 
