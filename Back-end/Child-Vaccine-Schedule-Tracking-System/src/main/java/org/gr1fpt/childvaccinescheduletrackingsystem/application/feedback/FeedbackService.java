@@ -1,9 +1,9 @@
 package org.gr1fpt.childvaccinescheduletrackingsystem.application.feedback;
 
 import org.gr1fpt.childvaccinescheduletrackingsystem.domain.feedback.Feedback;
-import org.gr1fpt.childvaccinescheduletrackingsystem.exception.CustomException;
 import org.gr1fpt.childvaccinescheduletrackingsystem.infrastructure.booking.BookingRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.infrastructure.feedback.FeedbackRepository;
+import org.gr1fpt.childvaccinescheduletrackingsystem.interfaces.exception.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

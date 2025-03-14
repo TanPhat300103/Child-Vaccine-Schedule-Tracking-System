@@ -2,7 +2,6 @@ package org.gr1fpt.childvaccinescheduletrackingsystem.application.booking;
 
 import org.gr1fpt.childvaccinescheduletrackingsystem.domain.booking.BookingDTO;
 import org.gr1fpt.childvaccinescheduletrackingsystem.domain.booking.Booking;
-import org.gr1fpt.childvaccinescheduletrackingsystem.exception.CustomException;
 import org.gr1fpt.childvaccinescheduletrackingsystem.infrastructure.customer.CustomerRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.application.bookingdetail.BookingDetailService;
 import org.gr1fpt.childvaccinescheduletrackingsystem.infrastructure.booking.BookingRepository;
@@ -11,6 +10,7 @@ import org.gr1fpt.childvaccinescheduletrackingsystem.domain.vaccine.Vaccine;
 import org.gr1fpt.childvaccinescheduletrackingsystem.infrastructure.vaccine.VaccineRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.domain.vaccinecombo.VaccineCombo;
 import org.gr1fpt.childvaccinescheduletrackingsystem.infrastructure.vaccinecombo.VaccineComboRepository;
+import org.gr1fpt.childvaccinescheduletrackingsystem.interfaces.exception.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
