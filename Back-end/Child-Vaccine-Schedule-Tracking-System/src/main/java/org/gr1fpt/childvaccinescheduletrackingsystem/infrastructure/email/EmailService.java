@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -32,6 +33,7 @@ public class EmailService {
     }
 
     // Phương thức gửi email cơ bản
+    @Async
     public void sendEmail(String to, String subject, String body) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
@@ -44,7 +46,7 @@ public class EmailService {
         mailSender.send(message);
     }
 
-
+    @Async
     public void sendBookingConfirmationEmail(String to, String child, String bookingDate, String customerName) throws MessagingException {
 
         String currentTime = LocalDateTime.now().format(dateTimeFormatter);
@@ -278,7 +280,7 @@ public class EmailService {
 
         sendEmail(to, subject, body);
     }
-
+    @Async
     public void sendOtpEmail(String to, String otp) throws MessagingException {
         String subject = "Mã OTP Xác Nhận Của Bạn";
         String body = "<!DOCTYPE html>" +
@@ -336,7 +338,7 @@ public class EmailService {
 
         sendEmail(to, subject, body);
     }
-
+    @Async
     public void senPaymentEmail(String to, String customerName, Date date, int total, String transactionId, boolean method, String customerCode, String address) throws MessagingException {
         String subject = "Hóa Đơn Điện Tử - " + transactionId;
         String paymentMethod = method ? "Thẻ tín dụng" : "Tiền mặt";
