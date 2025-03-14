@@ -111,9 +111,12 @@ const HomePage = () => {
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
-        const response = await fetch("http://183.81.127.39:8080/feedback", {
+        const response = await fetch("https://644c-183-81-127-39.ngrok-free.app/feedback", {
           method: "GET",
           credentials: "include",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
         });
         if (response.ok) {
           const data = await response.json();
@@ -159,8 +162,11 @@ const HomePage = () => {
   useEffect(() => {
     const fetchCombos = async () => {
       try {
-        const response = await fetch("http://183.81.127.39:8080/vaccinecombo", {
+        const response = await fetch("https://644c-183-81-127-39.ngrok-free.app/vaccinecombo", {
           method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
         });
         if (!response.ok) throw new Error("Không thể tải danh sách combo vaccine");
         const data = await response.json();
@@ -184,8 +190,12 @@ const HomePage = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://183.81.127.39:8080/combodetail/findcomboid?id=${comboId.toLowerCase()}`,
-        { method: "GET" }
+        `https://644c-183-81-127-39.ngrok-free.app/combodetail/findcomboid?id=${comboId.toLowerCase()}`,
+        { method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
+         }
       );
       if (!response.ok) throw new Error("Không thể tải chi tiết combo vaccine");
       const data = await response.json();
@@ -205,9 +215,12 @@ const HomePage = () => {
     const fetchVaccineData = async () => {
       try {
         setPriceLoading(true);
-        const response = await fetch(`http://183.81.127.39:8080/vaccinedetail/findbyvaccine?id=${selectedVaccine.vaccineId}`, {
+        const response = await fetch(`https://644c-183-81-127-39.ngrok-free.app/vaccinedetail/findbyvaccine?id=${selectedVaccine.vaccineId}`, {
           method: "GET",
           credentials: "include",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
         });
         if (!response.ok) throw new Error("Failed to fetch vaccine details");
         const data = await response.json();
@@ -228,8 +241,11 @@ const HomePage = () => {
     const fetchVaccineData = async () => {
       try {
         setPriceLoading(true);
-        const response = await fetch("http://183.81.127.39:8080/vaccine", {
+        const response = await fetch("https://644c-183-81-127-39.ngrok-free.app/vaccine", {
           method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
         });
         if (!response.ok) {
           const errorText = await response.text();
