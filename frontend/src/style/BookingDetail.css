@@ -22,11 +22,12 @@
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   }
   
-  .header-content-bookingdetailmanager {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 16px 24px;
-  }
+.header-content-bookingdetailmanager {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
   
   .header-title-bookingdetailmanager {
     font-size: 24px;
@@ -39,6 +40,32 @@
   .header-icon-bookingdetailmanager {
     margin-right: 8px;
   }
+
+  .booking-status-bookingdetailmanager {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 20px;
+}
+
+.status-text-1 {
+  color: blue; /* Đã đặt */
+}
+
+.status-text-2 {
+  color: green; /* Đã hoàn thành */
+}
+
+.status-text-3 {
+  color: red; /* Đã huỷ */
+}
+
+.confirm-button.disabled,
+.reaction-button-bookingdetailmanager.disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
   
   /* Loading State */
   .loading-container-bookingdetailmanager {

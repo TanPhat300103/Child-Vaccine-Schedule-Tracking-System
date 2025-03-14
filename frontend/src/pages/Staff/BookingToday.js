@@ -12,20 +12,51 @@ const BookingToday = ({ onBack }) => {
 
   useEffect(() => {
     const fetchBookings = async () => {
+      setLoading(true);
       try {
         const response = await fetch(
           "http://localhost:8080/staffdashboard/get-booking-today",
           { method: "GET", credentials: "include" }
         );
-        if (!response.ok) throw new Error("Lỗi khi lấy lịch hẹn hôm nay");
+        console.log(
+          "Request lấy lịch hẹn hôm nay:",
+          "http://localhost:8080/staffdashboard/get-booking-today"
+        );
+        console.log("Response từ API:", response);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(
+            "Lỗi chi tiết từ API lịch hẹn:",
+            response.status,
+            response.statusText,
+            errorText
+          );
+          throw new Error(
+            `Lỗi khi lấy lịch hẹn hôm nay: ${
+              errorText || "Không có thông tin chi tiết từ server"
+            }`
+          );
+        }
+
         const data = await response.json();
+        console.log("Dữ liệu lịch hẹn nhận được:", data);
         setBookings(data);
       } catch (err) {
+        console.error("Lỗi tổng quát trong BookingToday:", err.message);
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
+
+    // Hiển thị lỗi trong JSX
+    if (error)
+      return (
+        <div className="error-bookingtoday">
+          Có lỗi xảy ra khi tải lịch hẹn. Vui lòng thử lại sau.
+        </div>
+      );
     fetchBookings();
   }, []);
 
@@ -46,6 +77,20 @@ const BookingToday = ({ onBack }) => {
       booking.vaccine.name.toLowerCase().includes(term)
     );
   });
+
+  // Hàm chuyển đổi giá trị status thành văn bản
+  const getStatusText = (status) => {
+    switch (status) {
+      case 1:
+        return "Đã đặt";
+      case 2:
+        return "Đã hoàn thành";
+      case 3:
+        return "Đã huỷ";
+      default:
+        return "Không xác định";
+    }
+  };
 
   if (loading)
     return <div className="loading-bookingtoday">Đang tải dữ liệu...</div>;
@@ -103,6 +148,10 @@ const BookingToday = ({ onBack }) => {
               <p>
                 <strong>Thời gian:</strong>{" "}
                 {new Date(booking.scheduledDate).toLocaleDateString()}
+              </p>
+              <p className="booking-status-bookingtoday">
+                <strong>Trạng thái:</strong>{" "}
+                {getStatusText(booking.booking.status)}
               </p>
             </div>
           ))
