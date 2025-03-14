@@ -175,37 +175,13 @@ function MyPaymentPage() {
             className={`mypayment-sidebar-item ${
               activeTab === "bookings" ? "active" : ""
             }`}
-            onClick={() => handleTabChange("bookings")}
+            onClick={() => navigate("/my-bookings")}
           >
             <div className="mypayment-sidebar-content">
               <BookOpen size={18} />
               <span>My Booking</span>
             </div>
-            <button
-              className="mypayment-dropdown-toggle"
-              onClick={toggleDropdown}
-            >
-              {isDropdownOpen ? (
-                <ChevronUp size={18} />
-              ) : (
-                <ChevronDown size={18} />
-              )}
-            </button>
           </div>
-          {isDropdownOpen && (
-            <div className="mypayment-dropdown">
-              {bookings.map((b) => (
-                <div
-                  key={b.bookingId}
-                  className="mypayment-dropdown-item"
-                  onClick={() => handleBookingSelect(b.bookingId)}
-                >
-                  <span>Booking #{b.bookingId}</span>
-                  <span>{new Date(b.bookingDate).toLocaleDateString()}</span>
-                </div>
-              ))}
-            </div>
-          )}
           <div
             className={`mypayment-sidebar-item ${
               activeTab === "payments" ? "active" : ""
