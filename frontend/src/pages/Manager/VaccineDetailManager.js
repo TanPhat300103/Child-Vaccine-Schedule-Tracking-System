@@ -54,9 +54,9 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
       onDetailUpdated(data);
       setIsModalOpen(false);
       setUpdateError(null); // Xóa lỗi nếu thành công
-      toast.success("Cập nhật Vaccine Detail thành công!");
+      toast.success("Cập nhật lô vaccine thành công!");
     } catch (err) {
-      console.error("Cập nhật VaccineDetail thất bại:", err);
+      console.error("Cập nhật lô vaccine thất bại:", err);
       setUpdateError(err.message || "Đã xảy ra lỗi khi cập nhật!");
       toast.error(err.message || "Đã xảy ra lỗi khi cập nhật!");
     }
@@ -130,7 +130,7 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
         <div className="modal-overlay-vaccinedetailmanager">
           <div className="modal-content-vaccinedetailmanager">
             <h2 className="modal-title-vaccinedetailmanager">
-              Cập nhật Vaccine Detail
+              Cập nhật lô vaccine
             </h2>
             {updateError && (
               <p className="error-text-vaccinedetailmanager">{updateError}</p>
@@ -283,11 +283,9 @@ const VaccineDetailManager = () => {
     } catch (err) {
       console.error("Lỗi khi lấy VaccineDetail:", err);
       setFetchError(
-        err.message || "Đã xảy ra lỗi khi lấy danh sách Vaccine Detail!"
+        err.message || "Đã xảy ra lỗi khi lấy danh sách lô vaccine!"
       );
-      toast.error(
-        err.message || "Đã xảy ra lỗi khi lấy danh sách Vaccine Detail!"
-      );
+      toast.error(err.message || "Đã xảy ra lỗi khi lấy danh sách lô vaccine!");
     }
   };
 
@@ -345,14 +343,14 @@ const VaccineDetailManager = () => {
       });
       setCreateError(null);
       fetchVaccineDetails();
-      toast.success("Tạo mới Vaccine Detail thành công!");
+      toast.success("Tạo mới lô vaccine thành công!");
     } catch (err) {
-      console.error("Lỗi khi tạo Vaccine Detail:", err);
+      console.error("Lỗi khi tạo lô vaccine:", err);
       setCreateError(
-        err.message || "Đã xảy ra lỗi khi tạo Vaccine Detail. Vui lòng thử lại!"
+        err.message || "Đã xảy ra lỗi khi tạo lô vaccine. Vui lòng thử lại!"
       );
       toast.error(
-        err.message || "Đã xảy ra lỗi khi tạo Vaccine Detail. Vui lòng thử lại!"
+        err.message || "Đã xảy ra lỗi khi tạo lô vaccine. Vui lòng thử lại!"
       );
     }
   };
@@ -361,7 +359,7 @@ const VaccineDetailManager = () => {
     <div className="container-vaccinedetailmanager">
       <div className="content-wrapper-vaccinedetailmanager">
         <h2 className="page-title-vaccinedetailmanager">
-          Danh sách Vaccine Detail cho Vaccine {vaccineId}
+          Danh sách các lô vaccine cho Vaccine {vaccineId}
         </h2>
         <div className="back-button-wrapper-vaccinedetailmanager">
           <NavLink
@@ -376,7 +374,7 @@ const VaccineDetailManager = () => {
             onClick={() => setShowCreateModal(true)}
             className="create-button-vaccinedetailmanager"
           >
-            Tạo mới Vaccine Detail
+            Tạo mới lô vaccine
           </button>
         </div>
         {fetchError && (
@@ -390,7 +388,7 @@ const VaccineDetailManager = () => {
             ></div>
             <div className="modal-content-create-vaccinedetailmanager">
               <h3 className="modal-title-create-vaccinedetailmanager">
-                Tạo mới Vaccine Detail
+                Tạo mới lô vaccine
               </h3>
               {createError && (
                 <p className="error-text-vaccinedetailmanager">{createError}</p>
@@ -495,7 +493,7 @@ const VaccineDetailManager = () => {
         )}
         {vaccineDetails.length === 0 && !fetchError ? (
           <p className="no-data-text-vaccinedetailmanager">
-            Không tìm thấy Vaccine Detail nào
+            Không tìm thấy lô vaccine nào
           </p>
         ) : (
           <div className="grid-vaccinedetailmanager">
