@@ -23,8 +23,9 @@ export const postUsers = async (formData) => {
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
         },
+
         credentials: "include",
         body: JSON.stringify({
           phoneNumber: formData.phoneNumber,

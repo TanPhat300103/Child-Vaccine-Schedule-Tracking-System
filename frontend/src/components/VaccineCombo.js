@@ -21,7 +21,14 @@ function VaccineCombo() {
     setLoading(true);
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL}/vaccinecombo`
+        `${process.env.REACT_APP_API_BASE_URL}/vaccinecombo`,
+        {
+          method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
+          credentials: "include",
+        }
       );
       if (!response.ok)
         throw new Error("Không thể tải danh sách combo vaccine");

@@ -44,6 +44,9 @@ function LoginForm() {
         {
           method: "POST",
           headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
+          headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
           credentials: "include",
@@ -91,6 +94,9 @@ function LoginForm() {
         {
           method: "POST",
           headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
+          headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
           body: new URLSearchParams({ email }).toString(),
@@ -123,6 +129,9 @@ function LoginForm() {
         `${process.env.REACT_APP_API_BASE_URL}/otp/send`,
         {
           method: "POST",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
@@ -159,6 +168,9 @@ function LoginForm() {
         }/otp/verify?email=${encodeURIComponent(email)}&otp=${otpValue}`,
         {
           method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
@@ -197,6 +209,9 @@ function LoginForm() {
         `${process.env.REACT_APP_API_BASE_URL}/otp/reset-password`,
         {
           method: "POST",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },

@@ -22,8 +22,9 @@ function NotificationDetail() {
           {
             method: "GET",
             headers: {
-              "Content-Type": "application/json",
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
             },
+
             credentials: "include",
           }
         );
@@ -38,8 +39,9 @@ function NotificationDetail() {
           {
             method: "GET",
             headers: {
-              "Content-Type": "application/json",
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
             },
+
             credentials: "include",
           }
         );
@@ -87,7 +89,7 @@ function NotificationDetail() {
         {
           method: "PUT",
           headers: {
-            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
           },
           credentials: "include",
         }

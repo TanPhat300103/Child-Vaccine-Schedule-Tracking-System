@@ -45,6 +45,9 @@ function BookingDetailPage() {
           `${process.env.REACT_APP_API_BASE_URL}/booking/findbycustomer?customerId=${userInfo.userId}`,
           {
             method: "GET",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
             credentials: "include",
           }
         );
@@ -57,6 +60,9 @@ function BookingDetailPage() {
           `${process.env.REACT_APP_API_BASE_URL}/bookingdetail/findbybooking?id=${bookingId}`,
           {
             method: "GET",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
             credentials: "include",
           }
         );
@@ -146,6 +152,9 @@ function BookingDetailPage() {
         )}`,
         {
           method: "POST",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
         }
       );

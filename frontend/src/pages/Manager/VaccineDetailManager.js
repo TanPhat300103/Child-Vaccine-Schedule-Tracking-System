@@ -16,6 +16,9 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
         `${process.env.REACT_APP_API_BASE_URL}/vaccinedetail/active?id=${detail.id}`,
         {
           method: "POST",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
         }
       );
@@ -39,10 +42,11 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
         `${process.env.REACT_APP_API_BASE_URL}/vaccinedetail/update`,
         {
           method: "POST",
-          credentials: "include",
           headers: {
-            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
           },
+          credentials: "include",
+
           body: JSON.stringify(updatedData),
         }
       );
@@ -320,10 +324,11 @@ const VaccineDetailManager = () => {
         `${process.env.REACT_APP_API_BASE_URL}/vaccinedetail/create`,
         {
           method: "POST",
-          credentials: "include",
           headers: {
-            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
           },
+          credentials: "include",
+
           body: JSON.stringify(payload),
         }
       );

@@ -67,8 +67,9 @@ const Chatbox = () => {
           response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/ai`, {
             method: "POST",
             headers: {
-              "Content-Type": "application/json",
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
             },
+
             body: JSON.stringify({
               history: chatHistory,
               prompt: inputMessage,
@@ -82,7 +83,7 @@ const Chatbox = () => {
             {
               method: "GET",
               headers: {
-                "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
               },
             }
           );

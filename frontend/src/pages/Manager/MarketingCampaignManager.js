@@ -312,8 +312,10 @@ const CampaignItem = ({ campaign, onCampaignSelected, onCampaignUpdated }) => {
         `${process.env.REACT_APP_API_BASE_URL}/marketing/update`,
         {
           method: "POST",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
-          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updatedCampaign),
         }
       );
@@ -377,6 +379,9 @@ const MarketingCampaigns = () => {
         `${process.env.REACT_APP_API_BASE_URL}/marketing`,
         {
           method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
         }
       );
@@ -406,8 +411,10 @@ const MarketingCampaigns = () => {
         `${process.env.REACT_APP_API_BASE_URL}/marketing/create`,
         {
           method: "POST",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
-          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(newCampaign),
         }
       );
@@ -436,8 +443,10 @@ const MarketingCampaigns = () => {
         `${process.env.REACT_APP_API_BASE_URL}/marketing/update`,
         {
           method: "POST",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
-          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         }
       );

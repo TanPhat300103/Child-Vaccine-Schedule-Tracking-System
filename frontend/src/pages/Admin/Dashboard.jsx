@@ -214,6 +214,9 @@ const Dashboard = () => {
     try {
       const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/payment`, {
         method: "GET",
+        headers: {
+          "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+        },
         credentials: "include",
       });
       if (!res.ok) throw new Error("Failed to fetch payments");

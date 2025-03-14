@@ -45,6 +45,9 @@ function ProfilePage() {
           `${process.env.REACT_APP_API_BASE_URL}/customer/findid?id=${userInfo.userId}`,
           {
             method: "GET",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
             credentials: "include",
           }
         );
@@ -141,7 +144,9 @@ function ProfilePage() {
         `${process.env.REACT_APP_API_BASE_URL}/customer/update`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
           body: JSON.stringify(formData),
         }

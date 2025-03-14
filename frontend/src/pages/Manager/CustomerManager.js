@@ -56,6 +56,9 @@ const Customers = () => {
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_BASE_URL}/customer`, {
       method: "GET",
+      headers: {
+        "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+      },
       credentials: "include",
       withCredentials: true,
     })
@@ -76,6 +79,9 @@ const Customers = () => {
       `${process.env.REACT_APP_API_BASE_URL}/customer/inactive?id=${customerId}`,
       {
         method: "POST",
+        headers: {
+          "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+        },
         credentials: "include",
         withCredentials: true,
       }
@@ -128,9 +134,11 @@ const Customers = () => {
     console.log("Gửi API cập nhật khách hàng với dữ liệu:", editingCustomer);
     fetch(`${process.env.REACT_APP_API_BASE_URL}/customer/update`, {
       method: "POST",
+      headers: {
+        "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+      },
       credentials: "include",
       withCredentials: true,
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(editingCustomer),
     })
       .then((response) => {
@@ -180,9 +188,11 @@ const Customers = () => {
     console.log("Gửi API tạo khách hàng với dữ liệu:", newCustomer);
     fetch(`${process.env.REACT_APP_API_BASE_URL}/customer/create`, {
       method: "POST",
+      headers: {
+        "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+      },
       credentials: "include",
       withCredentials: true,
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newCustomer),
     })
       .then((response) => {

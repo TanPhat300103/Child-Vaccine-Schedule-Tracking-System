@@ -27,7 +27,13 @@ const Feedbacks = () => {
 
   const getAllFeedback = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/feedback`);
+      const response = await fetch(`${API_BASE_URL}/feedback`, {
+        method: "GET",
+        headers: {
+          "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+        },
+        credentials: "include",
+      });
       if (!response.ok) throw new Error("Failed to fetch feedback");
       const data = await response.json();
       return data;

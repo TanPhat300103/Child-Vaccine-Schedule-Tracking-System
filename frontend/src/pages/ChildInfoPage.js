@@ -66,6 +66,9 @@ function ChildInfoPage() {
           `${process.env.REACT_APP_API_BASE_URL}/customer/findid?id=${userInfo.userId}`,
           {
             method: "GET",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
             credentials: "include",
           }
         );
@@ -78,6 +81,9 @@ function ChildInfoPage() {
           `${process.env.REACT_APP_API_BASE_URL}/child/findbycustomer?id=${userInfo.userId}`,
           {
             method: "GET",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
             credentials: "include",
           }
         );
@@ -101,6 +107,9 @@ function ChildInfoPage() {
         `${process.env.REACT_APP_API_BASE_URL}/medicalhistory/findbychildid?id=${childId}`,
         {
           method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
         }
       );
@@ -185,7 +194,9 @@ function ChildInfoPage() {
         `${process.env.REACT_APP_API_BASE_URL}/child/update`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
           body: JSON.stringify(editingChild),
         }
@@ -221,7 +232,9 @@ function ChildInfoPage() {
         `${process.env.REACT_APP_API_BASE_URL}/child/create`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
           body: JSON.stringify(childToAdd),
         }
@@ -282,7 +295,9 @@ function ChildInfoPage() {
         `${process.env.REACT_APP_API_BASE_URL}/child/update`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
           body: JSON.stringify(editingMedicalData),
         }
@@ -332,6 +347,9 @@ function ChildInfoPage() {
         )}`,
         {
           method: "POST",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
         }
       );

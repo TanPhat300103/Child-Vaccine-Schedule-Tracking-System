@@ -168,6 +168,9 @@ const VaccineComboItem = ({ combo, onComboUpdated }) => {
         `${process.env.REACT_APP_API_BASE_URL}/vaccinecombo/active?id=${comboId}`,
         {
           method: "POST",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
           withCredentials: true,
         }
@@ -188,9 +191,11 @@ const VaccineComboItem = ({ combo, onComboUpdated }) => {
         `${process.env.REACT_APP_API_BASE_URL}/vaccinecombo/update`,
         {
           method: "POST",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
           withCredentials: true,
-          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updatedData),
         }
       );
@@ -276,6 +281,9 @@ const VaccineCombos = () => {
         `${process.env.REACT_APP_API_BASE_URL}/vaccinecombo`,
         {
           method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
           withCredentials: true,
         }
@@ -305,9 +313,11 @@ const VaccineCombos = () => {
         `${process.env.REACT_APP_API_BASE_URL}/vaccinecombo/create`,
         {
           method: "POST",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
           withCredentials: true,
-          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(newCombo),
         }
       );

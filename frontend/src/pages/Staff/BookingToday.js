@@ -16,7 +16,13 @@ const BookingToday = ({ onBack }) => {
       try {
         const response = await fetch(
           `${process.env.REACT_APP_API_BASE_URL}/staffdashboard/get-booking-today`,
-          { method: "GET", credentials: "include" }
+          {
+            method: "GET",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
+            credentials: "include",
+          }
         );
         console.log(
           "Request lấy lịch hẹn hôm nay:",

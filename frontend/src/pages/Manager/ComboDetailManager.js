@@ -13,6 +13,9 @@ const useVaccineImage = (vaccineId) => {
       `${process.env.REACT_APP_API_BASE_URL}/vaccinedetail/findbyvaccine?id=${vaccineId}`,
       {
         method: "GET",
+        headers: {
+          "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+        },
         credentials: "include",
       }
     )
@@ -188,6 +191,9 @@ const ComboDetail = () => {
       console.log(`Requesting API: ${apiUrl}`);
       const response = await fetch(apiUrl, {
         method: "GET",
+        headers: {
+          "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+        },
         credentials: "include",
       });
       if (!response.ok) {
@@ -210,10 +216,11 @@ const ComboDetail = () => {
         `${process.env.REACT_APP_API_BASE_URL}/combodetail/deletevaccine?id=${vaccineId}`,
         {
           method: "POST",
-          credentials: "include",
           headers: {
-            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
           },
+          credentials: "include",
+
           body: JSON.stringify({}),
         }
       );
@@ -229,6 +236,9 @@ const ComboDetail = () => {
     if (showAddModal) {
       fetch(`${process.env.REACT_APP_API_BASE_URL}/vaccine`, {
         method: "GET",
+        headers: {
+          "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+        },
         credentials: "include",
       })
         .then((response) => {
@@ -297,10 +307,11 @@ const ComboDetail = () => {
         `${process.env.REACT_APP_API_BASE_URL}/combodetail/add`,
         {
           method: "POST",
-          credentials: "include",
           headers: {
-            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
           },
+          credentials: "include",
+
           body: JSON.stringify(comboList),
         }
       );

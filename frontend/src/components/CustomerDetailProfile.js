@@ -17,6 +17,9 @@ function CustomerDetailPage() {
         `${process.env.REACT_APP_API_BASE_URL}/customer/findid?id=${id}`,
         {
           method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
         }
       );
@@ -39,6 +42,9 @@ function CustomerDetailPage() {
         `${process.env.REACT_APP_API_BASE_URL}/child/findbycustomer?id=${id}`,
         {
           method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
         }
       );

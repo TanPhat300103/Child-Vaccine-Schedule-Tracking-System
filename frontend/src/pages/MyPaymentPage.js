@@ -49,6 +49,9 @@ function MyPaymentPage() {
           `${process.env.REACT_APP_API_BASE_URL}/booking/findbycustomer?customerId=${userInfo.userId}`,
           {
             method: "GET",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
             credentials: "include",
           }
         );
@@ -61,6 +64,9 @@ function MyPaymentPage() {
           `${process.env.REACT_APP_API_BASE_URL}/payment/getbycustomerid?customerId=${userInfo.userId}`,
           {
             method: "GET",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
             credentials: "include",
           }
         );
