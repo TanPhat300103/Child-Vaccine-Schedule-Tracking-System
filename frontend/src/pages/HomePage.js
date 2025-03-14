@@ -111,7 +111,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
-        const response = await fetch("http://localhost:8080/feedback", {
+        const response = await fetch("http://183.81.127.39:8080/feedback", {
           method: "GET",
           credentials: "include",
         });
@@ -159,7 +159,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchCombos = async () => {
       try {
-        const response = await fetch("http://localhost:8080/vaccinecombo", {
+        const response = await fetch("http://183.81.127.39:8080/vaccinecombo", {
           method: "GET",
         });
         if (!response.ok) throw new Error("Không thể tải danh sách combo vaccine");
@@ -184,7 +184,7 @@ const HomePage = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:8080/combodetail/findcomboid?id=${comboId.toLowerCase()}`,
+        `http://183.81.127.39:8080/combodetail/findcomboid?id=${comboId.toLowerCase()}`,
         { method: "GET" }
       );
       if (!response.ok) throw new Error("Không thể tải chi tiết combo vaccine");
@@ -205,7 +205,7 @@ const HomePage = () => {
     const fetchVaccineData = async () => {
       try {
         setPriceLoading(true);
-        const response = await fetch(`http://localhost:8080/vaccinedetail/findbyvaccine?id=${selectedVaccine.vaccineId}`, {
+        const response = await fetch(`http://183.81.127.39:8080/vaccinedetail/findbyvaccine?id=${selectedVaccine.vaccineId}`, {
           method: "GET",
           credentials: "include",
         });
@@ -228,7 +228,7 @@ const HomePage = () => {
     const fetchVaccineData = async () => {
       try {
         setPriceLoading(true);
-        const response = await fetch("http://localhost:8080/vaccine", {
+        const response = await fetch("http://183.81.127.39:8080/vaccine", {
           method: "GET",
         });
         if (!response.ok) {

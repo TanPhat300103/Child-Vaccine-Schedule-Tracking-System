@@ -28,7 +28,7 @@ function BookingPage() {
   useEffect(() => {
     const fetchVaccines = async () => {
       try {
-        const response = await fetch("http://localhost:8080/vaccine", {
+        const response = await fetch("http://183.81.127.39:8080/vaccine", {
           method: "GET",
           credentials: "include",
         });
@@ -59,7 +59,7 @@ function BookingPage() {
 
     const fetchVaccineCombos = async () => {
       try {
-        const response = await fetch("http://localhost:8080/vaccinecombo", {
+        const response = await fetch("http://183.81.127.39:8080/vaccinecombo", {
           method: "GET",
           credentials: "include",
         });
@@ -92,7 +92,7 @@ function BookingPage() {
 
     const fetchChildren = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/child/findbycustomer?id=${userInfo.userId}`, {
+        const response = await fetch(`http://183.81.127.39:8080/child/findbycustomer?id=${userInfo.userId}`, {
           method: "GET",
           credentials: "include",
         });
@@ -145,7 +145,7 @@ function BookingPage() {
   const fetchComboDetails = async (comboId) => {
     try {
       setIsLoading(true);
-      const response = await fetch("http://localhost:8080/combodetail", {
+      const response = await fetch("http://183.81.127.39:8080/combodetail", {
         method: "GET",
         credentials: "include",
       });
@@ -373,7 +373,7 @@ function BookingPage() {
     };
 
     try {
-      const response = await fetch("http://localhost:8080/booking/create", {
+      const response = await fetch("http://183.81.127.39:8080/booking/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
