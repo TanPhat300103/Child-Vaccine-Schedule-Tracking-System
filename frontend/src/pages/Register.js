@@ -18,24 +18,27 @@ import "../style/Register.css";
 export const postUsers = async (formData) => {
   console.log("Form data being sent to API:", formData);
   try {
-    const response = await fetch(`http://localhost:8080/customer/create`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        phoneNumber: formData.phoneNumber,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        dob: formData.dob,
-        gender: formData.gender,
-        password: formData.password,
-        address: formData.address,
-        banking: formData.banking,
-        email: formData.email,
-      }),
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_API_BASE_URL}/customer/create`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          phoneNumber: formData.phoneNumber,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          dob: formData.dob,
+          gender: formData.gender,
+          password: formData.password,
+          address: formData.address,
+          banking: formData.banking,
+          email: formData.email,
+        }),
+      }
+    );
 
     const data = await response.json();
     console.log("API Response Status:", response.status);
@@ -222,7 +225,9 @@ const Register = () => {
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleChange}
-                    className={`input-register ${errors.firstName ? "input-error-register" : ""}`}
+                    className={`input-register ${
+                      errors.firstName ? "input-error-register" : ""
+                    }`}
                     placeholder="Nhập họ"
                   />
                   {errors.firstName && (
@@ -238,7 +243,9 @@ const Register = () => {
                     name="lastName"
                     value={formData.lastName}
                     onChange={handleChange}
-                    className={`input-register ${errors.lastName ? "input-error-register" : ""}`}
+                    className={`input-register ${
+                      errors.lastName ? "input-error-register" : ""
+                    }`}
                     placeholder="Nhập tên"
                   />
                   {errors.lastName && (
@@ -259,7 +266,9 @@ const Register = () => {
                     value={formData.dob}
                     onChange={handleChange}
                     max={new Date().toISOString().split("T")[0]}
-                    className={`input-register ${errors.dob ? "input-error-register" : ""}`}
+                    className={`input-register ${
+                      errors.dob ? "input-error-register" : ""
+                    }`}
                   />
                   {errors.dob && (
                     <p className="error-text-register">{errors.dob}</p>
@@ -285,7 +294,9 @@ const Register = () => {
                     name="gender"
                     value={formData.gender}
                     onChange={handleChange}
-                    className={`input-register ${errors.gender ? "input-error-register" : ""}`}
+                    className={`input-register ${
+                      errors.gender ? "input-error-register" : ""
+                    }`}
                   >
                     <option value="">Chọn Giới Tính</option>
                     <option value={true}>Nam</option>
@@ -307,7 +318,9 @@ const Register = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`input-register ${errors.email ? "input-error-register" : ""}`}
+                  className={`input-register ${
+                    errors.email ? "input-error-register" : ""
+                  }`}
                   placeholder="example@gmail.com"
                 />
                 {errors.email && (
@@ -325,7 +338,9 @@ const Register = () => {
                   name="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={handleChange}
-                  className={`input-register ${errors.phoneNumber ? "input-error-register" : ""}`}
+                  className={`input-register ${
+                    errors.phoneNumber ? "input-error-register" : ""
+                  }`}
                   placeholder="0xxxxxxxxx"
                 />
                 {errors.phoneNumber && (
@@ -344,7 +359,9 @@ const Register = () => {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className={`input-register ${errors.password ? "input-error-register" : ""}`}
+                    className={`input-register ${
+                      errors.password ? "input-error-register" : ""
+                    }`}
                     placeholder="Nhập mật khẩu"
                   />
                   <button
@@ -380,7 +397,10 @@ const Register = () => {
                     onChange={handleChange}
                     className="checkbox-register"
                   />
-                  <label htmlFor="agreeToTerms" className="terms-label-register">
+                  <label
+                    htmlFor="agreeToTerms"
+                    className="terms-label-register"
+                  >
                     Tôi đồng ý với{" "}
                     <button
                       type="button"

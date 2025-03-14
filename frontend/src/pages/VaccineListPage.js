@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import CountryFlag from 'react-country-flag';
-import '../style/VaccineListPage.css';
+import React, { useState, useEffect } from "react";
+import CountryFlag from "react-country-flag";
+import "../style/VaccineListPage.css";
 import { FaShieldVirus, FaTimes } from "react-icons/fa"; // Xóa FaChild, FaSyringe vì không dùng trong bảng
 import { FiSearch, FiX } from "react-icons/fi";
-import { color } from 'framer-motion';
+import { color } from "framer-motion";
 
 function VaccineListPage() {
   const [vaccines, setVaccines] = useState([]);
@@ -19,16 +19,16 @@ function VaccineListPage() {
 
   const fetchVaccines = () => {
     setLoading(true);
-    fetch('http://localhost:8080/vaccine')
-      .then(response => {
-        if (!response.ok) throw new Error('Network response was not ok');
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/vaccine`)
+      .then((response) => {
+        if (!response.ok) throw new Error("Network response was not ok");
         return response.json();
       })
-      .then(data => {
+      .then((data) => {
         setVaccines(data);
         setLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         setError(err.message);
         setLoading(false);
       });
@@ -43,7 +43,9 @@ function VaccineListPage() {
       vaccine.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       vaccine.description.toLowerCase().includes(searchQuery.toLowerCase());
     const isPriceValid = vaccine.price >= minPrice && vaccine.price <= maxPrice;
-    const isCountryValid = selectedCountry ? vaccine.country === selectedCountry : true;
+    const isCountryValid = selectedCountry
+      ? vaccine.country === selectedCountry
+      : true;
     let isTabValid = true;
     if (activeTab === "infant") {
       isTabValid = vaccine.ageMax <= 2;
@@ -88,7 +90,6 @@ function VaccineListPage() {
 
   return (
     <div className="vaccine-list-page">
-
       {/* Bộ lọc */}
       <div className="filter-container">
         <div className="price-vaccine-filter-price">
@@ -145,13 +146,18 @@ function VaccineListPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`price-vaccine-tab ${activeTab === tab.id ? "price-vaccine-tab-active" : ""}`}
+              className={`price-vaccine-tab ${
+                activeTab === tab.id ? "price-vaccine-tab-active" : ""
+              }`}
             >
               <span>{tab.icon}</span> {tab.label}
             </button>
           ))}
         </div>
-        {(selectedCountry || minPrice > 0 || maxPrice < 3000000 || searchQuery) && (
+        {(selectedCountry ||
+          minPrice > 0 ||
+          maxPrice < 3000000 ||
+          searchQuery) && (
           <button onClick={resetFilters} className="price-vaccine-reset-btn">
             <FiX /> Xóa bộ lọc
           </button>
@@ -178,7 +184,7 @@ function VaccineListPage() {
               </tr>
             </thead>
             <tbody>
-              {filteredVaccines.map(vaccine => (
+              {filteredVaccines.map((vaccine) => (
                 <tr
                   key={vaccine.vaccineId}
                   onClick={() => openModal(vaccine)}
@@ -189,12 +195,14 @@ function VaccineListPage() {
                     <CountryFlag
                       countryCode={getCountryCode(vaccine.country)}
                       svg
-                      style={{ width: '18px', marginRight: '6px' }}
+                      style={{ width: "18px", marginRight: "6px" }}
                     />
                     {vaccine.country}
                   </td>
                   <td>{vaccine.price.toLocaleString()}</td>
-                  <td>{vaccine.ageMin} - {vaccine.ageMax}</td>
+                  <td>
+                    {vaccine.ageMin} - {vaccine.ageMax}
+                  </td>
                   <td>{vaccine.doseNumber}</td>
                 </tr>
               ))}
@@ -222,18 +230,22 @@ function VaccineListPage() {
                   <CountryFlag
                     countryCode={getCountryCode(selectedVaccine.country)}
                     svg
-                    style={{ width: '20px', marginRight: '8px' }}
+                    style={{ width: "20px", marginRight: "8px" }}
                   />
                   {selectedVaccine.country}
                 </span>
               </div>
               <div className="detail-item">
                 <span className="label">Giá (VND):</span>
-                <span className="value">{selectedVaccine.price.toLocaleString()} VND</span>
+                <span className="value">
+                  {selectedVaccine.price.toLocaleString()} VND
+                </span>
               </div>
               <div className="detail-item">
                 <span className="label">Độ tuổi:</span>
-                <span className="value">{selectedVaccine.ageMin} - {selectedVaccine.ageMax}</span>
+                <span className="value">
+                  {selectedVaccine.ageMin} - {selectedVaccine.ageMax}
+                </span>
               </div>
               <div className="detail-item">
                 <span className="label">Số liều:</span>
@@ -241,7 +253,9 @@ function VaccineListPage() {
               </div>
               <div className="detail-item">
                 <span className="label">Mô tả:</span>
-                <span className="value">{selectedVaccine.description || 'Không có mô tả'}</span>
+                <span className="value">
+                  {selectedVaccine.description || "Không có mô tả"}
+                </span>
               </div>
             </div>
           </div>
@@ -253,38 +267,38 @@ function VaccineListPage() {
 
 function getCountryCode(countryName) {
   const countryCodes = {
-    'Vietnam': 'VN',
-    'United States': 'US',
-    'USA': 'US',
-    'China': 'CN',
-    'Japan': 'JP',
-    'France': 'FR',
-    'Germany': 'DE',
-    'United Kingdom': 'GB',
-    'UK': 'GB',
-    'India': 'IN',
-    'Brazil': 'BR',
-    'Russia': 'RU',
-    'Canada': 'CA',
-    'Australia': 'AU',
-    'Italy': 'IT',
-    'Spain': 'ES',
-    'Mexico': 'MX',
-    'South Korea': 'KR',
-    'South Africa': 'ZA',
-    'Argentina': 'AR',
-    'Indonesia': 'ID',
-    'Thailand': 'TH',
-    'Malaysia': 'MY',
-    'Singapore': 'SG',
-    'Philippines': 'PH',
-    'New Zealand': 'NZ',
-    'Sweden': 'SE',
-    'Norway': 'NO',
-    'Denmark': 'DK',
-    'Netherlands': 'NL',
-    'Switzerland': 'CH',
-    'Turkey': 'TR',
+    Vietnam: "VN",
+    "United States": "US",
+    USA: "US",
+    China: "CN",
+    Japan: "JP",
+    France: "FR",
+    Germany: "DE",
+    "United Kingdom": "GB",
+    UK: "GB",
+    India: "IN",
+    Brazil: "BR",
+    Russia: "RU",
+    Canada: "CA",
+    Australia: "AU",
+    Italy: "IT",
+    Spain: "ES",
+    Mexico: "MX",
+    "South Korea": "KR",
+    "South Africa": "ZA",
+    Argentina: "AR",
+    Indonesia: "ID",
+    Thailand: "TH",
+    Malaysia: "MY",
+    Singapore: "SG",
+    Philippines: "PH",
+    "New Zealand": "NZ",
+    Sweden: "SE",
+    Norway: "NO",
+    Denmark: "DK",
+    Netherlands: "NL",
+    Switzerland: "CH",
+    Turkey: "TR",
   };
 
   const normalizedCountryName = countryName.toLowerCase().trim();
@@ -293,7 +307,7 @@ function getCountryCode(countryName) {
       return code;
     }
   }
-  return 'XX';
+  return "XX";
 }
 
 export default VaccineListPage;

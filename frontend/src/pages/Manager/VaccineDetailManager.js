@@ -13,7 +13,7 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
   const handleToggleStatus = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/vaccinedetail/active?id=${detail.id}`,
+        `${process.env.REACT_APP_API_BASE_URL}/vaccinedetail/active?id=${detail.id}`,
         {
           method: "POST",
           credentials: "include",
@@ -36,7 +36,7 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
     try {
       console.log("Gửi API cập nhật với dữ liệu:", updatedData);
       const response = await fetch(
-        `http://localhost:8080/vaccinedetail/update`,
+        `${process.env.REACT_APP_API_BASE_URL}/vaccinedetail/update`,
         {
           method: "POST",
           credentials: "include",
@@ -268,7 +268,7 @@ const VaccineDetailManager = () => {
   const fetchVaccineDetails = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/vaccinedetail/findbyvaccine?id=${vaccineId}`,
+        `${process.env.REACT_APP_API_BASE_URL}/vaccinedetail/findbyvaccine?id=${vaccineId}`,
         {
           credentials: "include",
         }
@@ -317,7 +317,7 @@ const VaccineDetailManager = () => {
     };
     try {
       const response = await fetch(
-        "http://localhost:8080/vaccinedetail/create",
+        `${process.env.REACT_APP_API_BASE_URL}/vaccinedetail/create`,
         {
           method: "POST",
           credentials: "include",

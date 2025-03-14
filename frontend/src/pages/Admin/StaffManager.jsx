@@ -41,10 +41,13 @@ const Staffs = () => {
 
   const fetchStaffList = async () => {
     try {
-      const response = await fetch("http://localhost:8080/staff", {
-        method: "GET",
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/staff`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
       if (!response.ok) throw new Error("Failed to fetch staff list");
       const data = await response.json();
       setStaffList(data);
@@ -79,7 +82,7 @@ const Staffs = () => {
   const handleActive = (staffId, e) => {
     e.stopPropagation();
     console.log("Request active gửi đi:", { id: staffId });
-    fetch(`http://localhost:8080/staff/active?id=${staffId}`, {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/staff/active?id=${staffId}`, {
       method: "POST",
       credentials: "include",
     })
@@ -136,12 +139,15 @@ const Staffs = () => {
     setErrors({});
     console.log("Request gửi đi:", editStaff); // Log dữ liệu gửi đi
     try {
-      const response = await fetch("http://localhost:8080/staff/update", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(editStaff),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/staff/update`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(editStaff),
+        }
+      );
       const result = await response.json();
       console.log("Response nhận về:", result); // Log dữ liệu nhận về
 
@@ -192,12 +198,15 @@ const Staffs = () => {
     setErrors({});
     console.log("Request gửi đi:", newStaff); // Log dữ liệu gửi đi
     try {
-      const response = await fetch("http://localhost:8080/staff/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(newStaff),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/staff/create`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(newStaff),
+        }
+      );
       const result = await response.json();
       console.log("Response nhận về:", result); // Log dữ liệu nhận về
 

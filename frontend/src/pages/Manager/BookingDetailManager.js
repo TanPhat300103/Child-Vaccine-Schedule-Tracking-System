@@ -63,7 +63,7 @@ const BookingDetail = () => {
   const getBookingDetailsByBookID = async (bookingId) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/bookingdetail/findbybooking?id=${bookingId}`,
+        `${process.env.REACT_APP_API_BASE_URL}/bookingdetail/findbybooking?id=${bookingId}`,
         { method: "GET", credentials: "include" }
       );
       if (!response.ok) throw new Error("Failed to fetch booking details");
@@ -77,7 +77,7 @@ const BookingDetail = () => {
   const confirmBooking = async (bookingId) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/bookingdetail/confirmdate?id=${bookingId}`,
+        `${process.env.REACT_APP_API_BASE_URL}/bookingdetail/confirmdate?id=${bookingId}`,
         { method: "POST", credentials: "include" }
       );
       if (!response.ok) throw new Error("Failed to confirm booking");
@@ -91,7 +91,7 @@ const BookingDetail = () => {
   const cancelBooking = async (bookingId) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/booking/cancel?bookingId=${bookingId}`,
+        `${process.env.REACT_APP_API_BASE_URL}/booking/cancel?bookingId=${bookingId}`,
         { method: "POST", credentials: "include" }
       );
       if (!response.ok) throw new Error("Failed to cancel booking");

@@ -49,7 +49,8 @@ function ChildInfoPage() {
   const [isEditingMedical, setIsEditingMedical] = useState(false);
   const [editingMedicalData, setEditingMedicalData] = useState(null);
   const [isReactionModalOpen, setIsReactionModalOpen] = useState(false);
-  const [selectedMedicalHistoryId, setSelectedMedicalHistoryId] = useState(null);
+  const [selectedMedicalHistoryId, setSelectedMedicalHistoryId] =
+    useState(null);
   const [reactionInput, setReactionInput] = useState("");
 
   useEffect(() => {
@@ -62,7 +63,7 @@ function ChildInfoPage() {
 
       try {
         const customerResponse = await fetch(
-          `http://localhost:8080/customer/findid?id=${userInfo.userId}`,
+          `${process.env.REACT_APP_API_BASE_URL}/customer/findid?id=${userInfo.userId}`,
           {
             method: "GET",
             credentials: "include",
@@ -74,7 +75,7 @@ function ChildInfoPage() {
         setCustomer(customerData);
 
         const childrenResponse = await fetch(
-          `http://localhost:8080/child/findbycustomer?id=${userInfo.userId}`,
+          `${process.env.REACT_APP_API_BASE_URL}/child/findbycustomer?id=${userInfo.userId}`,
           {
             method: "GET",
             credentials: "include",
@@ -97,7 +98,7 @@ function ChildInfoPage() {
   const fetchMedicalHistory = async (childId) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/medicalhistory/findbychildid?id=${childId}`,
+        `${process.env.REACT_APP_API_BASE_URL}/medicalhistory/findbychildid?id=${childId}`,
         {
           method: "GET",
           credentials: "include",
@@ -137,7 +138,8 @@ function ChildInfoPage() {
           if (selectedDate > currentDate) {
             error = "Ngày sinh không được ở tương lai";
           } else if (
-            currentDate.getFullYear() - selectedDate.getFullYear() > 18
+            currentDate.getFullYear() - selectedDate.getFullYear() >
+            18
           ) {
             error = "Tuổi không được lớn hơn 18";
           }
@@ -152,7 +154,7 @@ function ChildInfoPage() {
   const handleNewChildInputChange = (e) => {
     const { name, value } = e.target;
     setNewChildData((prev) => ({ ...prev, [name]: value }));
-    
+
     // Validate ngay khi người dùng nhập
     const error = validateField(name, value);
     setValidationErrors((prev) => ({ ...prev, [name]: error }));
@@ -179,12 +181,15 @@ function ChildInfoPage() {
 
   const handleSaveChild = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/child/update`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(editingChild),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/child/update`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(editingChild),
+        }
+      );
 
       if (response.ok) {
         setChildren((prev) =>
@@ -212,12 +217,15 @@ function ChildInfoPage() {
         ...newChildData,
         customer: { customerId: customer.customerId },
       };
-      const response = await fetch(`http://localhost:8080/child/create`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(childToAdd),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/child/create`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(childToAdd),
+        }
+      );
 
       if (response.ok) {
         const addedChild = await response.json();
@@ -270,12 +278,15 @@ function ChildInfoPage() {
 
   const handleSaveMedical = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/child/update`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(editingMedicalData),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/child/update`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(editingMedicalData),
+        }
+      );
 
       if (response.ok) {
         setChildren((prev) =>
@@ -561,7 +572,11 @@ function ChildInfoPage() {
                     className="profile-cancel-btn-childinfo"
                     onClick={() => {
                       setAddingChild(false);
-                      setValidationErrors({ firstName: "", lastName: "", dob: "" });
+                      setValidationErrors({
+                        firstName: "",
+                        lastName: "",
+                        dob: "",
+                      });
                     }}
                   >
                     <XCircle size={16} />

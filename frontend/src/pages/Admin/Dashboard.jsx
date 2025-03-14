@@ -212,7 +212,7 @@ const Dashboard = () => {
 
   const fetchAllPayments = async () => {
     try {
-      const res = await fetch("http://localhost:8080/payment", {
+      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/payment`, {
         method: "GET",
         credentials: "include",
       });
@@ -232,25 +232,25 @@ const Dashboard = () => {
       const year = now.getFullYear();
 
       const resToday = await fetch(
-        `http://localhost:8080/admin/incomebydate?date=${todayStr}`,
+        `${process.env.REACT_APP_API_BASE_URL}/admin/incomebydate?date=${todayStr}`,
         { credentials: "include" }
       );
       setIncomeToday(await resToday.json());
 
       const resWeek = await fetch(
-        `http://localhost:8080/admin/incomebyweek?date=${todayStr}`,
+        `${process.env.REACT_APP_API_BASE_URL}/admin/incomebyweek?date=${todayStr}`,
         { credentials: "include" }
       );
       setIncomeWeek(await resWeek.json());
 
       const resMonth = await fetch(
-        `http://localhost:8080/admin/incomebymonth?month=${month}&year=${year}`,
+        `${process.env.REACT_APP_API_BASE_URL}/admin/incomebymonth?month=${month}&year=${year}`,
         { credentials: "include" }
       );
       setIncomeMonth(await resMonth.json());
 
       const resYear = await fetch(
-        `http://localhost:8080/admin/incomebyyear?year=${year}`,
+        `${process.env.REACT_APP_API_BASE_URL}/admin/incomebyyear?year=${year}`,
         { credentials: "include" }
       );
       setIncomeYear(await resYear.json());
@@ -267,13 +267,13 @@ const Dashboard = () => {
       const lastYear = subYears(new Date(), 1);
 
       const resYesterday = await fetch(
-        `http://localhost:8080/admin/incomebydate?date=${yesterdayStr}`,
+        `${process.env.REACT_APP_API_BASE_URL}/admin/incomebydate?date=${yesterdayStr}`,
         { credentials: "include" }
       );
       setIncomeYesterday(await resYesterday.json());
 
       const resLastWeek = await fetch(
-        `http://localhost:8080/admin/incomebyweek?date=${lastWeekStr}`,
+        `${process.env.REACT_APP_API_BASE_URL}/admin/incomebyweek?date=${lastWeekStr}`,
         { credentials: "include" }
       );
       setIncomeLastWeek(await resLastWeek.json());
@@ -287,7 +287,9 @@ const Dashboard = () => {
       setIncomeLastMonth(await resLastMonth.json());
 
       const resLastYear = await fetch(
-        `http://localhost:8080/admin/incomebyyear?year=${lastYear.getFullYear()}`,
+        `${
+          process.env.REACT_APP_API_BASE_URL
+        }/admin/incomebyyear?year=${lastYear.getFullYear()}`,
         { credentials: "include" }
       );
       setIncomeLastYear(await resLastYear.json());
@@ -298,9 +300,12 @@ const Dashboard = () => {
 
   const fetchBookingsToday = async () => {
     try {
-      const res = await fetch("http://localhost:8080/admin/bookingtoday", {
-        credentials: "include",
-      });
+      const res = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/admin/bookingtoday`,
+        {
+          credentials: "include",
+        }
+      );
       if (!res.ok) throw new Error("Failed to fetch bookings");
       const data = await res.json();
       if (!Array.isArray(data)) throw new Error("Data is not an array");
@@ -313,16 +318,19 @@ const Dashboard = () => {
   const fetchOutOfStockAndExpired = async () => {
     try {
       const resOut = await fetch(
-        "http://localhost:8080/admin/vaccineoutofstock",
+        `${process.env.REACT_APP_API_BASE_URL}/admin/vaccineoutofstock`,
         {
           credentials: "include",
         }
       );
       setOutOfStockVaccines(await resOut.json());
 
-      const resExp = await fetch("http://localhost:8080/admin/expiredvaccine", {
-        credentials: "include",
-      });
+      const resExp = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/admin/expiredvaccine`,
+        {
+          credentials: "include",
+        }
+      );
       setExpiredVaccines(await resExp.json());
     } catch (err) {
       console.error("Error fetching vaccine info:", err);
@@ -331,9 +339,12 @@ const Dashboard = () => {
 
   const fetchBestsellerVaccines = async () => {
     try {
-      const res = await fetch("http://localhost:8080/admin/bestvaccine", {
-        credentials: "include",
-      });
+      const res = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/admin/bestvaccine`,
+        {
+          credentials: "include",
+        }
+      );
       setBestsellerVaccines(await res.json());
     } catch (err) {
       console.error("Error fetching bestseller vaccines:", err);
@@ -607,9 +618,7 @@ const Dashboard = () => {
           Đã hoàn thành
         </span>
       );
-    return (
-      <span className="booking-status-unknown-dashboard">Đã hủy</span>
-    );
+    return <span className="booking-status-unknown-dashboard">Đã hủy</span>;
   };
 
   return (
@@ -874,94 +883,96 @@ const Dashboard = () => {
         </div>
       )}
 
-{topVaccineModalOpen && (
-  <div className="modal-overlay-dashboard">
-    <div className="modal-content-large-dashboard">
-      <button
-        onClick={() => setTopVaccineModalOpen(false)}
-        className="modal-close-btn-dashboard"
-      >
-        ×
-      </button>
-      <h2 className="modal-title-large-dashboard">
-        Top 10 Vaccine Bán Chạy
-      </h2>
-      {top10Vaccine.length > 0 ? (
-        <div className="chart-container-modal-dashboard">
-          <Bar
-            data={{
-              labels: top10Vaccine.map(([name]) => name),
-              datasets: [
-                {
-                  label: "Số lượng",
-                  data: top10Vaccine.map(([, count]) => count),
-                  backgroundColor: "rgba(56, 178, 172, 0.6)",
-                  borderColor: "rgba(56, 178, 172, 1)",
-                  borderWidth: 1,
-                  borderRadius: 4,
-                },
-              ],
-            }}
-            options={{
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: {
-                legend: { display: false },
-                tooltip: {
-                  callbacks: {
-                    label: function (context) {
-                      return `${context.dataset.label}: ${context.raw}`;
+      {topVaccineModalOpen && (
+        <div className="modal-overlay-dashboard">
+          <div className="modal-content-large-dashboard">
+            <button
+              onClick={() => setTopVaccineModalOpen(false)}
+              className="modal-close-btn-dashboard"
+            >
+              ×
+            </button>
+            <h2 className="modal-title-large-dashboard">
+              Top 10 Vaccine Bán Chạy
+            </h2>
+            {top10Vaccine.length > 0 ? (
+              <div className="chart-container-modal-dashboard">
+                <Bar
+                  data={{
+                    labels: top10Vaccine.map(([name]) => name),
+                    datasets: [
+                      {
+                        label: "Số lượng",
+                        data: top10Vaccine.map(([, count]) => count),
+                        backgroundColor: "rgba(56, 178, 172, 0.6)",
+                        borderColor: "rgba(56, 178, 172, 1)",
+                        borderWidth: 1,
+                        borderRadius: 4,
+                      },
+                    ],
+                  }}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: { display: false },
+                      tooltip: {
+                        callbacks: {
+                          label: function (context) {
+                            return `${context.dataset.label}: ${context.raw}`;
+                          },
+                          title: function (context) {
+                            return context[0].label; // Hiển thị tên đầy đủ khi hover
+                          },
+                        },
+                      },
                     },
-                    title: function (context) {
-                      return context[0].label; // Hiển thị tên đầy đủ khi hover
+                    scales: {
+                      x: {
+                        grid: { display: false },
+                        ticks: {
+                          maxRotation: 0, // Giữ tên ngang
+                          minRotation: 0,
+                          autoSkip: false, // Không bỏ qua nhãn nào
+                          maxTicksLimit: Infinity, // Hiển thị tất cả nhãn
+                          font: {
+                            size: 12, // Kích thước font chữ nhỏ hơn để chứa nhiều nhãn
+                          },
+                          callback: function (value, index, values) {
+                            const label = this.getLabelForValue(value);
+                            return label.length > 15
+                              ? label.substring(0, 15) + "..."
+                              : label;
+                          },
+                        },
+                      },
+                      y: {
+                        grid: { display: true, color: "rgba(0, 0, 0, 0.05)" },
+                        beginAtZero: true,
+                        ticks: {
+                          callback: function (value) {
+                            return value.toLocaleString("vi-VN");
+                          },
+                        },
+                      },
                     },
-                  },
-                },
-              },
-              scales: {
-                x: {
-                  grid: { display: false },
-                  ticks: {
-                    maxRotation: 0, // Giữ tên ngang
-                    minRotation: 0,
-                    autoSkip: false, // Không bỏ qua nhãn nào
-                    maxTicksLimit: Infinity, // Hiển thị tất cả nhãn
-                    font: {
-                      size: 12, // Kích thước font chữ nhỏ hơn để chứa nhiều nhãn
-                    },
-                    callback: function (value, index, values) {
-                      const label = this.getLabelForValue(value);
-                      return label.length > 15 ? label.substring(0, 15) + "..." : label;
-                    },
-                  },
-                },
-                y: {
-                  grid: { display: true, color: "rgba(0, 0, 0, 0.05)" },
-                  beginAtZero: true,
-                  ticks: {
-                    callback: function (value) {
-                      return value.toLocaleString("vi-VN");
-                    },
-                  },
-                },
-              },
-            }}
-          />
+                  }}
+                />
+              </div>
+            ) : (
+              <p className="modal-no-data-dashboard">Chưa có dữ liệu</p>
+            )}
+            <div className="modal-footer-dashboard">
+              <button
+                onClick={() => setTopVaccineModalOpen(false)}
+                className="modal-close-btn-action-dashboard"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
         </div>
-      ) : (
-        <p className="modal-no-data-dashboard">Chưa có dữ liệu</p>
       )}
-      <div className="modal-footer-dashboard">
-        <button
-          onClick={() => setTopVaccineModalOpen(false)}
-          className="modal-close-btn-action-dashboard"
-        >
-          Đóng
-        </button>
-      </div>
-    </div>
-  </div>
-)}
       {outOfStockModalOpen && (
         <div className="modal-overlay-dashboard">
           <div className="modal-content-dashboard">

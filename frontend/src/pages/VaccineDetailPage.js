@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import CountryFlag from 'react-country-flag';
-import '../style/VaccineDetailPage.css';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import CountryFlag from "react-country-flag";
+import "../style/VaccineDetailPage.css";
 
 function VaccineDetailPage() {
   const { vaccineId } = useParams();
@@ -11,23 +11,25 @@ function VaccineDetailPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`http://localhost:8080/vaccine/findid?id=${vaccineId}`)
-      .then(response => {
-        if (!response.ok) throw new Error('Network response was not ok');
+    fetch(
+      `${process.env.REACT_APP_API_BASE_URL}/vaccine/findid?id=${vaccineId}`
+    )
+      .then((response) => {
+        if (!response.ok) throw new Error("Network response was not ok");
         return response.json();
       })
-      .then(data => {
+      .then((data) => {
         setVaccine(data);
         setLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         setError(err.message);
         setLoading(false);
       });
   }, [vaccineId]);
 
   const handleBack = () => {
-    navigate('/vaccine');
+    navigate("/vaccine");
   };
 
   if (loading) return <div className="loading">Loading...</div>;
@@ -55,7 +57,7 @@ function VaccineDetailPage() {
               <CountryFlag
                 countryCode={getCountryCode(vaccine.country)}
                 svg
-                style={{ width: '20px', marginRight: '8px' }}
+                style={{ width: "20px", marginRight: "8px" }}
               />
               {vaccine.country}
             </span>
@@ -66,7 +68,9 @@ function VaccineDetailPage() {
           </div>
           <div className="detail-item">
             <span className="label">Độ tuổi:</span>
-            <span className="value">{vaccine.ageMin} - {vaccine.ageMax}</span>
+            <span className="value">
+              {vaccine.ageMin} - {vaccine.ageMax}
+            </span>
           </div>
           <div className="detail-item">
             <span className="label">Số liều:</span>
@@ -74,12 +78,18 @@ function VaccineDetailPage() {
           </div>
           <div className="detail-item">
             <span className="label">Mô tả:</span>
-            <span className="value">{vaccine.description || 'Không có mô tả'}</span>
+            <span className="value">
+              {vaccine.description || "Không có mô tả"}
+            </span>
           </div>
           <div className="detail-item">
             <span className="label">Trạng thái:</span>
-            <span className={`value status ${vaccine.active ? 'active' : 'inactive'}`}>
-              {vaccine.active ? 'Hoạt động' : 'Không hoạt động'}
+            <span
+              className={`value status ${
+                vaccine.active ? "active" : "inactive"
+              }`}
+            >
+              {vaccine.active ? "Hoạt động" : "Không hoạt động"}
             </span>
           </div>
         </div>
@@ -90,36 +100,36 @@ function VaccineDetailPage() {
 
 function getCountryCode(countryName) {
   const countryCodes = {
-    'Vietnam': 'VN',
-    'United States': 'US',
-    'China': 'CN',
-    'Japan': 'JP',
-    'France': 'FR',
-    'Germany': 'DE',
-    'United Kingdom': 'GB',
-    'India': 'IN',
-    'Brazil': 'BR',
-    'Russia': 'RU',
-    'Canada': 'CA',
-    'Australia': 'AU',
-    'Italy': 'IT',
-    'Spain': 'ES',
-    'Mexico': 'MX',
-    'South Korea': 'KR',
-    'South Africa': 'ZA',
-    'Argentina': 'AR',
-    'Indonesia': 'ID',
-    'Thailand': 'TH',
-    'Malaysia': 'MY',
-    'Singapore': 'SG',
-    'Philippines': 'PH',
-    'New Zealand': 'NZ',
-    'Sweden': 'SE',
-    'Norway': 'NO',
-    'Denmark': 'DK',
-    'Netherlands': 'NL',
-    'Switzerland': 'CH',
-    'Turkey': 'TR',
+    Vietnam: "VN",
+    "United States": "US",
+    China: "CN",
+    Japan: "JP",
+    France: "FR",
+    Germany: "DE",
+    "United Kingdom": "GB",
+    India: "IN",
+    Brazil: "BR",
+    Russia: "RU",
+    Canada: "CA",
+    Australia: "AU",
+    Italy: "IT",
+    Spain: "ES",
+    Mexico: "MX",
+    "South Korea": "KR",
+    "South Africa": "ZA",
+    Argentina: "AR",
+    Indonesia: "ID",
+    Thailand: "TH",
+    Malaysia: "MY",
+    Singapore: "SG",
+    Philippines: "PH",
+    "New Zealand": "NZ",
+    Sweden: "SE",
+    Norway: "NO",
+    Denmark: "DK",
+    Netherlands: "NL",
+    Switzerland: "CH",
+    Turkey: "TR",
   };
 
   const normalizedCountryName = countryName.toLowerCase().trim();
@@ -128,7 +138,7 @@ function getCountryCode(countryName) {
       return code;
     }
   }
-  return 'XX';
+  return "XX";
 }
 
 export default VaccineDetailPage;

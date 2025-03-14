@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import { FaPlus, FaSearch, FaFilter, FaPowerOff, FaFlask } from "react-icons/fa";
-import '../../style/VaccineCombos.css';
+import {
+  FaPlus,
+  FaSearch,
+  FaFilter,
+  FaPowerOff,
+  FaFlask,
+} from "react-icons/fa";
+import "../../style/VaccineCombos.css";
 
 // Hàm format tiền tệ (VND) - nếu có thuộc tính priceCombo
 const formatPrice = (price) => {
@@ -49,12 +55,12 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    
+
     // Kiểm tra validation trước khi submit
     if (!validateForm()) {
       return;
     }
-    
+
     console.log("ModalForm - Gửi API dữ liệu:", formData);
     onSubmit(formData);
     onClose();
@@ -71,7 +77,10 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
         <h3 className="modal-title-vaccinecombomanager">
           {isEditMode ? "Chỉnh sửa Vaccine Combo" : "Tạo Vaccine Combo mới"}
         </h3>
-        <form onSubmit={handleFormSubmit} className="modal-form-vaccinecombomanager">
+        <form
+          onSubmit={handleFormSubmit}
+          className="modal-form-vaccinecombomanager"
+        >
           <div className="form-group-vaccinecombomanager">
             <label className="form-label-vaccinecombomanager">Tên combo</label>
             <input
@@ -108,7 +117,10 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
               min="1" // Thêm thuộc tính min để hỗ trợ HTML validation
             />
             {error && (
-              <p className="error-message-vaccinecombomanager" style={{ color: 'red', fontSize: '0.9em', marginTop: '5px' }}>
+              <p
+                className="error-message-vaccinecombomanager"
+                style={{ color: "red", fontSize: "0.9em", marginTop: "5px" }}
+              >
                 {error}
               </p>
             )}
@@ -121,7 +133,9 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
               onChange={handleCheckboxChange}
               className="form-checkbox-vaccinecombomanager"
             />
-            <label className="form-label-checkbox-vaccinecombomanager">Kích hoạt</label>
+            <label className="form-label-checkbox-vaccinecombomanager">
+              Kích hoạt
+            </label>
           </div>
           <div className="form-actions-vaccinecombomanager">
             <button type="submit" className="submit-button-vaccinecombomanager">
@@ -151,7 +165,7 @@ const VaccineComboItem = ({ combo, onComboUpdated }) => {
     try {
       console.log("Gửi API thay đổi trạng thái cho comboId:", comboId);
       const response = await fetch(
-        `http://localhost:8080/vaccinecombo/active?id=${comboId}`,
+        `${process.env.REACT_APP_API_BASE_URL}/vaccinecombo/active?id=${comboId}`,
         {
           method: "POST",
           credentials: "include",
@@ -170,13 +184,16 @@ const VaccineComboItem = ({ combo, onComboUpdated }) => {
   const handleUpdate = async (updatedData) => {
     try {
       console.log("Gửi API cập nhật combo, dữ liệu gửi:", updatedData);
-      const response = await fetch("http://localhost:8080/vaccinecombo/update", {
-        method: "POST",
-        credentials: "include",
-        withCredentials: true,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedData),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/vaccinecombo/update`,
+        {
+          method: "POST",
+          credentials: "include",
+          withCredentials: true,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedData),
+        }
+      );
       if (!response.ok) throw new Error("Lỗi khi cập nhật");
       const updated = await response.json();
       console.log("API cập nhật thành công, dữ liệu trả về:", updated);
@@ -255,11 +272,14 @@ const VaccineCombos = () => {
   const fetchCombos = async () => {
     try {
       console.log("Gửi API lấy danh sách combo...");
-      const response = await fetch("http://localhost:8080/vaccinecombo", {
-        method: "GET",
-        credentials: "include",
-        withCredentials: true,
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/vaccinecombo`,
+        {
+          method: "GET",
+          credentials: "include",
+          withCredentials: true,
+        }
+      );
       if (!response.ok) throw new Error("Lỗi khi tải dữ liệu");
       const data = await response.json();
       console.log("GET API VaccineCombo thành công, dữ liệu trả về:", data);
@@ -281,13 +301,16 @@ const VaccineCombos = () => {
   const handleComboCreated = async (newCombo) => {
     try {
       console.log("Gửi API tạo combo mới, dữ liệu gửi:", newCombo);
-      const response = await fetch("http://localhost:8080/vaccinecombo/create", {
-        method: "POST",
-        credentials: "include",
-        withCredentials: true,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newCombo),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/vaccinecombo/create`,
+        {
+          method: "POST",
+          credentials: "include",
+          withCredentials: true,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newCombo),
+        }
+      );
       if (!response.ok) throw new Error("Lỗi khi tạo");
       const created = await response.json();
       console.log("Tạo combo thành công, dữ liệu trả về:", created);

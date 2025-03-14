@@ -25,7 +25,9 @@ const Payments = () => {
   const [coupons, setCoupons] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/payment", { credentials: "include" })
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/payment`, {
+      credentials: "include",
+    })
       .then((response) => response.json())
       .then((data) => {
         console.log("Nhận response từ GET /payment:", data);
@@ -33,7 +35,9 @@ const Payments = () => {
       })
       .catch((error) => console.error("Error fetching payments:", error));
 
-    fetch("http://localhost:8080/marketing", { credentials: "include" })
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/marketing`, {
+      credentials: "include",
+    })
       .then((response) => response.json())
       .then((data) => {
         console.log("Nhận response từ GET /marketing:", data);
@@ -164,7 +168,7 @@ const Payments = () => {
     setIsLoading(true);
     const loadingToast = toast.loading("Đang xử lý thanh toán...");
 
-    const url = `http://localhost:8080/payment/update?paymentId=${paymentId}&coupon=${coupon}&method=false`;
+    const url = `${process.env.REACT_APP_API_BASE_URL}/payment/update?paymentId=${paymentId}&coupon=${coupon}&method=false`;
     fetch(url, {
       method: "POST",
       credentials: "include",
@@ -174,7 +178,9 @@ const Payments = () => {
         console.log("Nhận response từ POST /payment/update:", data);
 
         if (data.message === "COD") {
-          fetch("http://localhost:8080/payment", { credentials: "include" })
+          fetch(`${process.env.REACT_APP_API_BASE_URL}/payment`, {
+            credentials: "include",
+          })
             .then((res) => res.json())
             .then((res) => {
               setPayments(res);

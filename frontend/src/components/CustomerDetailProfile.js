@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import '../style/CustomerDetailPage.css';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import "../style/CustomerDetailPage.css";
 
 function CustomerDetailPage() {
   const { id } = useParams();
@@ -13,12 +13,17 @@ function CustomerDetailPage() {
 
   const fetchCustomerDetail = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/customer/findid?id=${id}`, {
-        method: 'GET',
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/customer/findid?id=${id}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
       if (!response.ok) {
-        throw new Error(`Error fetching customer detail - Status: ${response.status}`);
+        throw new Error(
+          `Error fetching customer detail - Status: ${response.status}`
+        );
       }
       const data = await response.json();
       setCustomer(data);
@@ -30,10 +35,13 @@ function CustomerDetailPage() {
 
   const fetchChildren = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/child/findbycustomer?id=${id}`, {
-        method: 'GET',
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/child/findbycustomer?id=${id}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
       if (!response.ok) {
         throw new Error(`Error fetching children - Status: ${response.status}`);
       }
@@ -60,17 +68,17 @@ function CustomerDetailPage() {
 
   const toggleChildDetail = (childId) => {
     setIsAnimating(true);
-    setExpandedChildId(prev => (prev === childId ? null : childId));
+    setExpandedChildId((prev) => (prev === childId ? null : childId));
   };
 
   return (
-    <div className={`healthcare-container ${isAnimating ? 'animate' : ''}`}>
+    <div className={`healthcare-container ${isAnimating ? "animate" : ""}`}>
       <header className="healthcare-header">
         <h1 className="header-title">Patient Profile</h1>
       </header>
 
       <div className="healthcare-content">
-        <div className={`profile-section ${isAnimating ? 'animate-in' : ''}`}>
+        <div className={`profile-section ${isAnimating ? "animate-in" : ""}`}>
           <div className="profile-card">
             <div className="avatar-section">
               <img
@@ -80,12 +88,15 @@ function CustomerDetailPage() {
               />
               {customer && (
                 <div className="profile-info">
-                  <h2 className="profile-name">{customer.firstName} {customer.lastName}</h2>
+                  <h2 className="profile-name">
+                    {customer.firstName} {customer.lastName}
+                  </h2>
                   <p className="profile-contact">
                     <span className="icon email">📧</span> {customer.email}
                   </p>
                   <p className="profile-contact">
-                    <span className="icon phone">📞</span> {customer.phoneNumber}
+                    <span className="icon phone">📞</span>{" "}
+                    {customer.phoneNumber}
                   </p>
                 </div>
               )}
@@ -93,25 +104,31 @@ function CustomerDetailPage() {
             {customer && (
               <div className="profile-details">
                 <p>
-                  <span className="icon id">🆔</span> <strong>ID:</strong> {customer.customerId}
+                  <span className="icon id">🆔</span> <strong>ID:</strong>{" "}
+                  {customer.customerId}
                 </p>
                 <p>
-                  <span className="icon gender">♂️</span> <strong>Gender:</strong> {customer.gender ? "Male" : "Female"}
+                  <span className="icon gender">♂️</span>{" "}
+                  <strong>Gender:</strong> {customer.gender ? "Male" : "Female"}
                 </p>
                 <p>
-                  <span className="icon dob">📅</span> <strong>DOB:</strong> {new Date(customer.dob).toLocaleDateString()}
+                  <span className="icon dob">📅</span> <strong>DOB:</strong>{" "}
+                  {new Date(customer.dob).toLocaleDateString()}
                 </p>
                 <p>
-                  <span className="icon active">✅</span> <strong>Active:</strong> {customer.active ? "Yes" : "No"}
+                  <span className="icon active">✅</span>{" "}
+                  <strong>Active:</strong> {customer.active ? "Yes" : "No"}
                 </p>
                 {customer.address && (
                   <p>
-                    <span className="icon location">📍</span> <strong>Address:</strong> {customer.address}
+                    <span className="icon location">📍</span>{" "}
+                    <strong>Address:</strong> {customer.address}
                   </p>
                 )}
                 {customer.banking && (
                   <p>
-                    <span className="icon bank">💳</span> <strong>Banking:</strong> {customer.banking}
+                    <span className="icon bank">💳</span>{" "}
+                    <strong>Banking:</strong> {customer.banking}
                   </p>
                 )}
               </div>
@@ -119,7 +136,7 @@ function CustomerDetailPage() {
           </div>
         </div>
 
-        <div className={`children-section ${isAnimating ? 'animate-in' : ''}`}>
+        <div className={`children-section ${isAnimating ? "animate-in" : ""}`}>
           <h2 className="children-title">Child</h2>
           {childrenList.length === 0 ? (
             <p className="no-child">No dependent data available.</p>
@@ -130,24 +147,31 @@ function CustomerDetailPage() {
                 return (
                   <div
                     key={child.childId}
-                    className={`child-card ${isExpanded ? 'expanded' : ''} ${isAnimating ? 'animate-in' : ''}`}
+                    className={`child-card ${isExpanded ? "expanded" : ""} ${
+                      isAnimating ? "animate-in" : ""
+                    }`}
                     onClick={() => toggleChildDetail(child.childId)}
                   >
                     <div className="child-header">
                       <h3 className="child-name">
-                        <span className="icon child">👶</span> {child.firstName} {child.lastName}
+                        <span className="icon child">👶</span> {child.firstName}{" "}
+                        {child.lastName}
                       </h3>
                       <p className="child-dob">
-                        <span className="icon dob">📅</span> {new Date(child.dob).toLocaleDateString()}
+                        <span className="icon dob">📅</span>{" "}
+                        {new Date(child.dob).toLocaleDateString()}
                       </p>
                     </div>
                     {isExpanded && (
                       <div className="child-details">
                         <p>
-                          <span className="icon id">🆔</span> <strong>ID:</strong> {child.childId}
+                          <span className="icon id">🆔</span>{" "}
+                          <strong>ID:</strong> {child.childId}
                         </p>
                         <p>
-                          <span className="icon gender">♂️</span> <strong>Gender:</strong> {child.gender ? "Male" : "Female"}
+                          <span className="icon gender">♂️</span>{" "}
+                          <strong>Gender:</strong>{" "}
+                          {child.gender ? "Male" : "Female"}
                         </p>
                       </div>
                     )}

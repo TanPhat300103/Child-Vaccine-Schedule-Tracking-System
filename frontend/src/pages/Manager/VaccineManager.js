@@ -47,7 +47,9 @@ const Vaccines = () => {
 
   // Fetch vaccines từ API
   const fetchVaccines = () => {
-    fetch("http://localhost:8080/vaccine", { credentials: "include" })
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/vaccine`, {
+      credentials: "include",
+    })
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetch vaccines success:", data);
@@ -99,7 +101,7 @@ const Vaccines = () => {
 
   // Toggle trạng thái active của vaccine
   const handleToggleActive = (id, currentStatus) => {
-    fetch(`http://localhost:8080/vaccine/active?id=${id}`, {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/vaccine/active?id=${id}`, {
       method: "POST",
       credentials: "include",
     })
@@ -127,7 +129,7 @@ const Vaccines = () => {
     }
 
     console.log("Creating vaccine:", newVaccine);
-    fetch("http://localhost:8080/vaccine/create", {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/vaccine/create`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -187,7 +189,7 @@ const Vaccines = () => {
         return;
       }
 
-      fetch("http://localhost:8080/vaccine/update", {
+      fetch(`${process.env.REACT_APP_API_BASE_URL}/vaccine/update`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

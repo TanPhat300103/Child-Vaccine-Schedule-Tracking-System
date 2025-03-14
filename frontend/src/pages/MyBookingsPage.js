@@ -1,8 +1,16 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '../components/AuthContext';
-import { Link, useNavigate } from 'react-router-dom';
-import '../style/MyBookingsPage.css';
-import { User, BookOpen, CreditCard, Calendar, Star, X, Search } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { useAuth } from "../components/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+import "../style/MyBookingsPage.css";
+import {
+  User,
+  BookOpen,
+  CreditCard,
+  Calendar,
+  Star,
+  X,
+  Search,
+} from "lucide-react";
 
 function MyBookingsPage() {
   const navigate = useNavigate();
@@ -18,54 +26,69 @@ function MyBookingsPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedBookingId, setSelectedBookingId] = useState(null);
   const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState("");
   const [editRating, setEditRating] = useState(0);
-  const [editComment, setEditComment] = useState('');
+  const [editComment, setEditComment] = useState("");
   const [editFeedbackId, setEditFeedbackId] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [feedbackFilter, setFeedbackFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [feedbackFilter, setFeedbackFilter] = useState("all");
   const [selectedChildId, setSelectedChildId] = useState(null); // Thêm state cho childId
 
   useEffect(() => {
     const fetchData = async () => {
       if (!userInfo?.userId) {
-        setError('Không tìm thấy ID người dùng');
+        setError("Không tìm thấy ID người dùng");
         setLoading(false);
         return;
       }
 
       try {
-        const customerResponse = await fetch(`http://localhost:8080/customer/findid?id=${userInfo.userId}`, {
-          method: 'GET',
-          credentials: 'include',
-        });
-        if (!customerResponse.ok) throw new Error('Không tìm thấy thông tin khách hàng');
+        const customerResponse = await fetch(
+          `${process.env.REACT_APP_API_BASE_URL}/customer/findid?id=${userInfo.userId}`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+        if (!customerResponse.ok)
+          throw new Error("Không tìm thấy thông tin khách hàng");
         const customerData = await customerResponse.json();
         setCustomer(customerData);
 
-        const bookingsResponse = await fetch(`http://localhost:8080/booking/findbycustomer?customerId=${userInfo.userId}`, {
-          method: 'GET',
-          credentials: 'include',
-        });
-        if (!bookingsResponse.ok) throw new Error('Không tìm thấy thông tin booking');
+        const bookingsResponse = await fetch(
+          `${process.env.REACT_APP_API_BASE_URL}/booking/findbycustomer?customerId=${userInfo.userId}`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+        if (!bookingsResponse.ok)
+          throw new Error("Không tìm thấy thông tin booking");
         const bookingsData = await bookingsResponse.json();
         setBookings(bookingsData);
 
-        const childrenResponse = await fetch(`http://localhost:8080/child/findbycustomer?id=${userInfo.userId}`, {
-          method: 'GET',
-          credentials: 'include',
-        });
-        if (!childrenResponse.ok) throw new Error('Không tìm thấy thông tin con');
+        const childrenResponse = await fetch(
+          `${process.env.REACT_APP_API_BASE_URL}/child/findbycustomer?id=${userInfo.userId}`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+        if (!childrenResponse.ok)
+          throw new Error("Không tìm thấy thông tin con");
         const childrenData = await childrenResponse.json();
         setChildren(childrenData);
 
-        const feedbackPromises = bookingsData.map(booking =>
-          fetch(`http://localhost:8080/feedback/getbybooking?bookingId=${booking.bookingId}`, {
-            method: 'GET',
-            credentials: 'include',
-          })
-            .then(res => res.ok ? res.json() : null)
+        const feedbackPromises = bookingsData.map((booking) =>
+          fetch(
+            `${process.env.REACT_APP_API_BASE_URL}/feedback/getbybooking?bookingId=${booking.bookingId}`,
+            {
+              method: "GET",
+              credentials: "include",
+            }
+          )
+            .then((res) => (res.ok ? res.json() : null))
             .catch(() => null)
         );
         const feedbackResults = await Promise.all(feedbackPromises);
@@ -76,9 +99,8 @@ function MyBookingsPage() {
           }
         });
         setFeedbacks(feedbackMap);
-
       } catch (err) {
-        setError('Lỗi khi lấy thông tin: ' + err.message);
+        setError("Lỗi khi lấy thông tin: " + err.message);
       } finally {
         setLoading(false);
       }
@@ -93,36 +115,48 @@ function MyBookingsPage() {
 
       // Lọc theo searchTerm
       if (searchTerm) {
-        result = result.filter(booking =>
-          booking.bookingId.toString().includes(searchTerm) ||
-          new Date(booking.bookingDate).toLocaleDateString().includes(searchTerm)
+        result = result.filter(
+          (booking) =>
+            booking.bookingId.toString().includes(searchTerm) ||
+            new Date(booking.bookingDate)
+              .toLocaleDateString()
+              .includes(searchTerm)
         );
       }
 
       // Lọc theo statusFilter
-      if (statusFilter !== 'all') {
-        result = result.filter(booking => booking.status === parseInt(statusFilter));
+      if (statusFilter !== "all") {
+        result = result.filter(
+          (booking) => booking.status === parseInt(statusFilter)
+        );
       }
 
       // Lọc theo feedbackFilter
-      if (feedbackFilter !== 'all') {
-        result = result.filter(booking =>
-          feedbackFilter === 'with' ? !!feedbacks[booking.bookingId] : !feedbacks[booking.bookingId]
+      if (feedbackFilter !== "all") {
+        result = result.filter((booking) =>
+          feedbackFilter === "with"
+            ? !!feedbacks[booking.bookingId]
+            : !feedbacks[booking.bookingId]
         );
       }
 
       // Lọc theo selectedChildId (nếu có)
       if (selectedChildId) {
-        const detailsPromises = result.map(booking =>
-          fetch(`http://localhost:8080/bookingdetail/findbybooking?id=${booking.bookingId}`, {
-            method: 'GET',
-            credentials: 'include',
-          }).then(res => res.ok ? res.json() : [])
+        const detailsPromises = result.map((booking) =>
+          fetch(
+            `${process.env.REACT_APP_API_BASE_URL}/bookingdetail/findbybooking?id=${booking.bookingId}`,
+            {
+              method: "GET",
+              credentials: "include",
+            }
+          ).then((res) => (res.ok ? res.json() : []))
         );
         const detailsResults = await Promise.all(detailsPromises);
         result = result.filter((booking, index) => {
           const details = detailsResults[index];
-          return details.some(detail => detail.child.childId === selectedChildId);
+          return details.some(
+            (detail) => detail.child.childId === selectedChildId
+          );
         });
       }
 
@@ -130,19 +164,26 @@ function MyBookingsPage() {
     };
 
     fetchBookingDetailsAndFilter();
-  }, [searchTerm, statusFilter, feedbackFilter, bookings, feedbacks, selectedChildId]);
+  }, [
+    searchTerm,
+    statusFilter,
+    feedbackFilter,
+    bookings,
+    feedbacks,
+    selectedChildId,
+  ]);
 
   const handleFeedbackClick = (bookingId) => {
     setSelectedBookingId(bookingId);
     setRating(0);
-    setComment('');
+    setComment("");
     setShowFeedbackModal(true);
   };
 
   const handleRatingClick = (bookingId) => {
     setSelectedBookingId(bookingId);
     setEditRating(feedbacks[bookingId]?.ranking || 0);
-    setEditComment(feedbacks[bookingId]?.comment || '');
+    setEditComment(feedbacks[bookingId]?.comment || "");
     setEditFeedbackId(feedbacks[bookingId]?.id || null);
     setShowDetailModal(true);
   };
@@ -152,24 +193,27 @@ function MyBookingsPage() {
     const feedbackData = {
       booking: { bookingId: selectedBookingId },
       ranking: rating,
-      comment: comment || 'none',
+      comment: comment || "none",
     };
     try {
-      const response = await fetch('http://localhost:8080/feedback/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(feedbackData),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/feedback/create`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(feedbackData),
+        }
+      );
       if (response.ok) {
         const newFeedback = await response.json();
-        setFeedbacks(prev => ({ ...prev, [selectedBookingId]: newFeedback }));
+        setFeedbacks((prev) => ({ ...prev, [selectedBookingId]: newFeedback }));
         setShowFeedbackModal(false);
       } else {
-        alert('Lỗi khi gửi feedback');
+        alert("Lỗi khi gửi feedback");
       }
     } catch (err) {
-      alert('Lỗi khi gửi feedback: ' + err.message);
+      alert("Lỗi khi gửi feedback: " + err.message);
     }
   };
 
@@ -179,25 +223,33 @@ function MyBookingsPage() {
       id: editFeedbackId,
       booking: { bookingId: selectedBookingId },
       ranking: editRating,
-      comment: editComment || 'none',
+      comment: editComment || "none",
     };
     try {
-      const response = await fetch('http://localhost:8080/feedback/update', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(feedbackData),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/feedback/update`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(feedbackData),
+        }
+      );
       if (response.ok) {
         const updatedFeedback = await response.json();
-        setFeedbacks(prev => ({ ...prev, [selectedBookingId]: updatedFeedback }));
+        setFeedbacks((prev) => ({
+          ...prev,
+          [selectedBookingId]: updatedFeedback,
+        }));
         setShowDetailModal(false);
       } else {
         const errorData = await response.json();
-        alert('Lỗi khi cập nhật feedback: ' + (errorData.message || 'Bad Request'));
+        alert(
+          "Lỗi khi cập nhật feedback: " + (errorData.message || "Bad Request")
+        );
       }
     } catch (err) {
-      alert('Lỗi khi cập nhật feedback: ' + err.message);
+      alert("Lỗi khi cập nhật feedback: " + err.message);
     }
   };
 
@@ -229,10 +281,13 @@ function MyBookingsPage() {
       <div className="profile-header">
         <div className="profile-user-info">
           <div className="profile-avatar">
-            {customer?.firstName?.charAt(0)}{customer?.lastName?.charAt(0)}
+            {customer?.firstName?.charAt(0)}
+            {customer?.lastName?.charAt(0)}
           </div>
           <div className="profile-user-text">
-            <h1>{customer?.firstName} {customer?.lastName}</h1>
+            <h1>
+              {customer?.firstName} {customer?.lastName}
+            </h1>
             <p>{customer?.phoneNumber}</p>
           </div>
         </div>
@@ -240,11 +295,17 @@ function MyBookingsPage() {
 
       <div className="profile-content">
         <div className="profile-sidebar">
-          <div className="profile-sidebar-item" onClick={() => navigate('/profile')}>
+          <div
+            className="profile-sidebar-item"
+            onClick={() => navigate("/profile")}
+          >
             <User size={18} />
             <span>Thông Tin Cá Nhân</span>
           </div>
-          <div className="profile-sidebar-item" onClick={() => navigate('/child-info')}>
+          <div
+            className="profile-sidebar-item"
+            onClick={() => navigate("/child-info")}
+          >
             <Calendar size={18} />
             <span>Thông Tin Con</span>
           </div>
@@ -252,7 +313,10 @@ function MyBookingsPage() {
             <BookOpen size={18} />
             <span>My Booking</span>
           </div>
-          <div className="profile-sidebar-item" onClick={() => navigate('/my-payments')}>
+          <div
+            className="profile-sidebar-item"
+            onClick={() => navigate("/my-payments")}
+          >
             <CreditCard size={18} />
             <span>My Payment</span>
           </div>
@@ -302,14 +366,18 @@ function MyBookingsPage() {
               </div>
 
               <div className="profile-children-container">
-                {children.map(child => (
+                {children.map((child) => (
                   <div
                     key={child.childId}
-                    className={`profile-child-card ${selectedChildId === child.childId ? 'selected' : ''}`}
+                    className={`profile-child-card ${
+                      selectedChildId === child.childId ? "selected" : ""
+                    }`}
                     onClick={() => handleChildClick(child.childId)}
                   >
                     <div className="profile-child-info">
-                      <h4>{child.firstName} {child.lastName}</h4>
+                      <h4>
+                        {child.firstName} {child.lastName}
+                      </h4>
                     </div>
                   </div>
                 ))}
@@ -333,11 +401,15 @@ function MyBookingsPage() {
                           className="profile-booking-rating"
                           onClick={() => handleRatingClick(booking.bookingId)}
                         >
-                          {[1, 2, 3, 4, 5].map(star => (
+                          {[1, 2, 3, 4, 5].map((star) => (
                             <Star
                               key={star}
                               size={16}
-                              className={star <= feedbacks[booking.bookingId].ranking ? 'star-filled' : 'star-empty'}
+                              className={
+                                star <= feedbacks[booking.bookingId].ranking
+                                  ? "star-filled"
+                                  : "star-empty"
+                              }
                             />
                           ))}
                         </div>
@@ -345,23 +417,33 @@ function MyBookingsPage() {
                     </div>
                     <div className="profile-booking-details">
                       <div className="profile-booking-detail-item">
-                        <span className="profile-booking-detail-label">Trạng thái:</span>
+                        <span className="profile-booking-detail-label">
+                          Trạng thái:
+                        </span>
                         <span
-                          className={`profile-status ${booking.status === 1 ? 'active' : booking.status === 2 ? 'completed' : 'canceled'}`}
+                          className={`profile-status ${
+                            booking.status === 1
+                              ? "active"
+                              : booking.status === 2
+                              ? "completed"
+                              : "canceled"
+                          }`}
                         >
                           {booking.status === 1
-                            ? 'Đang tiến hành'
+                            ? "Đang tiến hành"
                             : booking.status === 2
-                              ? 'Đã hoàn thành'
-                              : booking.status === 3
-                                ? 'Đã hủy'
-                                : 'Không xác định'}
+                            ? "Đã hoàn thành"
+                            : booking.status === 3
+                            ? "Đã hủy"
+                            : "Không xác định"}
                         </span>
                       </div>
                       <div className="profile-booking-detail-item">
-                        <span className="profile-booking-detail-label">Tổng tiền:</span>
+                        <span className="profile-booking-detail-label">
+                          Tổng tiền:
+                        </span>
                         <span className="profile-booking-detail-value">
-                          {booking.totalAmount.toLocaleString('vi-VN')} VNĐ
+                          {booking.totalAmount.toLocaleString("vi-VN")} VNĐ
                         </span>
                       </div>
                     </div>
@@ -372,14 +454,17 @@ function MyBookingsPage() {
                       >
                         Xem chi tiết
                       </Link>
-                      {!feedbacks[booking.bookingId] && booking.status === 2 && (
-                        <button
-                          className="profile-feedback-btn"
-                          onClick={() => handleFeedbackClick(booking.bookingId)}
-                        >
-                          Viết đánh giá
-                        </button>
-                      )}
+                      {!feedbacks[booking.bookingId] &&
+                        booking.status === 2 && (
+                          <button
+                            className="profile-feedback-btn"
+                            onClick={() =>
+                              handleFeedbackClick(booking.bookingId)
+                            }
+                          >
+                            Viết đánh giá
+                          </button>
+                        )}
                     </div>
                   </div>
                 ))}
@@ -399,7 +484,10 @@ function MyBookingsPage() {
           <div className="feedback-modal">
             <div className="feedback-modal-header">
               <h3>Đánh giá Booking #{selectedBookingId}</h3>
-              <button className="feedback-modal-close" onClick={() => setShowFeedbackModal(false)}>
+              <button
+                className="feedback-modal-close"
+                onClick={() => setShowFeedbackModal(false)}
+              >
                 <X size={20} />
               </button>
             </div>
@@ -407,11 +495,11 @@ function MyBookingsPage() {
               <div className="feedback-rating">
                 <label>Xếp hạng:</label>
                 <div className="star-rating">
-                  {[1, 2, 3, 4, 5].map(star => (
+                  {[1, 2, 3, 4, 5].map((star) => (
                     <Star
                       key={star}
                       size={24}
-                      className={star <= rating ? 'star-filled' : 'star-empty'}
+                      className={star <= rating ? "star-filled" : "star-empty"}
                       onClick={() => setRating(star)}
                     />
                   ))}
@@ -427,10 +515,16 @@ function MyBookingsPage() {
               </div>
             </div>
             <div className="feedback-modal-footer">
-              <button className="feedback-submit-btn" onClick={handleSubmitFeedback}>
+              <button
+                className="feedback-submit-btn"
+                onClick={handleSubmitFeedback}
+              >
                 Gửi đánh giá
               </button>
-              <button className="feedback-cancel-btn" onClick={() => setShowFeedbackModal(false)}>
+              <button
+                className="feedback-cancel-btn"
+                onClick={() => setShowFeedbackModal(false)}
+              >
                 Hủy
               </button>
             </div>
@@ -443,7 +537,10 @@ function MyBookingsPage() {
           <div className="feedback-modal">
             <div className="feedback-modal-header">
               <h3>Chỉnh sửa đánh giá Booking #{selectedBookingId}</h3>
-              <button className="feedback-modal-close" onClick={() => setShowDetailModal(false)}>
+              <button
+                className="feedback-modal-close"
+                onClick={() => setShowDetailModal(false)}
+              >
                 <X size={20} />
               </button>
             </div>
@@ -451,11 +548,13 @@ function MyBookingsPage() {
               <div className="feedback-rating">
                 <label>Xếp hạng:</label>
                 <div className="star-rating">
-                  {[1, 2, 3, 4, 5].map(star => (
+                  {[1, 2, 3, 4, 5].map((star) => (
                     <Star
                       key={star}
                       size={24}
-                      className={star <= editRating ? 'star-filled' : 'star-empty'}
+                      className={
+                        star <= editRating ? "star-filled" : "star-empty"
+                      }
                       onClick={() => setEditRating(star)}
                     />
                   ))}
@@ -471,10 +570,16 @@ function MyBookingsPage() {
               </div>
             </div>
             <div className="feedback-modal-footer">
-              <button className="feedback-submit-btn" onClick={handleUpdateFeedback}>
+              <button
+                className="feedback-submit-btn"
+                onClick={handleUpdateFeedback}
+              >
                 Cập nhật
               </button>
-              <button className="feedback-cancel-btn" onClick={() => setShowDetailModal(false)}>
+              <button
+                className="feedback-cancel-btn"
+                onClick={() => setShowDetailModal(false)}
+              >
                 Hủy
               </button>
             </div>
