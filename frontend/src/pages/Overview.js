@@ -507,10 +507,7 @@ function Overview() {
               )}
             </div>
             {notifications.length > 0 && (
-              <a
-                href="http://localhost:3000/notification/1"
-                className="overviewpage-view-all"
-              >
+              <a href="../notification/1" className="overviewpage-view-all">
                 Xem tất cả
               </a>
             )}
@@ -561,7 +558,7 @@ function Overview() {
             </div>
             {bookings.length > 0 && (
               <a
-                href="http://localhost:3000/profile?tab=bookings"
+                href="../profile?tab=bookings"
                 className="overviewpage-view-all"
                 onClick={(e) => {
                   e.preventDefault();
@@ -617,7 +614,7 @@ function Overview() {
             </div>
             {payments.length > 0 && (
               <a
-                href="http://localhost:3000/my-payments"
+                href="../my-payments"
                 className="overviewpage-view-all"
                 onClick={(e) => {
                   e.preventDefault();
