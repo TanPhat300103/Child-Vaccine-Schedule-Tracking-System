@@ -21,6 +21,10 @@
   letter-spacing: 1px;
 }
 
+.booking-status-bookingtoday {
+  font-weight: bold;
+  color: #333;
+}
 .back-button-bookingtoday {
   background: #2563eb;
   color: white;

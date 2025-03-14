@@ -40,14 +40,18 @@ const StaffProfile = ({ initialStaffData }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
+      console.log("Request gửi đi:", JSON.stringify(formData));
+      console.log("Response từ server:", response);
       if (!response.ok) throw new Error("Lỗi khi cập nhật thông tin");
       const updatedData = await response.json();
+      console.log("Dữ liệu cập nhật nhận được:", updatedData);
       setStaffData(updatedData);
       setOriginalData(updatedData);
       setFormChanged(false);
       setNotification({ type: "success", message: "Cập nhật thành công!" });
       setTimeout(() => setNotification(null), 3000);
     } catch (error) {
+      console.error("Lỗi chi tiết khi cập nhật:", error);
       setNotification({ type: "error", message: "Cập nhật thất bại!" });
       setTimeout(() => setNotification(null), 3000);
     }
@@ -211,7 +215,7 @@ const Profile = () => {
   const [customerCount, setCustomerCount] = useState(0);
   const [vaccineCount, setVaccineCount] = useState(0);
   const [reactionCount, setReactionCount] = useState(0);
-  const [currentView, setCurrentView] = useState("profile"); // "profile", "booking-today", "reactions"
+  const [currentView, setCurrentView] = useState("profile");
 
   useEffect(() => {
     if (!staffId) return;
@@ -219,53 +223,115 @@ const Profile = () => {
     const fetchStaffData = async () => {
       setLoading(true);
       try {
+        // Lấy dữ liệu nhân viên
         const staffResponse = await fetch(
           `http://localhost:8080/staff/findid?id=${staffId}`,
           { method: "GET", credentials: "include" }
         );
+        console.log(
+          "Request lấy dữ liệu nhân viên:",
+          `http://localhost:8080/staff/findid?id=${staffId}`
+        );
+        console.log("Response từ API nhân viên:", staffResponse);
         if (!staffResponse.ok) throw new Error("Lỗi khi lấy dữ liệu nhân viên");
         const staffData = await staffResponse.json();
+        console.log("Dữ liệu nhân viên nhận được:", staffData);
         setStaffData(staffData);
 
+        // Kiểm tra số điện thoại
+        if (!staffData.phone) {
+          console.warn("Cảnh báo: Tài khoản không có số điện thoại!");
+        }
+
+        // Lấy lịch hẹn hôm nay
         const bookingResponse = await fetch(
           "http://localhost:8080/staffdashboard/get-booking-today",
           { method: "GET", credentials: "include" }
         );
-        if (!bookingResponse.ok)
-          throw new Error("Lỗi khi lấy lịch hẹn hôm nay");
+        console.log(
+          "Request lấy lịch hẹn hôm nay:",
+          "http://localhost:8080/staffdashboard/get-booking-today"
+        );
+        console.log("Response từ API lịch hẹn:", bookingResponse);
+
+        if (!bookingResponse.ok) {
+          // Lấy chi tiết lỗi từ response body
+          const errorText = await bookingResponse.text();
+          console.error(
+            "Lỗi chi tiết từ API lịch hẹn:",
+            bookingResponse.status,
+            bookingResponse.statusText,
+            errorText
+          );
+          throw new Error(
+            `Lỗi khi lấy lịch hẹn hôm nay: ${
+              errorText || "Không có thông tin chi tiết từ server"
+            }`
+          );
+        }
+
         const bookingData = await bookingResponse.json();
+        console.log("Dữ liệu lịch hẹn hôm nay nhận được:", bookingData);
         setBookingTodayCount(bookingData.length);
 
+        // Lấy số lượng khách hàng
         const customerResponse = await fetch(
           "http://localhost:8080/staffdashboard/count-customer",
           { method: "GET", credentials: "include" }
         );
+        console.log(
+          "Request đếm khách hàng:",
+          "http://localhost:8080/staffdashboard/count-customer"
+        );
+        console.log("Response từ API khách hàng:", customerResponse);
         if (!customerResponse.ok) throw new Error("Lỗi khi đếm khách hàng");
         const customerData = await customerResponse.json();
+        console.log("Dữ liệu khách hàng nhận được:", customerData);
         setCustomerCount(customerData);
 
+        // Lấy số lượng vaccine
         const vaccineResponse = await fetch(
           "http://localhost:8080/staffdashboard/count-active-vaccine",
           { method: "GET", credentials: "include" }
         );
+        console.log(
+          "Request đếm vaccine:",
+          "http://localhost:8080/staffdashboard/count-active-vaccine"
+        );
+        console.log("Response từ API vaccine:", vaccineResponse);
         if (!vaccineResponse.ok) throw new Error("Lỗi khi đếm vaccine");
         const vaccineData = await vaccineResponse.json();
+        console.log("Dữ liệu vaccine nhận được:", vaccineData);
         setVaccineCount(vaccineData);
 
+        // Lấy báo cáo phản ứng
         const reactionResponse = await fetch(
           "http://localhost:8080/staffdashboard/get-reaction",
           { method: "GET", credentials: "include" }
         );
+        console.log(
+          "Request lấy báo cáo phản ứng:",
+          "http://localhost:8080/staffdashboard/get-reaction"
+        );
+        console.log("Response từ API phản ứng:", reactionResponse);
         if (!reactionResponse.ok)
           throw new Error("Lỗi khi lấy báo cáo phản ứng");
         const reactionData = await reactionResponse.json();
+        console.log("Dữ liệu phản ứng nhận được:", reactionData);
         setReactionCount(reactionData.length);
       } catch (error) {
+        console.error("Lỗi tổng quát:", error.message);
         setError(error.message);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
-
+    if (error)
+      return (
+        <div className="profile-error-profilestaffcss">
+          Có lỗi xảy ra: {error}
+        </div>
+      );
     fetchStaffData();
   }, [staffId]);
 
@@ -304,7 +370,11 @@ const Profile = () => {
               </p>
             </div>
           </div>
-          <div className="profile-stat-card-profilestaffcss profile-stat-green-profilestaffcss">
+          <div
+            className="profile-stat-card-profilestaffcss profile-stat-green-profilestaffcss"
+            onClick={() => (window.location.href = "/staff/customers")}
+            style={{ cursor: "pointer" }}
+          >
             <div className="profile-stat-icon-container-profilestaffcss">
               <FiUsers className="profile-stat-icon-profilestaffcss" />
             </div>
@@ -317,7 +387,11 @@ const Profile = () => {
               </p>
             </div>
           </div>
-          <div className="profile-stat-card-profilestaffcss profile-stat-blue-profilestaffcss">
+          <div
+            className="profile-stat-card-profilestaffcss profile-stat-blue-profilestaffcss"
+            onClick={() => (window.location.href = "/staff/vaccines")}
+            style={{ cursor: "pointer" }}
+          >
             <div className="profile-stat-icon-container-profilestaffcss">
               <FaSyringe className="profile-stat-icon-profilestaffcss" />
             </div>
