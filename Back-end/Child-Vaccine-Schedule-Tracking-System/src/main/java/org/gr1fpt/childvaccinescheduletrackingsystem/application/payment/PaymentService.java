@@ -2,7 +2,6 @@ package org.gr1fpt.childvaccinescheduletrackingsystem.application.payment;
 
 import org.gr1fpt.childvaccinescheduletrackingsystem.application.booking.BookingService;
 import org.gr1fpt.childvaccinescheduletrackingsystem.domain.payment.Payment;
-import org.gr1fpt.childvaccinescheduletrackingsystem.exception.CustomException;
 import org.gr1fpt.childvaccinescheduletrackingsystem.domain.booking.Booking;
 import org.gr1fpt.childvaccinescheduletrackingsystem.domain.marketingcampaign.MarketingCampaign;
 import org.gr1fpt.childvaccinescheduletrackingsystem.infrastructure.booking.BookingRepository;
@@ -10,6 +9,7 @@ import org.gr1fpt.childvaccinescheduletrackingsystem.infrastructure.marketingcam
 import org.gr1fpt.childvaccinescheduletrackingsystem.domain.notification.Notification;
 import org.gr1fpt.childvaccinescheduletrackingsystem.infrastructure.payment.PaymentRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.application.notification.NotificationService;
+import org.gr1fpt.childvaccinescheduletrackingsystem.interfaces.exception.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;

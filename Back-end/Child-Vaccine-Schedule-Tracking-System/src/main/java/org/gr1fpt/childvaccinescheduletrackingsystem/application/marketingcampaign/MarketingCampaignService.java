@@ -1,10 +1,10 @@
 package org.gr1fpt.childvaccinescheduletrackingsystem.application.marketingcampaign;
 
 import org.gr1fpt.childvaccinescheduletrackingsystem.domain.marketingcampaign.MarketingCampaign;
-import org.gr1fpt.childvaccinescheduletrackingsystem.exception.CustomException;
 import org.gr1fpt.childvaccinescheduletrackingsystem.domain.notification.Notification;
 import org.gr1fpt.childvaccinescheduletrackingsystem.infrastructure.marketingcampaign.MarketingCampaignRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.application.notification.NotificationService;
+import org.gr1fpt.childvaccinescheduletrackingsystem.interfaces.exception.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

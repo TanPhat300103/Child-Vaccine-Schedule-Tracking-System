@@ -8,7 +8,14 @@ import "../../style/VaccineDetailManager.css";
 const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState(detail.img || "");
-  const [updateError, setUpdateError] = useState(null); // Thêm trạng thái lỗi
+  const [formData, setFormData] = useState({
+    entryDate: detail.entryDate,
+    expiredDate: detail.expiredDate,
+    day: detail.day,
+    tolerance: detail.tolerance,
+    quantity: detail.quantity,
+  });
+  const [errors, setErrors] = useState({});
 
   const handleToggleStatus = async () => {
     try {
@@ -35,9 +42,101 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
     }
   };
 
-  const handleUpdate = async (updatedData) => {
+  const validateField = (name, value, data) => {
+    const newErrors = { ...errors };
+
+    switch (name) {
+      case "entryDate":
+        if (!value) {
+          newErrors.entryDate = "Ngày nhập là bắt buộc!";
+        } else {
+          delete newErrors.entryDate;
+          const entryDate = new Date(value);
+          const expiredDate = new Date(data.expiredDate);
+          if (data.expiredDate && expiredDate <= entryDate) {
+            newErrors.expiredDate = "Ngày hết hạn phải sau ngày nhập!";
+          } else {
+            delete newErrors.expiredDate;
+          }
+        }
+        break;
+      case "expiredDate":
+        if (!value) {
+          newErrors.expiredDate = "Ngày hết hạn là bắt buộc!";
+        } else {
+          const entryDate = new Date(data.entryDate);
+          const expiredDate = new Date(value);
+          if (data.entryDate && expiredDate <= entryDate) {
+            newErrors.expiredDate = "Ngày hết hạn phải sau ngày nhập!";
+          } else {
+            delete newErrors.expiredDate;
+          }
+        }
+        break;
+      case "day":
+        if (Number(value) <= 0) {
+          newErrors.day = "Số ngày phải lớn hơn 0!";
+        } else {
+          delete newErrors.day;
+        }
+        break;
+      case "tolerance":
+        if (Number(value) <= 0) {
+          newErrors.tolerance = "Dung sai phải lớn hơn 0!";
+        } else {
+          delete newErrors.tolerance;
+        }
+        break;
+      case "quantity":
+        if (Number(value) <= 0) {
+          newErrors.quantity = "Số lượng phải lớn hơn 0!";
+        } else {
+          delete newErrors.quantity;
+        }
+        break;
+      default:
+        break;
+    }
+    return newErrors;
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    const updatedData = { ...formData, [name]: value };
+    setFormData(updatedData);
+    const newErrors = validateField(name, value, updatedData);
+    setErrors(newErrors);
+  };
+
+  const validateForm = (data) => {
+    const newErrors = {};
+    if (!data.entryDate) newErrors.entryDate = "Ngày nhập là bắt buộc!";
+    if (!data.expiredDate) newErrors.expiredDate = "Ngày hết hạn là bắt buộc!";
+    if (data.entryDate && data.expiredDate) {
+      const entryDate = new Date(data.entryDate);
+      const expiredDate = new Date(data.expiredDate);
+      if (expiredDate <= entryDate) {
+        newErrors.expiredDate = "Ngày hết hạn phải sau ngày nhập!";
+      }
+    }
+    if (data.day <= 0) newErrors.day = "Số ngày phải lớn hơn 0!";
+    if (data.tolerance <= 0) newErrors.tolerance = "Dung sai phải lớn hơn 0!";
+    if (data.quantity <= 0) newErrors.quantity = "Số lượng phải lớn hơn 0!";
+    return newErrors;
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    const updatedDetail = { ...detail, ...formData, img: imageUrl || null };
+    const validationErrors = validateForm(updatedDetail);
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
     try {
-      console.log("Gửi API cập nhật với dữ liệu:", updatedData);
+      console.log("Gửi API cập nhật với dữ liệu:", updatedDetail);
       const response = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/vaccinedetail/update`,
         {
@@ -47,7 +146,7 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
           },
           credentials: "include",
 
-          body: JSON.stringify(updatedData),
+          body: JSON.stringify(updatedDetail),
         }
       );
       if (!response.ok) {
@@ -57,11 +156,10 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
       console.log("Cập nhật VaccineDetail thành công:", data);
       onDetailUpdated(data);
       setIsModalOpen(false);
-      setUpdateError(null); // Xóa lỗi nếu thành công
+      setErrors({});
       toast.success("Cập nhật lô vaccine thành công!");
     } catch (err) {
       console.error("Cập nhật lô vaccine thất bại:", err);
-      setUpdateError(err.message || "Đã xảy ra lỗi khi cập nhật!");
       toast.error(err.message || "Đã xảy ra lỗi khi cập nhật!");
     }
   };
@@ -136,68 +234,81 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
             <h2 className="modal-title-vaccinedetailmanager">
               Cập nhật lô vaccine
             </h2>
-            {updateError && (
-              <p className="error-text-vaccinedetailmanager">{updateError}</p>
-            )}
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const updatedDetail = {
-                  ...detail,
-                  entryDate: e.target.entryDate.value,
-                  expiredDate: e.target.expiredDate.value,
-                  day: Number(e.target.day.value) || 0,
-                  tolerance: Number(e.target.tolerance.value) || 0,
-                  quantity: Number(e.target.quantity.value) || 0,
-                  img: imageUrl || null,
-                };
-                handleUpdate(updatedDetail);
-              }}
-            >
+            <form onSubmit={handleUpdate}>
               <label className="form-label-vaccinedetailmanager">
                 Ngày nhập:
                 <input
                   type="date"
                   name="entryDate"
-                  defaultValue={detail.entryDate}
+                  value={formData.entryDate}
+                  onChange={handleInputChange}
                   className="form-input-vaccinedetailmanager"
                 />
+                {errors.entryDate && (
+                  <p className="error-text-vaccinedetailmanager">
+                    {errors.entryDate}
+                  </p>
+                )}
               </label>
               <label className="form-label-vaccinedetailmanager">
                 Ngày hết hạn:
                 <input
                   type="date"
                   name="expiredDate"
-                  defaultValue={detail.expiredDate}
+                  value={formData.expiredDate}
+                  onChange={handleInputChange}
                   className="form-input-vaccinedetailmanager"
                 />
+                {errors.expiredDate && (
+                  <p className="error-text-vaccinedetailmanager">
+                    {errors.expiredDate}
+                  </p>
+                )}
               </label>
               <label className="form-label-vaccinedetailmanager">
                 Số ngày:
                 <input
                   type="number"
                   name="day"
-                  defaultValue={detail.day}
+                  value={formData.day}
+                  onChange={handleInputChange}
                   className="form-input-vaccinedetailmanager"
                 />
+                {errors.day && (
+                  <p className="error-text-vaccinedetailmanager">
+                    {errors.day}
+                  </p>
+                )}
               </label>
               <label className="form-label-vaccinedetailmanager">
                 Dung sai:
                 <input
                   type="number"
                   name="tolerance"
-                  defaultValue={detail.tolerance}
+                  value={formData.tolerance}
+                  onChange={handleInputChange}
                   className="form-input-vaccinedetailmanager"
                 />
+                {errors.tolerance && (
+                  <p className="error-text-vaccinedetailmanager">
+                    {errors.tolerance}
+                  </p>
+                )}
               </label>
               <label className="form-label-vaccinedetailmanager">
                 Số lượng:
                 <input
                   type="number"
                   name="quantity"
-                  defaultValue={detail.quantity}
+                  value={formData.quantity}
+                  onChange={handleInputChange}
                   className="form-input-vaccinedetailmanager"
                 />
+                {errors.quantity && (
+                  <p className="error-text-vaccinedetailmanager">
+                    {errors.quantity}
+                  </p>
+                )}
               </label>
               <label className="form-label-vaccinedetailmanager">
                 URL Hình ảnh:
@@ -262,8 +373,7 @@ const VaccineDetailManager = () => {
     quantity: 0,
     img: "",
   });
-  const [createError, setCreateError] = useState(null);
-  const [fetchError, setFetchError] = useState(null); // Thêm trạng thái lỗi khi fetch
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     fetchVaccineDetails();
@@ -283,12 +393,8 @@ const VaccineDetailManager = () => {
       const data = await response.json();
       console.log("API fetch VaccineDetail thành công:", data);
       setVaccineDetails(data);
-      setFetchError(null); // Xóa lỗi nếu thành công
     } catch (err) {
       console.error("Lỗi khi lấy VaccineDetail:", err);
-      setFetchError(
-        err.message || "Đã xảy ra lỗi khi lấy danh sách lô vaccine!"
-      );
       toast.error(err.message || "Đã xảy ra lỗi khi lấy danh sách lô vaccine!");
     }
   };
@@ -307,6 +413,89 @@ const VaccineDetailManager = () => {
     );
   };
 
+  const validateField = (name, value, data) => {
+    const newErrors = { ...errors };
+
+    switch (name) {
+      case "entryDate":
+        if (!value) {
+          newErrors.entryDate = "Ngày nhập là bắt buộc!";
+        } else {
+          delete newErrors.entryDate;
+          const entryDate = new Date(value);
+          const expiredDate = new Date(data.expiredDate);
+          if (data.expiredDate && expiredDate <= entryDate) {
+            newErrors.expiredDate = "Ngày hết hạn phải sau ngày nhập!";
+          } else {
+            delete newErrors.expiredDate;
+          }
+        }
+        break;
+      case "expiredDate":
+        if (!value) {
+          newErrors.expiredDate = "Ngày hết hạn là bắt buộc!";
+        } else {
+          const entryDate = new Date(data.entryDate);
+          const expiredDate = new Date(value);
+          if (data.entryDate && expiredDate <= entryDate) {
+            newErrors.expiredDate = "Ngày hết hạn phải sau ngày nhập!";
+          } else {
+            delete newErrors.expiredDate;
+          }
+        }
+        break;
+      case "day":
+        if (Number(value) <= 0) {
+          newErrors.day = "Số ngày phải lớn hơn 0!";
+        } else {
+          delete newErrors.day;
+        }
+        break;
+      case "tolerance":
+        if (Number(value) <= 0) {
+          newErrors.tolerance = "Dung sai phải lớn hơn 0!";
+        } else {
+          delete newErrors.tolerance;
+        }
+        break;
+      case "quantity":
+        if (Number(value) <= 0) {
+          newErrors.quantity = "Số lượng phải lớn hơn 0!";
+        } else {
+          delete newErrors.quantity;
+        }
+        break;
+      default:
+        break;
+    }
+    return newErrors;
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    const updatedData = { ...newDetail, [name]: value };
+    setNewDetail(updatedData);
+    const newErrors = validateField(name, value, updatedData);
+    setErrors(newErrors);
+  };
+
+  const validateForm = (data) => {
+    const newErrors = {};
+    if (!data.entryDate) newErrors.entryDate = "Ngày nhập là bắt buộc!";
+    if (!data.expiredDate) newErrors.expiredDate = "Ngày hết hạn là bắt buộc!";
+    if (data.entryDate && data.expiredDate) {
+      const entryDate = new Date(data.entryDate);
+      const expiredDate = new Date(data.expiredDate);
+      if (expiredDate <= entryDate) {
+        newErrors.expiredDate = "Ngày hết hạn phải sau ngày nhập!";
+      }
+    }
+    if (data.day <= 0) newErrors.day = "Số ngày phải lớn hơn 0!";
+    if (data.tolerance <= 0) newErrors.tolerance = "Dung sai phải lớn hơn 0!";
+    if (data.quantity <= 0) newErrors.quantity = "Số lượng phải lớn hơn 0!";
+    return newErrors;
+  };
+
   const handleCreateDetail = async (e) => {
     e.preventDefault();
     const payload = {
@@ -319,6 +508,13 @@ const VaccineDetailManager = () => {
       img: newDetail.img || null,
       status: true,
     };
+
+    const validationErrors = validateForm(payload);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
     try {
       const response = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/vaccinedetail/create`,
@@ -328,7 +524,6 @@ const VaccineDetailManager = () => {
             "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
           },
           credentials: "include",
-
           body: JSON.stringify(payload),
         }
       );
@@ -346,14 +541,11 @@ const VaccineDetailManager = () => {
         quantity: 0,
         img: "",
       });
-      setCreateError(null);
+      setErrors({});
       fetchVaccineDetails();
       toast.success("Tạo mới lô vaccine thành công!");
     } catch (err) {
       console.error("Lỗi khi tạo lô vaccine:", err);
-      setCreateError(
-        err.message || "Đã xảy ra lỗi khi tạo lô vaccine. Vui lòng thử lại!"
-      );
       toast.error(
         err.message || "Đã xảy ra lỗi khi tạo lô vaccine. Vui lòng thử lại!"
       );
@@ -382,9 +574,6 @@ const VaccineDetailManager = () => {
             Tạo mới lô vaccine
           </button>
         </div>
-        {fetchError && (
-          <p className="error-text-vaccinedetailmanager">{fetchError}</p>
-        )}
         {showCreateModal && (
           <div className="modal-overlay-create-vaccinedetailmanager">
             <div
@@ -395,9 +584,6 @@ const VaccineDetailManager = () => {
               <h3 className="modal-title-create-vaccinedetailmanager">
                 Tạo mới lô vaccine
               </h3>
-              {createError && (
-                <p className="error-text-vaccinedetailmanager">{createError}</p>
-              )}
               <form
                 onSubmit={handleCreateDetail}
                 className="form-create-vaccinedetailmanager"
@@ -406,73 +592,89 @@ const VaccineDetailManager = () => {
                   Ngày nhập:
                   <input
                     type="date"
+                    name="entryDate"
                     value={newDetail.entryDate}
-                    onChange={(e) =>
-                      setNewDetail({ ...newDetail, entryDate: e.target.value })
-                    }
+                    onChange={handleInputChange}
                     className="form-input-vaccinedetailmanager"
                     required
                   />
+                  {errors.entryDate && (
+                    <p className="error-text-vaccinedetailmanager">
+                      {errors.entryDate}
+                    </p>
+                  )}
                 </label>
                 <label className="form-label-vaccinedetailmanager">
                   Ngày hết hạn:
                   <input
                     type="date"
+                    name="expiredDate"
                     value={newDetail.expiredDate}
-                    onChange={(e) =>
-                      setNewDetail({
-                        ...newDetail,
-                        expiredDate: e.target.value,
-                      })
-                    }
+                    onChange={handleInputChange}
                     className="form-input-vaccinedetailmanager"
                     required
                   />
+                  {errors.expiredDate && (
+                    <p className="error-text-vaccinedetailmanager">
+                      {errors.expiredDate}
+                    </p>
+                  )}
                 </label>
                 <label className="form-label-vaccinedetailmanager">
                   Số ngày:
                   <input
                     type="number"
+                    name="day"
                     value={newDetail.day}
-                    onChange={(e) =>
-                      setNewDetail({ ...newDetail, day: e.target.value })
-                    }
+                    onChange={handleInputChange}
                     className="form-input-vaccinedetailmanager"
                     required
                   />
+                  {errors.day && (
+                    <p className="error-text-vaccinedetailmanager">
+                      {errors.day}
+                    </p>
+                  )}
                 </label>
                 <label className="form-label-vaccinedetailmanager">
                   Dung sai:
                   <input
                     type="number"
+                    name="tolerance"
                     value={newDetail.tolerance}
-                    onChange={(e) =>
-                      setNewDetail({ ...newDetail, tolerance: e.target.value })
-                    }
+                    onChange={handleInputChange}
                     className="form-input-vaccinedetailmanager"
                     required
                   />
+                  {errors.tolerance && (
+                    <p className="error-text-vaccinedetailmanager">
+                      {errors.tolerance}
+                    </p>
+                  )}
                 </label>
                 <label className="form-label-vaccinedetailmanager">
                   Số lượng:
                   <input
                     type="number"
+                    name="quantity"
                     value={newDetail.quantity}
-                    onChange={(e) =>
-                      setNewDetail({ ...newDetail, quantity: e.target.value })
-                    }
+                    onChange={handleInputChange}
                     className="form-input-vaccinedetailmanager"
                     required
                   />
+                  {errors.quantity && (
+                    <p className="error-text-vaccinedetailmanager">
+                      {errors.quantity}
+                    </p>
+                  )}
                 </label>
                 <label className="form-label-vaccinedetailmanager">
                   URL Hình ảnh:
                   <input
                     type="text"
+                    name="img"
                     value={newDetail.img}
-                    onChange={(e) =>
-                      setNewDetail({ ...newDetail, img: e.target.value })
-                    }
+                    onChange={handleInputChange}
                     className="form-input-vaccinedetailmanager"
                     placeholder="Nhập URL hình ảnh (nếu có)"
                   />
@@ -496,7 +698,7 @@ const VaccineDetailManager = () => {
             </div>
           </div>
         )}
-        {vaccineDetails.length === 0 && !fetchError ? (
+        {vaccineDetails.length === 0 ? (
           <p className="no-data-text-vaccinedetailmanager">
             Không tìm thấy lô vaccine nào
           </p>
