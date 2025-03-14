@@ -48,6 +48,10 @@ const Vaccines = () => {
   // Fetch vaccines từ API
   const fetchVaccines = () => {
     fetch(`${process.env.REACT_APP_API_BASE_URL}/vaccine`, {
+      method: "GET",
+      headers: {
+        "ngrok-skip-browser-warning": "true",
+      },
       credentials: "include",
     })
       .then((res) => res.json())

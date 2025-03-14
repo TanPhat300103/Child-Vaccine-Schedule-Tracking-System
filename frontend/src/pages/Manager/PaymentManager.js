@@ -26,6 +26,10 @@ const Payments = () => {
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_BASE_URL}/payment`, {
+      method: "GET",
+      headers: {
+        "ngrok-skip-browser-warning": "true",
+      },
       credentials: "include",
     })
       .then((response) => response.json())
@@ -36,6 +40,10 @@ const Payments = () => {
       .catch((error) => console.error("Error fetching payments:", error));
 
     fetch(`${process.env.REACT_APP_API_BASE_URL}/marketing`, {
+      method: "GET",
+      headers: {
+        "ngrok-skip-browser-warning": "true",
+      },
       credentials: "include",
     })
       .then((response) => response.json())
@@ -183,6 +191,10 @@ const Payments = () => {
 
         if (data.message === "COD") {
           fetch(`${process.env.REACT_APP_API_BASE_URL}/payment`, {
+            method: "GET",
+            headers: {
+              "ngrok-skip-browser-warning": "true",
+            },
             credentials: "include",
           })
             .then((res) => res.json())
