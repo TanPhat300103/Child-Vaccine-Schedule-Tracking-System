@@ -950,7 +950,7 @@ const HomePage = () => {
             </div>
           ) : (
             <p className="homepage-feedback-placeholder">
-              Chưa có đánh giá trên 3 sao
+              Chưa có đánh giá nào
             </p>
           )}
         </div>
