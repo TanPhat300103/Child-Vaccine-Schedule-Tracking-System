@@ -67,7 +67,8 @@ function ChildInfoPage() {
           {
             method: "GET",
             headers: {
-              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+              "ngrok-skip-browser-warning": "true",
+              "Content-Type": "application/json", // Bỏ qua warning page
             },
             credentials: "include",
           }
@@ -82,7 +83,8 @@ function ChildInfoPage() {
           {
             method: "GET",
             headers: {
-              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+              "ngrok-skip-browser-warning": "true",
+              "Content-Type": "application/json", // Bỏ qua warning page
             },
             credentials: "include",
           }
@@ -108,7 +110,8 @@ function ChildInfoPage() {
         {
           method: "GET",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include",
         }
@@ -195,7 +198,8 @@ function ChildInfoPage() {
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include",
           body: JSON.stringify(editingChild),
@@ -233,7 +237,8 @@ function ChildInfoPage() {
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include",
           body: JSON.stringify(childToAdd),
@@ -296,7 +301,8 @@ function ChildInfoPage() {
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include",
           body: JSON.stringify(editingMedicalData),
@@ -342,13 +348,15 @@ function ChildInfoPage() {
   const handleUpdateReaction = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/medicalhistory/updatereaction?id=${selectedMedicalHistoryId}&reaction=${encodeURIComponent(
+        `${
+          process.env.REACT_APP_API_BASE_URL
+        }/medicalhistory/updatereaction?id=${selectedMedicalHistoryId}&reaction=${encodeURIComponent(
           reactionInput
         )}`,
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
           },
           credentials: "include",
         }

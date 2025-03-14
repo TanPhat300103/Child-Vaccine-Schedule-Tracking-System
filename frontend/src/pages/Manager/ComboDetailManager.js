@@ -14,7 +14,8 @@ const useVaccineImage = (vaccineId) => {
       {
         method: "GET",
         headers: {
-          "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          "ngrok-skip-browser-warning": "true",
+          "Content-Type": "application/json", // Bỏ qua warning page
         },
         credentials: "include",
       }
@@ -192,7 +193,8 @@ const ComboDetail = () => {
       const response = await fetch(apiUrl, {
         method: "GET",
         headers: {
-          "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          "ngrok-skip-browser-warning": "true",
+          "Content-Type": "application/json", // Bỏ qua warning page
         },
         credentials: "include",
       });
@@ -217,7 +219,8 @@ const ComboDetail = () => {
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include",
 
@@ -237,7 +240,8 @@ const ComboDetail = () => {
       fetch(`${process.env.REACT_APP_API_BASE_URL}/vaccine`, {
         method: "GET",
         headers: {
-          "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          "ngrok-skip-browser-warning": "true",
+          "Content-Type": "application/json", // Bỏ qua warning page
         },
         credentials: "include",
       })
@@ -308,7 +312,8 @@ const ComboDetail = () => {
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include",
 

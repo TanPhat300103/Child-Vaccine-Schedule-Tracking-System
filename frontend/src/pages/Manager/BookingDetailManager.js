@@ -67,7 +67,8 @@ const BookingDetail = () => {
         {
           method: "GET",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include",
         }
@@ -87,7 +88,8 @@ const BookingDetail = () => {
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include",
         }
@@ -107,7 +109,8 @@ const BookingDetail = () => {
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include",
         }
@@ -123,13 +126,16 @@ const BookingDetail = () => {
   const updateReactionNote = async (detailId, reaction) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/bookingdetail/updatereaction?id=${detailId}&reaction=${encodeURIComponent(
+        `${
+          process.env.REACT_APP_API_BASE_URL
+        }/bookingdetail/updatereaction?id=${detailId}&reaction=${encodeURIComponent(
           reaction
         )}`,
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include",
         }

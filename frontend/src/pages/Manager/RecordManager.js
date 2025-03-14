@@ -18,7 +18,8 @@ const Records = () => {
         {
           method: "GET",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include", // Tương đương với withCredentials: true trong axios
         }
@@ -40,13 +41,16 @@ const Records = () => {
     console.log("Updating reaction for ID:", id, "and:", reaction);
     try {
       const response = await fetch(
-        `http://localhost:8080/medicalhistory/updatereaction?id=${id}&reaction=${encodeURIComponent(
+        `${
+          process.env.REACT_APP_API_BASE_URL
+        }/medicalhistory/updatereaction?id=${id}&reaction=${encodeURIComponent(
           reaction
         )}`,
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include", // Tương đương với withCredentials: true trong axios
         }
@@ -80,7 +84,8 @@ const Records = () => {
         {
           method: "GET",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include",
         }

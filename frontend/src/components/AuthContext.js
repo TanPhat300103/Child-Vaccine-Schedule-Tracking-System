@@ -15,7 +15,7 @@ export function AuthProvider({ children }) {
         {
           method: "GET",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
           },
           credentials: "include",
         }
@@ -60,7 +60,7 @@ export function AuthProvider({ children }) {
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
           },
           credentials: "include",
         }

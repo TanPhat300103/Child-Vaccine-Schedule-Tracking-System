@@ -49,7 +49,8 @@ function MyBookingsPage() {
           {
             method: "GET",
             headers: {
-              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+              "ngrok-skip-browser-warning": "true",
+              "Content-Type": "application/json", // Bỏ qua warning page
             },
             credentials: "include",
           }
@@ -64,7 +65,8 @@ function MyBookingsPage() {
           {
             method: "GET",
             headers: {
-              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+              "ngrok-skip-browser-warning": "true",
+              "Content-Type": "application/json", // Bỏ qua warning page
             },
             credentials: "include",
           }
@@ -79,7 +81,8 @@ function MyBookingsPage() {
           {
             method: "GET",
             headers: {
-              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+              "ngrok-skip-browser-warning": "true",
+              "Content-Type": "application/json", // Bỏ qua warning page
             },
             credentials: "include",
           }
@@ -95,7 +98,8 @@ function MyBookingsPage() {
             {
               method: "GET",
               headers: {
-                "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+                "ngrok-skip-browser-warning": "true",
+                "Content-Type": "application/json", // Bỏ qua warning page
               },
               credentials: "include",
             }
@@ -160,7 +164,8 @@ function MyBookingsPage() {
             {
               method: "GET",
               headers: {
-                "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+                "ngrok-skip-browser-warning": "true",
+                "Content-Type": "application/json", // Bỏ qua warning page
               },
               credentials: "include",
             }
@@ -216,7 +221,8 @@ function MyBookingsPage() {
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include",
           body: JSON.stringify(feedbackData),
@@ -248,7 +254,8 @@ function MyBookingsPage() {
         {
           method: "POST",
           headers: {
-            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
           },
           credentials: "include",
           body: JSON.stringify(feedbackData),

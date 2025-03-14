@@ -215,7 +215,8 @@ const Dashboard = () => {
       const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/payment`, {
         method: "GET",
         headers: {
-          "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          "ngrok-skip-browser-warning": "true",
+          "Content-Type": "application/json", // Bỏ qua warning page
         },
         credentials: "include",
       });
@@ -282,7 +283,7 @@ const Dashboard = () => {
       setIncomeLastWeek(await resLastWeek.json());
 
       const resLastMonth = await fetch(
-        `http://localhost:8080/admin/incomebymonth?month=${
+        `${process.env.REACT_APP_API_BASE_URL}/admin/incomebymonth?month=${
           lastMonth.getMonth() + 1
         }&year=${lastMonth.getFullYear()}`,
         { credentials: "include" }
