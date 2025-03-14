@@ -48,6 +48,9 @@ function MyBookingsPage() {
           `${process.env.REACT_APP_API_BASE_URL}/customer/findid?id=${userInfo.userId}`,
           {
             method: "GET",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
             credentials: "include",
           }
         );
@@ -60,6 +63,9 @@ function MyBookingsPage() {
           `${process.env.REACT_APP_API_BASE_URL}/booking/findbycustomer?customerId=${userInfo.userId}`,
           {
             method: "GET",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
             credentials: "include",
           }
         );
@@ -72,6 +78,9 @@ function MyBookingsPage() {
           `${process.env.REACT_APP_API_BASE_URL}/child/findbycustomer?id=${userInfo.userId}`,
           {
             method: "GET",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
             credentials: "include",
           }
         );
@@ -85,6 +94,9 @@ function MyBookingsPage() {
             `${process.env.REACT_APP_API_BASE_URL}/feedback/getbybooking?bookingId=${booking.bookingId}`,
             {
               method: "GET",
+              headers: {
+                "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+              },
               credentials: "include",
             }
           )
@@ -147,6 +159,9 @@ function MyBookingsPage() {
             `${process.env.REACT_APP_API_BASE_URL}/bookingdetail/findbybooking?id=${booking.bookingId}`,
             {
               method: "GET",
+              headers: {
+                "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+              },
               credentials: "include",
             }
           ).then((res) => (res.ok ? res.json() : []))
@@ -200,7 +215,9 @@ function MyBookingsPage() {
         `${process.env.REACT_APP_API_BASE_URL}/feedback/create`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
           body: JSON.stringify(feedbackData),
         }
@@ -230,7 +247,9 @@ function MyBookingsPage() {
         `${process.env.REACT_APP_API_BASE_URL}/feedback/update`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
           body: JSON.stringify(feedbackData),
         }

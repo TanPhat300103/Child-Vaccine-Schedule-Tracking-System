@@ -52,6 +52,9 @@ function CustomerTable() {
       `${process.env.REACT_APP_API_BASE_URL}/customer/inactive?id=${customerId}`,
       {
         method: "POST",
+        headers: {
+          "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+        },
       }
     )
       .then((response) => {
@@ -102,7 +105,9 @@ function CustomerTable() {
     e.preventDefault();
     fetch(`${process.env.REACT_APP_API_BASE_URL}/customer/update`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+      },
       body: JSON.stringify({ ...selectedCustomer, ...formData }),
     })
       .then((response) => {

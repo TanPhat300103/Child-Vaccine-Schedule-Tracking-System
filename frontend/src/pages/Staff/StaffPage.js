@@ -44,6 +44,9 @@ const StaffPage = () => {
           `${process.env.REACT_APP_API_BASE_URL}/staff/findid?id=${staffId}`,
           {
             method: "GET",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
             credentials: "include",
           }
         );

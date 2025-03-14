@@ -171,6 +171,9 @@ const Payments = () => {
     const url = `${process.env.REACT_APP_API_BASE_URL}/payment/update?paymentId=${paymentId}&coupon=${coupon}&method=false`;
     fetch(url, {
       method: "POST",
+      headers: {
+        "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+      },
       credentials: "include",
     })
       .then((response) => response.json())

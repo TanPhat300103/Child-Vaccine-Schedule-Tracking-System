@@ -23,6 +23,9 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
         `${process.env.REACT_APP_API_BASE_URL}/vaccinedetail/active?id=${detail.id}`,
         {
           method: "POST",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
         }
       );
@@ -138,10 +141,11 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
         `${process.env.REACT_APP_API_BASE_URL}/vaccinedetail/update`,
         {
           method: "POST",
-          credentials: "include",
           headers: {
-            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
           },
+          credentials: "include",
+
           body: JSON.stringify(updatedDetail),
         }
       );
@@ -241,7 +245,9 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
                   className="form-input-vaccinedetailmanager"
                 />
                 {errors.entryDate && (
-                  <p className="error-text-vaccinedetailmanager">{errors.entryDate}</p>
+                  <p className="error-text-vaccinedetailmanager">
+                    {errors.entryDate}
+                  </p>
                 )}
               </label>
               <label className="form-label-vaccinedetailmanager">
@@ -254,7 +260,9 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
                   className="form-input-vaccinedetailmanager"
                 />
                 {errors.expiredDate && (
-                  <p className="error-text-vaccinedetailmanager">{errors.expiredDate}</p>
+                  <p className="error-text-vaccinedetailmanager">
+                    {errors.expiredDate}
+                  </p>
                 )}
               </label>
               <label className="form-label-vaccinedetailmanager">
@@ -267,7 +275,9 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
                   className="form-input-vaccinedetailmanager"
                 />
                 {errors.day && (
-                  <p className="error-text-vaccinedetailmanager">{errors.day}</p>
+                  <p className="error-text-vaccinedetailmanager">
+                    {errors.day}
+                  </p>
                 )}
               </label>
               <label className="form-label-vaccinedetailmanager">
@@ -280,7 +290,9 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
                   className="form-input-vaccinedetailmanager"
                 />
                 {errors.tolerance && (
-                  <p className="error-text-vaccinedetailmanager">{errors.tolerance}</p>
+                  <p className="error-text-vaccinedetailmanager">
+                    {errors.tolerance}
+                  </p>
                 )}
               </label>
               <label className="form-label-vaccinedetailmanager">
@@ -293,7 +305,9 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
                   className="form-input-vaccinedetailmanager"
                 />
                 {errors.quantity && (
-                  <p className="error-text-vaccinedetailmanager">{errors.quantity}</p>
+                  <p className="error-text-vaccinedetailmanager">
+                    {errors.quantity}
+                  </p>
                 )}
               </label>
               <label className="form-label-vaccinedetailmanager">
@@ -506,10 +520,10 @@ const VaccineDetailManager = () => {
         `${process.env.REACT_APP_API_BASE_URL}/vaccinedetail/create`,
         {
           method: "POST",
-          credentials: "include",
           headers: {
-            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
           },
+          credentials: "include",
           body: JSON.stringify(payload),
         }
       );
@@ -585,7 +599,9 @@ const VaccineDetailManager = () => {
                     required
                   />
                   {errors.entryDate && (
-                    <p className="error-text-vaccinedetailmanager">{errors.entryDate}</p>
+                    <p className="error-text-vaccinedetailmanager">
+                      {errors.entryDate}
+                    </p>
                   )}
                 </label>
                 <label className="form-label-vaccinedetailmanager">
@@ -599,7 +615,9 @@ const VaccineDetailManager = () => {
                     required
                   />
                   {errors.expiredDate && (
-                    <p className="error-text-vaccinedetailmanager">{errors.expiredDate}</p>
+                    <p className="error-text-vaccinedetailmanager">
+                      {errors.expiredDate}
+                    </p>
                   )}
                 </label>
                 <label className="form-label-vaccinedetailmanager">
@@ -613,7 +631,9 @@ const VaccineDetailManager = () => {
                     required
                   />
                   {errors.day && (
-                    <p className="error-text-vaccinedetailmanager">{errors.day}</p>
+                    <p className="error-text-vaccinedetailmanager">
+                      {errors.day}
+                    </p>
                   )}
                 </label>
                 <label className="form-label-vaccinedetailmanager">
@@ -627,7 +647,9 @@ const VaccineDetailManager = () => {
                     required
                   />
                   {errors.tolerance && (
-                    <p className="error-text-vaccinedetailmanager">{errors.tolerance}</p>
+                    <p className="error-text-vaccinedetailmanager">
+                      {errors.tolerance}
+                    </p>
                   )}
                 </label>
                 <label className="form-label-vaccinedetailmanager">
@@ -641,7 +663,9 @@ const VaccineDetailManager = () => {
                     required
                   />
                   {errors.quantity && (
-                    <p className="error-text-vaccinedetailmanager">{errors.quantity}</p>
+                    <p className="error-text-vaccinedetailmanager">
+                      {errors.quantity}
+                    </p>
                   )}
                 </label>
                 <label className="form-label-vaccinedetailmanager">

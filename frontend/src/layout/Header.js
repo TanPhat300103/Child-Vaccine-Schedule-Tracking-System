@@ -56,7 +56,9 @@ function Header() {
         `${process.env.REACT_APP_API_BASE_URL}/customer/findid?id=${userId}`,
         {
           method: "GET",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
         }
       );
@@ -75,7 +77,9 @@ function Header() {
         `${process.env.REACT_APP_API_BASE_URL}/notification`,
         {
           method: "GET",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
         }
       );
@@ -107,7 +111,9 @@ function Header() {
         `${process.env.REACT_APP_API_BASE_URL}/child/findbycustomer?id=${userId}`,
         {
           method: "GET",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
         }
       );
@@ -128,7 +134,9 @@ function Header() {
         `${process.env.REACT_APP_API_BASE_URL}/notification/update`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
           body: JSON.stringify(updatedNotification),
         }

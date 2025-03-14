@@ -45,6 +45,9 @@ const Staffs = () => {
         `${process.env.REACT_APP_API_BASE_URL}/staff`,
         {
           method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
         }
       );
@@ -84,6 +87,9 @@ const Staffs = () => {
     console.log("Request active gửi đi:", { id: staffId });
     fetch(`${process.env.REACT_APP_API_BASE_URL}/staff/active?id=${staffId}`, {
       method: "POST",
+      headers: {
+        "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+      },
       credentials: "include",
     })
       .then(async (response) => {
@@ -143,7 +149,9 @@ const Staffs = () => {
         `${process.env.REACT_APP_API_BASE_URL}/staff/update`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
           body: JSON.stringify(editStaff),
         }
@@ -202,7 +210,9 @@ const Staffs = () => {
         `${process.env.REACT_APP_API_BASE_URL}/staff/create`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
           body: JSON.stringify(newStaff),
         }

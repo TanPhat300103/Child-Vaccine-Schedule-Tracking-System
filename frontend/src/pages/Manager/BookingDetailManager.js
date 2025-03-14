@@ -64,7 +64,13 @@ const BookingDetail = () => {
     try {
       const response = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/bookingdetail/findbybooking?id=${bookingId}`,
-        { method: "GET", credentials: "include" }
+        {
+          method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
+          credentials: "include",
+        }
       );
       if (!response.ok) throw new Error("Failed to fetch booking details");
       return await response.json();
@@ -78,7 +84,13 @@ const BookingDetail = () => {
     try {
       const response = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/bookingdetail/confirmdate?id=${bookingId}`,
-        { method: "POST", credentials: "include" }
+        {
+          method: "POST",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
+          credentials: "include",
+        }
       );
       if (!response.ok) throw new Error("Failed to confirm booking");
       return await response.json();
@@ -92,7 +104,13 @@ const BookingDetail = () => {
     try {
       const response = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/booking/cancel?bookingId=${bookingId}`,
-        { method: "POST", credentials: "include" }
+        {
+          method: "POST",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
+          credentials: "include",
+        }
       );
       if (!response.ok) throw new Error("Failed to cancel booking");
       console.log("Hủy đặt lịch thành công.");
@@ -108,7 +126,13 @@ const BookingDetail = () => {
         `http://localhost:8080/bookingdetail/updatereaction?id=${detailId}&reaction=${encodeURIComponent(
           reaction
         )}`,
-        { method: "POST", credentials: "include" }
+        {
+          method: "POST",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
+          credentials: "include",
+        }
       );
       if (!response.ok) throw new Error("Failed to update reaction note");
       return await response.json();

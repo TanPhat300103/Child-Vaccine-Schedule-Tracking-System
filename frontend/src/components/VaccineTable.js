@@ -102,7 +102,7 @@ function VaccinePage() {
 
     fetch(url, {
       method,
-      headers: { "Content-Type": "application/json" },
+      headers: { "ngrok-skip-browser-warning": "true" },
       body: JSON.stringify(formData),
     })
       .then((response) => {
@@ -160,6 +160,9 @@ function VaccinePage() {
         `${process.env.REACT_APP_API_BASE_URL}/vaccine/delete?id=${vaccineId}`,
         {
           method: "DELETE",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
         }
       )
         .then((response) => {
@@ -177,6 +180,9 @@ function VaccinePage() {
       `${process.env.REACT_APP_API_BASE_URL}/vaccine/active?id=${vaccineId}`,
       {
         method: "POST",
+        headers: {
+          "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+        },
       }
     )
       .then((response) => {

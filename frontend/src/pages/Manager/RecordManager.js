@@ -17,6 +17,9 @@ const Records = () => {
         `${process.env.REACT_APP_API_BASE_URL}/medicalhistory/findbychildid?id=${childId}`,
         {
           method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include", // Tương đương với withCredentials: true trong axios
         }
       );
@@ -42,6 +45,9 @@ const Records = () => {
         )}`,
         {
           method: "POST",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include", // Tương đương với withCredentials: true trong axios
         }
       );
@@ -73,6 +79,9 @@ const Records = () => {
         `${process.env.REACT_APP_API_BASE_URL}/medicalhistory`, // Giả sử đây là endpoint tổng quát
         {
           method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
         }
       );

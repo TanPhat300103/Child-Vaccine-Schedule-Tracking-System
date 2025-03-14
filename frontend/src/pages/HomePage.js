@@ -194,10 +194,10 @@ const HomePage = () => {
           `${process.env.REACT_APP_API_BASE_URL}/feedback`,
           {
             method: "GET",
-            credentials: "include",
             headers: {
               "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
             },
+            credentials: "include",
           }
         );
         if (response.ok) {
@@ -286,6 +286,9 @@ const HomePage = () => {
           headers: {
             "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
           },
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
         }
       );
       if (!response.ok) throw new Error("Không thể tải chi tiết combo vaccine");
@@ -310,10 +313,10 @@ const HomePage = () => {
           `${process.env.REACT_APP_API_BASE_URL}/vaccinedetail/findbyvaccine?id=${selectedVaccine.vaccineId}`,
           {
             method: "GET",
-            credentials: "include",
             headers: {
               "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
             },
+            credentials: "include",
           }
         );
         if (!response.ok) throw new Error("Failed to fetch vaccine details");

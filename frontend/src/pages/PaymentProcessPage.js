@@ -150,6 +150,9 @@ function PaymentProcessPage() {
             `${process.env.REACT_APP_API_BASE_URL}/payment/findbyid?id=${paymentId}`,
             {
               method: "GET",
+              headers: {
+                "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+              },
               credentials: "include",
             }
           );
@@ -180,6 +183,9 @@ function PaymentProcessPage() {
         `${process.env.REACT_APP_API_BASE_URL}/marketing/findbycoupon?coupon=${coupon}`,
         {
           method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
         }
       );
@@ -258,6 +264,9 @@ function PaymentProcessPage() {
         }/payment/update?${params.toString()}`,
         {
           method: "POST",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
         }
       );

@@ -22,6 +22,9 @@ function VaccinesPage() {
           `${process.env.REACT_APP_API_BASE_URL}/vaccinecombo`,
           {
             method: "GET",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
           }
         );
         if (!response.ok)
@@ -49,7 +52,12 @@ function VaccinesPage() {
         `${
           process.env.REACT_APP_API_BASE_URL
         }/combodetail/findcomboid?id=${comboId.toLowerCase()}`,
-        { method: "GET" }
+        {
+          method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
+        }
       );
       if (!response.ok) throw new Error("Không thể tải chi tiết combo vaccine");
       const data = await response.json();

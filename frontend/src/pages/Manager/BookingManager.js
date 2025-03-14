@@ -35,10 +35,10 @@ const Bookings = () => {
         `${process.env.REACT_APP_API_BASE_URL}/booking`,
         {
           method: "GET",
-          credentials: "include",
           headers: {
-            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
           },
+          credentials: "include",
         }
       );
 

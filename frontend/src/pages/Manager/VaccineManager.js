@@ -103,6 +103,9 @@ const Vaccines = () => {
   const handleToggleActive = (id, currentStatus) => {
     fetch(`${process.env.REACT_APP_API_BASE_URL}/vaccine/active?id=${id}`, {
       method: "POST",
+      headers: {
+        "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+      },
       credentials: "include",
     })
       .then((res) => res.json())
@@ -131,7 +134,9 @@ const Vaccines = () => {
     console.log("Creating vaccine:", newVaccine);
     fetch(`${process.env.REACT_APP_API_BASE_URL}/vaccine/create`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+      },
       credentials: "include",
       body: JSON.stringify(newVaccine),
     })
@@ -191,7 +196,9 @@ const Vaccines = () => {
 
       fetch(`${process.env.REACT_APP_API_BASE_URL}/vaccine/update`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+        },
         credentials: "include",
         body: JSON.stringify(editingVaccine),
       })

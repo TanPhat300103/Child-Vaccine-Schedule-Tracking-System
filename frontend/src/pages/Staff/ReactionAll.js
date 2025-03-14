@@ -14,7 +14,13 @@ const ReactionAll = ({ onBack }) => {
       try {
         const response = await fetch(
           `${process.env.REACT_APP_API_BASE_URL}/staffdashboard/get-reaction`,
-          { method: "GET", credentials: "include" }
+          {
+            method: "GET",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
+            credentials: "include",
+          }
         );
         if (!response.ok) throw new Error("Lỗi khi lấy báo cáo phản ứng");
         const data = await response.json();

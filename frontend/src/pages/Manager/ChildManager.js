@@ -32,6 +32,9 @@ const Childs = () => {
       `${process.env.REACT_APP_API_BASE_URL}/customer/findid?id=${customerId}`,
       {
         method: "GET",
+        headers: {
+          "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+        },
         credentials: "include",
         withCredentials: true,
       }
@@ -51,6 +54,9 @@ const Childs = () => {
       `${process.env.REACT_APP_API_BASE_URL}/child/findbycustomer?id=${customerId}`,
       {
         method: "GET",
+        headers: {
+          "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+        },
         credentials: "include",
         withCredentials: true,
       }
@@ -66,9 +72,11 @@ const Childs = () => {
   const handleCreateChild = () => {
     fetch(`${process.env.REACT_APP_API_BASE_URL}/child/create`, {
       method: "POST",
+      headers: {
+        "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+      },
       credentials: "include",
       withCredentials: true,
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...newChild, customer: customerInfo }),
     })
       .then((response) => {
@@ -107,9 +115,11 @@ const Childs = () => {
   const handleChildSave = () => {
     fetch(`${process.env.REACT_APP_API_BASE_URL}/child/update`, {
       method: "POST",
+      headers: {
+        "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+      },
       credentials: "include",
       withCredentials: true,
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(editingChild),
     })
       .then((response) => {
@@ -139,6 +149,9 @@ const Childs = () => {
     e.stopPropagation();
     fetch(`${process.env.REACT_APP_API_BASE_URL}/child/active?id=${childId}`, {
       method: "POST",
+      headers: {
+        "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+      },
       credentials: "include",
       withCredentials: true,
     })

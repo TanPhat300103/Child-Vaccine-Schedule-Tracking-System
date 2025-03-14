@@ -37,9 +37,11 @@ const StaffProfile = ({ initialStaffData }) => {
         `${process.env.REACT_APP_API_BASE_URL}/staff/update`,
         {
           method: "POST",
+          headers: {
+            "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+          },
           credentials: "include",
           withCredentials: true,
-          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
         }
       );
@@ -229,7 +231,13 @@ const Profile = () => {
         // Lấy dữ liệu nhân viên
         const staffResponse = await fetch(
           `${process.env.REACT_APP_API_BASE_URL}/staff/findid?id=${staffId}`,
-          { method: "GET", credentials: "include" }
+          {
+            method: "GET",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
+            credentials: "include",
+          }
         );
         console.log(
           "Request lấy dữ liệu nhân viên:",
@@ -249,7 +257,13 @@ const Profile = () => {
         // Lấy lịch hẹn hôm nay
         const bookingResponse = await fetch(
           `${process.env.REACT_APP_API_BASE_URL}/staffdashboard/get-booking-today`,
-          { method: "GET", credentials: "include" }
+          {
+            method: "GET",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
+            credentials: "include",
+          }
         );
         console.log(
           "Request lấy lịch hẹn hôm nay:",
@@ -280,7 +294,13 @@ const Profile = () => {
         // Lấy số lượng khách hàng
         const customerResponse = await fetch(
           `${process.env.REACT_APP_API_BASE_URL}/staffdashboard/count-customer`,
-          { method: "GET", credentials: "include" }
+          {
+            method: "GET",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
+            credentials: "include",
+          }
         );
         console.log(
           "Request đếm khách hàng:",
@@ -295,7 +315,13 @@ const Profile = () => {
         // Lấy số lượng vaccine
         const vaccineResponse = await fetch(
           `${process.env.REACT_APP_API_BASE_URL}/staffdashboard/count-active-vaccine`,
-          { method: "GET", credentials: "include" }
+          {
+            method: "GET",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
+            credentials: "include",
+          }
         );
         console.log(
           "Request đếm vaccine:",
@@ -310,7 +336,13 @@ const Profile = () => {
         // Lấy báo cáo phản ứng
         const reactionResponse = await fetch(
           `${process.env.REACT_APP_API_BASE_URL}/staffdashboard/get-reaction`,
-          { method: "GET", credentials: "include" }
+          {
+            method: "GET",
+            headers: {
+              "ngrok-skip-browser-warning": "true", // Bỏ qua warning page
+            },
+            credentials: "include",
+          }
         );
         console.log(
           "Request lấy báo cáo phản ứng:",
