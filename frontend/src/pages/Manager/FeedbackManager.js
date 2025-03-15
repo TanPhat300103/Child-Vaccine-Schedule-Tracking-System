@@ -195,7 +195,7 @@ const Feedbacks = () => {
   return (
     <div className="main-container-feedbackmanager">
       <header className="header-feedbackmanager">
-        <h2 className="title-feedbackmanager">Đánh Giá & Phản Hồi</h2>
+        <h2 className="title-feedbackmanager">Đánh giá & phản hồi</h2>
         <p className="subtitle-feedbackmanager">
           Quản lý và theo dõi đánh giá từ khách hàng
         </p>

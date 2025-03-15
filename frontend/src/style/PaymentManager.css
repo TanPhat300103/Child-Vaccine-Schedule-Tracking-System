@@ -85,13 +85,14 @@
     flex-direction: column;
     gap: 16px;
 }
-
 .customer-card-paymentmanager {
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     padding: 16px;
     cursor: pointer;
     transition: all 0.2s ease;
+    width: 100%; /* Đảm bảo card co giãn linh hoạt */
+    overflow: auto; /* Ngăn nội dung tràn ra ngoài */
 }
 
 .customer-card-paymentmanager:hover {
@@ -128,16 +129,23 @@
 
 .customer-details-paymentmanager {
     margin-left: 12px;
+    max-width: calc(100% - 52px); /* Đảm bảo không tràn, trừ đi width của avatar và margin */
 }
 
 .customer-name-paymentmanager {
     font-weight: 500;
     color: #2d3748;
+    white-space: nowrap; /* Ngăn ngắt dòng tự động */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Thêm dấu ... nếu tên quá dài */
 }
 
 .customer-id-paymentmanager {
     font-size: 0.875rem;
     color: #718096;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .customer-contacts-paymentmanager {
@@ -145,12 +153,17 @@
     grid-template-columns: 1fr 1fr;
     gap: 8px;
     font-size: 0.875rem;
+    max-width: 100%; /* Giới hạn chiều rộng */
 }
 
 .contact-item-paymentmanager {
     display: flex;
     align-items: center;
     color: #4a5568;
+    white-space: nowrap; /* Ngăn ngắt dòng tự động */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Thêm dấu ... nếu nội dung quá dài */
+    max-width: 100%; /* Giới hạn chiều rộng của mỗi item */
 }
 
 .contact-icon-paymentmanager {
@@ -158,8 +171,26 @@
     height: 16px;
     margin-right: 4px;
     color: #a0aec0;
+    flex-shrink: 0; /* Đảm bảo icon không bị co lại */
 }
 
+/* Tùy chọn: Ngắt từ nếu cần */
+.contact-item-paymentmanager.email {
+    word-break: break-all; /* Ngắt từ nếu email quá dài */
+    white-space: normal; /* Cho phép ngắt dòng */
+}
+
+/* Responsive cho màn hình nhỏ */
+@media (max-width: 480px) {
+    .customer-card-paymentmanager {
+        max-width: 100%; /* Toàn màn hình trên mobile */
+        padding: 12px;
+    }
+
+    .customer-contacts-paymentmanager {
+        grid-template-columns: 1fr; /* Chuyển thành 1 cột trên mobile */
+    }
+}
 /* No Results */
 .no-results-paymentmanager {
     text-align: center;
@@ -213,6 +244,7 @@
     padding: 4px;
     border-radius: 8px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    border: none;
 }
 
 .filter-button-paymentmanager {
@@ -223,6 +255,7 @@
     color: #718096;
     background-color: transparent;
     transition: all 0.2s ease;
+    border: none;
 }
 
 .filter-button-paymentmanager:hover {
@@ -341,6 +374,7 @@
     font-size: 0.875rem;
     border-radius: 8px;
     transition: all 0.2s ease;
+    border: none;
 }
 
 .confirm-button-paymentmanager:hover {
@@ -434,10 +468,12 @@
     display: flex;
     align-items: center;
     padding: 8px;
-    background-color: #edf2f7;
+    width: 100px;
+    background-color: #eeedf7;
     color: #4a5568;
     border-radius: 9999px;
     transition: all 0.2s ease;
+    border: none;
 }
 
 .back-button-paymentmanager:hover {

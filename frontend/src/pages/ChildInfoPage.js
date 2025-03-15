@@ -321,7 +321,7 @@ function ChildInfoPage() {
         setEditingMedicalData(null);
       } else {
         const errorText = await response.text();
-        setError("Lỗi khi cập nhật hồ sơ tiêm chủng: " + errorText);
+        setError("Lỗi khi Cập nhật hồ sơ tiêm chủng: " + errorText);
       }
     } catch (err) {
       setError("Lỗi khi cập nhật: " + err.message);

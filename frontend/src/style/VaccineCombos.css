@@ -154,6 +154,7 @@
     background-color: #f3f4f6;
     border-radius: 0.5rem;
     padding: 0.25rem;
+    border: none;
   }
   
   .filter-button-vaccinecombomanager {
@@ -163,6 +164,7 @@
     font-weight: 500;
     color: #4b5563;
     transition: all 0.2s ease;
+    border: none;
   }
   
   .filter-button-vaccinecombomanager:hover {
@@ -183,6 +185,7 @@
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     transition: background-color 0.2s ease;
+    border: none;
   }
   
   .create-button-vaccinecombomanager:hover {
@@ -288,6 +291,7 @@
     align-items: center;
     gap: 0.5rem;
     transition: all 0.2s ease;
+    border: none;
   }
   
   .toggle-inactive-vaccinecombomanager {
@@ -317,6 +321,9 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    text-decoration: none; /* Xóa gạch chân của Link */
+  display: inline-block; /* Đảm bảo Link không bị ảnh hưởng bởi danh sách */
+  list-style: none;
   }
   
   .detail-button-vaccinecombomanager:hover {

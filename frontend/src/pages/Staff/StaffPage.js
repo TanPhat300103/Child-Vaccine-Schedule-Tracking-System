@@ -91,7 +91,7 @@ const StaffPage = () => {
               <div className="sidebar-header-staffpage">
                 <div className="sidebar-brand-staffpage">
                   <FaHospital className="sidebar-icon-staffpage" />
-                  <h1 className="sidebar-title-staffpage">VaccineCare Staff</h1>
+                  <h1 className="sidebar-title-staffpage">Nhân viên quản lý</h1>
                 </div>
                 <button
                   onClick={toggleSidebar}
@@ -126,12 +126,12 @@ const StaffPage = () => {
                     <FiHome className="sidebar-icon-staffpage" />
                     {sidebarOpen && (
                       <span className="sidebar-nav-text-staffpage">
-                        Hồ Sơ Nhân Viên
+                        Hồ sơ nhân viên
                       </span>
                     )}
                     {!sidebarOpen && (
                       <span className="sidebar-tooltip-staffpage">
-                        Hồ Sơ Nhân Viên
+                        Hồ sơ nhân viên
                       </span>
                     )}
                   </NavLink>
@@ -148,12 +148,12 @@ const StaffPage = () => {
                     <FiUsers className="sidebar-icon-staffpage" />
                     {sidebarOpen && (
                       <span className="sidebar-nav-text-staffpage">
-                        Quản Lý Khách Hàng
+                        Quản lý khách hàng
                       </span>
                     )}
                     {!sidebarOpen && (
                       <span className="sidebar-tooltip-staffpage">
-                        Quản Lý Khách Hàng
+                        Quản lý khách hàng
                       </span>
                     )}
                   </NavLink>
@@ -170,12 +170,12 @@ const StaffPage = () => {
                     <FiCalendar className="sidebar-icon-staffpage" />
                     {sidebarOpen && (
                       <span className="sidebar-nav-text-staffpage">
-                        Lịch Đăng Ký Tiêm
+                        Lịch đăng ký tiêm
                       </span>
                     )}
                     {!sidebarOpen && (
                       <span className="sidebar-tooltip-staffpage">
-                        Lịch Đăng Ký Tiêm
+                        Lịch đăng ký tiêm
                       </span>
                     )}
                   </NavLink>
@@ -192,12 +192,12 @@ const StaffPage = () => {
                     <FiAlertTriangle className="sidebar-icon-staffpage" />
                     {sidebarOpen && (
                       <span className="sidebar-nav-text-staffpage">
-                        Báo Cáo Phản Ứng
+                        Báo cáo phản ứng
                       </span>
                     )}
                     {!sidebarOpen && (
                       <span className="sidebar-tooltip-staffpage">
-                        Báo Cáo Phản Ứng
+                        Báo cáo phản ứng
                       </span>
                     )}
                   </NavLink>
@@ -214,12 +214,12 @@ const StaffPage = () => {
                     <FiMessageSquare className="sidebar-icon-staffpage" />
                     {sidebarOpen && (
                       <span className="sidebar-nav-text-staffpage">
-                        Phản Hồi
+                        Phản hồi
                       </span>
                     )}
                     {!sidebarOpen && (
                       <span className="sidebar-tooltip-staffpage">
-                        Phản Hồi
+                        Phản hồi
                       </span>
                     )}
                   </NavLink>
@@ -236,12 +236,12 @@ const StaffPage = () => {
                     <FiBarChart2 className="sidebar-icon-staffpage" />
                     {sidebarOpen && (
                       <span className="sidebar-nav-text-staffpage">
-                        Chiến Dịch Marketing
+                        Chiến dịch Marketing
                       </span>
                     )}
                     {!sidebarOpen && (
                       <span className="sidebar-tooltip-staffpage">
-                        Chiến Dịch Marketing
+                        Chiến dịch Marketing
                       </span>
                     )}
                   </NavLink>
@@ -258,12 +258,12 @@ const StaffPage = () => {
                     <FaCashRegister className="sidebar-icon-staffpage" />
                     {sidebarOpen && (
                       <span className="sidebar-nav-text-staffpage">
-                        Quản Lý Hóa Đơn
+                        Quản lý hóa đơn
                       </span>
                     )}
                     {!sidebarOpen && (
                       <span className="sidebar-tooltip-staffpage">
-                        Quản Lý Hóa Đơn
+                        Quản lý hóa đơn
                       </span>
                     )}
                   </NavLink>
@@ -301,7 +301,7 @@ const StaffPage = () => {
                         <FiShield className="sidebar-icon-staffpage" />
                         {sidebarOpen && (
                           <span className="sidebar-nav-text-staffpage">
-                            Quản Lý Vaccine
+                            Quản lý vắc xin
                           </span>
                         )}
                       </NavLink>
@@ -318,7 +318,7 @@ const StaffPage = () => {
                         <FiBox className="sidebar-icon-staffpage" />
                         {sidebarOpen && (
                           <span className="sidebar-nav-text-staffpage">
-                            Gói Vaccine
+                            Gói vắc xin
                           </span>
                         )}
                       </NavLink>
@@ -333,12 +333,12 @@ const StaffPage = () => {
                     <FiLogOut className="sidebar-icon-staffpage" />
                     {sidebarOpen && (
                       <span className="sidebar-nav-text-staffpage">
-                        Đăng Xuất
+                        Đăng xuất
                       </span>
                     )}
                     {!sidebarOpen && (
                       <span className="sidebar-tooltip-staffpage">
-                        Đăng Xuất
+                        Đăng xuất
                       </span>
                     )}
                   </div>
@@ -363,7 +363,9 @@ const StaffPage = () => {
             >
               <div className="header-content-staffpage">
                 <div className="header-left-staffpage">
-                  <h2 className="header-title-staffpage">Trang Nhân Viên</h2>
+                  <h2 className="header-title-staffpage">
+                    TRANG NHÂN VIÊN QUẢN LÝ
+                  </h2>
                   <p className="header-subtitle-staffpage">
                     Quản lý hệ thống VaccineCare
                   </p>

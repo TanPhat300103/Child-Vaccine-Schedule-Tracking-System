@@ -292,7 +292,7 @@ function PaymentProcessPage() {
           throw new Error("Không thể tạo URL thanh toán VNPay");
         }
       } else {
-        setConfirmationMessage("Đang đợi staff xác nhận thanh toán tiền mặt");
+        setConfirmationMessage("Đang đợi staff Xác nhận thanh toán tiền mặt");
         setConfirmationStatus("pending-paymentprocess");
         setIsSubmitting(false);
       }
@@ -430,7 +430,7 @@ function PaymentProcessPage() {
                 isSubmitting || (paymentMethod === "atm" && !selectedBank)
               }
             >
-              {isSubmitting ? "Đang xử lý..." : "Xác Nhận Thanh Toán"}{" "}
+              {isSubmitting ? "Đang xử lý..." : "Xác nhận thanh toán"}{" "}
               <ChevronRight size={18} />
             </button>
             {confirmationMessage && (

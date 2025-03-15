@@ -938,7 +938,7 @@ const Dashboard = () => {
                           maxRotation: 0, // Giữ tên ngang
                           minRotation: 0,
                           autoSkip: false, // Không bỏ qua nhãn nào
-                          maxTicksLimit: Infinity, // Hiển thị tất cả nhãn
+                          maxTicksLimit: Infinity, // Hiển thị Tất cả nhãn
                           font: {
                             size: 12, // Kích thước font chữ nhỏ hơn để chứa nhiều nhãn
                           },

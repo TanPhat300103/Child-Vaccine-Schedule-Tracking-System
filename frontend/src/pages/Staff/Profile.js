@@ -202,7 +202,7 @@ const StaffProfile = ({ initialStaffData }) => {
                 : "btn-disabled-profilestaffcss"
             }`}
           >
-            Lưu Thay Đổi
+            Lưu
           </button>
         </div>
       </form>
@@ -256,7 +256,7 @@ const Profile = () => {
           console.warn("Cảnh báo: Tài khoản không có số điện thoại!");
         }
 
-        // Lấy lịch hẹn hôm nay
+        // Lấy Lịch hẹn hôm nay
         const bookingResponse = await fetch(
           `${process.env.REACT_APP_API_BASE_URL}/staffdashboard/get-booking-today`,
           {
@@ -269,7 +269,7 @@ const Profile = () => {
           }
         );
         console.log(
-          "Request lấy lịch hẹn hôm nay:",
+          "Request lấy Lịch hẹn hôm nay:",
           `${process.env.REACT_APP_API_BASE_URL}/staffdashboard/get-booking-today`
         );
         console.log("Response từ API lịch hẹn:", bookingResponse);
@@ -284,14 +284,14 @@ const Profile = () => {
             errorText
           );
           throw new Error(
-            `Lỗi khi lấy lịch hẹn hôm nay: ${
+            `Lỗi khi lấy Lịch hẹn hôm nay: ${
               errorText || "Không có thông tin chi tiết từ server"
             }`
           );
         }
 
         const bookingData = await bookingResponse.json();
-        console.log("Dữ liệu lịch hẹn hôm nay nhận được:", bookingData);
+        console.log("Dữ liệu Lịch hẹn hôm nay nhận được:", bookingData);
         setBookingTodayCount(bookingData.length);
 
         // Lấy số lượng khách hàng
@@ -338,7 +338,7 @@ const Profile = () => {
         console.log("Dữ liệu vaccine nhận được:", vaccineData);
         setVaccineCount(vaccineData);
 
-        // Lấy báo cáo phản ứng
+        // Lấy Báo cáo phản ứng
         const reactionResponse = await fetch(
           `${process.env.REACT_APP_API_BASE_URL}/staffdashboard/get-reaction`,
           {
@@ -351,12 +351,12 @@ const Profile = () => {
           }
         );
         console.log(
-          "Request lấy báo cáo phản ứng:",
+          "Request lấy Báo cáo phản ứng:",
           `${process.env.REACT_APP_API_BASE_URL}/staffdashboard/get-reaction`
         );
         console.log("Response từ API phản ứng:", reactionResponse);
         if (!reactionResponse.ok)
-          throw new Error("Lỗi khi lấy báo cáo phản ứng");
+          throw new Error("Lỗi khi lấy Báo cáo phản ứng");
         const reactionData = await reactionResponse.json();
         console.log("Dữ liệu phản ứng nhận được:", reactionData);
         setReactionCount(reactionData.length);

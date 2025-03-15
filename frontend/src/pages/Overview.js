@@ -129,7 +129,7 @@ function Overview() {
         if (!paymentsResponse.ok)
           throw new Error("Không tìm thấy danh sách hóa đơn");
         const paymentsData = await paymentsResponse.json();
-        // Sắp xếp: hóa đơn chưa thanh toán (status: false) lên đầu
+        // Sắp xếp: hóa đơn Chưa thanh toán (status: false) lên đầu
         const sortedPayments = paymentsData.sort((a, b) =>
           a.status === b.status ? 0 : a.status ? 1 : -1
         );
@@ -508,7 +508,7 @@ function Overview() {
             </div>
             {notifications.length > 0 && (
               <a href="../notification/1" className="overviewpage-view-all">
-                Xem tất cả
+                Xem Tất cả
               </a>
             )}
           </div>
@@ -547,7 +547,7 @@ function Overview() {
                         ></div>
                       </div>
                       <p>
-                        {completed}/{totalValid} mũi đã hoàn thành
+                        {completed}/{totalValid} mũi Đã hoàn thành
                       </p>
                     </div>
                   );
@@ -565,7 +565,7 @@ function Overview() {
                   navigate("/my-bookings");
                 }}
               >
-                Xem tất cả
+                Xem Tất cả
               </a>
             )}
           </div>
@@ -590,7 +590,7 @@ function Overview() {
                       Trạng thái:{" "}
                       <span
                         className={`overviewpage-status overviewpage-status-${
-                          payment.status ? "đã thanh toán" : "chưa thanh toán"
+                          payment.status ? "Đã thanh toán" : "Chưa thanh toán"
                         }`}
                       >
                         {payment.status ? "Đã thanh toán" : "Chưa thanh toán"}
@@ -621,7 +621,7 @@ function Overview() {
                   navigate("/my-payments");
                 }}
               >
-                Xem tất cả
+                Xem Tất cả
               </a>
             )}
           </div>

@@ -264,7 +264,7 @@ const Vaccines = () => {
               to={`../vaccine-detail/${vaccine.vaccineId}`}
               className="detail-button-vaccinemanager"
             >
-              Chi tiết
+              Vaccine nhập kho
             </NavLink>
           </div>
         </div>
@@ -415,7 +415,7 @@ const Vaccines = () => {
         <header className="header-vaccinemanager">
           <div className="header-title-vaccinemanager">
             <FaSyringe className="header-icon-vaccinemanager" />
-            <h1 className="header-text-vaccinemanager">Quản Lý Vắc Xin</h1>
+            <h1 className="header-text-vaccinemanager">Quản lý vắc xin</h1>
           </div>
           <p className="header-subtitle-vaccinemanager">
             Tra cứu, quản lý và theo dõi danh sách vắc xin trong hệ thống tiêm
@@ -503,7 +503,7 @@ const Vaccines = () => {
                 className="create-button-vaccinemanager"
               >
                 <FaPlus />
-                <span>Tạo mới Vaccine</span>
+                <span>Thêm vaccine mới</span>
               </button>
             </div>
           </div>

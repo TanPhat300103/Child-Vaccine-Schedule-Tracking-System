@@ -251,7 +251,7 @@ const VaccineComboItem = ({ combo, onComboUpdated }) => {
             onClick={(e) => e.stopPropagation()}
             className="detail-button-vaccinecombomanager"
           >
-            Chi tiết
+            Danh sách vaccine
           </NavLink>
         </div>
       </div>
@@ -367,7 +367,7 @@ const VaccineCombos = () => {
         <header className="header-vaccinecombomanager">
           <div className="header-content-vaccinecombomanager">
             <FaFlask className="icon-vaccinecombomanager" />
-            <h1 className="title-vaccinecombomanager">Quản Lý Combo Vaccine</h1>
+            <h1 className="title-vaccinecombomanager">Quản lý combo vaccine</h1>
           </div>
           <p className="description-vaccinecombomanager">
             Tra cứu, quản lý và theo dõi danh sách combo vaccine trong hệ thống
@@ -460,7 +460,7 @@ const VaccineCombos = () => {
                 className="create-button-vaccinecombomanager"
               >
                 <FaPlus />
-                <span>Tạo mới Combo</span>
+                <span>Thêm combo vaccine mới</span>
               </button>
             </div>
           </div>

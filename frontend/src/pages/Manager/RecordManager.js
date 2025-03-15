@@ -97,8 +97,8 @@ const Records = () => {
       setRecords(data);
       setFilteredRecords(data);
     } catch (err) {
-      console.error("Error fetching reaction reports:", err);
-      setError("Failed to fetch reaction reports");
+      console.error("Error fetching Quản lý phản ứng tiêm chủng:", err);
+      setError("Failed to fetch Quản lý phản ứng tiêm chủng");
     } finally {
       setLoading(false);
     }
@@ -182,13 +182,13 @@ const Records = () => {
     if (!reaction) {
       return (
         <span className="reaction-badge-record reaction-badge-none-record">
-          None
+          Không Ghi Nhận Phản Ứng Nào
         </span>
       );
     }
     return (
       <span className="reaction-badge-record reaction-badge-has-reaction-record">
-        Has Reaction
+        Có Phản Ứng
       </span>
     );
   };
@@ -215,7 +215,7 @@ const Records = () => {
           {record.child.firstName} {record.child.lastName}
         </h3>
         <p className="record-card-text-record">
-          <span className="record-card-label-record">Parent:</span>{" "}
+          <span className="record-card-label-record">Khách Hàng:</span>{" "}
           {record.child.customer.firstName} {record.child.customer.lastName}
         </p>
         <p className="record-card-text-record">
@@ -240,9 +240,10 @@ const Records = () => {
   return (
     <div className="records-container-record">
       <header className="records-header-record">
-        <h2 className="records-title-record">Reaction Reports</h2>
+        <h2 className="records-title-record">Quản lý phản ứng tiêm chủng</h2>
         <p className="records-subtitle-record">
-          Manage and track post-vaccination reactions
+          Quản lý và theo dõi các thông báo phản ứng sau khi tiêm chủng từ phía
+          khách hàng.
         </p>
       </header>
 
@@ -254,7 +255,7 @@ const Records = () => {
               reactionFilter === "all" ? "filter-button-active-record" : ""
             }`}
           >
-            All
+            Tất cả
           </button>
           <button
             onClick={() => setReactionFilter("hasReaction")}
@@ -264,7 +265,7 @@ const Records = () => {
                 : "filter-button-has-reaction-inactive-record"
             }`}
           >
-            Has Reaction
+            Phản Ứng
           </button>
           <button
             onClick={() => setReactionFilter("noReaction")}
@@ -274,7 +275,7 @@ const Records = () => {
                 : "filter-button-no-reaction-inactive-record"
             }`}
           >
-            No Reaction
+            Không Có Phản Ứng
           </button>
         </div>
 
@@ -350,7 +351,7 @@ const Records = () => {
             <FiSearch size={24} />
           </div>
           <p className="no-records-text-record">
-            No reaction reports match your criteria.
+            No Quản lý phản ứng tiêm chủng match your criteria.
           </p>
         </div>
       )}

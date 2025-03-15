@@ -89,7 +89,7 @@ const Bookings = () => {
   );
 
   const filteredCustomers = customers.filter((cust) => {
-    if (!customerSearchValue) return true; // Nếu không có giá trị tìm kiếm, trả về tất cả
+    if (!customerSearchValue) return true; // Nếu không có giá trị tìm kiếm, trả về Tất cả
 
     const searchValue = customerSearchValue.toLowerCase(); // Chỉ gọi toLowerCase một lần cho giá trị tìm kiếm
 
@@ -183,15 +183,15 @@ const Bookings = () => {
   const getStatusInfo = (status) => {
     switch (status) {
       case 1:
-        return { label: "Đã Đặt", bgColor: "#dbeafe", textColor: "#1e40af" };
+        return { label: "Đã đặt", bgColor: "#dbeafe", textColor: "#1e40af" };
       case 2:
         return {
-          label: "Đã Hoàn Thành",
+          label: "Đã hoàn thành",
           bgColor: "#d1fae5",
           textColor: "#065f46",
         };
       case 3:
-        return { label: "Đã Hủy", bgColor: "#fee2e2", textColor: "#991b1b" };
+        return { label: "Đã hủy", bgColor: "#fee2e2", textColor: "#991b1b" };
       default:
         return {
           label: "Không xác định",
@@ -227,7 +227,7 @@ const Bookings = () => {
         <div className="header-content-bookingmanager">
           <h1 className="header-title-bookingmanager">
             <ShieldIcon className="header-icon-bookingmanager" />
-            Quản Lý Lịch Tiêm Chủng
+            Quản lý lịch tiêm chủng
           </h1>
         </div>
       </div>
@@ -236,7 +236,7 @@ const Bookings = () => {
         <div className="sidebar-bookingmanager">
           <div className="sidebar-content-bookingmanager">
             <div className="sidebar-header-bookingmanager">
-              <h2>Danh Sách Khách Hàng</h2>
+              <h2>Danh sách khách hàng</h2>
             </div>
             <div className="search-section-bookingmanager">
               <div className="search-container-bookingmanager">
@@ -314,7 +314,7 @@ const Bookings = () => {
             <>
               <div className="bookings-header-bookingmanager">
                 <h2>
-                  Booking của: {selectedCustomer.firstName}{" "}
+                  Đặt lịch của: {selectedCustomer.firstName}{" "}
                   {selectedCustomer.lastName}
                 </h2>
                 <div className="search-section-bookingmanager">
@@ -371,7 +371,7 @@ const Bookings = () => {
                         : ""
                     }`}
                   >
-                    Đã Đặt
+                    Đã đặt
                   </button>
                   <button
                     onClick={() => setSelectedStatus("daHoanThanh")}
@@ -381,7 +381,7 @@ const Bookings = () => {
                         : ""
                     }`}
                   >
-                    Đã Hoàn Thành
+                    Đã hoàn thành
                   </button>
                   <button
                     onClick={() => setSelectedStatus("daHuy")}
@@ -391,7 +391,7 @@ const Bookings = () => {
                         : ""
                     }`}
                   >
-                    Đã Hủy
+                    Đã hủy
                   </button>
                 </div>
               </div>

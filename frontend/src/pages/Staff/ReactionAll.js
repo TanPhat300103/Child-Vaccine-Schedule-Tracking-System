@@ -23,7 +23,7 @@ const ReactionAll = ({ onBack }) => {
             credentials: "include",
           }
         );
-        if (!response.ok) throw new Error("Lỗi khi lấy báo cáo phản ứng");
+        if (!response.ok) throw new Error("Lỗi khi lấy Báo cáo phản ứng");
         const data = await response.json();
         setReactions(data);
       } catch (err) {
@@ -66,9 +66,9 @@ const ReactionAll = ({ onBack }) => {
     <div className="reaction-all-container-reactionall">
       <div className="reaction-all-header-reactionall">
         <button className="back-button-reactionall" onClick={onBack}>
-          <FaArrowLeft /> Quay Lại
+          <FaArrowLeft /> Quay lại
         </button>
-        <h2>Báo Cáo Phản Ứng</h2>
+        <h2>Báo cáo phản ứng</h2>
       </div>
       <div className="search-bar-reactionall">
         <FaSearch className="search-icon-reactionall" />
@@ -124,7 +124,7 @@ const ReactionAll = ({ onBack }) => {
           ))
         ) : (
           <div className="no-data-reactionall">
-            Không có báo cáo phản ứng nào
+            Không có Báo cáo phản ứng nào
           </div>
         )}
       </div>
