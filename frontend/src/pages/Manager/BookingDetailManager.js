@@ -44,16 +44,23 @@ const BookingDetail = () => {
   const getStatusTextAndIcon = (status) => {
     switch (status) {
       case 1:
-        return { text: "Đã đặt", icon: <ClockIcon className="status-icon" /> };
+        return {
+          text: "Đã đặt",
+          icon: <ClockIcon className="status-icon-bookingdetailmanager" />,
+        };
       case 2:
         return {
           text: "Đã hoàn thành",
-          icon: <CheckCircleIcon className="status-icon" />,
+          icon: (
+            <CheckCircleIcon className="status-icon-bookingdetailmanager" />
+          ),
         };
       case 3:
         return {
           text: "Đã huỷ",
-          icon: <AlertCircleIcon className="status-icon" />,
+          icon: (
+            <AlertCircleIcon className="status-icon-bookingdetailmanager" />
+          ),
         };
       default:
         return { text: "Không xác định", icon: null };

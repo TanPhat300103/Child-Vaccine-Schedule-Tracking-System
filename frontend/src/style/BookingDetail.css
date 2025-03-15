@@ -41,23 +41,39 @@
     margin-right: 8px;
   }
 
-  .booking-status-bookingdetailmanager {
-  display: flex;
+.booking-status-bookingdetailmanager {
+  display: inline-flex;
   align-items: center;
   gap: 8px;
+  padding: 6px 12px;
+  border-radius: 16px;
+  margin-top: 5px;
+  margin-bottom: 5px;
   margin-right: 20px;
+  box-shadow: #052556;
 }
 
-.status-text-1 {
-  color: blue; /* Đã đặt */
+/* Khi có status-text-1 bên trong */
+.booking-status-bookingdetailmanager:has(.status-text-1) {
+  background-color: rgba(0, 0, 255, 0.15);
+  color: rgba(0, 0, 255, 1);
 }
 
-.status-text-2 {
-  color: green; /* Đã hoàn thành */
+/* Khi có status-text-2 bên trong */
+.booking-status-bookingdetailmanager:has(.status-text-2) {
+  background-color: rgba(0, 128, 0, 0.15);
+  color: rgba(0, 128, 0, 1);
 }
 
-.status-text-3 {
-  color: red; /* Đã huỷ */
+/* Khi có status-text-3 bên trong */
+.booking-status-bookingdetailmanager:has(.status-text-3) {
+  background-color: rgba(255, 0, 0, 0.15);
+  color: rgba(255, 0, 0, 1);
+}
+
+.status-icon-bookingdetailmanager {
+  width: 20px;
+  height: 20px;
 }
 
 .confirm-button.disabled,
