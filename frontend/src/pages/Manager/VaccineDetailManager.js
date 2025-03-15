@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, NavLink } from "react-router-dom";
-import { FaEdit, FaPowerOff } from "react-icons/fa";
+import { FaArrowLeft, FaPlus, FaPowerOff } from "react-icons/fa";
 import { toast } from "react-toastify";
 import "../../style/VaccineDetailManager.css";
 
@@ -17,7 +17,8 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
   });
   const [errors, setErrors] = useState({});
 
-  const handleToggleStatus = async () => {
+  const handleToggleStatus = async (e) => {
+    e.stopPropagation(); // Ngăn sự kiện click trên card khi toggle
     try {
       const response = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/vaccinedetail/active?id=${detail.id}`,
@@ -25,7 +26,7 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
           method: "POST",
           headers: {
             "ngrok-skip-browser-warning": "true",
-            "Content-Type": "application/json", // Bỏ qua warning page
+            "Content-Type": "application/json",
           },
           credentials: "include",
         }
@@ -34,7 +35,7 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
         throw new Error("Chuyển trạng thái thất bại");
       }
       const data = await response.json();
-      console.log("API toggle status thành công:", data);
+      console.log("API toggle status thành công:", detail.status);
       onToggleStatus(detail.id, detail.status);
       toast.success("Trạng thái đã được cập nhật thành công!");
     } catch (err) {
@@ -144,10 +145,9 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
           method: "POST",
           headers: {
             "ngrok-skip-browser-warning": "true",
-            "Content-Type": "application/json", // Bỏ qua warning page
+            "Content-Type": "application/json",
           },
           credentials: "include",
-
           body: JSON.stringify(updatedDetail),
         }
       );
@@ -168,12 +168,17 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
 
   return (
     <>
-      <div className="card-vaccinedetailmanager">
-        <img
-          src={detail.img || "https://via.placeholder.com/150"}
-          alt={detail.vaccine?.name || "Vaccine Detail"}
-          className="card-image-vaccinedetailmanager"
-        />
+      <div
+        className="card-vaccinedetailmanager"
+        onClick={() => setIsModalOpen(true)}
+      >
+        <div className="card-image-container-vaccinedetailmanager">
+          <img
+            src={detail.img || "https://via.placeholder.com/150"}
+            alt={detail.vaccine?.name || "Vaccine Detail"}
+            className="card-image-vaccinedetailmanager"
+          />
+        </div>
         <h3 className="card-title-vaccinedetailmanager">
           {detail.vaccine?.name || "Không có tên vaccine"}
         </h3>
@@ -205,27 +210,17 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
             {detail.quantity}
           </p>
         </div>
-        <div className="card-buttons-vaccined personallyccinedetailmanager">
+        <div className="card-buttons-vaccinedetailmanager">
           <button
             onClick={handleToggleStatus}
-            className="status-button-vaccinedetailmanager"
+            className={`status-button-vaccinedetailmanager ${
+              detail.status
+                ? "status-active-vaccinedetailmanager"
+                : "status-inactive-vaccinedetailmanager"
+            }`}
           >
             <FaPowerOff className="icon-vaccinedetailmanager" />
-            <span
-              className={
-                detail.status
-                  ? "text-green-vaccinedetailmanager"
-                  : "text-red-vaccinedetailmanager"
-              }
-            >
-              {detail.status ? "Bật" : "Tắt"}
-            </span>
-          </button>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="edit-button-vaccinedetailmanager"
-          >
-            <FaEdit className="icon-vaccinedetailmanager" /> Sửa
+            {detail.status ? "Kích hoạt" : "Ngưng"}
           </button>
         </div>
       </div>
@@ -236,125 +231,134 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
             <h2 className="modal-title-vaccinedetailmanager">
               Cập nhật lô vaccine
             </h2>
-            <form onSubmit={handleUpdate}>
-              <label className="form-label-vaccinedetailmanager">
-                Ngày nhập:
-                <input
-                  type="date"
-                  name="entryDate"
-                  value={formData.entryDate}
-                  onChange={handleInputChange}
-                  className="form-input-vaccinedetailmanager"
-                />
-                {errors.entryDate && (
-                  <p className="error-text-vaccinedetailmanager">
-                    {errors.entryDate}
-                  </p>
-                )}
-              </label>
-              <label className="form-label-vaccinedetailmanager">
-                Ngày hết hạn:
-                <input
-                  type="date"
-                  name="expiredDate"
-                  value={formData.expiredDate}
-                  onChange={handleInputChange}
-                  className="form-input-vaccinedetailmanager"
-                />
-                {errors.expiredDate && (
-                  <p className="error-text-vaccinedetailmanager">
-                    {errors.expiredDate}
-                  </p>
-                )}
-              </label>
-              <label className="form-label-vaccinedetailmanager">
-                Số ngày:
-                <input
-                  type="number"
-                  name="day"
-                  value={formData.day}
-                  onChange={handleInputChange}
-                  className="form-input-vaccinedetailmanager"
-                />
-                {errors.day && (
-                  <p className="error-text-vaccinedetailmanager">
-                    {errors.day}
-                  </p>
-                )}
-              </label>
-              <label className="form-label-vaccinedetailmanager">
-                Dung sai:
-                <input
-                  type="number"
-                  name="tolerance"
-                  value={formData.tolerance}
-                  onChange={handleInputChange}
-                  className="form-input-vaccinedetailmanager"
-                />
-                {errors.tolerance && (
-                  <p className="error-text-vaccinedetailmanager">
-                    {errors.tolerance}
-                  </p>
-                )}
-              </label>
-              <label className="form-label-vaccinedetailmanager">
-                Số lượng:
-                <input
-                  type="number"
-                  name="quantity"
-                  value={formData.quantity}
-                  onChange={handleInputChange}
-                  className="form-input-vaccinedetailmanager"
-                />
-                {errors.quantity && (
-                  <p className="error-text-vaccinedetailmanager">
-                    {errors.quantity}
-                  </p>
-                )}
-              </label>
-              <label className="form-label-vaccinedetailmanager">
-                URL Hình ảnh:
-                <input
-                  type="text"
-                  name="imageUrl"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  className="form-input-vaccinedetailmanager"
-                  placeholder="Nhập URL hình ảnh (để trống để xóa ảnh)"
-                />
-              </label>
-              {imageUrl && (
-                <div className="image-preview-vaccinedetailmanager">
-                  <img
-                    src={imageUrl}
-                    alt="Current Vaccine Detail"
-                    className="preview-image-vaccinedetailmanager"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setImageUrl("")}
-                    className="delete-image-button-vaccinedetailmanager"
-                  >
-                    Xóa ảnh
-                  </button>
+            <form
+              onSubmit={handleUpdate}
+              className="modal-form-vaccinedetailmanager"
+            >
+              <div className="modal-form-content-vaccinedetailmanager">
+                <div className="modal-form-left-vaccinedetailmanager">
+                  <label className="form-label-vaccinedetailmanager">
+                    Ngày nhập:
+                    <input
+                      type="date"
+                      name="entryDate"
+                      value={formData.entryDate}
+                      onChange={handleInputChange}
+                      className="form-input-vaccinedetailmanager"
+                    />
+                    {errors.entryDate && (
+                      <p className="error-text-vaccinedetailmanager">
+                        {errors.entryDate}
+                      </p>
+                    )}
+                  </label>
+                  <label className="form-label-vaccinedetailmanager">
+                    Ngày hết hạn:
+                    <input
+                      type="date"
+                      name="expiredDate"
+                      value={formData.expiredDate}
+                      onChange={handleInputChange}
+                      className="form-input-vaccinedetailmanager"
+                    />
+                    {errors.expiredDate && (
+                      <p className="error-text-vaccinedetailmanager">
+                        {errors.expiredDate}
+                      </p>
+                    )}
+                  </label>
+                  <label className="form-label-vaccinedetailmanager">
+                    Số ngày:
+                    <input
+                      type="number"
+                      name="day"
+                      value={formData.day}
+                      onChange={handleInputChange}
+                      className="form-input-vaccinedetailmanager"
+                    />
+                    {errors.day && (
+                      <p className="error-text-vaccinedetailmanager">
+                        {errors.day}
+                      </p>
+                    )}
+                  </label>
+                  <label className="form-label-vaccinedetailmanager">
+                    Dung sai:
+                    <input
+                      type="number"
+                      name="tolerance"
+                      value={formData.tolerance}
+                      onChange={handleInputChange}
+                      className="form-input-vaccinedetailmanager"
+                    />
+                    {errors.tolerance && (
+                      <p className="error-text-vaccinedetailmanager">
+                        {errors.tolerance}
+                      </p>
+                    )}
+                  </label>
+                  <label className="form-label-vaccinedetailmanager">
+                    Số lượng:
+                    <input
+                      type="number"
+                      name="quantity"
+                      value={formData.quantity}
+                      onChange={handleInputChange}
+                      className="form-input-vaccinedetailmanager"
+                    />
+                    {errors.quantity && (
+                      <p className="error-text-vaccinedetailmanager">
+                        {errors.quantity}
+                      </p>
+                    )}
+                  </label>
                 </div>
-              )}
-              <div className="modal-buttons-vaccinedetailmanager">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="cancel-button-vaccinedetailmanager"
-                >
-                  Hủy
-                </button>
-                <button
-                  type="submit"
-                  className="submit-button-vaccinedetailmanager"
-                >
-                  Cập nhật
-                </button>
+                <div className="modal-form-right-vaccinedetailmanager">
+                  <label className="form-label-vaccinedetailmanager">
+                    Hình ảnh:
+                    <input
+                      type="text"
+                      name="imageUrl"
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                      className="form-input-vaccinedetailmanager"
+                      placeholder="Nhập URL hình ảnh (để trống để xóa ảnh)"
+                    />
+                  </label>
+                  {imageUrl && (
+                    <div className="image-preview-vaccinedetailmanager">
+                      <img
+                        src={imageUrl}
+                        alt="Current Vaccine Detail"
+                        className="preview-image-vaccinedetailmanager"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setImageUrl("")}
+                        className="delete-image-button-vaccinedetailmanager"
+                      >
+                        Xóa ảnh
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </form>
+            <div className="modal-buttons-vaccinedetailmanager">
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="cancel-button-vaccinedetailmanager"
+              >
+                Hủy
+              </button>
+              <button
+                type="submit"
+                className="submit-button-vaccinedetailmanager"
+              >
+                Cập nhật
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -367,6 +371,7 @@ const VaccineDetailManager = () => {
   const { vaccineId } = useParams();
   const [vaccineDetails, setVaccineDetails] = useState([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [filterStatus, setFilterStatus] = useState("all");
   const [newDetail, setNewDetail] = useState({
     entryDate: "",
     expiredDate: "",
@@ -524,7 +529,7 @@ const VaccineDetailManager = () => {
           method: "POST",
           headers: {
             "ngrok-skip-browser-warning": "true",
-            "Content-Type": "application/json", // Bỏ qua warning page
+            "Content-Type": "application/json",
           },
           credentials: "include",
           body: JSON.stringify(payload),
@@ -555,159 +560,217 @@ const VaccineDetailManager = () => {
     }
   };
 
+  const filteredVaccineDetails = vaccineDetails.filter((detail) => {
+    if (filterStatus === "all") return true;
+    return filterStatus === "active" ? !detail.status : detail.status;
+  });
+
   return (
     <div className="container-vaccinedetailmanager">
       <div className="content-wrapper-vaccinedetailmanager">
         <h2 className="page-title-vaccinedetailmanager">
           Danh sách các lô vaccine cho Vaccine {vaccineId}
         </h2>
-        <div className="back-button-wrapper-vaccinedetailmanager">
+        <div className="header-actions-vaccinedetailmanager">
           <NavLink
             to="../vaccines"
             className="back-button-vaccinedetailmanager"
           >
-            Quay lại Vaccine
+            <FaArrowLeft className="icon-vaccinedetailmanager" />
+            Quay lại
           </NavLink>
-        </div>
-        <div className="create-button-wrapper-vaccinedetailmanager">
+          <div className="filter-buttons-vaccinedetailmanager">
+            <button
+              onClick={() => setFilterStatus("all")}
+              className={`filter-button-vaccinedetailmanager ${
+                filterStatus === "all"
+                  ? "filter-active-vaccinedetailmanager"
+                  : ""
+              }`}
+            >
+              Tất cả
+            </button>
+            <button
+              onClick={() => setFilterStatus("active")}
+              className={`filter-button-vaccinedetailmanager ${
+                filterStatus === "active"
+                  ? "filter-active-vaccinedetailmanager filter-active-bg-vaccinedetailmanager"
+                  : ""
+              }`}
+            >
+              Hoạt động
+            </button>
+            <button
+              onClick={() => setFilterStatus("inactive")}
+              className={`filter-button-vaccinedetailmanager ${
+                filterStatus === "inactive"
+                  ? "filter-active-vaccinedetailmanager filter-inactive-bg-vaccinedetailmanager"
+                  : ""
+              }`}
+            >
+              Không hoạt động
+            </button>
+          </div>
           <button
             onClick={() => setShowCreateModal(true)}
             className="create-button-vaccinedetailmanager"
           >
-            Tạo mới lô vaccine
+            <FaPlus className="icon-vaccinedetailmanager" />
+            Thêm lô vắc xin mới
           </button>
         </div>
+
         {showCreateModal && (
-          <div className="modal-overlay-create-vaccinedetailmanager">
-            <div
-              className="modal-backdrop-vaccinedetailmanager"
-              onClick={() => setShowCreateModal(false)}
-            ></div>
-            <div className="modal-content-create-vaccinedetailmanager">
-              <h3 className="modal-title-create-vaccinedetailmanager">
-                Tạo mới lô vaccine
+          <div className="modal-overlay-vaccinedetailmanager">
+            <div className="modal-content-vaccinedetailmanager">
+              <h3 className="modal-title-vaccinedetailmanager">
+                Thêm lô vắc xin mới
               </h3>
               <form
                 onSubmit={handleCreateDetail}
-                className="form-create-vaccinedetailmanager"
+                className="modal-form-vaccinedetailmanager"
               >
-                <label className="form-label-vaccinedetailmanager">
-                  Ngày nhập:
-                  <input
-                    type="date"
-                    name="entryDate"
-                    value={newDetail.entryDate}
-                    onChange={handleInputChange}
-                    className="form-input-vaccinedetailmanager"
-                    required
-                  />
-                  {errors.entryDate && (
-                    <p className="error-text-vaccinedetailmanager">
-                      {errors.entryDate}
-                    </p>
-                  )}
-                </label>
-                <label className="form-label-vaccinedetailmanager">
-                  Ngày hết hạn:
-                  <input
-                    type="date"
-                    name="expiredDate"
-                    value={newDetail.expiredDate}
-                    onChange={handleInputChange}
-                    className="form-input-vaccinedetailmanager"
-                    required
-                  />
-                  {errors.expiredDate && (
-                    <p className="error-text-vaccinedetailmanager">
-                      {errors.expiredDate}
-                    </p>
-                  )}
-                </label>
-                <label className="form-label-vaccinedetailmanager">
-                  Số ngày:
-                  <input
-                    type="number"
-                    name="day"
-                    value={newDetail.day}
-                    onChange={handleInputChange}
-                    className="form-input-vaccinedetailmanager"
-                    required
-                  />
-                  {errors.day && (
-                    <p className="error-text-vaccinedetailmanager">
-                      {errors.day}
-                    </p>
-                  )}
-                </label>
-                <label className="form-label-vaccinedetailmanager">
-                  Dung sai:
-                  <input
-                    type="number"
-                    name="tolerance"
-                    value={newDetail.tolerance}
-                    onChange={handleInputChange}
-                    className="form-input-vaccinedetailmanager"
-                    required
-                  />
-                  {errors.tolerance && (
-                    <p className="error-text-vaccinedetailmanager">
-                      {errors.tolerance}
-                    </p>
-                  )}
-                </label>
-                <label className="form-label-vaccinedetailmanager">
-                  Số lượng:
-                  <input
-                    type="number"
-                    name="quantity"
-                    value={newDetail.quantity}
-                    onChange={handleInputChange}
-                    className="form-input-vaccinedetailmanager"
-                    required
-                  />
-                  {errors.quantity && (
-                    <p className="error-text-vaccinedetailmanager">
-                      {errors.quantity}
-                    </p>
-                  )}
-                </label>
-                <label className="form-label-vaccinedetailmanager">
-                  URL Hình ảnh:
-                  <input
-                    type="text"
-                    name="img"
-                    value={newDetail.img}
-                    onChange={handleInputChange}
-                    className="form-input-vaccinedetailmanager"
-                    placeholder="Nhập URL hình ảnh (nếu có)"
-                  />
-                </label>
-                <div className="modal-buttons-create-vaccinedetailmanager">
-                  <button
-                    type="button"
-                    onClick={() => setShowCreateModal(false)}
-                    className="cancel-button-vaccinedetailmanager"
-                  >
-                    Hủy
-                  </button>
-                  <button
-                    type="submit"
-                    className="submit-create-button-vaccinedetailmanager"
-                  >
-                    Tạo
-                  </button>
+                <div className="modal-form-content-vaccinedetailmanager">
+                  <div className="modal-form-left-vaccinedetailmanager">
+                    <label className="form-label-vaccinedetailmanager">
+                      Ngày nhập:
+                      <input
+                        type="date"
+                        name="entryDate"
+                        value={newDetail.entryDate}
+                        onChange={handleInputChange}
+                        className="form-input-vaccinedetailmanager"
+                        required
+                      />
+                      {errors.entryDate && (
+                        <p className="error-text-vaccinedetailmanager">
+                          {errors.entryDate}
+                        </p>
+                      )}
+                    </label>
+                    <label className="form-label-vaccinedetailmanager">
+                      Ngày hết hạn:
+                      <input
+                        type="date"
+                        name="expiredDate"
+                        value={newDetail.expiredDate}
+                        onChange={handleInputChange}
+                        className="form-input-vaccinedetailmanager"
+                        required
+                      />
+                      {errors.expiredDate && (
+                        <p className="error-text-vaccinedetailmanager">
+                          {errors.expiredDate}
+                        </p>
+                      )}
+                    </label>
+                    <label className="form-label-vaccinedetailmanager">
+                      Số ngày:
+                      <input
+                        type="number"
+                        name="day"
+                        value={newDetail.day}
+                        onChange={handleInputChange}
+                        className="form-input-vaccinedetailmanager"
+                        required
+                      />
+                      {errors.day && (
+                        <p className="error-text-vaccinedetailmanager">
+                          {errors.day}
+                        </p>
+                      )}
+                    </label>
+                    <label className="form-label-vaccinedetailmanager">
+                      Dung sai:
+                      <input
+                        type="number"
+                        name="tolerance"
+                        value={newDetail.tolerance}
+                        onChange={handleInputChange}
+                        className="form-input-vaccinedetailmanager"
+                        required
+                      />
+                      {errors.tolerance && (
+                        <p className="error-text-vaccinedetailmanager">
+                          {errors.tolerance}
+                        </p>
+                      )}
+                    </label>
+                    <label className="form-label-vaccinedetailmanager">
+                      Số lượng:
+                      <input
+                        type="number"
+                        name="quantity"
+                        value={newDetail.quantity}
+                        onChange={handleInputChange}
+                        className="form-input-vaccinedetailmanager"
+                        required
+                      />
+                      {errors.quantity && (
+                        <p className="error-text-vaccinedetailmanager">
+                          {errors.quantity}
+                        </p>
+                      )}
+                    </label>
+                  </div>
+                  <div className="modal-form-right-vaccinedetailmanager">
+                    <label className="form-label-vaccinedetailmanager">
+                      Hình ảnh:
+                      <input
+                        type="text"
+                        name="img"
+                        value={newDetail.img}
+                        onChange={handleInputChange}
+                        className="form-input-vaccinedetailmanager"
+                        placeholder="Nhập URL hình ảnh (nếu có)"
+                      />
+                    </label>
+                    {newDetail.img && (
+                      <div className="image-preview-vaccinedetailmanager">
+                        <img
+                          src={newDetail.img}
+                          alt="New Vaccine Detail"
+                          className="preview-image-vaccinedetailmanager"
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setNewDetail({ ...newDetail, img: "" })
+                          }
+                          className="delete-image-button-vaccinedetailmanager"
+                        >
+                          Xóa ảnh
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </form>
+              <div className="modal-buttons-vaccinedetailmanager">
+                <button
+                  type="button"
+                  onClick={() => setShowCreateModal(false)}
+                  className="cancel-button-vaccinedetailmanager"
+                >
+                  Hủy
+                </button>
+                <button
+                  type="submit"
+                  className="submit-button-vaccinedetailmanager"
+                >
+                  Thêm
+                </button>
+              </div>
             </div>
           </div>
         )}
-        {vaccineDetails.length === 0 ? (
+        {filteredVaccineDetails.length === 0 ? (
           <p className="no-data-text-vaccinedetailmanager">
             Không tìm thấy lô vaccine nào
           </p>
         ) : (
           <div className="grid-vaccinedetailmanager">
-            {vaccineDetails.map((detail) => (
+            {filteredVaccineDetails.map((detail) => (
               <VaccineDetailItem
                 key={detail.id}
                 detail={detail}

@@ -1,322 +1,516 @@
-/* ComboDetail.css */
+/* ComboDetail.css - Modern Healthcare Theme */
 
+/* Container chính */
 .container-combodetailmanager {
-    padding: 1.5rem;
-    background: linear-gradient(to bottom, #eff6ff, #ffffff);
-    min-height: 100vh;
-  }
-  
-  .inner-container-combodetailmanager {
-    max-width: 80rem;
-    margin: 0 auto;
-  }
-  
-  .title-combodetailmanager {
-    font-size: 2.25rem;
-    line-height: 2.5rem;
-    font-weight: 700;
-    color: #1d4ed8;
-    margin-bottom: 2rem;
-    text-align: center;
-  }
-  
+  padding: 2rem;
+  min-height: 100vh;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Container bên trong */
+.inner-container-combodetailmanager {
+  max-width: 80rem; /* Giảm từ 85rem để dễ đọc hơn */
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Tiêu đề chính */
+.title-combodetailmanager {
+  font-size: 2.25rem;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #1e4b99;
+  margin-bottom: 2.5rem;
+  text-align: center;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+
+.title-combodetailmanager::after {
+  content: "";
+  position: absolute;
+  bottom: -0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6rem;
+  height: 0.25rem;
+  background: linear-gradient(90deg, #3b82f6, #1e4b99);
+  border-radius: 1rem;
+}
+
+/* Lưới hiển thị card */
+.grid-combodetailmanager {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.75rem;
+}
+
+@media (min-width: 640px) {
   .grid-combodetailmanager {
-    display: grid;
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  
-  @media (min-width: 640px) {
-    .grid-combodetailmanager {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+}
+
+@media (min-width: 1024px) {
+  .grid-combodetailmanager {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-  
-  @media (min-width: 1024px) {
-    .grid-combodetailmanager {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
+}
+
+@media (min-width: 1280px) {
+  .grid-combodetailmanager {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
-  
-  @media (min-width: 1280px) {
-    .grid-combodetailmanager {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-  }
-  
-  .card-combodetailmanager {
-    background: linear-gradient(to bottom right, #ffffff, #f9fafb);
-    border-radius: 0.75rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-      0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    overflow: hidden;
-    transition: all 0.3s ease;
-    border: 1px solid #f3f4f6;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    cursor: pointer;
-  }
-  
-  .card-combodetailmanager:hover {
-    transform: scale(1.05);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-      0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  }
-  
-  .selected-card-combodetailmanager {
-    border: 4px solid #3b82f6;
-  }
-  
-  .image-combodetailmanager {
-    width: 100%;
-    height: 10rem;
-    object-fit: cover;
-  }
-  
-  .content-combodetailmanager {
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-  }
-  
-  .card-title-combodetailmanager {
-    font-size: 1.125rem;
-    line-height: 1.75rem;
-    font-weight: 600;
-    color: #1d4ed8;
-    margin-bottom: 0.5rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  
-  .details-combodetailmanager {
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-    color: #4b5563;
-    flex: 1;
-  }
-  
-  .details-combodetailmanager p {
-    margin-top: 0.25rem;
-  }
-  
-  .font-medium-combodetailmanager {
-    font-weight: 500;
-  }
-  
-  .truncate-combodetailmanager {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  
-  .status-active-combodetailmanager {
-    color: #10b981;
-  }
-  
-  .status-inactive-combodetailmanager {
-    color: #ef4444;
-  }
-  
-  .remove-button-combodetailmanager {
-    margin-top: 0.5rem;
-    background-color: #ef4444;
-    color: #ffffff;
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border: none;
-  }
-  
-  .remove-button-combodetailmanager:hover {
-    background-color: #dc2626;
-  }
-  
-  .add-card-combodetailmanager {
-    cursor: pointer;
-    background: linear-gradient(to bottom right, #ffffff, #f9fafb);
-    border-radius: 0.75rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-      0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    border: 1px solid #f3f4f6;
-    height: 100%;
-    padding: 1rem;
-  }
-  
-  .add-card-combodetailmanager:hover {
-    transform: scale(1.05);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-      0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  }
-  
-  .add-inner-combodetailmanager {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px dashed #d1d5db;
-    width: 100%;
-    height: 10rem;
-    border-radius: 0.75rem;
-  }
-  
-  .add-icon-combodetailmanager {
-    color: #1d4ed8;
-    font-size: 3rem;
-  }
-  
-  .add-text-combodetailmanager {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: #1d4ed8;
-    margin-top: 1rem;
-  }
-  
-  .modal-overlay-combodetailmanager {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(4px);
-    z-index: 50;
-  }
-  
-  .modal-content-combodetailmanager {
-    background-color: #ffffff;
-    padding: 1.5rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-      0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    width: 91.666667%;
-    max-width: 80rem;
-    max-height: 100vh;
-    overflow-y: auto;
-  }
-  
-  .modal-title-combodetailmanager {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    text-align: center;
-  }
-  
-  .search-bar-combodetailmanager {
-    margin-bottom: 1rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    align-items: center;
-  }
-  
-  .input-combodetailmanager {
-    border: 1px solid #d1d5db;
-    padding: 0.5rem;
-    border-radius: 0.25rem;
-  }
-  
-  .button-combodetailmanager {
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border: none;
-  }
-  
-  .cancel-button-combodetailmanager {
-    background-color: #6b7280;
-    color: #ffffff;
-  }
-  
-  .cancel-button-combodetailmanager:hover {
-    background-color: #4b5563;
-  }
-  
-  .add-button-combodetailmanager {
-    background-color: #10b981;
-    color: #ffffff;
-  }
-  
-  .add-button-combodetailmanager:hover {
-    background-color: #059669;
-  }
-  
-  .modal-buttons-combodetailmanager {
-    margin-top: 1.5rem;
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-  }
-  
-  .no-results-combodetailmanager {
-    text-align: center;
-    color: #6b7280;
-    font-size: 1.125rem;
-    width: 100%;
-  }
-  
-  .text-center-combodetailmanager {
-    text-align: center;
-    margin-top: 2.5rem;
-  }
-  
-  .error-combodetailmanager {
-    color: #ef4444;
-  }
-  .modal-header-combodetailmanager {
+}
+
+/* Card thông tin */
+.card-combodetailmanager {
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08),
+              0 4px 6px -2px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(240, 244, 248, 0.9);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  cursor: pointer;
+  position: relative;
+}
+
+.card-combodetailmanager:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+              0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Card được chọn */
+.selected-card-combodetailmanager {
+  border: 2px solid #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+.selected-card-combodetailmanager::before {
+  content: "✓";
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: #3b82f6;
+  color: white;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1rem;
+  z-index: 10;
+}
+
+/* Hình ảnh trong card */
+.image-combodetailmanager {
+  width: 100%;
+  height: 12rem;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.card-combodetailmanager:hover .image-combodetailmanager {
+  transform: scale(1.05);
+}
+
+/* Nội dung trong card */
+.content-combodetailmanager {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* Tiêu đề card */
+.card-title-combodetailmanager {
+  font-size: 1.25rem;
+  line-height: 1.5;
+  font-weight: 600;
+  color: #1e4b99;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.card-title-combodetailmanager::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 3rem;
+  height: 0.125rem;
+  background: #3b82f6;
+  border-radius: 0.125rem;
+}
+
+/* Chi tiết trong card */
+.details-combodetailmanager {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #4b5563;
+  flex: 1;
+}
+
+.details-combodetailmanager p {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: baseline;
+}
+
+.font-medium-combodetailmanager {
+  font-weight: 500;
+  color: #334155;
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+}
+
+.truncate-combodetailmanager {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+/* Trạng thái hoạt động */
+.status-active-combodetailmanager {
+  color: #10b981;
+  font-weight: 500;
+  position: relative;
+  padding-left: 1rem;
+}
+
+.status-active-combodetailmanager::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: #10b981;
+  border-radius: 50%;
+}
+
+/* Trạng thái không hoạt động */
+.status-inactive-combodetailmanager {
+  color: #ef4444;
+  font-weight: 500;
+  position: relative;
+  padding-left: 1rem;
+}
+
+.status-inactive-combodetailmanager::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: #ef4444;
+  border-radius: 50%;
+}
+
+/* Nút xóa */
+.remove-button-combodetailmanager {
+  margin-top: 1rem;
+  background-color: #fee2e2;
+  color: #b91c1c;
+  padding: 0.625rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove-button-combodetailmanager:hover {
+  background-color: #fecaca;
+}
+
+.remove-button-combodetailmanager:active {
+  background-color: #fca5a5;
+}
+
+/* Card thêm mới */
+.add-card-combodetailmanager {
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08),
+              0 4px 6px -2px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px dashed #a5b4fc;
+  height: 100%;
+  padding: 1.5rem;
+}
+
+.add-card-combodetailmanager:hover {
+  transform: translateY(-5px);
+  background: white;
+  border-color: #3b82f6;
+}
+
+.add-inner-combodetailmanager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #c7d2fe;
+  width: 100%;
+  height: 12rem;
+  border-radius: 0.75rem;
+  background-color: rgba(239, 246, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+.add-card-combodetailmanager:hover .add-inner-combodetailmanager {
+  border-color: #6366f1;
+  background-color: rgba(239, 246, 255, 0.8);
+}
+
+.add-icon-combodetailmanager {
+  color: #3b82f6;
+  font-size: 2.5rem;
+  transition: transform 0.3s ease;
+}
+
+.add-card-combodetailmanager:hover .add-icon-combodetailmanager {
+  transform: scale(1.2);
+}
+
+.add-text-combodetailmanager {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #3b82f6;
+  margin-top: 1.25rem;
+  transition: color 0.3s ease;
+}
+
+.add-card-combodetailmanager:hover .add-text-combodetailmanager {
+  color: #1d4ed8;
+}
+
+/* Modal overlay */
+.modal-overlay-combodetailmanager {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(17, 24, 39, 0.5);
+  backdrop-filter: blur(5px);
+  z-index: 50;
+  animation: fadeIn-combodetailmanager 0.3s ease;
+}
+
+@keyframes fadeIn-combodetailmanager {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Nội dung modal */
+.modal-content-combodetailmanager {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  width: 92%;
+  max-width: 80rem;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp-combodetailmanager 0.4s ease;
+}
+
+@keyframes slideUp-combodetailmanager {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Header của modal */
+.modal-header-combodetailmanager {
   position: sticky;
   top: 0;
   background-color: white;
   z-index: 10;
-  padding: 10px 0;
-  border-bottom: 1px solid #ccc;
+  padding: 1rem 0;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 1.5rem;
 }
 
-.modal-body-combodetailmanager {
-  max-height: 60vh; /* Chiều cao tối đa, có thể điều chỉnh */
-  overflow-y: auto;
-  padding-top: 10px;
+/* Tiêu đề modal */
+.modal-title-combodetailmanager {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  text-align: center;
+  color: #1e4b99;
+  letter-spacing: -0.01em;
 }
 
+/* Thanh tìm kiếm */
 .search-bar-combodetailmanager {
+  margin-bottom: 1.5rem;
   display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 0.75rem;
   align-items: center;
+  background: #f9fafb;
+  padding: 1rem;
+  border-radius: 0.75rem;
 }
 
+/* Input trong modal */
+.input-combodetailmanager {
+  border: 1px solid #d1d5db;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  flex: 1;
+  min-width: 130px;
+}
+
+.input-combodetailmanager:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+/* Nút chung */
+.button-combodetailmanager {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  font-size: 0.875rem;
+}
+
+/* Nút hủy */
+.cancel-button-combodetailmanager {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
+
+.cancel-button-combodetailmanager:hover {
+  background-color: #e5e7eb;
+  color: #1f2937;
+}
+
+/* Nút thêm */
+.add-button-combodetailmanager {
+  background-color: #3b82f6;
+  color: #ffffff;
+}
+
+.add-button-combodetailmanager:hover {
+  background-color: #2563eb;
+}
+
+.add-button-combodetailmanager:disabled,
+.cancel-button-combodetailmanager:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Nhóm nút trong modal */
 .modal-buttons-combodetailmanager {
+  margin-top: 1.5rem;
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 1rem;
 }
 
+/* Thông báo không có kết quả */
+.no-results-combodetailmanager {
+  text-align: center;
+  color: #6b7280;
+  font-size: 1.125rem;
+  width: 100%;
+  padding: 2rem 0;
+}
+
+/* Văn bản căn giữa */
+.text-center-combodetailmanager {
+  text-align: center;
+  margin-top: 3rem;
+  font-size: 1.125rem;
+  color: #4b5563;
+}
+
+/* Thông báo lỗi */
+.error-combodetailmanager {
+  color: #ef4444;
+  background-color: #fee2e2;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border-left: 4px solid #ef4444;
+}
+
+/* Body của modal */
+.modal-body-combodetailmanager {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 0.5rem 0.25rem;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+.modal-body-combodetailmanager::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-body-combodetailmanager::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 6px;
+}
+
+.modal-body-combodetailmanager::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 6px;
+}
+
+.modal-body-combodetailmanager::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Nút quay lại */
 .back-button-combodetailmanager {
   display: inline-flex;
   align-items: center;
   padding: 0.5rem 1rem;
-  background-color: #007bff; /* Màu xanh dương */
+  background-color: #007bff;
   color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 0.5rem;
   font-size: 1rem;
-  font-weight: bold;
+  font-weight: 500;
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  margin-bottom: 10px;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
 }
 
 .back-button-combodetailmanager:hover {
@@ -334,4 +528,3 @@
   height: 1rem;
   margin-right: 0.5rem;
 }
-

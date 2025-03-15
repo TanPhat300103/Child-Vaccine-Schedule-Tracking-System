@@ -109,7 +109,7 @@ const Payments = () => {
     : [];
   let filteredPayments = selectedPayments.filter((payment) => {
     if (paymentFilter === false) {
-      return payment.method === false && payment.status === false;
+      return payment.status === false;
     } else {
       return payment.status === true;
     }
@@ -770,18 +770,17 @@ const Payments = () => {
                             Chưa thanh toán
                           </span>
                         )}
-                        {payment.method === false &&
-                          payment.status === false && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                openConfirmModal(payment.paymentId);
-                              }}
-                              className="confirm-button-paymentmanager"
-                            >
-                              Xác nhận thanh toán
-                            </button>
-                          )}
+                        {payment.status === false && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openConfirmModal(payment.paymentId);
+                            }}
+                            className="confirm-button-paymentmanager"
+                          >
+                            Xác nhận thanh toán
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
