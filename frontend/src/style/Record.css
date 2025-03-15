@@ -38,13 +38,15 @@
   }
   
   .filter-button-record {
-    width: 112px;
+    width: 122px;
+        margin-bottom: 16px;
     padding: 8px 16px;
     border-radius: 9999px;
     font-size: 14px;
     font-weight: 500;
     transition: all 0.15s ease;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb60;
   }
   
   .filter-button-record:hover {

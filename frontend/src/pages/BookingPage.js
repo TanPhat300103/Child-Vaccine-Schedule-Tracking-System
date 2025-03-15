@@ -103,7 +103,7 @@ function BookingPage() {
           }))
         );
 
-        // Tải trước tất cả combo details
+        // Tải trước Tất cả combo details
         for (const combo of mockCombos) {
           if (!comboDetailsMap[combo.vaccineComboId]) {
             await fetchComboDetails(combo.vaccineComboId);
@@ -537,7 +537,7 @@ function BookingPage() {
                   <path d="M3 10h18"></path>
                   <path d="m14 14 2 2 4-4"></path>
                 </svg>
-                <h2>Danh sách Vaccine</h2>
+                <h2>Danh sách vaccine</h2>
               </div>
               <div className="search-filter-container-bookingpage">
                 <div className="search-bar-wrapper-bookingpage">
@@ -650,7 +650,7 @@ function BookingPage() {
                   <path d="M3 10h18"></path>
                   <path d="m13 16 3-3 3 3"></path>
                 </svg>
-                <h2>Gói Vaccine</h2>
+                <h2>Gói vắc xin</h2>
               </div>
               <div className="search-filter-container-bookingpage">
                 <div className="search-bar-wrapper-bookingpage">

@@ -37,7 +37,7 @@ const HomePage = () => {
         navigate("/"); // Dẫn người dùng tới trang Home
       } else if (userInfo.authorities[0].authority === "ROLE_STAFF") {
         navigate("/staff"); // Dẫn người dùng tới trang Staff
-      } else if (userInfo.authorities[0].authority === "ROLE_ADMIN") {
+      } else if (userInfo.authorities[0].authority === "ROLE_Quản trị viên") {
         navigate("/admin"); // Dẫn người dùng tới trang Admin
       }
     }
@@ -496,7 +496,7 @@ const HomePage = () => {
                   className="homepage-btn homepage-btn-secondary"
                   onClick={() => (window.location.href = "/vaccines")}
                 >
-                  Xem gói vaccine
+                  Xem Gói vắc xin
                 </button>
               </div>
             </div>

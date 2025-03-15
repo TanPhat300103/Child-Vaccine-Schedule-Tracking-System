@@ -57,7 +57,7 @@ const AdminPage = () => {
               <div className="icon-circle-adminpage">
                 <RiSyringeLine className="syringe-icon-adminpage" />
               </div>
-              <h1 className="sidebar-title-adminpage">Quản Trị Viên</h1>
+              <h1 className="sidebar-title-adminpage">Quản trị viên</h1>
             </div>
             <button onClick={toggleSidebar} className="toggle-btn-adminpage">
               <FiX size={24} />
@@ -82,11 +82,16 @@ const AdminPage = () => {
             <li>
               <NavLink
                 to="/admin"
+                end
                 className={({ isActive }) =>
                   `nav-item-adminpage ${
                     isActive ? "nav-item-active-adminpage" : ""
                   }`
                 }
+                isActive={(match, location) => {
+                  // Chỉ active khi đường dẫn chính xác là "/admin", không phải các route con
+                  return location.pathname === "/admin";
+                }}
               >
                 <FiGrid
                   className={`nav-icon-adminpage ${
@@ -94,10 +99,10 @@ const AdminPage = () => {
                   }`}
                 />
                 {sidebarOpen && (
-                  <span className="nav-text-adminpage">Bảng Điều Khiển</span>
+                  <span className="nav-text-adminpage">Bảng điều khiển</span>
                 )}
                 {!sidebarOpen && (
-                  <span className="nav-tooltip-adminpage">Bảng Điều Khiển</span>
+                  <span className="nav-tooltip-adminpage">Bảng điều khiển</span>
                 )}
               </NavLink>
             </li>
@@ -117,11 +122,11 @@ const AdminPage = () => {
                   }`}
                 />
                 {sidebarOpen && (
-                  <span className="nav-text-adminpage">Quản Lý Nhân viên</span>
+                  <span className="nav-text-adminpage">Quản lý nhân viên</span>
                 )}
                 {!sidebarOpen && (
                   <span className="nav-tooltip-adminpage">
-                    Quản Lý Nhân viên
+                    Quản lý nhân viên
                   </span>
                 )}
               </NavLink>
@@ -142,11 +147,11 @@ const AdminPage = () => {
                   }`}
                 />
                 {sidebarOpen && (
-                  <span className="nav-text-adminpage">Quản Lý Khách Hàng</span>
+                  <span className="nav-text-adminpage">Quản lý khách hàng</span>
                 )}
                 {!sidebarOpen && (
                   <span className="nav-tooltip-adminpage">
-                    Quản Lý Khách Hàng
+                    Quản lý khách hàng
                   </span>
                 )}
               </NavLink>
@@ -175,11 +180,11 @@ const AdminPage = () => {
                   }`}
                 />
                 {sidebarOpen && (
-                  <span className="nav-text-adminpage">Lịch Đăng Ký Tiêm</span>
+                  <span className="nav-text-adminpage">Lịch đăng ký tiêm</span>
                 )}
                 {!sidebarOpen && (
                   <span className="nav-tooltip-adminpage">
-                    Lịch Đăng Ký Tiêm
+                    Lịch đăng ký tiêm
                   </span>
                 )}
               </NavLink>
@@ -220,7 +225,7 @@ const AdminPage = () => {
                     <FiShield className="nav-icon-adminpage" />
                     {sidebarOpen && (
                       <span className="nav-text-adminpage">
-                        Quản Lý Vaccine
+                        Quản lý vắc xin
                       </span>
                     )}
                   </NavLink>
@@ -236,7 +241,7 @@ const AdminPage = () => {
                   >
                     <FiBox className="nav-icon-adminpage" />
                     {sidebarOpen && (
-                      <span className="nav-text-adminpage">Gói Vaccine</span>
+                      <span className="nav-text-adminpage">Gói vắc xin</span>
                     )}
                   </NavLink>
                 </li>
@@ -258,11 +263,11 @@ const AdminPage = () => {
                   }`}
                 />
                 {sidebarOpen && (
-                  <span className="nav-text-adminpage">Báo Cáo Phản Ứng</span>
+                  <span className="nav-text-adminpage">Báo cáo phản ứng</span>
                 )}
                 {!sidebarOpen && (
                   <span className="nav-tooltip-adminpage">
-                    Báo Cáo Phản Ứng
+                    Báo cáo phản ứng
                   </span>
                 )}
               </NavLink>
@@ -289,10 +294,10 @@ const AdminPage = () => {
                   }`}
                 />
                 {sidebarOpen && (
-                  <span className="nav-text-adminpage">Phản Hồi</span>
+                  <span className="nav-text-adminpage">Phản hồi</span>
                 )}
                 {!sidebarOpen && (
-                  <span className="nav-tooltip-adminpage">Phản Hồi</span>
+                  <span className="nav-tooltip-adminpage">Phản hồi</span>
                 )}
               </NavLink>
             </li>
@@ -313,12 +318,12 @@ const AdminPage = () => {
                 />
                 {sidebarOpen && (
                   <span className="nav-text-adminpage">
-                    Chiến Dịch Marketing
+                    Chiến dịch Marketing
                   </span>
                 )}
                 {!sidebarOpen && (
                   <span className="nav-tooltip-adminpage">
-                    Chiến Dịch Marketing
+                    Chiến dịch Marketing
                   </span>
                 )}
               </NavLink>
@@ -339,10 +344,10 @@ const AdminPage = () => {
                   }`}
                 />
                 {sidebarOpen && (
-                  <span className="nav-text-adminpage">Quản Lý Hóa Đơn</span>
+                  <span className="nav-text-adminpage">Quản lý hóa đơn</span>
                 )}
                 {!sidebarOpen && (
-                  <span className="nav-tooltip-adminpage">Quản Lý Hóa Đơn</span>
+                  <span className="nav-tooltip-adminpage">Quản lý hóa đơn</span>
                 )}
               </NavLink>
             </li>
@@ -358,10 +363,10 @@ const AdminPage = () => {
                   }`}
                 />
                 {sidebarOpen && (
-                  <span className="nav-text-adminpage">Đăng Xuất</span>
+                  <span className="nav-text-adminpage">Đăng xuất</span>
                 )}
                 {!sidebarOpen && (
-                  <span className="nav-tooltip-adminpage">Đăng Xuất</span>
+                  <span className="nav-tooltip-adminpage">Đăng xuất</span>
                 )}
               </div>
             </li>
@@ -380,7 +385,7 @@ const AdminPage = () => {
         <div className="header-content-adminpage">
           <div className="header-left-adminpage">
             <h1 className="header-title-adminpage">
-              Trang Quản Trị Trung Tâm Tiêm Chủng
+              TRANG QUẢN TRỊ TRUNG TÂM THEO DÕI TIÊM CHỦNG CHO TRẺ
             </h1>
             <p className="header-date-adminpage">
               {format(new Date(), "EEEE, dd/MM/yyyy", { locale: vi })}

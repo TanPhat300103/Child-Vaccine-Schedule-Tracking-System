@@ -129,7 +129,7 @@ const Childs = () => {
       .then((response) => {
         if (!response.ok) {
           return response.text().then((text) => {
-            throw new Error(text || "Lỗi khi cập nhật hồ sơ trẻ em.");
+            throw new Error(text || "Lỗi khi Cập nhật hồ sơ trẻ em.");
           });
         }
         return response.json();
@@ -144,7 +144,7 @@ const Childs = () => {
         setChildUpdateError(null);
       })
       .catch((error) => {
-        console.error("Lỗi khi cập nhật hồ sơ trẻ em:", error);
+        console.error("Lỗi khi Cập nhật hồ sơ trẻ em:", error);
         setChildUpdateError(error.message);
       });
   };
@@ -190,7 +190,7 @@ const Childs = () => {
         <header className="header-child">
           <div className="header-title-child">
             <FaChild className="header-icon-child" />
-            <h1 className="header-text-child">Quản Lý Hồ Sơ Trẻ Em</h1>
+            <h1 className="header-text-child">Quản lý hồ sơ trẻ em</h1>
           </div>
           <p className="header-subtitle-child">
             Quản lý hồ sơ trẻ em của khách hàng{" "}
@@ -221,7 +221,7 @@ const Childs = () => {
                   <strong>Địa chỉ:</strong> {customerInfo?.address || "N/A"}
                 </p>
               </div>
-              <Link to="../customers">
+              <Link to="../customers" className="back-link-child">
                 <button className="back-button-child">
                   <FaArrowLeft className="back-icon-child" />
                   <span>Quay lại danh sách</span>
@@ -248,7 +248,7 @@ const Childs = () => {
                 className="add-button-child"
               >
                 <FaPlus />
-                <span>Thêm Hồ Sơ Trẻ Em</span>
+                <span>Thêm hồ sơ trẻ em</span>
               </button>
             </div>
 
@@ -305,7 +305,7 @@ const Childs = () => {
           </div>
         </div>
 
-        {/* Modal Tạo Hồ Sơ Trẻ Em */}
+        {/* Modal Tạo Hồ sơ trẻ em */}
         {showAddChildForm && (
           <div className="modal-overlay-child">
             <div
@@ -313,7 +313,7 @@ const Childs = () => {
               onClick={() => setShowAddChildForm(false)}
             ></div>
             <div className="modal-content-child">
-              <h3 className="modal-title-child">Thêm Hồ Sơ Trẻ Em Mới</h3>
+              <h3 className="modal-title-child">Thêm hồ sơ trẻ em Mới</h3>
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -415,7 +415,7 @@ const Childs = () => {
           </div>
         )}
 
-        {/* Modal Cập Nhật Hồ Sơ Trẻ Em */}
+        {/* Modal Cập nhật hồ sơ trẻ em */}
         {editingChild && (
           <div className="modal-overlay-child">
             <div
@@ -423,7 +423,7 @@ const Childs = () => {
               onClick={() => setEditingChild(null)}
             ></div>
             <div className="modal-content-child">
-              <h3 className="modal-title-child">Cập Nhật Hồ Sơ Trẻ Em</h3>
+              <h3 className="modal-title-child">Cập nhật hồ sơ trẻ em</h3>
               <form
                 onSubmit={(e) => {
                   e.preventDefault();

@@ -78,7 +78,7 @@ const ComboDetailItem = ({ vaccine, onRemove }) => {
                   : "status-inactive-combodetailmanager"
               }
             >
-              {vaccine.active ? "Hoạt động" : "Ngưng"}
+              {vaccine.active ? "Kích hoạt" : "Ngưng"}
             </span>
           </p>
         </div>
@@ -143,7 +143,7 @@ const SelectableVaccineItem = ({ vaccine, isSelected, onSelect }) => {
                   : "status-inactive-combodetailmanager"
               }
             >
-              {vaccine.active ? "Hoạt động" : "Ngưng"}
+              {vaccine.active ? "Kích hoạt" : "Ngưng"}
             </span>
           </p>
         </div>
@@ -338,7 +338,7 @@ const ComboDetail = () => {
   if (loading) {
     return (
       <div className="text-center-combodetailmanager">
-        Đang tải danh sách vaccine trong combo...
+        Đang tải Danh sách vaccine trong combo...
       </div>
     );
   }
@@ -355,7 +355,7 @@ const ComboDetail = () => {
     <div className="container-combodetailmanager">
       <div className="inner-container-combodetailmanager">
         <h2 className="title-combodetailmanager">
-          Danh sách Vaccine trong Combo: {vaccineComboId}
+          Danh sách vaccine trong Combo: {vaccineComboId}
         </h2>
         <button
           className="back-button-combodetailmanager"

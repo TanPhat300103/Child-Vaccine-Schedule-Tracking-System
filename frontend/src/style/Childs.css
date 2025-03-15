@@ -81,30 +81,44 @@
     color: #4b5563;
   }
   
-  .back-button-child {
-    margin-top: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background-color: #fce7f3;
-    color: #ec4899;
-    padding: 8px 16px;
-    border-radius: 9999px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-  }
-  
-  .back-button-child:hover {
-    background-color: #f9a8d4;
-    color: #db2777;
-    transform: scale(1.05);
-  }
-  
-  .back-icon-child {
-    width: 16px;
-    height: 16px;
-  }
+/* Loại bỏ gạch đầu dòng và kiểu mặc định của Link */
+.back-link-child {
+  text-decoration: none; /* Xóa gạch chân của Link */
+  display: inline-block; /* Đảm bảo Link không bị ảnh hưởng bởi danh sách */
+  list-style: none; /* Loại bỏ gạch đầu dòng nếu có */
+}
+
+/* Style cho nút */
+.back-button-child {
+  display: flex; /* Sử dụng flex để căn chỉnh icon và text */
+  align-items: center;
+  gap: 8px; /* Khoảng cách giữa icon và text */
+  padding: 8px 16px; /* Padding bên trong nút */
+  background-color: rgba(255, 182, 193, 0.5); /* Màu nền đỏ nhạt pha hồng (lightpink nhạt, opacity 0.65) */
+  color: #c71545b4; /* Màu chữ đỏ hồng đậm hơn để nổi bật */
+  border: none; /* Xóa viền mặc định */
+  border-radius: 8px; /* Bo tròn góc */
+  cursor: pointer; /* Con trỏ chuột khi hover */
+  font-size: 14px; /* Kích thước chữ */
+  font-weight: 500; /* Độ đậm chữ */
+  transition: background-color 0.2s ease; /* Hiệu ứng chuyển màu mượt mà */
+}
+
+/* Hover effect */
+.back-button-child:hover {
+  background-color: rgba(255, 192, 203, 0.3); /* Màu sáng hơn chút (pink nhạt, opacity 0.85) */
+}
+
+/* Style cho icon */
+.back-icon-child {
+  font-size: 16px; /* Kích thước icon */
+  color: #c71545; /* Màu icon đồng bộ với text, đỏ hồng đậm */
+}
+
+/* Đảm bảo span không bị ảnh hưởng bởi style ngoài */
+.back-button-child span {
+  margin: 0; /* Xóa margin mặc định nếu có */
+}
   
   /* Search Bar */
   .search-bar-child {

@@ -477,7 +477,7 @@ const MarketingCampaigns = () => {
   return (
     <div className="container-marketing">
       <div className="content-marketing">
-        <h2 className="title-marketing">Quản Lý Chương Trình Tiêm Chủng</h2>
+        <h2 className="title-marketing">Quản lý chương trình tiêm chủng</h2>
 
         <div className="controls-marketing">
           <div className="search-container-marketing">

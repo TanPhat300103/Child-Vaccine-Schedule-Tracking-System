@@ -350,7 +350,7 @@ const BookingDetail = () => {
         <div className="header-content-bookingdetailmanager">
           <h1 className="header-title-bookingdetailmanager">
             <ShieldIcon className="header-icon-bookingdetailmanager" />
-            Chi Tiết Lịch Tiêm Chủng
+            Chi tiết lịch tiêm chủng
           </h1>
           <div className="booking-status-bookingdetailmanager">
             {getStatusTextAndIcon(booking.status).icon}
@@ -415,7 +415,7 @@ const BookingDetail = () => {
         <div className="modal-overlay-bookingdetailmanager">
           <div className="modal-content-bookingdetailmanager">
             <h3 className="modal-title-bookingdetailmanager">
-              Phản Ứng Sau Tiêm
+              Phản ứng sau tiêm
             </h3>
             <textarea
               value={reactionInput}
@@ -447,7 +447,7 @@ const BookingDetail = () => {
             <div className="booking-id-section-bookingdetailmanager">
               <div className="booking-id-header-bookingdetailmanager">
                 <span className="booking-id-label-bookingdetailmanager">
-                  Mã Đặt Lịch
+                  Mã đặt lịch
                 </span>
                 <span className="booking-id-value-bookingdetailmanager">
                   #{booking.bookingId}
@@ -462,7 +462,7 @@ const BookingDetail = () => {
               >
                 <h3 className="section-title-bookingdetailmanager">
                   <CalendarIcon className="section-icon-bookingdetailmanager" />
-                  Thông Tin Đặt Lịch
+                  Thông tin đặt lịch
                 </h3>
                 {isBookingInfoOpen ? (
                   <ChevronUpIcon className="toggle-icon-bookingdetailmanager" />
@@ -501,7 +501,7 @@ const BookingDetail = () => {
               >
                 <h3 className="section-title-bookingdetailmanager">
                   <UserIcon className="section-icon-bookingdetailmanager" />
-                  Thông Tin Khách Hàng
+                  Thông tin khách hàng
                 </h3>
                 {isCustomerInfoOpen ? (
                   <ChevronUpIcon className="toggle-icon-bookingdetailmanager" />
@@ -581,7 +581,7 @@ const BookingDetail = () => {
                   : ""
               }`}
             >
-              Đã Tiêm
+              Đã tiêm
             </button>
             <button
               onClick={() => setStatusFilter("notAdministered")}
@@ -591,14 +591,14 @@ const BookingDetail = () => {
                   : ""
               }`}
             >
-              Chưa Tiêm
+              Chưa tiêm
             </button>
             <div className="back-button-container-bookingdetailmanager">
               <button
                 onClick={() => navigate(-1)}
                 className="back-button-bookingdetailmanager"
               >
-                Quay Lại
+                Quay lại
               </button>
             </div>
           </div>
@@ -663,7 +663,7 @@ const BookingDetail = () => {
                                 }`}
                                 disabled={!canReact}
                               >
-                                Phản Ứng Sau Tiêm
+                                Phản ứng sau tiêm
                               </button>
                             </div>
                           </div>

@@ -176,7 +176,7 @@ const Staffs = () => {
           }
           setErrors(translatedErrors); // Lưu lỗi để hiển thị dưới input
           const errorMessages = Object.values(translatedErrors).join(", ");
-          toast.error(errorMessages); // Hiển thị tất cả lỗi qua toast
+          toast.error(errorMessages); // Hiển thị Tất cả lỗi qua toast
         } else {
           toast.error("Không thể cập nhật nhân viên.");
           setMessage("Không thể cập nhật nhân viên.");
@@ -248,7 +248,7 @@ const Staffs = () => {
           }
           setErrors(translatedErrors); // Lưu lỗi để hiển thị dưới input
           const errorMessages = Object.values(translatedErrors).join(", ");
-          toast.error(errorMessages); // Hiển thị tất cả lỗi qua toast
+          toast.error(errorMessages); // Hiển thị Tất cả lỗi qua toast
         } else {
           toast.error("Không thể thêm nhân viên.");
           setMessage("Không thể thêm nhân viên.");
@@ -281,7 +281,7 @@ const Staffs = () => {
         <header className="header-staffs">
           <div className="header-title-staffs">
             <FaUsers className="header-icon-staffs" />
-            <h1 className="header-text-staffs">Quản Lý Nhân Viên</h1>
+            <h1 className="header-text-staffs">Quản lý nhân viên</h1>
           </div>
           <p className="header-description-staffs">
             Tra cứu, quản lý và theo dõi danh sách nhân viên trong hệ thống
@@ -342,7 +342,7 @@ const Staffs = () => {
                     : ""
                 }`}
               >
-                Ngưng
+                Không hoạt động
               </button>
             </div>
             <button
@@ -350,7 +350,7 @@ const Staffs = () => {
               className="add-btn-staffs"
             >
               <FaPlus className="add-icon-staffs" />
-              <span>Thêm Nhân Viên</span>
+              <span>Thêm nhân viên</span>
             </button>
           </div>
         </div>
@@ -420,7 +420,7 @@ const Staffs = () => {
               >
                 ×
               </button>
-              <h2 className="modal-title-staffs">Thêm Nhân Viên Mới</h2>
+              <h2 className="modal-title-staffs">Thêm nhân viên Mới</h2>
               <form onSubmit={handleAddStaff} className="modal-form-staffs">
                 <div className="form-group-staffs">
                   <label className="form-label-staffs">Họ</label>
@@ -538,7 +538,7 @@ const Staffs = () => {
                 </div>
                 <div className="form-actions-staffs">
                   <button type="submit" className="submit-btn-staffs">
-                    Thêm Nhân Viên
+                    Thêm nhân viên
                   </button>
                   <button
                     type="button"

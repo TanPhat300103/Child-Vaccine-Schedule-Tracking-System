@@ -259,7 +259,7 @@ const Customers = () => {
         <header className="customers-header">
           <div className="header-title">
             <FaUser className="header-icon" />
-            <h1 className="header-text">Quản Lý Khách Hàng</h1>
+            <h1 className="header-text">Quản lý khách hàng</h1>
           </div>
           <p className="header-subtitle">
             Tra cứu, quản lý và theo dõi danh sách khách hàng trong hệ thống
@@ -324,7 +324,7 @@ const Customers = () => {
                 >
                   <FaUserPlus size={14} />{" "}
                   {/* Giảm kích thước icon xuống 14px */}
-                  <span>Thêm Khách Hàng</span>
+                  <span>Thêm khách hàng</span>
                 </button>
               </div>
             </div>
@@ -359,7 +359,7 @@ const Customers = () => {
                   }`}
                 >
                   <FaPowerOff />
-                  <span>{customer.active ? "Ngừng" : "Hoạt Động"}</span>
+                  <span>{customer.active ? "Ngưng" : "Kích hoạt"}</span>
                 </button>
                 <Link
                   to={`../childs/${customer.customerId}`}
@@ -367,7 +367,7 @@ const Customers = () => {
                   className="child-profile-button"
                 >
                   <FaChild />
-                  <span>Hồ Sơ Trẻ Em</span>
+                  <span>Hồ sơ trẻ em</span>
                 </Link>
               </div>
             </div>
@@ -558,7 +558,7 @@ const Customers = () => {
               >
                 ×
               </button>
-              <h2 className="modal-title">Thêm Khách Hàng Mới</h2>
+              <h2 className="modal-title">Thêm khách hàng Mới</h2>
               <div className="modal-form">
                 <div>
                   <label className="form-label">Họ</label>

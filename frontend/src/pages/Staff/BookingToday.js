@@ -26,7 +26,7 @@ const BookingToday = ({ onBack }) => {
           }
         );
         console.log(
-          "Request lấy lịch hẹn hôm nay:",
+          "Request lấy Lịch hẹn hôm nay:",
           `${process.env.REACT_APP_API_BASE_URL}/staffdashboard/get-booking-today`
         );
         console.log("Response từ API:", response);
@@ -40,7 +40,7 @@ const BookingToday = ({ onBack }) => {
             errorText
           );
           throw new Error(
-            `Lỗi khi lấy lịch hẹn hôm nay: ${
+            `Lỗi khi lấy Lịch hẹn hôm nay: ${
               errorText || "Không có thông tin chi tiết từ server"
             }`
           );
@@ -107,9 +107,9 @@ const BookingToday = ({ onBack }) => {
     <div className="booking-today-container-bookingtoday">
       <div className="booking-today-header-bookingtoday">
         <button className="back-button-bookingtoday" onClick={onBack}>
-          <FaArrowLeft /> Quay Lại
+          <FaArrowLeft /> Quay lại
         </button>
-        <h2>Lịch Hẹn Hôm Nay</h2>
+        <h2>Lịch hẹn hôm nay</h2>
       </div>
       <div className="search-bar-bookingtoday">
         <FaSearch className="search-icon-bookingtoday" />

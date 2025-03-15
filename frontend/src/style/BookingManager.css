@@ -179,17 +179,19 @@
   }
   
   .filter-button-bookingmanager {
-    width: 112px;
+    width: 141px;
+    height: 50px;
     padding: 8px 16px;
-    border-radius: 9999px;
+    border-radius: 99px;
     font-size: 14px;
     font-weight: 500;
     transition: all 0.15s ease;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    border: none;
   }
   
   .filter-button-bookingmanager:hover {
-    opacity: 0.9;
+    opacity: 0.8;
   }
   
   .filter-button-bookingmanager.active-all-bookingmanager {
