@@ -23,8 +23,7 @@ public class AiService {
 
     public String getAiResponseWithHistory(String prompt, String history) {
         // Thêm hướng dẫn súc tích và ghép với lịch sử (nếu có)
-        String enhancedPrompt = "Bạn là 1 bác sĩ vơi nhiều kinh nghiệm, đặc biệt là với lĩnh vực về tiêm chủng và vaccine cho trẻ em, trả lời câu hỏi của tôi rõ ràng và đầy đủ dựa, giới hạn trong 2-3 câu, tránh lan man. "
-                + (history != null ? history + " " : "") + prompt;
+        String enhancedPrompt =  (history != null ? history + " " : "") + prompt;
         return chatModel.call(enhancedPrompt);
     }
 }

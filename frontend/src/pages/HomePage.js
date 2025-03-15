@@ -220,8 +220,8 @@ const HomePage = () => {
   useEffect(() => {
     if (feedbacks.length === 0 || !feedbackContainerRef.current) return;
 
-    const containerWidth = feedbackContainerRef.current.scrollWidth / 2;
-    const speed = 1;
+    const containerWidth = feedbackContainerRef.current.scrollWidth ;
+    const speed = 3;
 
     const animate = () => {
       setTranslateX((prev) => {
