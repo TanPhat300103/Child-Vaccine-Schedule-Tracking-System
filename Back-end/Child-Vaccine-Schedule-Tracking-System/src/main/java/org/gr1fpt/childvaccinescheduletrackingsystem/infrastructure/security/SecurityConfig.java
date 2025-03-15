@@ -63,7 +63,7 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )
-                        .defaultSuccessUrl("http://localhost:3000/", true)
+                        .defaultSuccessUrl("https://swp-301.vercel.app/", true)
                 )
 
                 .formLogin(form -> form

@@ -107,7 +107,7 @@ public class VNPAYController  {
         }
 
         // Redirect về frontend với thông tin giao dịch qua query parameters
-        String redirectUrl = "http://localhost:3000/payment-return?"
+        String redirectUrl = "https://swp-301.vercel.app/payment-return?"
                 + "status=" + (isSuccess ? "SUCCESS" : "FAILED")
                 + "&orderId=" + vnp_TxnRef
                 + "&amount=" + (Integer.parseInt(vnp_Amount) / 100)
