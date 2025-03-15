@@ -37,7 +37,7 @@ const HomePage = () => {
         navigate("/"); // Dẫn người dùng tới trang Home
       } else if (userInfo.authorities[0].authority === "ROLE_STAFF") {
         navigate("/staff"); // Dẫn người dùng tới trang Staff
-      } else if (userInfo.authorities[0].authority === "ROLE_Quản trị viên") {
+      } else if (userInfo.authorities[0].authority === "ROLE_ADMIN") {
         navigate("/admin"); // Dẫn người dùng tới trang Admin
       }
     }
