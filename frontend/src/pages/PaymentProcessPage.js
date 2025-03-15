@@ -152,7 +152,7 @@ function PaymentProcessPage() {
               method: "GET",
               headers: {
                 "ngrok-skip-browser-warning": "true",
-                "Content-Type": "application/json", // Bỏ qua warning page
+                "Content-Type": "application/json",
               },
               credentials: "include",
             }
@@ -186,7 +186,7 @@ function PaymentProcessPage() {
           method: "GET",
           headers: {
             "ngrok-skip-browser-warning": "true",
-            "Content-Type": "application/json", // Bỏ qua warning page
+            "Content-Type": "application/json",
           },
           credentials: "include",
         }
@@ -249,6 +249,13 @@ function PaymentProcessPage() {
   };
 
   const handleConfirm = async () => {
+    // Chỉ cho phép xác nhận khi đã chọn phương thức "atm" và đã chọn ngân hàng
+    if (paymentMethod !== "atm" || !selectedBank) {
+      setConfirmationMessage("Vui lòng chọn ngân hàng để thanh toán!");
+      setConfirmationStatus("pending-paymentprocess");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -268,7 +275,7 @@ function PaymentProcessPage() {
           method: "POST",
           headers: {
             "ngrok-skip-browser-warning": "true",
-            "Content-Type": "application/json", // Bỏ qua warning page
+            "Content-Type": "application/json",
           },
           credentials: "include",
         }
@@ -291,10 +298,6 @@ function PaymentProcessPage() {
         } else {
           throw new Error("Không thể tạo URL thanh toán VNPay");
         }
-      } else {
-        setConfirmationMessage("Đang đợi staff Xác nhận thanh toán tiền mặt");
-        setConfirmationStatus("pending-paymentprocess");
-        setIsSubmitting(false);
       }
     } catch (err) {
       setConfirmationMessage("Lỗi: " + err.message);
@@ -426,9 +429,7 @@ function PaymentProcessPage() {
             <button
               className="confirm-btn-paymentprocess"
               onClick={handleConfirm}
-              disabled={
-                isSubmitting || (paymentMethod === "atm" && !selectedBank)
-              }
+              disabled={isSubmitting || paymentMethod !== "atm" || !selectedBank}
             >
               {isSubmitting ? "Đang xử lý..." : "Xác nhận thanh toán"}{" "}
               <ChevronRight size={18} />
