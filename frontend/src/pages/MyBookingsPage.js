@@ -326,32 +326,32 @@ function MyBookingsPage() {
             onClick={() => navigate("/profile")}
           >
             <User size={18} />
-            <span>Thông Tin Cá Nhân</span>
+            <span>Thông tin cá nhân</span>
           </div>
           <div
             className="profile-sidebar-item"
             onClick={() => navigate("/child-info")}
           >
             <Calendar size={18} />
-            <span>Thông Tin Con</span>
+            <span>Thông tin con</span>
           </div>
           <div className="profile-sidebar-item active">
             <BookOpen size={18} />
-            <span>My Booking</span>
+            <span>Lịch tiêm đã đặt</span>
           </div>
           <div
             className="profile-sidebar-item"
             onClick={() => navigate("/my-payments")}
           >
             <CreditCard size={18} />
-            <span>My Payment</span>
+            <span>Lịch sử thanh toán</span>
           </div>
         </div>
 
         <div className="profile-main">
           <div className="profile-section" style={{ opacity: 1 }}>
             <div className="profile-section-header">
-              <h2>My Booking</h2>
+              <h2>Lịch tiêm đã đặt</h2>
             </div>
 
             <div className="profile-search-bar">
@@ -385,9 +385,9 @@ function MyBookingsPage() {
                   value={feedbackFilter}
                   onChange={(e) => setFeedbackFilter(e.target.value)}
                 >
-                  <option value="all">Tất cả feedback</option>
-                  <option value="with">Có feedback</option>
-                  <option value="without">Không có feedback</option>
+                  <option value="all">Tất cả đánh giá</option>
+                  <option value="with">Có đánh giá</option>
+                  <option value="without">Không có đánh giá</option>
                 </select>
               </div>
 
@@ -416,7 +416,7 @@ function MyBookingsPage() {
                   <div key={booking.bookingId} className="profile-booking-card">
                     <div className="profile-booking-header">
                       <div className="profile-booking-info">
-                        <h3>Booking #{booking.bookingId}</h3>
+                        <h3>Lịch tiêm #{booking.bookingId}</h3>
                         <p className="profile-booking-date">
                           <Calendar size={14} />
                           {new Date(booking.bookingDate).toLocaleDateString()}
@@ -509,7 +509,7 @@ function MyBookingsPage() {
         <div className="feedback-modal-overlay">
           <div className="feedback-modal">
             <div className="feedback-modal-header">
-              <h3>Đánh giá Booking #{selectedBookingId}</h3>
+              <h3>Đánh giá lịch tiêm #{selectedBookingId}</h3>
               <button
                 className="feedback-modal-close"
                 onClick={() => setShowFeedbackModal(false)}
@@ -562,7 +562,7 @@ function MyBookingsPage() {
         <div className="feedback-modal-overlay">
           <div className="feedback-modal">
             <div className="feedback-modal-header">
-              <h3>Chỉnh sửa đánh giá Booking #{selectedBookingId}</h3>
+              <h3>Chỉnh sửa đánh giá lịch tiêm #{selectedBookingId}</h3>
               <button
                 className="feedback-modal-close"
                 onClick={() => setShowDetailModal(false)}

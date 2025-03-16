@@ -183,7 +183,7 @@ function VaccineListPage() {
           <table className="vaccine-table">
             <thead>
               <tr>
-                <th>Tên Vaccine</th>
+                <th>Tên vắc xin:</th>
                 <th>Quốc gia</th>
                 <th>Giá (VND)</th>
                 <th>Độ tuổi</th>
@@ -228,7 +228,7 @@ function VaccineListPage() {
             <h2>Chi tiết Vaccine: {selectedVaccine.name}</h2>
             <div className="vaccine-detail-card">
               <div className="detail-item">
-                <span className="label">Tên Vaccine:</span>
+                <span className="label">Tên vắc xin:</span>
                 <span className="value">{selectedVaccine.name}</span>
               </div>
               <div className="detail-item">

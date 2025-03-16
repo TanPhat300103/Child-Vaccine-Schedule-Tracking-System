@@ -303,7 +303,7 @@ function Header() {
                 location.pathname === "/" ? "active" : ""
               }`}
             >
-              <Home size={18} /> Home
+              <Home size={18} /> TRANG CHỦ
             </Link>
           </li>
           <li>
@@ -313,7 +313,7 @@ function Header() {
                 location.pathname === "/booking" ? "active" : ""
               }`}
             >
-              <Calendar size={18} /> Booking
+              <Calendar size={18} /> ĐẶT LỊCH
             </div>
           </li>
           <li>
@@ -323,7 +323,7 @@ function Header() {
                 location.pathname === "/overview" ? "active" : ""
               }`}
             >
-              <Star size={18} /> Overview
+              <Star size={18} /> TỔNG QUAN
             </div>
           </li>
           <li>
@@ -333,7 +333,7 @@ function Header() {
                 location.pathname === "/vaccines" ? "active" : ""
               }`}
             >
-              <Syringe size={18} /> Vaccine
+              <Syringe size={18} /> VẮC XIN
             </Link>
           </li>
           <li className="handbook-container" ref={handbookRef}>
@@ -343,7 +343,7 @@ function Header() {
                 location.pathname.startsWith("/handbook") ? "active" : ""
               }`}
             >
-              <BookOpen size={18} /> Cẩm nang
+              <BookOpen size={18} /> CẨM NANG
               <ChevronDown
                 size={16}
                 className={`dropdown-arrow ${isHandbookOpen ? "rotate" : ""}`}
@@ -484,12 +484,12 @@ function Header() {
                     onClick={handleProfileClick}
                   >
                     <User size={16} />
-                    <span>My Profile</span>
+                    <span>Hồ sơ của tôi</span>
                   </div>
                   <div className="child-group ripple" onClick={toggleChildMenu}>
                     <div className="child-group-content">
                       <Baby size={16} />
-                      <span>My Child</span>
+                      <span>Hồ sơ trẻ em</span>
                     </div>
                     <ChevronDown
                       size={16}
@@ -519,15 +519,15 @@ function Header() {
                     className="dropdown-item ripple"
                     onClick={handleBookingClick}
                   >
-                    <BookOpen size={16} />
-                    <span>My Booking</span>
+                    <Calendar size={16} />
+                    <span>Lịch tiêm đã đặt</span>
                   </div>
                   <div
                     className="dropdown-item ripple"
                     onClick={handlePaymentClick}
                   >
                     <CreditCard size={16} />
-                    <span>My Payment</span>
+                    <span>Lịch sử thanh toán</span>
                   </div>
                   <div className="dropdown-divider" />
                   <div

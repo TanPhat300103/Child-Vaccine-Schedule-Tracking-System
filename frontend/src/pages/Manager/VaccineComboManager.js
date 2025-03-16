@@ -3,9 +3,8 @@ import { NavLink, Outlet } from "react-router-dom";
 import {
   FaPlus,
   FaSearch,
-  FaFilter,
   FaPowerOff,
-  FaFlask,
+  FaBriefcaseMedical,
 } from "react-icons/fa";
 import "../../style/VaccineCombos.css";
 
@@ -75,7 +74,7 @@ const ModalForm = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <h3 className="modal-title-vaccinecombomanager">
-          {isEditMode ? "Chỉnh sửa Vaccine Combo" : "Tạo Vaccine Combo mới"}
+          {isEditMode ? "Chỉnh sửa combo vắc xin " : "Thêm combo vắc xin mới"}
         </h3>
         <form
           onSubmit={handleFormSubmit}
@@ -218,7 +217,7 @@ const VaccineComboItem = ({ combo, onComboUpdated }) => {
       >
         <div className="combo-item-content-vaccinecombomanager">
           <div className="combo-icon-wrapper-vaccinecombomanager">
-            <FaFlask className="combo-icon-vaccinecombomanager" />
+            <FaBriefcaseMedical className="combo-icon-vaccinecombomanager" />
           </div>
           <div>
             <h3 className="combo-title-vaccinecombomanager">{combo.name}</h3>
@@ -251,7 +250,7 @@ const VaccineComboItem = ({ combo, onComboUpdated }) => {
             onClick={(e) => e.stopPropagation()}
             className="detail-button-vaccinecombomanager"
           >
-            Danh sách vaccine
+            Danh sách vắc xin
           </NavLink>
         </div>
       </div>
@@ -366,11 +365,11 @@ const VaccineCombos = () => {
       <div className="content-wrapper-vaccinecombomanager">
         <header className="header-vaccinecombomanager">
           <div className="header-content-vaccinecombomanager">
-            <FaFlask className="icon-vaccinecombomanager" />
-            <h1 className="title-vaccinecombomanager">Quản lý combo vaccine</h1>
+            <FaBriefcaseMedical className="icon-vaccinecombomanager" />
+            <h1 className="title-vaccinecombomanager">Quản lý combo vắc xin</h1>
           </div>
           <p className="description-vaccinecombomanager">
-            Tra cứu, quản lý và theo dõi danh sách combo vaccine trong hệ thống
+            Tra cứu, quản lý và theo dõi danh sách combo vắc xin trong hệ thống
             tiêm chủng
           </p>
         </header>
@@ -460,7 +459,7 @@ const VaccineCombos = () => {
                 className="create-button-vaccinecombomanager"
               >
                 <FaPlus />
-                <span>Thêm combo vaccine mới</span>
+                <span>Thêm combo vắc xin mới</span>
               </button>
             </div>
           </div>
@@ -469,7 +468,7 @@ const VaccineCombos = () => {
         <div className="combo-list-vaccinecombomanager">
           {filteredCombos.length === 0 ? (
             <div className="no-results-vaccinecombomanager">
-              <FaFlask className="no-results-icon-vaccinecombomanager" />
+              <FaBriefcaseMedical className="no-results-icon-vaccinecombomanager" />
               <p className="no-results-text-vaccinecombomanager">
                 Không tìm thấy combo nào phù hợp
               </p>

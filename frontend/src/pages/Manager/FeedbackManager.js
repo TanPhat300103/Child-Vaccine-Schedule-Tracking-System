@@ -164,7 +164,7 @@ const Feedbacks = () => {
           {fb.booking.customer.firstName} {fb.booking.customer.lastName}
         </h3>
         <p className="booking-info-feedbackmanager">
-          <span className="booking-label-feedbackmanager">Booking:</span>{" "}
+          <span className="booking-label-feedbackmanager">Mã đặt lịch:</span>{" "}
           {fb.booking.bookingId}
         </p>
       </div>
@@ -197,7 +197,7 @@ const Feedbacks = () => {
       <header className="header-feedbackmanager">
         <h2 className="title-feedbackmanager">Đánh giá & phản hồi</h2>
         <p className="subtitle-feedbackmanager">
-          Quản lý và theo dõi đánh giá từ khách hàng
+          Tra cứu và theo dõi đánh giá từ khách hàng
         </p>
       </header>
 
@@ -394,7 +394,7 @@ const Feedbacks = () => {
                         size={16}
                       />
                       <h4 className="comment-title-feedbackmanager">
-                        Nội dung đánh giá
+                        Nội dung đánh giá:
                       </h4>
                     </div>
                     <div className="comment-content-feedbackmanager">

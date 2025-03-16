@@ -1,33 +1,16 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import "../style/VaccinationNotes.css";
 import {
-  ArrowLeft,
   Check,
   Clock,
   Activity,
   Shield,
-  AlertTriangle,
-  Phone,
-  Calendar,
-  ChevronRight,
-  ChevronDown,
-  Info,
   Thermometer,
   Heart,
   FileText,
   Droplet,
-  Bookmark,
-  BookOpen,
 } from "lucide-react";
 
 function VaccinationNotes() {
-  const [openFaq, setOpenFaq] = useState(null);
-
-  const toggleFaq = (index) => {
-    setOpenFaq(openFaq === index ? null : index);
-  };
-
   return (
     <div className="vaccination-page">
       {/* Header - Thiết kế lại */}
@@ -42,7 +25,7 @@ function VaccinationNotes() {
             </h2>
             <p className="hero-card__text">
               Chuẩn bị đầy đủ trước khi tiêm chủng không chỉ giúp quá trình tiêm
-              diễn ra suôn sẻ mà còn tăng hiệu quả của vaccine và giảm thiểu các
+              diễn ra suôn sẻ mà còn tăng hiệu quả của vắc xin và giảm thiểu các
               phản ứng phụ không mong muốn. Bằng cách tuân thủ các hướng dẫn đơn
               giản, bạn có thể bảo vệ bản thân và cộng đồng một cách tốt nhất.
             </p>
@@ -232,7 +215,7 @@ function VaccinationNotes() {
               Thời gian có hiệu lực
             </h3>
             <p>
-              Tùy loại vaccine, khả năng bảo vệ bắt đầu phát triển từ 2-3 tuần
+              Tùy loại vắc xin, khả năng bảo vệ bắt đầu phát triển từ 2-3 tuần
               sau tiêm và đạt mức tối đa sau 1-2 tháng. Một số loại cần tiêm
               nhắc lại để duy trì hiệu quả lâu dài.
             </p>

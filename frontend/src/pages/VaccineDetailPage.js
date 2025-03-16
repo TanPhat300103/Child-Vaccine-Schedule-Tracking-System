@@ -56,7 +56,7 @@ function VaccineDetailPage() {
       <div className="vaccine-detail-container">
         <div className="vaccine-detail-card">
           <div className="detail-item">
-            <span className="label">Tên Vaccine:</span>
+            <span className="label">Tên vắc xin:</span>
             <span className="value">{vaccine.name}</span>
           </div>
           <div className="detail-item">

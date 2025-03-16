@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaNotesMedical, FaSyringe, FaUserMd } from "react-icons/fa";
+import { FaUsersCog, FaSyringe, FaUserCog } from "react-icons/fa";
 import { FiCalendar, FiUsers, FiAlertTriangle } from "react-icons/fi";
 import { useAuth } from "../../components/AuthContext";
 import BookingToday from "./BookingToday";
@@ -68,8 +68,8 @@ const StaffProfile = ({ initialStaffData }) => {
   return (
     <div className="staff-profile-container-profilestaffcss">
       <h2 className="staff-profile-title-profilestaffcss">
-        <FaUserMd className="staff-profile-icon-profilestaffcss" /> Hồ Sơ Nhân
-        Viên
+        <FaUsersCog className="staff-profile-icon-profilestaffcss" />
+        Hồ sơ nhân viên
       </h2>
       {notification && (
         <div
@@ -175,7 +175,6 @@ const StaffProfile = ({ initialStaffData }) => {
               <option value="">Chọn giới tính</option>
               <option value="male">Nam</option>
               <option value="female">Nữ</option>
-              <option value="other">Khác</option>
             </select>
           </div>
           <div>
@@ -438,7 +437,7 @@ const Profile = () => {
             </div>
             <div className="profile-stat-text-profilestaffcss">
               <p className="profile-stat-label-profilestaffcss">
-                Vaccine có sẵn
+                Vắc xin có sẵn
               </p>
               <p className="profile-stat-value-profilestaffcss">
                 {vaccineCount}

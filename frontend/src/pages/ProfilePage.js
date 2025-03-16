@@ -220,14 +220,14 @@ function ProfilePage() {
             onClick={() => setActiveTab("profile")}
           >
             <User size={18} />
-            <span>Thông Tin Cá Nhân</span>
+            <span>Thông tin cá nhân</span>
           </div>
           <div
             className="profile-sidebar-item"
             onClick={() => navigate("/child-info")}
           >
             <Calendar size={18} />
-            <span>Thông Tin Con</span>
+            <span>Thông tin con</span>
           </div>
           <div
             className={`profile-sidebar-item ${
@@ -236,14 +236,14 @@ function ProfilePage() {
             onClick={() => navigate("/my-bookings")}
           >
             <BookOpen size={18} />
-            <span>My Booking</span>
+            <span>Lịch tiêm đã đặt</span>
           </div>
           <div
             className="profile-sidebar-item"
             onClick={() => navigate("/my-payments")}
           >
             <CreditCard size={18} />
-            <span>My Payment</span>
+            <span>Lịch sử thanh toán</span>
           </div>
         </div>
 
@@ -251,7 +251,7 @@ function ProfilePage() {
           {activeTab === "profile" && (
             <div className="profile-section" style={{ opacity: 1 }}>
               <div className="profile-section-header">
-                <h2>Thông Tin Cá Nhân</h2>
+                <h2>Thông tin cá nhân</h2>
                 {!isEditing && (
                   <button
                     className="profile-edit-btn"

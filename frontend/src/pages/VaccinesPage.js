@@ -114,7 +114,7 @@ function VaccinesPage() {
           }`}
           onClick={() => setActiveTab("vaccine-list")}
         >
-          Danh sách vaccine
+          Danh sách vắc xin
         </button>
         <button
           className={`vaccines-tab ${
@@ -122,7 +122,7 @@ function VaccinesPage() {
           }`}
           onClick={() => setActiveTab("vaccine-combo")}
         >
-          Combo Vaccine
+          Combo vắc xin
         </button>
       </div>
       <div className="vaccines-content">

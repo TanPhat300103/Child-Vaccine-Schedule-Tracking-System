@@ -48,7 +48,7 @@ function BookingPage() {
             (_, index) => ({
               vaccineId: `V00${data.length + index + 1}`,
               name: `Vaccine ${data.length + index + 1}`,
-              description: `Description for Vaccine ${data.length + index + 1}`,
+              description: `Mô tả vắc xin ${data.length + index + 1}`,
               price: 200000 + index * 50000,
               doseNumber: 2,
               country: "USA",
@@ -91,7 +91,7 @@ function BookingPage() {
             (_, index) => ({
               vaccineComboId: `C00${data.length + index + 1}`,
               name: `Combo ${data.length + index + 1}`,
-              description: `Description for Combo ${data.length + index + 1}`,
+              description: `Mô tả của combo ${data.length + index + 1}`,
               priceCombo: 300000 + index * 50000,
             })
           ),
@@ -513,8 +513,8 @@ function BookingPage() {
     <div className="booking-page-container-bookingpage">
       <div className="booking-page-wrapper-bookingpage">
         <header className="booking-header-bookingpage">
-          <h2>Đăng Ký Tiêm </h2>
-          <p>Lựa chọn vaccine chất lượng, bảo vệ sức khỏe</p>
+          <h2>ĐĂNG KÝ TIÊM</h2>
+          <p>Lựa chọn vắc xin chất lượng, bảo vệ sức khỏe</p>
         </header>
 
         <div className="booking-content-bookingpage">
@@ -537,7 +537,7 @@ function BookingPage() {
                   <path d="M3 10h18"></path>
                   <path d="m14 14 2 2 4-4"></path>
                 </svg>
-                <h2>Danh sách vaccine</h2>
+                <h2>Danh sách vắc xin</h2>
               </div>
               <div className="search-filter-container-bookingpage">
                 <div className="search-bar-wrapper-bookingpage">
@@ -556,7 +556,7 @@ function BookingPage() {
                   </svg>
                   <input
                     type="text"
-                    placeholder="Tìm kiếm vaccine..."
+                    placeholder="Tìm kiếm vắc xin..."
                     value={vaccineSearch}
                     onChange={(e) => setVaccineSearch(e.target.value)}
                     className="search-bar-bookingpage"
@@ -749,7 +749,7 @@ function BookingPage() {
             <div className="sidebar-body-bookingpage">
               {selectedItems.length === 0 ? (
                 <div className="empty-selection-bookingpage">
-                  <p>Bạn chưa chọn vaccine nào</p>
+                  <p>Bạn chưa chọn vắc xin nào</p>
                 </div>
               ) : (
                 <div className="selected-items-list-bookingpage">
@@ -853,8 +853,8 @@ function BookingPage() {
                 onClick={handleConfirmBooking}
               >
                 {selectedItems.length === 0
-                  ? "Vui lòng chọn vaccine"
-                  : "Xác nhận đặt vaccine"}
+                  ? "Vui lòng chọn vắc xin"
+                  : "Xác nhận đặt vắc xin"}
               </button>
             </div>
           </div>
@@ -878,7 +878,7 @@ function BookingPage() {
             </div>
             <div className="modal-body-bookingpage">
               <div className="modal-info-item-bookingpage">
-                <span className="modal-label-bookingpage">Mã vaccine:</span>
+                <span className="modal-label-bookingpage">Mã vắc xin:</span>
                 <span>{selectedVaccine.vaccineId || "Không có mã"}</span>
               </div>
               <div className="modal-info-item-bookingpage">

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../style/PaymentManager.css";
+import CopyButton from "../../components/CopyButton";
 
 const Payments = () => {
   const [payments, setPayments] = useState([]);
@@ -506,6 +507,9 @@ const Payments = () => {
           </svg>
           Danh sách khách hàng
         </h2>
+        <p className="header-subtitle-paymentmanager">
+          Tra cứu, quản lý và theo dõi hoá đơn trong hệ thống
+        </p>
 
         <div className="search-container-paymentmanager">
           <div className="search-icon-container-paymentmanager">
@@ -565,7 +569,10 @@ const Payments = () => {
                       {customer.firstName} {customer.lastName}
                     </p>
                     <p className="customer-id-paymentmanager">
-                      {customer.customerId}
+                      {customer.customerId}{" "}
+                      <span>
+                        <CopyButton textToCopy={customer.customerId} />
+                      </span>
                     </p>
                   </div>
                 </div>

@@ -1,23 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../components/AuthContext";
 import {
-  FiGrid,
   FiUsers,
   FiCalendar,
-  FiUser,
-  FiBarChart2,
-  FiShield,
-  FiBox,
-  FiHome,
   FiMessageSquare,
-  FiActivity,
-  FiAlertTriangle,
   FiMenu,
   FiX,
   FiLogOut,
+  FiAlertTriangle,
 } from "react-icons/fi";
 import { RiSyringeLine } from "react-icons/ri";
+import {
+  FaSyringe,
+  FaChartBar,
+  FaBullhorn,
+  FaBriefcaseMedical,
+  FaVial,
+  FaUsers,
+} from "react-icons/fa";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { FaCashRegister } from "react-icons/fa";
@@ -89,7 +90,7 @@ const AdminPage = () => {
                   }`
                 }
               >
-                <FiGrid
+                <FaChartBar
                   className={`nav-icon-adminpage ${
                     !sidebarOpen && "nav-icon-center-adminpage"
                   }`}
@@ -112,7 +113,7 @@ const AdminPage = () => {
                   }`
                 }
               >
-                <FiUser
+                <FaUsers
                   className={`nav-icon-adminpage ${
                     !sidebarOpen && "nav-icon-center-adminpage"
                   }`}
@@ -192,16 +193,16 @@ const AdminPage = () => {
                   isVaccineActive ? "nav-item-active-adminpage" : ""
                 }`}
               >
-                <RiSyringeLine
+                <FaSyringe
                   className={`nav-icon-adminpage ${
                     !sidebarOpen && "nav-icon-center-adminpage"
                   }`}
                 />
                 {sidebarOpen && (
-                  <span className="nav-text-adminpage">Vaccine</span>
+                  <span className="nav-text-adminpage">Vắc xin</span>
                 )}
                 {!sidebarOpen && (
-                  <span className="nav-tooltip-adminpage">Vaccine</span>
+                  <span className="nav-tooltip-adminpage">Vắc xin</span>
                 )}
               </div>
               <ul
@@ -218,7 +219,7 @@ const AdminPage = () => {
                       }`
                     }
                   >
-                    <FiShield className="nav-icon-adminpage" />
+                    <FaVial className="nav-icon-adminpage" />
                     {sidebarOpen && (
                       <span className="nav-text-adminpage">
                         Quản lý vắc xin
@@ -235,9 +236,9 @@ const AdminPage = () => {
                       }`
                     }
                   >
-                    <FiBox className="nav-icon-adminpage" />
+                    <FaBriefcaseMedical className="nav-icon-adminpage" />
                     {sidebarOpen && (
-                      <span className="nav-text-adminpage">Gói vắc xin</span>
+                      <span className="nav-text-adminpage">Combo vắc xin</span>
                     )}
                   </NavLink>
                 </li>
@@ -253,7 +254,7 @@ const AdminPage = () => {
                   }`
                 }
               >
-                <FiActivity
+                <FiAlertTriangle
                   className={`nav-icon-adminpage ${
                     !sidebarOpen && "nav-icon-center-adminpage"
                   }`}
@@ -307,7 +308,7 @@ const AdminPage = () => {
                   }`
                 }
               >
-                <FiBarChart2
+                <FaBullhorn
                   className={`nav-icon-adminpage ${
                     !sidebarOpen && "nav-icon-center-adminpage"
                   }`}

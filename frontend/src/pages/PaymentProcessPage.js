@@ -338,7 +338,7 @@ function PaymentProcessPage() {
                 <span>{payment?.booking?.bookingId}</span>
               </div>
               <div className="info-item-paymentprocess">
-                <span>Ngày Booking:</span>
+                <span>Ngày đặt</span>
                 <span>
                   {payment?.booking
                     ? new Date(payment.booking.bookingDate).toLocaleDateString(
@@ -429,7 +429,9 @@ function PaymentProcessPage() {
             <button
               className="confirm-btn-paymentprocess"
               onClick={handleConfirm}
-              disabled={isSubmitting || paymentMethod !== "atm" || !selectedBank}
+              disabled={
+                isSubmitting || paymentMethod !== "atm" || !selectedBank
+              }
             >
               {isSubmitting ? "Đang xử lý..." : "Xác nhận thanh toán"}{" "}
               <ChevronRight size={18} />

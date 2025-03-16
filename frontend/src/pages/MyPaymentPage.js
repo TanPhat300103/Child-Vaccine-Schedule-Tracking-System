@@ -147,7 +147,7 @@ function MyPaymentPage() {
             <CreditCard size={32} />
           </div>
           <div className="mypayment-header-text">
-            <h1>My Payments</h1>
+            <h1>Lịch sử thanh toán</h1>
             <p>Danh sách hóa đơn thanh toán của bạn</p>
           </div>
         </div>
@@ -163,7 +163,7 @@ function MyPaymentPage() {
           >
             <div className="mypayment-sidebar-content">
               <User size={18} />
-              <span>Thông Tin Cá Nhân</span>
+              <span>Thông tin cá nhân</span>
             </div>
             <div className="mypayment-sidebar-placeholder"></div>
           </div>
@@ -175,7 +175,7 @@ function MyPaymentPage() {
           >
             <div className="mypayment-sidebar-content">
               <Calendar size={18} />
-              <span>Thông Tin Con</span>
+              <span>Thông tin con</span>
             </div>
             <div className="mypayment-sidebar-placeholder"></div>
           </div>
@@ -187,7 +187,7 @@ function MyPaymentPage() {
           >
             <div className="mypayment-sidebar-content">
               <BookOpen size={18} />
-              <span>My Booking</span>
+              <span>Lịch tiêm đã đặt</span>
             </div>
           </div>
           <div
@@ -198,7 +198,7 @@ function MyPaymentPage() {
           >
             <div className="mypayment-sidebar-content">
               <CreditCard size={18} />
-              <span>My Payment</span>
+              <span>Lịch sử thanh toán</span>
             </div>
             <div className="mypayment-sidebar-placeholder"></div>
           </div>
@@ -206,7 +206,7 @@ function MyPaymentPage() {
 
         <div className="mypayment-main">
           <div className="mypayment-section">
-            <h2 className="mypayment-section-title">Danh Sách Hóa Đơn</h2>
+            <h2 className="mypayment-section-title">Danh sách hóa đơn</h2>
             <div className="mypayment-filter">
               <label>Lọc theo trạng thái: </label>
               <select
@@ -289,10 +289,10 @@ function MyPaymentPage() {
                               <td colSpan="7">
                                 <div className="mypayment-card-details">
                                   <div className="mypayment-detail-section">
-                                    <h4>Thông Tin Booking</h4>
+                                    <h4>Thông tin lịch tiêm</h4>
                                     <div className="mypayment-detail-item">
                                       <span className="mypayment-detail-label">
-                                        Booking ID:
+                                        Mã đặt lịch:
                                       </span>
                                       <span className="mypayment-detail-value">
                                         {payment.booking.bookingId}
@@ -300,7 +300,7 @@ function MyPaymentPage() {
                                     </div>
                                     <div className="mypayment-detail-item">
                                       <span className="mypayment-detail-label">
-                                        Ngày Booking:
+                                        Ngày đặt
                                       </span>
                                       <span className="mypayment-detail-value">
                                         {new Date(
@@ -310,10 +310,10 @@ function MyPaymentPage() {
                                     </div>
                                   </div>
                                   <div className="mypayment-detail-section">
-                                    <h4>Thông Tin Thanh Toán</h4>
+                                    <h4>Thông tin thanh toán</h4>
                                     <div className="mypayment-detail-item">
                                       <span className="mypayment-detail-label">
-                                        Hóa đơn ID:
+                                        Mã hoá đơn
                                       </span>
                                       <span className="mypayment-detail-value">
                                         {payment.paymentId}

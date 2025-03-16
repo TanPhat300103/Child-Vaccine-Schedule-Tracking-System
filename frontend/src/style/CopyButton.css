@@ -1,0 +1,44 @@
+.copy-container {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+}
+
+.copy-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 5px;
+}
+
+.copy-icon {
+  font-size: 16px; /* Kích thước icon */
+  color: #9A9A9A; /* Màu xám đậm */
+  transition: color 0.3s; /* Hiệu ứng chuyển màu khi hover */
+}
+
+.copy-button:hover .copy-icon {
+  color: #000; /* Đậm hơn khi hover */
+}
+
+.copied-message {
+  position: absolute;
+  left: 100%; /* Đặt thông báo bên phải nút */
+  margin-left: 5px;
+  background-color: #333; /* Nền tối */
+  color: #fff; /* Chữ trắng */
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  animation: fadeInOut 2s ease-in-out; /* Hiệu ứng mờ dần */
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
