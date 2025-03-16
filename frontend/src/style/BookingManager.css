@@ -143,11 +143,11 @@
     color: #6b7280;
     margin-top: 4px;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column; /* Sắp xếp các phần tử theo chiều dọc */
   }
   
   .customer-email-bookingmanager {
-    max-width: 140px;
+    max-width: 260px;
     overflow: hidden;
     text-overflow: ellipsis;
   }

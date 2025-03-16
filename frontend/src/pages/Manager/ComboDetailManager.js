@@ -36,7 +36,7 @@ const useVaccineImage = (vaccineId) => {
   return img;
 };
 
-// --- Component hiển thị từng vaccine trong ComboDetail (grid chính) ---
+// --- Component hiển thị từng vắc xin trong comboDetail (grid chính) ---
 const ComboDetailItem = ({ vaccine, onRemove }) => {
   const img = useVaccineImage(vaccine.vaccineId);
   return (
@@ -152,14 +152,14 @@ const SelectableVaccineItem = ({ vaccine, isSelected, onSelect }) => {
   );
 };
 
-// --- Card "Thêm Vaccine" trong grid chính ---
+// --- Card "thêm vắc xin" trong grid chính ---
 const AddVaccineCard = ({ onOpenModal }) => {
   return (
     <div onClick={onOpenModal} className="add-card-combodetailmanager">
       <div className="add-inner-combodetailmanager">
         <FaPlus className="add-icon-combodetailmanager" />
       </div>
-      <h3 className="add-text-combodetailmanager">Thêm Vaccine</h3>
+      <h3 className="add-text-combodetailmanager">Thêm vắc xin</h3>
     </div>
   );
 };
@@ -323,10 +323,10 @@ const ComboDetail = () => {
       if (!response.ok) {
         throw new Error("Failed to add vaccines to combo");
       }
-      toast.success("Đã thêm vaccine thành công!", { autoClose: 2000 });
+      toast.success("Đã thêm vắc xin thành công!", { autoClose: 2000 });
     } catch (err) {
       console.error("Error adding vaccines to combo:", err);
-      toast.error("Không thể thêm vaccine vào combo do lỗi server.");
+      toast.error("Không thể thêm vắc xin vào combo do lỗi server.");
     } finally {
       setAdding(false);
       fetchComboDetails();
@@ -338,7 +338,7 @@ const ComboDetail = () => {
   if (loading) {
     return (
       <div className="text-center-combodetailmanager">
-        Đang tải Danh sách vaccine trong combo...
+        Đang tải Danh sách vắc xin trong combo...
       </div>
     );
   }
@@ -355,7 +355,7 @@ const ComboDetail = () => {
     <div className="container-combodetailmanager">
       <div className="inner-container-combodetailmanager">
         <h2 className="title-combodetailmanager">
-          Danh sách vaccine trong Combo: {vaccineComboId}
+          Danh sách vắc xin trong combo: {vaccineComboId}
         </h2>
         <button
           className="back-button-combodetailmanager"
@@ -394,7 +394,7 @@ const ComboDetail = () => {
           <div className="modal-content-combodetailmanager">
             <div className="modal-header-combodetailmanager">
               <h2 className="modal-title-combodetailmanager">
-                Chọn Vaccine để thêm vào Combo
+                Chọn vắc xin để thêm vào combo
               </h2>
               <div className="search-bar-combodetailmanager">
                 <select
@@ -414,7 +414,7 @@ const ComboDetail = () => {
                 {searchType === "name" && (
                   <input
                     type="text"
-                    placeholder="Nhập tên vaccine"
+                    placeholder="Nhập tên vắc xin"
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
                     className="input-combodetailmanager"

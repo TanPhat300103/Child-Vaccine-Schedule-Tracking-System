@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import {
-  FaSyringe,
-  FaSearch,
-  FaPlus,
-  FaPowerOff,
-  FaVial,
-} from "react-icons/fa";
-import DatePicker from "react-datepicker";
+import { FaSearch, FaPlus, FaPowerOff, FaVial } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
 import "../../style/Vaccines.css";
 
@@ -264,7 +257,7 @@ const Vaccines = () => {
               to={`../vaccine-detail/${vaccine.vaccineId}`}
               className="detail-button-vaccinemanager"
             >
-              Vaccine nhập kho
+              Vắc xin nhập kho
             </NavLink>
           </div>
         </div>
@@ -272,11 +265,11 @@ const Vaccines = () => {
         {isModalOpen && (
           <div className="modal-overlay-vaccinemanager">
             <div className="modal-content-vaccinemanager">
-              <h2 className="modal-title-vaccinemanager">Cập Nhật Vaccine</h2>
+              <h2 className="modal-title-vaccinemanager">Cập nhật vắc xin</h2>
               <div className="modal-grid-vaccinemanager">
                 <div>
                   <label className="modal-label-vaccinemanager">
-                    Tên Vaccine:
+                    Tên vắc xin::
                   </label>
                   <input
                     type="text"
@@ -414,7 +407,7 @@ const Vaccines = () => {
       <div className="content-vaccinemanager">
         <header className="header-vaccinemanager">
           <div className="header-title-vaccinemanager">
-            <FaSyringe className="header-icon-vaccinemanager" />
+            <FaVial className="header-icon-vaccinemanager" />
             <h1 className="header-text-vaccinemanager">Quản lý vắc xin</h1>
           </div>
           <p className="header-subtitle-vaccinemanager">
@@ -446,7 +439,7 @@ const Vaccines = () => {
               {searchType === "name" && (
                 <input
                   type="text"
-                  placeholder="Nhập tên vaccine"
+                  placeholder="Nhập tên vắc xin"
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
                   className="search-input-vaccinemanager"
@@ -503,7 +496,7 @@ const Vaccines = () => {
                 className="create-button-vaccinemanager"
               >
                 <FaPlus />
-                <span>Thêm vaccine mới</span>
+                <span>Thêm vắc xin mới</span>
               </button>
             </div>
           </div>
@@ -512,7 +505,7 @@ const Vaccines = () => {
         <div className="vaccine-list-vaccinemanager">
           {filteredVaccines.length === 0 ? (
             <div className="no-results-vaccinemanager">
-              <FaSyringe className="no-results-icon-vaccinemanager" />
+              <FaVial className="no-results-icon-vaccinemanager" />
               <p className="no-results-text-vaccinemanager">
                 Không tìm thấy vaccine nào phù hợp
               </p>
@@ -537,7 +530,7 @@ const Vaccines = () => {
             ></div>
             <div className="create-modal-content-vaccinemanager">
               <h3 className="create-modal-title-vaccinemanager">
-                Tạo Vaccine Mới
+                Thêm vắc xin mới
               </h3>
               <form
                 onSubmit={handleCreateVaccine}
@@ -545,7 +538,7 @@ const Vaccines = () => {
               >
                 <div>
                   <label className="create-label-vaccinemanager">
-                    Tên Vaccine{" "}
+                    Tên vắc xin:{" "}
                     <span className="required-vaccinemanager">*</span>
                   </label>
                   <input

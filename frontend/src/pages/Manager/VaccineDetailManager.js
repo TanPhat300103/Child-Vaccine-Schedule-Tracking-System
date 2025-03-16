@@ -42,15 +42,15 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
         }
       );
 
-      if (!response.ok) throw new Error("Ngưng lô vaccine thất bại");
+      if (!response.ok) throw new Error("Ngưng lô vắc xin thất bại");
       const data = await response.json();
       console.log("API nhận về:", data);
       onToggleStatus(detail.id, detail.status);
       setIsConfirmModalOpen(false);
-      toast.success("Ngưng lô vaccine thành công!");
+      toast.success("Ngưng lô vắc xin thành công!");
     } catch (err) {
-      console.error("Lỗi ngưng lô vaccine:", err);
-      toast.error(err.message || "Đã xảy ra lỗi khi ngưng lô vaccine!");
+      console.error("Lỗi ngưng lô vắc xin:", err);
+      toast.error(err.message || "Đã xảy ra lỗi khi ngưng lô vắc xin!");
     }
   };
 
@@ -148,9 +148,9 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
       onDetailUpdated(data);
       setIsModalOpen(false);
       setErrors({});
-      toast.success("Cập nhật lô vaccine thành công!");
+      toast.success("Cập nhật lô vắc xin thành công!");
     } catch (err) {
-      console.error("Cập nhật lô vaccine thất bại:", err);
+      console.error("Cập nhật lô vắc xin thất bại:", err);
       toast.error(err.message || "Đã xảy ra lỗi khi cập nhật!");
     }
   };
@@ -216,7 +216,7 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
         <div className="modal-overlay-vaccinedetailmanager">
           <div className="modal-content-vaccinedetailmanager">
             <h2 className="modal-title-vaccinedetailmanager">
-              Cập nhật lô vaccine
+              Cập nhật lô vắc xin
             </h2>
             <form
               onSubmit={handleUpdate}
@@ -355,10 +355,10 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
         <div className="modal-overlay-vaccinedetailmanager">
           <div className="modal-content-vaccinedetailmanager">
             <h2 className="modal-title-vaccinedetailmanager">
-              Xác nhận ngưng lô vaccine
+              Xác nhận ngưng lô vắc xin
             </h2>
             <p className="confirm-text-vaccinedetailmanager">
-              Bạn có chắc chắn muốn ngưng lô vaccine này không?
+              Bạn có chắc chắn muốn ngưng lô vắc xin này không?
             </p>
             <div className="modal-buttons-vaccinedetailmanager">
               <button
@@ -421,7 +421,7 @@ const VaccineDetailManager = () => {
       setVaccineDetails(data);
     } catch (err) {
       console.error("Lỗi khi lấy VaccineDetail:", err);
-      toast.error(err.message || "Đã xảy ra lỗi khi lấy danh sách lô vaccine!");
+      toast.error(err.message || "Đã xảy ra lỗi khi lấy danh sách lô vắc xin!");
     }
   };
 
@@ -551,10 +551,10 @@ const VaccineDetailManager = () => {
       });
       setErrors({});
       fetchVaccineDetails();
-      toast.success("Thêm lô vaccine mới thành công!");
+      toast.success("Thêm lô vắc xin mới thành công!");
     } catch (err) {
-      console.error("Lỗi khi thêm lô vaccine:", err);
-      toast.error(err.message || "Đã xảy ra lỗi khi thêm lô vaccine!");
+      console.error("Lỗi khi thêm lô vắc xin:", err);
+      toast.error(err.message || "Đã xảy ra lỗi khi thêm lô vắc xin!");
     }
   };
 
@@ -731,7 +731,7 @@ const VaccineDetailManager = () => {
         )}
         {vaccineDetails.length === 0 ? (
           <p className="no-data-text-vaccinedetailmanager">
-            Không tìm thấy lô vaccine nào
+            Không tìm thấy lô vắc xin nào
           </p>
         ) : (
           <div className="grid-vaccinedetailmanager">

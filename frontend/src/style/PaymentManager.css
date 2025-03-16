@@ -19,9 +19,16 @@
     font-size: 1.5rem;
     font-weight: 700;
     color: #2d3748;
-    margin-bottom: 24px;
+    margin-bottom: 5px;
     display: flex;
     align-items: center;
+}
+
+.header-subtitle-paymentmanager {
+    color: #718096;
+    font-size: 1rem;
+    margin-left: 8px;
+    margin-bottom: 15px;
 }
 
 .sidebar-icon-paymentmanager {
@@ -144,7 +151,6 @@
     font-size: 0.875rem;
     color: #718096;
     white-space: nowrap;
-    overflow: hidden;
     text-overflow: ellipsis;
 }
 

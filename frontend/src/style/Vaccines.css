@@ -168,11 +168,12 @@
   
   .create-button-vaccinemanager {
     display: flex;
+    width: 230px;
     align-items: center;
     gap: 8px;
     background-color: #2563eb;
     color: #ffffff;
-    padding: 12px 24px;
+    padding: 12px 12px;
     border-radius: 8px;
     transition: background-color 0.2s;
     border: none;

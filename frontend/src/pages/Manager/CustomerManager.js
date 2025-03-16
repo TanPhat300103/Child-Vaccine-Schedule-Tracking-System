@@ -415,7 +415,7 @@ const Customers = () => {
                   />
                 </div>
                 <div>
-                  <label className="form-label">Số Điện Thoại</label>
+                  <label className="form-label">Số điện thoại</label>
                   <input
                     type="text"
                     value={editingCustomer.phoneNumber}
@@ -429,7 +429,7 @@ const Customers = () => {
                   />
                 </div>
                 <div>
-                  <label className="form-label">Ngày Sinh</label>
+                  <label className="form-label">Ngày sinh</label>
                   <input
                     type="date"
                     value={editingCustomer.dob}
@@ -443,7 +443,7 @@ const Customers = () => {
                   />
                 </div>
                 <div>
-                  <label className="form-label">Giới Tính</label>
+                  <label className="form-label">Giới tính</label>
                   <select
                     value={editingCustomer.gender ? "true" : "false"}
                     onChange={(e) =>
@@ -459,7 +459,7 @@ const Customers = () => {
                   </select>
                 </div>
                 <div className="password-field">
-                  <label className="form-label">Mật Khẩu</label>
+                  <label className="form-label">Mật khẩu</label>
                   <input
                     type={editingPasswordVisible ? "text" : "password"}
                     value={editingCustomer.password}
@@ -486,7 +486,7 @@ const Customers = () => {
                   </button>
                 </div>
                 <div>
-                  <label className="form-label">Địa Chỉ</label>
+                  <label className="form-label">Địa chỉ</label>
                   <input
                     type="text"
                     value={editingCustomer.address}
@@ -500,7 +500,7 @@ const Customers = () => {
                   />
                 </div>
                 <div>
-                  <label className="form-label">Số Tài Khoản Ngân Hàng</label>
+                  <label className="form-label">Số tài khoản ngân hàng</label>
                   <input
                     type="text"
                     value={editingCustomer.banking}
@@ -603,7 +603,7 @@ const Customers = () => {
                   />
                 </div>
                 <div>
-                  <label className="form-label">Ngày Sinh</label>
+                  <label className="form-label">Ngày sinh</label>
                   <input
                     type="date"
                     value={newCustomer.dob}
@@ -617,7 +617,7 @@ const Customers = () => {
                   />
                 </div>
                 <div>
-                  <label className="form-label">Giới Tính</label>
+                  <label className="form-label">Giới tính</label>
                   <select
                     value={newCustomer.gender ? "true" : "false"}
                     onChange={(e) =>
@@ -658,7 +658,7 @@ const Customers = () => {
                   </button>
                 </div>
                 <div>
-                  <label className="form-label">Địa Chỉ</label>
+                  <label className="form-label">Địa chỉ</label>
                   <input
                     type="text"
                     value={newCustomer.address}
@@ -672,7 +672,7 @@ const Customers = () => {
                   />
                 </div>
                 <div>
-                  <label className="form-label">Số Tài Khoản Ngân Hàng</label>
+                  <label className="form-label">Số tài khoản ngân hàng</label>
                   <input
                     type="text"
                     value={newCustomer.banking}

@@ -7,13 +7,11 @@ import "react-toastify/dist/ReactToastify.css";
 import {
   CalendarIcon,
   UserIcon,
-  DollarSignIcon,
   PhoneIcon,
   MailIcon,
   CheckCircleIcon,
   ClockIcon,
   AlertCircleIcon,
-  MapPinIcon,
   ShieldIcon,
   ChevronDownIcon,
   ChevronUpIcon,
@@ -206,6 +204,7 @@ const BookingDetail = () => {
           acc[childKey].push(detail);
           return acc;
         }, {});
+      await fetchBookingData();
       setGroupedDetails(updatedGroups);
       toast.update(loadingToast, {
         render: "Xác nhận tiêm thành công",
@@ -349,8 +348,11 @@ const BookingDetail = () => {
       <div className="header-bookingdetailmanager">
         <div className="header-content-bookingdetailmanager">
           <h1 className="header-title-bookingdetailmanager">
-            <ShieldIcon className="header-icon-bookingdetailmanager" />
-            Chi tiết lịch tiêm chủng
+            <CalendarIcon className="header-icon-bookingdetailmanager" />
+            Chi tiết lịch tiêm chủng của khách hàng {
+              booking.customer.firstName
+            }{" "}
+            {booking.customer.lastName}
           </h1>
           <div className="booking-status-bookingdetailmanager">
             {getStatusTextAndIcon(booking.status).icon}
@@ -370,16 +372,16 @@ const BookingDetail = () => {
             </p>
             <div className="modal-buttons-bookingdetailmanager">
               <button
-                onClick={() => setShowConfirmModal(false)}
-                className="modal-cancel-button-bookingdetailmanager"
-              >
-                Hủy
-              </button>
-              <button
                 onClick={confirmAction}
                 className="modal-confirm-button-bookingdetailmanager"
               >
                 Xác nhận
+              </button>
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                className="modal-cancel-button-bookingdetailmanager"
+              >
+                Hủy
               </button>
             </div>
           </div>
@@ -514,7 +516,7 @@ const BookingDetail = () => {
                   <div className="customer-info-bookingdetailmanager">
                     <div className="info-block-bookingdetailmanager">
                       <div className="info-label-bookingdetailmanager">
-                        Họ và tên
+                        Họ và tên:
                       </div>
                       <div className="info-value-bookingdetailmanager">
                         {booking.customer.firstName} {booking.customer.lastName}
@@ -522,7 +524,7 @@ const BookingDetail = () => {
                     </div>
                     <div className="info-block-bookingdetailmanager">
                       <div className="info-label-bookingdetailmanager">
-                        Mã khách hàng
+                        Mã khách hàng:
                       </div>
                       <div className="info-value-bookingdetailmanager">
                         #{booking.customer.customerId}
@@ -530,7 +532,7 @@ const BookingDetail = () => {
                     </div>
                     <div className="info-block-bookingdetailmanager">
                       <div className="info-label-bookingdetailmanager">
-                        Số điện thoại
+                        Số điện thoại:
                       </div>
                       <div className="info-value-with-icon-bookingdetailmanager">
                         <PhoneIcon className="small-icon-bookingdetailmanager" />
@@ -539,7 +541,7 @@ const BookingDetail = () => {
                     </div>
                     <div className="info-block-bookingdetailmanager">
                       <div className="info-label-bookingdetailmanager">
-                        Email
+                        Email:
                       </div>
                       <div className="info-value-with-icon-bookingdetailmanager">
                         <MailIcon className="small-icon-bookingdetailmanager" />
@@ -557,7 +559,7 @@ const BookingDetail = () => {
                 onClick={handleCancel}
                 className="cancel-booking-button-bookingdetailmanager"
               >
-                Hủy Đặt Lịch
+                Hủy đặt lịch
               </button>
             )}
           </div>

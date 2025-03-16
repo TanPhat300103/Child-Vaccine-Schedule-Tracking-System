@@ -1,19 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { useNavigate, useLocation } from "react-router-dom";
-import {
-  CalendarIcon,
-  UserIcon,
-  DollarSignIcon,
-  PhoneIcon,
-  MailIcon,
-  CheckCircleIcon,
-  ClockIcon,
-  AlertCircleIcon,
-  MapPinIcon,
-  ShieldIcon,
-} from "lucide-react";
+import { AlertCircleIcon } from "lucide-react";
+import { FiCalendar } from "react-icons/fi";
 import "../../style/BookingManager.css";
+import CopyButton from "../../components/CopyButton";
 
 const Bookings = () => {
   const navigate = useNavigate();
@@ -226,9 +217,13 @@ const Bookings = () => {
       <div className="header-bookingmanager">
         <div className="header-content-bookingmanager">
           <h1 className="header-title-bookingmanager">
-            <ShieldIcon className="header-icon-bookingmanager" />
+            <FiCalendar className="header-icon-bookingmanager" />
             Quản lý lịch tiêm chủng
           </h1>
+          <p className="header-subtitle-bookingmanager">
+            Tra cứu, quản lý và theo dõi danh sách đặt lịch của khách hàng trong
+            hệ thống
+          </p>
         </div>
       </div>
 
@@ -285,7 +280,10 @@ const Bookings = () => {
                   >
                     <div>
                       <p className="customer-id-bookingmanager">
-                        Mã: {cust.customerId}
+                        Mã: {cust.customerId}{" "}
+                        <span>
+                          <CopyButton textToCopy={cust.customerId} />
+                        </span>
                       </p>
                       <p>
                         Tên: {cust.firstName} {cust.lastName}

@@ -27,6 +27,7 @@ const Childs = () => {
   const [editingChild, setEditingChild] = useState(null);
   const [childUpdateError, setChildUpdateError] = useState(null);
 
+  // useEffect để fetch dữ liệu khách hàng và trẻ em không thay đổi
   useEffect(() => {
     fetch(
       `${process.env.REACT_APP_API_BASE_URL}/customer/findid?id=${customerId}`,
@@ -34,7 +35,7 @@ const Childs = () => {
         method: "GET",
         headers: {
           "ngrok-skip-browser-warning": "true",
-          "Content-Type": "application/json", // Bỏ qua warning page
+          "Content-Type": "application/json",
         },
         credentials: "include",
         withCredentials: true,
@@ -57,7 +58,7 @@ const Childs = () => {
         method: "GET",
         headers: {
           "ngrok-skip-browser-warning": "true",
-          "Content-Type": "application/json", // Bỏ qua warning page
+          "Content-Type": "application/json",
         },
         credentials: "include",
         withCredentials: true,
@@ -71,12 +72,13 @@ const Childs = () => {
       .catch((error) => console.error("Lỗi khi lấy hồ sơ trẻ em:", error));
   }, [customerId]);
 
+  // Các hàm handle không thay đổi
   const handleCreateChild = () => {
     fetch(`${process.env.REACT_APP_API_BASE_URL}/child/create`, {
       method: "POST",
       headers: {
         "ngrok-skip-browser-warning": "true",
-        "Content-Type": "application/json", // Bỏ qua warning page
+        "Content-Type": "application/json",
       },
       credentials: "include",
       withCredentials: true,
@@ -109,18 +111,12 @@ const Childs = () => {
       });
   };
 
-  const handleChildEdit = (child, e) => {
-    e.stopPropagation();
-    setEditingChild(child);
-    setChildUpdateError(null);
-  };
-
   const handleChildSave = () => {
     fetch(`${process.env.REACT_APP_API_BASE_URL}/child/update`, {
       method: "POST",
       headers: {
         "ngrok-skip-browser-warning": "true",
-        "Content-Type": "application/json", // Bỏ qua warning page
+        "Content-Type": "application/json",
       },
       credentials: "include",
       withCredentials: true,
@@ -150,12 +146,12 @@ const Childs = () => {
   };
 
   const handleChildInactive = (childId, e) => {
-    e.stopPropagation();
+    e.stopPropagation(); // Ngăn sự kiện click lan lên thẻ cha
     fetch(`${process.env.REACT_APP_API_BASE_URL}/child/active?id=${childId}`, {
       method: "POST",
       headers: {
         "ngrok-skip-browser-warning": "true",
-        "Content-Type": "application/json", // Bỏ qua warning page
+        "Content-Type": "application/json",
       },
       credentials: "include",
       withCredentials: true,
@@ -173,6 +169,11 @@ const Childs = () => {
       );
   };
 
+  const handleCardClick = (child) => {
+    setEditingChild(child);
+    setChildUpdateError(null);
+  };
+
   const childrenArray = Array.isArray(children) ? children : [children];
   const filteredChildren = childrenArray.filter((child) => {
     if (!searchTerm) return true;
@@ -186,7 +187,7 @@ const Childs = () => {
   return (
     <div className="container-child">
       <div className="content-wrapper-child">
-        {/* Header */}
+        {/* Header không thay đổi */}
         <header className="header-child">
           <div className="header-title-child">
             <FaChild className="header-icon-child" />
@@ -194,15 +195,16 @@ const Childs = () => {
           </div>
           <p className="header-subtitle-child">
             Quản lý hồ sơ trẻ em của khách hàng{" "}
-            {customerInfo
-              ? `${customerInfo.firstName} ${customerInfo.lastName}`
-              : ""}
+            <strong>
+              {customerInfo
+                ? `${customerInfo.firstName} ${customerInfo.lastName}`
+                : ""}
+            </strong>
           </p>
         </header>
 
-        {/* Two-column layout */}
         <div className="layout-child">
-          {/* Left Column: Customer Profile */}
+          {/* Left Column không thay đổi */}
           <div className="left-column-child">
             <div className="customer-card-child">
               <h2 className="customer-card-title-child">
@@ -230,7 +232,7 @@ const Childs = () => {
             </div>
           </div>
 
-          {/* Right Column: Children List */}
+          {/* Right Column: Chỉnh sửa phần danh sách trẻ em */}
           <div className="right-column-child">
             <div className="search-bar-child">
               <div className="search-container-child">
@@ -262,7 +264,12 @@ const Childs = () => {
                 </div>
               ) : (
                 filteredChildren.map((child) => (
-                  <div key={child.childId} className="child-card-child">
+                  <div
+                    key={child.childId}
+                    className="child-card-child"
+                    onClick={() => handleCardClick(child)}
+                    style={{ cursor: "pointer" }} // Thêm style để hiển thị con trỏ tay
+                  >
                     <div className="child-card-left-child">
                       <div className="child-icon-container-child">
                         <FaChild className="child-icon-child" />
@@ -291,12 +298,7 @@ const Childs = () => {
                         <FaPowerOff />
                         <span>{child.active ? "Ngưng" : "Kích hoạt"}</span>
                       </button>
-                      <button
-                        onClick={(e) => handleChildEdit(child, e)}
-                        className="edit-button-child"
-                      >
-                        Cập nhật
-                      </button>
+                      {/* Bỏ nút Cập nhật */}
                     </div>
                   </div>
                 ))
@@ -305,7 +307,7 @@ const Childs = () => {
           </div>
         </div>
 
-        {/* Modal Tạo Hồ sơ trẻ em */}
+        {/* Modal Tạo Hồ sơ trẻ em không thay đổi */}
         {showAddChildForm && (
           <div className="modal-overlay-child">
             <div
@@ -353,7 +355,7 @@ const Childs = () => {
                 </div>
                 <div className="form-group-child">
                   <label className="form-label-child">
-                    Ngày Sinh <span className="required-child">*</span>
+                    Ngày sinh <span className="required-child">*</span>
                   </label>
                   <input
                     type="date"
@@ -367,7 +369,7 @@ const Childs = () => {
                 </div>
                 <div className="form-group-child">
                   <label className="form-label-child">
-                    Giới Tính <span className="required-child">*</span>
+                    Giới tính <span className="required-child">*</span>
                   </label>
                   <select
                     value={newChild.gender ? "true" : "false"}
@@ -415,7 +417,7 @@ const Childs = () => {
           </div>
         )}
 
-        {/* Modal Cập nhật hồ sơ trẻ em */}
+        {/* Modal Cập nhật hồ sơ trẻ em không thay đổi */}
         {editingChild && (
           <div className="modal-overlay-child">
             <div
@@ -469,7 +471,7 @@ const Childs = () => {
                 </div>
                 <div className="form-group-child">
                   <label className="form-label-child">
-                    Ngày Sinh <span className="required-child">*</span>
+                    Ngày sinh <span className="required-child">*</span>
                   </label>
                   <input
                     type="date"
@@ -486,7 +488,7 @@ const Childs = () => {
                 </div>
                 <div className="form-group-child">
                   <label className="form-label-child">
-                    Giới Tính <span className="required-child">*</span>
+                    Giới tính <span className="required-child">*</span>
                   </label>
                   <select
                     value={editingChild.gender ? "true" : "false"}

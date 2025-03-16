@@ -182,13 +182,13 @@ const Records = () => {
     if (!reaction) {
       return (
         <span className="reaction-badge-record reaction-badge-none-record">
-          Không Ghi Nhận Phản Ứng Nào
+          Không ghi nhận phản ứng nào
         </span>
       );
     }
     return (
       <span className="reaction-badge-record reaction-badge-has-reaction-record">
-        Có Phản Ứng
+        Có phản ứng
       </span>
     );
   };
@@ -215,11 +215,11 @@ const Records = () => {
           {record.child.firstName} {record.child.lastName}
         </h3>
         <p className="record-card-text-record">
-          <span className="record-card-label-record">Khách Hàng:</span>{" "}
+          <span className="record-card-label-record">Khách hàng:</span>{" "}
           {record.child.customer.firstName} {record.child.customer.lastName}
         </p>
         <p className="record-card-text-record">
-          <span className="record-card-label-record">Vaccine:</span>{" "}
+          <span className="record-card-label-record">Vắc xin:</span>{" "}
           {record.vaccine.name}
         </p>
       </div>
@@ -242,8 +242,8 @@ const Records = () => {
       <header className="records-header-record">
         <h2 className="records-title-record">Quản lý phản ứng tiêm chủng</h2>
         <p className="records-subtitle-record">
-          Quản lý và theo dõi các thông báo phản ứng sau khi tiêm chủng từ phía
-          khách hàng.
+          Tra cứu, quản lý và theo dõi danh sách thông báo phản ứng sau khi tiêm
+          chủng từ phía khách hàng.
         </p>
       </header>
 
@@ -265,7 +265,7 @@ const Records = () => {
                 : "filter-button-has-reaction-inactive-record"
             }`}
           >
-            Phản Ứng
+            Phản ứng
           </button>
           <button
             onClick={() => setReactionFilter("noReaction")}
@@ -275,7 +275,7 @@ const Records = () => {
                 : "filter-button-no-reaction-inactive-record"
             }`}
           >
-            Không Có Phản Ứng
+            Không có phản ứng
           </button>
         </div>
 
@@ -376,59 +376,57 @@ const Records = () => {
               >
                 <FiX size={18} />
               </button>
-              <h3 className="modal-title-record">Report Details</h3>
+              <h3 className="modal-title-record">Thông báo phản ứng</h3>
               <div className="modal-content-record">
                 <div>
                   <h4 className="modal-subtitle-record">
-                    {selectedRecord.child.firstName}{" "}
+                    Phản ứng của: {selectedRecord.child.firstName}{" "}
                     {selectedRecord.child.lastName}
                   </h4>
                   <p className="modal-text-record">
-                    <span className="modal-label-record">Parent:</span>{" "}
+                    <span className="modal-label-record">Khách hàng:</span>{" "}
                     {selectedRecord.child.customer.firstName}{" "}
                     {selectedRecord.child.customer.lastName}
                   </p>
                 </div>
                 <div>
                   <p className="modal-text-record">
-                    <span className="modal-label-record">Vaccine:</span>{" "}
+                    <span className="modal-label-record">Vắc xin:</span>{" "}
                     {selectedRecord.vaccine.name}
                   </p>
                 </div>
                 <div>
                   <p className="modal-text-record">
-                    <span className="modal-label-record">
-                      Vaccination Date:
-                    </span>{" "}
+                    <span className="modal-label-record">Ngày tiêm:</span>{" "}
                     {format(new Date(selectedRecord.date), "dd/MM/yyyy")}
                   </p>
                 </div>
                 <div>
                   <p className="modal-text-record">
-                    <span className="modal-label-record">Reaction:</span>{" "}
-                    {selectedRecord.reaction || "No reaction recorded"}
+                    <span className="modal-label-record">Phản ứng:</span>{" "}
+                    {selectedRecord.reaction || ""}
                   </p>
                   <textarea
                     value={editedReaction}
                     onChange={(e) => setEditedReaction(e.target.value)}
                     rows="2"
                     className="modal-textarea-record"
-                    placeholder="Update reaction..."
+                    placeholder="Cập nhật phản ứng..."
                   />
                 </div>
               </div>
               <div className="modal-buttons-record">
                 <button
-                  onClick={closeModal}
-                  className="modal-cancel-button-record"
-                >
-                  Cancel
-                </button>
-                <button
                   onClick={handleSaveReaction}
                   className="modal-save-button-record"
                 >
-                  Save Changes
+                  Lưu
+                </button>
+                <button
+                  onClick={closeModal}
+                  className="modal-cancel-button-record"
+                >
+                  Huỷ
                 </button>
               </div>
             </motion.div>
