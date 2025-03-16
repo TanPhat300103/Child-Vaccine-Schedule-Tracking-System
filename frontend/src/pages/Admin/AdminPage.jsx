@@ -88,10 +88,6 @@ const AdminPage = () => {
                     isActive ? "nav-item-active-adminpage" : ""
                   }`
                 }
-                isActive={(match, location) => {
-                  // Chỉ active khi đường dẫn chính xác là "/admin", không phải các route con
-                  return location.pathname === "/admin";
-                }}
               >
                 <FiGrid
                   className={`nav-icon-adminpage ${
