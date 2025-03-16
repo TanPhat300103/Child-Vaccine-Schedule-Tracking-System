@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, NavLink } from "react-router-dom";
 import { FaArrowLeft, FaPlus, FaPowerOff } from "react-icons/fa";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "../../style/VaccineDetailManager.css";
 
 // --- Component VaccineDetailItem ---
 const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState(detail.img || "");
   const [formData, setFormData] = useState({
     entryDate: detail.entryDate,
@@ -17,9 +18,18 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
   });
   const [errors, setErrors] = useState({});
 
-  const handleToggleStatus = async (e) => {
-    e.stopPropagation(); // Ngăn sự kiện click trên card khi toggle
+  const handleToggleStatus = (e) => {
+    e.stopPropagation();
+    if (detail.status) {
+      setIsConfirmModalOpen(true); // Hiển thị modal xác nhận nếu status là true
+    }
+  };
+
+  const confirmToggleStatus = async () => {
     try {
+      const requestData = { id: detail.id };
+      console.log("API gửi đi:", requestData);
+
       const response = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/vaccinedetail/active?id=${detail.id}`,
         {
@@ -31,70 +41,55 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
           credentials: "include",
         }
       );
-      if (!response.ok) {
-        throw new Error("Chuyển trạng thái thất bại");
-      }
+
+      if (!response.ok) throw new Error("Ngưng lô vaccine thất bại");
       const data = await response.json();
-      console.log("API toggle status thành công:", detail.status);
+      console.log("API nhận về:", data);
       onToggleStatus(detail.id, detail.status);
-      toast.success("Trạng thái đã được cập nhật thành công!");
+      setIsConfirmModalOpen(false);
+      toast.success("Ngưng lô vaccine thành công!");
     } catch (err) {
-      console.error("Lỗi chuyển trạng thái VaccineDetail:", err);
-      toast.error(err.message || "Đã xảy ra lỗi khi chuyển trạng thái!");
+      console.error("Lỗi ngưng lô vaccine:", err);
+      toast.error(err.message || "Đã xảy ra lỗi khi ngưng lô vaccine!");
     }
   };
 
   const validateField = (name, value, data) => {
     const newErrors = { ...errors };
-
     switch (name) {
       case "entryDate":
-        if (!value) {
-          newErrors.entryDate = "Ngày nhập là bắt buộc!";
-        } else {
+        if (!value) newErrors.entryDate = "Ngày nhập là bắt buộc!";
+        else {
           delete newErrors.entryDate;
           const entryDate = new Date(value);
           const expiredDate = new Date(data.expiredDate);
-          if (data.expiredDate && expiredDate <= entryDate) {
+          if (data.expiredDate && expiredDate <= entryDate)
             newErrors.expiredDate = "Ngày hết hạn phải sau ngày nhập!";
-          } else {
-            delete newErrors.expiredDate;
-          }
+          else delete newErrors.expiredDate;
         }
         break;
       case "expiredDate":
-        if (!value) {
-          newErrors.expiredDate = "Ngày hết hạn là bắt buộc!";
-        } else {
+        if (!value) newErrors.expiredDate = "Ngày hết hạn là bắt buộc!";
+        else {
           const entryDate = new Date(data.entryDate);
           const expiredDate = new Date(value);
-          if (data.entryDate && expiredDate <= entryDate) {
+          if (data.entryDate && expiredDate <= entryDate)
             newErrors.expiredDate = "Ngày hết hạn phải sau ngày nhập!";
-          } else {
-            delete newErrors.expiredDate;
-          }
+          else delete newErrors.expiredDate;
         }
         break;
       case "day":
-        if (Number(value) <= 0) {
-          newErrors.day = "Số ngày phải lớn hơn 0!";
-        } else {
-          delete newErrors.day;
-        }
+        if (Number(value) <= 0) newErrors.day = "Số ngày phải lớn hơn 0!";
+        else delete newErrors.day;
         break;
       case "tolerance":
-        if (Number(value) <= 0) {
+        if (Number(value) <= 0)
           newErrors.tolerance = "Dung sai phải lớn hơn 0!";
-        } else {
-          delete newErrors.tolerance;
-        }
+        else delete newErrors.tolerance;
         break;
       case "quantity":
-        if (Number(value) <= 0) {
-          newErrors.quantity = "Số lượng phải lớn hơn 0!";
-        } else {
-          delete newErrors.quantity;
-        }
+        if (Number(value) <= 0) newErrors.quantity = "Số lượng phải lớn hơn 0!";
+        else delete newErrors.quantity;
         break;
       default:
         break;
@@ -106,8 +101,7 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
     const { name, value } = e.target;
     const updatedData = { ...formData, [name]: value };
     setFormData(updatedData);
-    const newErrors = validateField(name, value, updatedData);
-    setErrors(newErrors);
+    setErrors(validateField(name, value, updatedData));
   };
 
   const validateForm = (data) => {
@@ -117,9 +111,8 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
     if (data.entryDate && data.expiredDate) {
       const entryDate = new Date(data.entryDate);
       const expiredDate = new Date(data.expiredDate);
-      if (expiredDate <= entryDate) {
+      if (expiredDate <= entryDate)
         newErrors.expiredDate = "Ngày hết hạn phải sau ngày nhập!";
-      }
     }
     if (data.day <= 0) newErrors.day = "Số ngày phải lớn hơn 0!";
     if (data.tolerance <= 0) newErrors.tolerance = "Dung sai phải lớn hơn 0!";
@@ -131,14 +124,12 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
     e.preventDefault();
     const updatedDetail = { ...detail, ...formData, img: imageUrl || null };
     const validationErrors = validateForm(updatedDetail);
-
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-
     try {
-      console.log("Gửi API cập nhật với dữ liệu:", updatedDetail);
+      console.log("API gửi đi (update):", updatedDetail);
       const response = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/vaccinedetail/update`,
         {
@@ -151,11 +142,9 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
           body: JSON.stringify(updatedDetail),
         }
       );
-      if (!response.ok) {
-        throw new Error("Cập nhật thất bại");
-      }
+      if (!response.ok) throw new Error("Cập nhật thất bại");
       const data = await response.json();
-      console.log("Cập nhật VaccineDetail thành công:", data);
+      console.log("API nhận về (update):", data);
       onDetailUpdated(data);
       setIsModalOpen(false);
       setErrors({});
@@ -211,17 +200,15 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
           </p>
         </div>
         <div className="card-buttons-vaccinedetailmanager">
-          <button
-            onClick={handleToggleStatus}
-            className={`status-button-vaccinedetailmanager ${
-              detail.status
-                ? "status-active-vaccinedetailmanager"
-                : "status-inactive-vaccinedetailmanager"
-            }`}
-          >
-            <FaPowerOff className="icon-vaccinedetailmanager" />
-            {detail.status ? "Kích hoạt" : "Ngưng"}
-          </button>
+          {detail.status && (
+            <button
+              onClick={handleToggleStatus}
+              className="status-button-vaccinedetailmanager status-inactive-vaccinedetailmanager"
+            >
+              <FaPowerOff className="icon-vaccinedetailmanager" />
+              Ngưng
+            </button>
+          )}
         </div>
       </div>
 
@@ -346,17 +333,47 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
             </form>
             <div className="modal-buttons-vaccinedetailmanager">
               <button
+                type="submit"
+                className="submit-button-vaccinedetailmanager"
+                onClick={handleUpdate}
+              >
+                Cập nhật
+              </button>
+              <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
                 className="cancel-button-vaccinedetailmanager"
               >
                 Hủy
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isConfirmModalOpen && (
+        <div className="modal-overlay-vaccinedetailmanager">
+          <div className="modal-content-vaccinedetailmanager">
+            <h2 className="modal-title-vaccinedetailmanager">
+              Xác nhận ngưng lô vaccine
+            </h2>
+            <p className="confirm-text-vaccinedetailmanager">
+              Bạn có chắc chắn muốn ngưng lô vaccine này không?
+            </p>
+            <div className="modal-buttons-vaccinedetailmanager">
               <button
-                type="submit"
+                type="button"
+                onClick={confirmToggleStatus}
                 className="submit-button-vaccinedetailmanager"
               >
-                Cập nhật
+                Xác nhận
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsConfirmModalOpen(false)}
+                className="cancel-button-vaccinedetailmanager"
+              >
+                Hủy
               </button>
             </div>
           </div>
@@ -371,7 +388,6 @@ const VaccineDetailManager = () => {
   const { vaccineId } = useParams();
   const [vaccineDetails, setVaccineDetails] = useState([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [filterStatus, setFilterStatus] = useState("all");
   const [newDetail, setNewDetail] = useState({
     entryDate: "",
     expiredDate: "",
@@ -391,14 +407,17 @@ const VaccineDetailManager = () => {
       const response = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/vaccinedetail/findbyvaccine?id=${vaccineId}`,
         {
+          method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json",
+          },
           credentials: "include",
         }
       );
-      if (!response.ok) {
-        throw new Error("Lấy dữ liệu thất bại");
-      }
+      if (!response.ok) throw new Error("Lấy dữ liệu thất bại");
       const data = await response.json();
-      console.log("API fetch VaccineDetail thành công:", data);
+      console.log("API nhận về (fetch):", data);
       setVaccineDetails(data);
     } catch (err) {
       console.error("Lỗi khi lấy VaccineDetail:", err);
@@ -418,59 +437,45 @@ const VaccineDetailManager = () => {
         d.id === detailId ? { ...d, status: !currentStatus } : d
       )
     );
+    fetchVaccineDetails(); // Load lại trang sau khi ngưng
   };
 
   const validateField = (name, value, data) => {
     const newErrors = { ...errors };
-
     switch (name) {
       case "entryDate":
-        if (!value) {
-          newErrors.entryDate = "Ngày nhập là bắt buộc!";
-        } else {
+        if (!value) newErrors.entryDate = "Ngày nhập là bắt buộc!";
+        else {
           delete newErrors.entryDate;
           const entryDate = new Date(value);
           const expiredDate = new Date(data.expiredDate);
-          if (data.expiredDate && expiredDate <= entryDate) {
+          if (data.expiredDate && expiredDate <= entryDate)
             newErrors.expiredDate = "Ngày hết hạn phải sau ngày nhập!";
-          } else {
-            delete newErrors.expiredDate;
-          }
+          else delete newErrors.expiredDate;
         }
         break;
       case "expiredDate":
-        if (!value) {
-          newErrors.expiredDate = "Ngày hết hạn là bắt buộc!";
-        } else {
+        if (!value) newErrors.expiredDate = "Ngày hết hạn là bắt buộc!";
+        else {
           const entryDate = new Date(data.entryDate);
           const expiredDate = new Date(value);
-          if (data.entryDate && expiredDate <= entryDate) {
+          if (data.entryDate && expiredDate <= entryDate)
             newErrors.expiredDate = "Ngày hết hạn phải sau ngày nhập!";
-          } else {
-            delete newErrors.expiredDate;
-          }
+          else delete newErrors.expiredDate;
         }
         break;
       case "day":
-        if (Number(value) <= 0) {
-          newErrors.day = "Số ngày phải lớn hơn 0!";
-        } else {
-          delete newErrors.day;
-        }
+        if (Number(value) <= 0) newErrors.day = "Số ngày phải lớn hơn 0!";
+        else delete newErrors.day;
         break;
       case "tolerance":
-        if (Number(value) <= 0) {
+        if (Number(value) <= 0)
           newErrors.tolerance = "Dung sai phải lớn hơn 0!";
-        } else {
-          delete newErrors.tolerance;
-        }
+        else delete newErrors.tolerance;
         break;
       case "quantity":
-        if (Number(value) <= 0) {
-          newErrors.quantity = "Số lượng phải lớn hơn 0!";
-        } else {
-          delete newErrors.quantity;
-        }
+        if (Number(value) <= 0) newErrors.quantity = "Số lượng phải lớn hơn 0!";
+        else delete newErrors.quantity;
         break;
       default:
         break;
@@ -482,8 +487,7 @@ const VaccineDetailManager = () => {
     const { name, value } = e.target;
     const updatedData = { ...newDetail, [name]: value };
     setNewDetail(updatedData);
-    const newErrors = validateField(name, value, updatedData);
-    setErrors(newErrors);
+    setErrors(validateField(name, value, updatedData));
   };
 
   const validateForm = (data) => {
@@ -493,9 +497,8 @@ const VaccineDetailManager = () => {
     if (data.entryDate && data.expiredDate) {
       const entryDate = new Date(data.entryDate);
       const expiredDate = new Date(data.expiredDate);
-      if (expiredDate <= entryDate) {
+      if (expiredDate <= entryDate)
         newErrors.expiredDate = "Ngày hết hạn phải sau ngày nhập!";
-      }
     }
     if (data.day <= 0) newErrors.day = "Số ngày phải lớn hơn 0!";
     if (data.tolerance <= 0) newErrors.tolerance = "Dung sai phải lớn hơn 0!";
@@ -515,14 +518,13 @@ const VaccineDetailManager = () => {
       img: newDetail.img || null,
       status: true,
     };
-
     const validationErrors = validateForm(payload);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-
     try {
+      console.log("API gửi đi (create):", payload);
       const response = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/vaccinedetail/create`,
         {
@@ -535,11 +537,9 @@ const VaccineDetailManager = () => {
           body: JSON.stringify(payload),
         }
       );
-      if (!response.ok) {
-        throw new Error("Tạo mới thất bại");
-      }
+      if (!response.ok) throw new Error("Tạo mới thất bại");
       const data = await response.json();
-      console.log("Vaccine Detail created successfully:", data);
+      console.log("API nhận về (create):", data);
       setShowCreateModal(false);
       setNewDetail({
         entryDate: "",
@@ -551,25 +551,21 @@ const VaccineDetailManager = () => {
       });
       setErrors({});
       fetchVaccineDetails();
-      toast.success("Tạo mới lô vaccine thành công!");
+      toast.success("Thêm lô vaccine mới thành công!");
     } catch (err) {
-      console.error("Lỗi khi tạo lô vaccine:", err);
-      toast.error(
-        err.message || "Đã xảy ra lỗi khi tạo lô vaccine. Vui lòng thử lại!"
-      );
+      console.error("Lỗi khi thêm lô vaccine:", err);
+      toast.error(err.message || "Đã xảy ra lỗi khi thêm lô vaccine!");
     }
   };
-
-  const filteredVaccineDetails = vaccineDetails.filter((detail) => {
-    if (filterStatus === "all") return true;
-    return filterStatus === "active" ? !detail.status : detail.status;
-  });
 
   return (
     <div className="container-vaccinedetailmanager">
       <div className="content-wrapper-vaccinedetailmanager">
         <h2 className="page-title-vaccinedetailmanager">
-          Danh sách các lô vaccine cho Vaccine {vaccineId}
+          Danh sách các lô vắc xin{" "}
+          <strong className="name-vaccine-vaccinedetailmanager">
+            {vaccineId}
+          </strong>
         </h2>
         <div className="header-actions-vaccinedetailmanager">
           <NavLink
@@ -579,38 +575,6 @@ const VaccineDetailManager = () => {
             <FaArrowLeft className="icon-vaccinedetailmanager" />
             Quay lại
           </NavLink>
-          <div className="filter-buttons-vaccinedetailmanager">
-            <button
-              onClick={() => setFilterStatus("all")}
-              className={`filter-button-vaccinedetailmanager ${
-                filterStatus === "all"
-                  ? "filter-active-vaccinedetailmanager"
-                  : ""
-              }`}
-            >
-              Tất cả
-            </button>
-            <button
-              onClick={() => setFilterStatus("active")}
-              className={`filter-button-vaccinedetailmanager ${
-                filterStatus === "active"
-                  ? "filter-active-vaccinedetailmanager filter-active-bg-vaccinedetailmanager"
-                  : ""
-              }`}
-            >
-              Hoạt động
-            </button>
-            <button
-              onClick={() => setFilterStatus("inactive")}
-              className={`filter-button-vaccinedetailmanager ${
-                filterStatus === "inactive"
-                  ? "filter-active-vaccinedetailmanager filter-inactive-bg-vaccinedetailmanager"
-                  : ""
-              }`}
-            >
-              Không hoạt động
-            </button>
-          </div>
           <button
             onClick={() => setShowCreateModal(true)}
             className="create-button-vaccinedetailmanager"
@@ -748,29 +712,30 @@ const VaccineDetailManager = () => {
               </form>
               <div className="modal-buttons-vaccinedetailmanager">
                 <button
+                  type="submit"
+                  className="submit-button-vaccinedetailmanager"
+                  onClick={handleCreateDetail}
+                >
+                  Thêm
+                </button>
+                <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
                   className="cancel-button-vaccinedetailmanager"
                 >
                   Hủy
                 </button>
-                <button
-                  type="submit"
-                  className="submit-button-vaccinedetailmanager"
-                >
-                  Thêm
-                </button>
               </div>
             </div>
           </div>
         )}
-        {filteredVaccineDetails.length === 0 ? (
+        {vaccineDetails.length === 0 ? (
           <p className="no-data-text-vaccinedetailmanager">
             Không tìm thấy lô vaccine nào
           </p>
         ) : (
           <div className="grid-vaccinedetailmanager">
-            {filteredVaccineDetails.map((detail) => (
+            {vaccineDetails.map((detail) => (
               <VaccineDetailItem
                 key={detail.id}
                 detail={detail}
@@ -781,6 +746,7 @@ const VaccineDetailManager = () => {
           </div>
         )}
       </div>
+      <ToastContainer />
     </div>
   );
 };
