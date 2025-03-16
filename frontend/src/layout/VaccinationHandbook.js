@@ -1,7 +1,7 @@
-import React from 'react';
-import { Syringe, Info, ArrowLeft, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import '../style/vaccination-handbook.css';
+import React from "react";
+import { Syringe, Info, ArrowLeft, ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import "../style/vaccination-handbook.css";
 
 function VaccinationHandbook() {
   return (
@@ -15,7 +15,8 @@ function VaccinationHandbook() {
         <div className="hero-content">
           <h1 className="hero-title">Quy trình tiêm chủng</h1>
           <p className="hero-subtitle">
-            Khám phá hành trình tiêm chủng an toàn và hiệu quả với từng bước chi tiết.
+            Khám phá hành trình tiêm chủng an toàn và hiệu quả với từng bước chi
+            tiết.
           </p>
         </div>
         <div className="hero-overlay"></div>
@@ -29,7 +30,9 @@ function VaccinationHandbook() {
           <div className="intro-quote">
             <div className="quote-icon">“</div>
             <p>
-              Tiêm chủng không chỉ là một mũi tiêm – đó là hành trình bảo vệ sức khỏe bạn và cộng đồng. Hiểu rõ quy trình giúp bạn chuẩn bị tốt hơn, giảm thiểu lo lắng và đảm bảo an toàn tối đa.
+              Tiêm chủng không chỉ là một mũi tiêm – đó là hành trình bảo vệ sức
+              khỏe bạn và cộng đồng. Hiểu rõ quy trình giúp bạn chuẩn bị tốt
+              hơn, giảm thiểu lo lắng và đảm bảo an toàn tối đa.
             </p>
             <div className="quote-author">
               — GS.TS. Hoàng Văn Minh, Chuyên gia Y tế Công cộng
@@ -49,7 +52,8 @@ function VaccinationHandbook() {
                 </div>
                 <h3>Đăng ký trực tuyến</h3>
                 <p>
-                  Truy cập website hoặc ứng dụng để đặt lịch. Chọn vaccine, ngày giờ, nhận mã QR qua email/SMS trong 2-3 phút.
+                  Truy cập website hoặc ứng dụng để đặt lịch. Chọn vắc xin, ngày
+                  giờ, nhận mã QR qua email/SMS trong 2-3 phút.
                 </p>
               </div>
 
@@ -59,7 +63,8 @@ function VaccinationHandbook() {
                 </div>
                 <h3>Chuẩn bị trước khi đến</h3>
                 <p>
-                  Mang CMND/CCCD, mã QR, hồ sơ y tế (nếu có). Đeo khẩu trang, ăn nhẹ, tuân thủ 5K.
+                  Mang CMND/CCCD, mã QR, hồ sơ y tế (nếu có). Đeo khẩu trang, ăn
+                  nhẹ, tuân thủ 5K.
                 </p>
               </div>
 
@@ -69,7 +74,8 @@ function VaccinationHandbook() {
                 </div>
                 <h3>Khám sàng lọc</h3>
                 <p>
-                  Bác sĩ kiểm tra nhiệt độ, huyết áp, tiền sử bệnh lý. Thời gian 5-10 phút để xác định điều kiện tiêm.
+                  Bác sĩ kiểm tra nhiệt độ, huyết áp, tiền sử bệnh lý. Thời gian
+                  5-10 phút để xác định điều kiện tiêm.
                 </p>
               </div>
 
@@ -77,9 +83,10 @@ function VaccinationHandbook() {
                 <div className="step-marker">
                   <span className="step-number">04</span>
                 </div>
-                <h3>Tiêm vaccine</h3>
+                <h3>Tiêm vắc xin</h3>
                 <p>
-                  Nhân viên y tế thực hiện trong phòng vô trùng, nhanh chóng và không đau.
+                  Nhân viên y tế thực hiện trong phòng vô trùng, nhanh chóng và
+                  không đau.
                 </p>
               </div>
 
@@ -89,7 +96,8 @@ function VaccinationHandbook() {
                 </div>
                 <h3>Theo dõi sau tiêm</h3>
                 <p>
-                  Nghỉ ngơi 30 phút, nhận giấy chứng nhận và hướng dẫn chăm sóc qua ứng dụng/giấy in.
+                  Nghỉ ngơi 30 phút, nhận giấy chứng nhận và hướng dẫn chăm sóc
+                  qua ứng dụng/giấy in.
                 </p>
               </div>
             </div>
@@ -128,7 +136,9 @@ function VaccinationHandbook() {
         <section className="cta-section">
           <div className="cta-wrapper">
             <h3 className="cta-title">Sẵn sàng bảo vệ sức khỏe?</h3>
-            <p className="cta-subtitle">Hãy bắt đầu hành trình tiêm chủng ngay hôm nay!</p>
+            <p className="cta-subtitle">
+              Hãy bắt đầu hành trình tiêm chủng ngay hôm nay!
+            </p>
             <Link to="/booking" className="cta-button">
               Đặt lịch ngay <ChevronRight size={20} />
             </Link>

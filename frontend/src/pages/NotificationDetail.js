@@ -140,7 +140,7 @@ function NotificationDetail() {
   return (
     <div className="notification-detail-container">
       <div className="notification-detail-header">
-        <h1>Chi tiết thông báo</h1>
+        <h1>CHI TIẾT THÔNG BÁO</h1>
       </div>
 
       <div className="notification-detail-content">

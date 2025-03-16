@@ -409,6 +409,7 @@ body {
 .bookingdetail-detail-label {
   color: var(--text-light);
   font-weight: 500;
+  width: 200px;
 }
 
 .bookingdetail-detail-value {

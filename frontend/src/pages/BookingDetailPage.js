@@ -241,7 +241,7 @@ function BookingDetailPage() {
             <Syringe size={32} />
           </div>
           <div className="bookingdetail-header-text">
-            <h1>Booking #{booking.bookingId}</h1>
+            <h1>Lịch tiêm #{booking.bookingId}</h1>
             <div className="bookingdetail-header-details">
               <p>
                 <Calendar size={16} /> Ngày đặt:{" "}
@@ -276,7 +276,7 @@ function BookingDetailPage() {
           >
             <div className="bookingdetail-sidebar-content">
               <User size={18} />
-              <span>Thông Tin Cá Nhân</span>
+              <span>Thông tin cá nhân</span>
             </div>
             <div className="bookingdetail-sidebar-placeholder"></div>
           </div>
@@ -288,7 +288,7 @@ function BookingDetailPage() {
           >
             <div className="bookingdetail-sidebar-content">
               <Calendar size={18} />
-              <span>Thông Tin Con</span>
+              <span>Thông tin con</span>
             </div>
             <div className="bookingdetail-sidebar-placeholder"></div>
           </div>
@@ -300,7 +300,7 @@ function BookingDetailPage() {
           >
             <div className="bookingdetail-sidebar-content">
               <BookOpen size={18} />
-              <span>My Booking</span>
+              <span>Lịch tiêm đã đặt</span>
             </div>
             <button
               className="bookingdetail-dropdown-toggle"
@@ -323,7 +323,7 @@ function BookingDetailPage() {
                   }`}
                   onClick={() => handleBookingSelect(b.bookingId)}
                 >
-                  <span>Booking #{b.bookingId}</span>
+                  <span>Lịch tiêm #{b.bookingId}</span>
                   <span>{new Date(b.bookingDate).toLocaleDateString()}</span>
                 </div>
               ))}
@@ -337,7 +337,7 @@ function BookingDetailPage() {
           >
             <div className="bookingdetail-sidebar-content">
               <CreditCard size={18} />
-              <span>My Payment</span>
+              <span>Lịch sử thanh toán</span>
             </div>
             <div className="bookingdetail-sidebar-placeholder"></div>
           </div>
@@ -345,7 +345,7 @@ function BookingDetailPage() {
 
         <div className="bookingdetail-main">
           <div className="bookingdetail-section">
-            <h2 className="bookingdetail-section-title">Danh Sách Mũi Tiêm</h2>
+            <h2 className="bookingdetail-section-title">Danh sách mũi tiêm</h2>
             {bookingDetails.length > 0 ? (
               <div className="bookingdetail-details-list">
                 {Object.keys(groupedDetails).map((date) => (
@@ -433,7 +433,7 @@ function BookingDetailPage() {
                             {isExpanded && (
                               <div className="bookingdetail-card-details">
                                 <div className="bookingdetail-detail-section">
-                                  <h4>Thông Tin Trẻ</h4>
+                                  <h4>THÔNG TIN TRẺ</h4>
                                   <div className="bookingdetail-detail-item">
                                     <span className="bookingdetail-detail-label">
                                       Tên:
@@ -445,10 +445,10 @@ function BookingDetailPage() {
                                   </div>
                                 </div>
                                 <div className="bookingdetail-detail-section">
-                                  <h4>Thông Tin Vaccine</h4>
+                                  <h4>THÔNG TIN VẮC XIN</h4>
                                   <div className="bookingdetail-detail-item">
                                     <span className="bookingdetail-detail-label">
-                                      Tên Vaccine:
+                                      Tên vắc xin:
                                     </span>
                                     <span className="bookingdetail-detail-value">
                                       {detail.vaccine.name}
@@ -464,7 +464,7 @@ function BookingDetailPage() {
                                   </div>
                                 </div>
                                 <div className="bookingdetail-detail-section">
-                                  <h4>Thông Tin Lịch Tiêm</h4>
+                                  <h4>THÔNG TIN LỊCH TIÊM</h4>
                                   <div className="bookingdetail-detail-item">
                                     <span className="bookingdetail-detail-label">
                                       ID:

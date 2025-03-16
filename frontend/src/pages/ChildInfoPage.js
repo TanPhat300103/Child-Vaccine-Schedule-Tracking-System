@@ -435,7 +435,7 @@ function ChildInfoPage() {
           >
             <div className="profile-sidebar-content-childinfo">
               <User size={18} />
-              <span>Thông Tin Cá Nhân</span>
+              <span>Thông tin cá nhân</span>
             </div>
             <div className="profile-sidebar-placeholder-childinfo"></div>
           </div>
@@ -445,7 +445,7 @@ function ChildInfoPage() {
           >
             <div className="profile-sidebar-content-childinfo">
               <Calendar size={18} />
-              <span>Thông Tin Con</span>
+              <span>Thông tin con</span>
             </div>
             <button className="profile-sidebar-dropdown-toggle-childinfo">
               {isDropdownOpen ? (
@@ -489,7 +489,7 @@ function ChildInfoPage() {
           >
             <div className="profile-sidebar-content-childinfo">
               <BookOpen size={18} />
-              <span>My Booking</span>
+              <span>Lịch tiêm đã đặt</span>
             </div>
             <div className="profile-sidebar-placeholder-childinfo"></div>
           </div>
@@ -501,7 +501,7 @@ function ChildInfoPage() {
           >
             <div className="profile-sidebar-content-childinfo">
               <CreditCard size={18} />
-              <span>My Payment</span>
+              <span>Lịch sử thanh toán</span>
             </div>
             <div className="profile-sidebar-placeholder-childinfo"></div>
           </div>
@@ -510,7 +510,7 @@ function ChildInfoPage() {
         <div className="profile-main-childinfo">
           <div className="profile-section-childinfo">
             <div className="profile-section-header-childinfo">
-              <h2>Thông Tin Con</h2>
+              <h2>Thông tin con</h2>
               <button
                 className="profile-add-btn-childinfo"
                 onClick={() => setAddingChild(true)}
@@ -653,7 +653,7 @@ function ChildInfoPage() {
                   <div className="profile-medical-header-childinfo">
                     <h2>
                       <Syringe size={18} />
-                      Hồ Sơ Tiêm Chủng Trẻ Em
+                      HỒ SƠ TIÊM CHỦNG CỦA TRẺ
                     </h2>
                     <div className="profile-medical-actions-childinfo">
                       {!isEditingMedical ? (
@@ -801,14 +801,14 @@ function ChildInfoPage() {
                   <div className="profile-medical-schedule-childinfo">
                     <h3>
                       <Calendar size={18} />
-                      Lịch Sử Tiêm Chủng
+                      Lịch sử tiêm chủng
                     </h3>
                     {medicalHistory[expandedChildId].length > 0 ? (
                       <table className="profile-medical-table-childinfo">
                         <thead>
                           <tr>
                             <th>STT</th>
-                            <th>Vaccine</th>
+                            <th>Vắc xin</th>
                             <th>Ngày tiêm</th>
                             <th>Liều lượng</th>
                             <th>Phản ứng</th>

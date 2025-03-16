@@ -336,7 +336,7 @@ function Overview() {
       <div className="overviewpage-content">
         <div className="overviewpage-main-column">
           <div className="overviewpage-section">
-            <h2 className="overviewpage-section-title">Lịch Tiêm Sắp Tới</h2>
+            <h2 className="overviewpage-section-title">Lịch tiêm sắp tới</h2>
             <div className="overviewpage-calendar-header">
               <button
                 onClick={handlePreviousMonth}
@@ -387,7 +387,7 @@ function Overview() {
           </div>
 
           <div className="overviewpage-section">
-            <h2 className="overviewpage-section-title">Thông Tin Trẻ</h2>
+            <h2 className="overviewpage-section-title">THÔNG TIN TRẺ</h2>
             {children.length > 0 ? (
               children.map((child) => (
                 <div key={child.childId} className="overviewpage-child-card">
@@ -437,14 +437,14 @@ function Overview() {
                           : "Chưa có"}
                       </p>
                       <div className="overviewpage-medical-history">
-                        <h4>Lịch Sử Tiêm Chủng</h4>
+                        <h4>Lịch sử tiêm chủng</h4>
                         {medicalHistories[child.childId] ? (
                           medicalHistories[child.childId].length > 0 ? (
                             <table className="overviewpage-medical-history-table">
                               <thead>
                                 <tr>
                                   <th>Ngày</th>
-                                  <th>Vaccine</th>
+                                  <th>Vắc xin</th>
                                   <th>Liều</th>
                                   <th>Phản ứng</th>
                                 </tr>
@@ -485,7 +485,7 @@ function Overview() {
 
         <div className="overviewpage-side-column">
           <div className="overviewpage-section overviewpage-notification-section">
-            <h2 className="overviewpage-section-title">Thông Báo</h2>
+            <h2 className="overviewpage-section-title">THÔNG BÁO</h2>
             <div className="overviewpage-notification-container">
               {notifications.length > 0 ? (
                 notifications.map((notification) => (
@@ -508,13 +508,13 @@ function Overview() {
             </div>
             {notifications.length > 0 && (
               <a href="../notification/1" className="overviewpage-view-all">
-                Xem Tất cả
+                Xem tất cả
               </a>
             )}
           </div>
 
           <div className="overviewpage-section overviewpage-progress-section">
-            <h2 className="overviewpage-section-title">Tiến Độ Tiêm Chủng</h2>
+            <h2 className="overviewpage-section-title">TIẾN ĐỘ TIÊM CHỦNG</h2>
             <div className="overviewpage-progress-container">
               {bookings.length > 0 ? (
                 bookings.map((booking) => {
@@ -533,7 +533,7 @@ function Overview() {
                       }
                       style={{ cursor: "pointer" }}
                     >
-                      <h4>Booking #{booking.bookingId}</h4>
+                      <h4>Lịch tiêm #{booking.bookingId}</h4>
                       <p>
                         Ngày:{" "}
                         {new Date(booking.bookingDate).toLocaleDateString(
@@ -565,13 +565,13 @@ function Overview() {
                   navigate("/my-bookings");
                 }}
               >
-                Xem Tất cả
+                Xem tất cả
               </a>
             )}
           </div>
 
           <div className="overviewpage-section overviewpage-payment-section">
-            <h2 className="overviewpage-section-title">Hóa Đơn</h2>
+            <h2 className="overviewpage-section-title">HOÁ ĐƠN</h2>
             <div className="overviewpage-payment-container">
               {payments.length > 0 ? (
                 payments.map((payment) => (
@@ -621,7 +621,7 @@ function Overview() {
                   navigate("/my-payments");
                 }}
               >
-                Xem Tất cả
+                Xem tất cả
               </a>
             )}
           </div>

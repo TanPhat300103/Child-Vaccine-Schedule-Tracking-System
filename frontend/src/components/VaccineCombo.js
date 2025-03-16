@@ -140,7 +140,7 @@ function VaccineCombo() {
           <FiSearch className="price-vaccine-search-icon" />
           <input
             type="text"
-            placeholder="Tìm kiếm combo vaccine theo tên hoặc mô tả..."
+            placeholder="Tìm kiếm combo vắc xin theo tên hoặc mô tả..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="filter-input"
@@ -196,7 +196,7 @@ function VaccineCombo() {
             <button className="modal-close-btn" onClick={closeModal}>
               <FaTimes />
             </button>
-            <h2>Danh sách Vaccine trong Combo</h2>
+            <h2>Danh sách vắc xin trong combo</h2>
             <div className="vaccine-detail-card">
               {comboDetails.length > 0 ? (
                 <table className="vaccine-table">
@@ -255,7 +255,7 @@ function VaccineCombo() {
             <h2>Chi tiết Vaccine: {selectedVaccine.name}</h2>
             <div className="vaccine-detail-card">
               <div className="detail-item">
-                <span className="label">Tên Vaccine:</span>
+                <span className="label">Tên vắc xin:</span>
                 <span className="value">{selectedVaccine.name}</span>
               </div>
               <div className="detail-item">

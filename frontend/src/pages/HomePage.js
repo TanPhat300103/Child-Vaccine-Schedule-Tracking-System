@@ -74,7 +74,7 @@ const HomePage = () => {
       icon: "🛡️",
       title: "Bảo Vệ Sức Khỏe",
       description:
-        "Vắc-xin giúp ngăn ngừa các bệnh truyền nhiễm nguy hiểm, bảo vệ sức khỏe cộng đồng.",
+        "Vắc xin giúp ngăn ngừa các bệnh truyền nhiễm nguy hiểm, bảo vệ sức khỏe cộng đồng.",
     },
     {
       icon: "❤️",
@@ -86,7 +86,7 @@ const HomePage = () => {
       icon: "👶",
       title: "An Toàn Cho Trẻ Em",
       description:
-        "Vắc-xin được kiểm định nghiêm ngặt, đảm bảo an toàn cho trẻ em và người lớn.",
+        "Vắc xin được kiểm định nghiêm ngặt, đảm bảo an toàn cho trẻ em và người lớn.",
     },
     {
       icon: "👨‍⚕️",
@@ -117,9 +117,9 @@ const HomePage = () => {
     },
     {
       icon: "💉",
-      title: "Đa Dạng Vắc-xin",
+      title: "Đa Dạng Vắc xin",
       description:
-        "Cung cấp đầy đủ các loại vắc-xin trong và ngoài chương trình tiêm chủng.",
+        "Cung cấp đầy đủ các loại vắc xin trong và ngoài chương trình tiêm chủng.",
     },
     {
       icon: "⏰",
@@ -140,7 +140,7 @@ const HomePage = () => {
       step: 1,
       title: "Đăng ký trực tuyến",
       description:
-        "Truy cập website hoặc ứng dụng để đặt lịch. Chọn vaccine, ngày giờ, nhận mã QR qua email/SMS trong 2-3 phút.",
+        "Truy cập website hoặc ứng dụng để đặt lịch. Chọn vắc xin, ngày giờ, nhận mã QR qua email/SMS trong 2-3 phút.",
     },
     {
       step: 2,
@@ -156,7 +156,7 @@ const HomePage = () => {
     },
     {
       step: 4,
-      title: "Tiêm vaccine",
+      title: "Tiêm vắc xin",
       description:
         "Nhân viên y tế thực hiện trong phòng vô trùng, nhanh chóng và không đau.",
     },
@@ -176,7 +176,7 @@ const HomePage = () => {
       label: "Bác sĩ chuyên khoa",
       icon: <Stethoscope size={32} />,
     },
-    { value: "100+", label: "Loại vắc-xin", icon: <Syringe size={32} /> },
+    { value: "100+", label: "Loại vắc xin", icon: <Syringe size={32} /> },
   ];
 
   useEffect(() => {
@@ -220,7 +220,7 @@ const HomePage = () => {
   useEffect(() => {
     if (feedbacks.length === 0 || !feedbackContainerRef.current) return;
 
-    const containerWidth = feedbackContainerRef.current.scrollWidth ;
+    const containerWidth = feedbackContainerRef.current.scrollWidth;
     const speed = 3;
 
     const animate = () => {
@@ -496,7 +496,7 @@ const HomePage = () => {
                   className="homepage-btn homepage-btn-secondary"
                   onClick={() => (window.location.href = "/vaccines")}
                 >
-                  Xem Gói vắc xin
+                  Xem combo vắc xin
                 </button>
               </div>
             </div>
@@ -537,9 +537,9 @@ const HomePage = () => {
       <section className="homepage-age-vaccine" ref={ageVaccineRef}>
         <div className="homepage-container">
           <div className="homepage-age-vaccine-header">
-            <h1>Lịch Tiêm Chủng Cho Trẻ Em</h1>
+            <h1>LỊCH TIÊM CHỦNG CHO TRẺ EM</h1>
             <p>
-              Lựa chọn combo vaccine phù hợp cho trẻ từ các chuyên gia y tế hàng
+              Lựa chọn combo vắc xin phù hợp cho trẻ từ các chuyên gia y tế hàng
               đầu
             </p>
           </div>
@@ -554,7 +554,7 @@ const HomePage = () => {
               <span className="homepage-age-vaccine-search-icon">🔍</span>
               <input
                 type="text"
-                placeholder="Tìm kiếm combo vaccine..."
+                placeholder="Tìm kiếm combo vắc xin..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -563,7 +563,7 @@ const HomePage = () => {
           <div className="homepage-age-vaccine-grid">
             <div className="homepage-age-vaccine-combo-list">
               <div className="homepage-age-vaccine-combo-header">
-                <h2>Combo Vaccine</h2>
+                <h2>Combo vắc xin</h2>
                 <p>Chọn gói tiêm chủng phù hợp</p>
               </div>
               <div className="homepage-age-vaccine-combo-items">
@@ -609,7 +609,7 @@ const HomePage = () => {
                   <div className="homepage-age-vaccine-details-body">
                     <div className="homepage-age-vaccine-details-title">
                       <span>💉</span>
-                      <h3>Danh sách vaccine trong combo</h3>
+                      <h3>Danh sách vắc xin trong combo</h3>
                     </div>
                     {loading ? (
                       <div className="homepage-age-vaccine-loading">
@@ -908,7 +908,7 @@ const HomePage = () => {
       <section className="homepage-feedback">
         <div className="homepage-container">
           <h2 className="homepage-section-title">
-            Khách Hàng Nói Gì Về Chúng Tôi
+            KHÁCH HÀNG NÓI GÌ VỀ CHÚNG TÔI
           </h2>
           {feedbacks.length > 0 ? (
             <div className="homepage-feedback-overflow">

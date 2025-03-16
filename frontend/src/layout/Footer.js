@@ -34,7 +34,7 @@ const Footer = () => {
           <div className="footer-main">
             <div className="footer-contact">
               <h3>
-                Thông Tin Liên Hệ <Heart className="title-icon" />
+                THÔNG TIN LIÊN HỆ <Heart className="title-icon" />
               </h3>
               <div className="contact-items">
                 <div className="contact-item">
@@ -50,6 +50,10 @@ const Footer = () => {
                   <span>khangqhse184031@fpt.edu.vn</span>
                 </div>
                 <div className="contact-item">
+                  <Mail className="contact-icon" />
+                  <span>tantnse184055@fpt.edu.vn</span>
+                </div>
+                <div className="contact-item">
                   <MapPin className="contact-icon" />
                   <span>Biên Hòa, Đồng Nai</span>
                 </div>
@@ -59,12 +63,12 @@ const Footer = () => {
             <div className="footer-links">
               <div className="footer-links-column">
                 <h3>
-                  Dịch Vụ <Shield className="title-icon" />
+                  DỊCH VỤ <Shield className="title-icon" />
                 </h3>
                 <ul>
                   <li>
                     <ArrowRight className="link-icon" />
-                    <a href="/services/vaccine">Tiêm chủng vaccine</a>
+                    <a href="/services/vaccine">Tiêm chủng vắc xin</a>
                   </li>
                   <li>
                     <ArrowRight className="link-icon" />
@@ -79,7 +83,7 @@ const Footer = () => {
 
               <div className="footer-links-column">
                 <h3>
-                  Hỗ Trợ <User className="title-icon" />
+                  HỖ TRỢ <User className="title-icon" />
                 </h3>
                 <ul>
                   <li>
@@ -99,8 +103,8 @@ const Footer = () => {
             </div>
 
             <div className="footer-newsletter">
-              <h3>Đăng Ký Nhận Tin</h3>
-              <p>Thông tin cập nhật về vaccine và sức khỏe</p>
+              <h3>ĐĂNG KÝ NHẬN TIN</h3>
+              <p>Thông tin cập nhật về vắc xin và sức khỏe</p>
               <form className="newsletter-form">
                 <input type="email" placeholder="Nhập email của bạn" required />
                 <button type="submit">Đăng Ký</button>
