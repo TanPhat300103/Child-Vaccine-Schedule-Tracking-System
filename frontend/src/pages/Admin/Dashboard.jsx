@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Line, Bar, Doughnut } from "react-chartjs-2";
+import { Line, Bar } from "react-chartjs-2";
 import {
   format,
   parseISO,
@@ -22,7 +22,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { useAuth } from "../../components/AuthContext";
 import "../../style/Dashboard.css"; // Import the CSS file
 
 Chart.register(
@@ -706,7 +705,7 @@ const Dashboard = () => {
             </InfoCard>
             <div className="vaccine-status-grid-dashboard">
               <InfoCard
-                title="Vaccine hết hàng"
+                title="Vắc xin hết hàng"
                 icon={icons.warning}
                 badgeCount={outOfStockVaccines.length}
                 badgeColor="bg-red-500"
@@ -715,7 +714,7 @@ const Dashboard = () => {
                 <div className="vaccine-list-dashboard">
                   {outOfStockVaccines.length === 0 ? (
                     <p className="vaccine-empty-dashboard">
-                      Không có vaccine nào hết hàng
+                      Không có vắc xin nào hết hàng
                     </p>
                   ) : (
                     <ul className="vaccine-items-dashboard">
@@ -743,7 +742,7 @@ const Dashboard = () => {
                 </div>
               </InfoCard>
               <InfoCard
-                title="Vaccine hết hạn"
+                title="Vắc xin hết hạn"
                 icon={icons.expired}
                 badgeCount={expiredVaccines.length}
                 badgeColor="bg-yellow-500"
@@ -752,7 +751,7 @@ const Dashboard = () => {
                 <div className="vaccine-list-dashboard">
                   {expiredVaccines.length === 0 ? (
                     <p className="vaccine-empty-dashboard">
-                      Không có vaccine nào hết hạn
+                      Không có vắc xin nào hết hạn
                     </p>
                   ) : (
                     <ul className="vaccine-items-dashboard">
@@ -819,7 +818,7 @@ const Dashboard = () => {
               )}
             </InfoCard>
             <InfoCard
-              title="Top vaccine bán chạy"
+              title="Top vắc xin bán chạy"
               icon={icons.vaccine}
               badgeCount={top3Vaccine.length}
               badgeColor="bg-green-500"
@@ -863,7 +862,7 @@ const Dashboard = () => {
             >
               ×
             </button>
-            <h2 className="modal-title-dashboard">Đặt Lịch Hôm Nay</h2>
+            <h2 className="modal-title-dashboard">Đặt lịch hôm nay</h2>
             <div className="modal-body-dashboard">
               {bookingsToday.map((b) => (
                 <div key={b.bookingId} className="modal-item-dashboard">
@@ -897,7 +896,7 @@ const Dashboard = () => {
               ×
             </button>
             <h2 className="modal-title-large-dashboard">
-              Top 10 Vaccine Bán Chạy
+              Top 10 vắc xin bán chạy
             </h2>
             {top10Vaccine.length > 0 ? (
               <div className="chart-container-modal-dashboard">
@@ -986,7 +985,7 @@ const Dashboard = () => {
             >
               ×
             </button>
-            <h2 className="modal-title-dashboard">Vaccine Hết Hàng</h2>
+            <h2 className="modal-title-dashboard">Vắc xin hết hàng</h2>
             <div className="modal-body-dashboard">
               {outOfStockVaccines.length > 0 ? (
                 <ul className="modal-list-dashboard">
@@ -1001,7 +1000,7 @@ const Dashboard = () => {
                 </ul>
               ) : (
                 <p className="modal-no-data-dashboard">
-                  Không có vaccine nào hết hàng
+                  Không có vắc xin nào hết hàng
                 </p>
               )}
             </div>
@@ -1026,7 +1025,7 @@ const Dashboard = () => {
             >
               ×
             </button>
-            <h2 className="modal-title-dashboard">Vaccine Hết Hạn</h2>
+            <h2 className="modal-title-dashboard">Vắc xin hết hạn</h2>
             <div className="modal-body-dashboard">
               {expiredVaccines.length > 0 ? (
                 <ul className="modal-list-dashboard">
@@ -1041,7 +1040,7 @@ const Dashboard = () => {
                 </ul>
               ) : (
                 <p className="modal-no-data-dashboard">
-                  Không có vaccine nào hết hạn
+                  Không có vắc xin nào hết hạn
                 </p>
               )}
             </div>

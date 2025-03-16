@@ -420,7 +420,7 @@ const Staffs = () => {
               >
                 ×
               </button>
-              <h2 className="modal-title-staffs">Thêm nhân viên Mới</h2>
+              <h2 className="modal-title-staffs">Thêm nhân viên mới</h2>
               <form onSubmit={handleAddStaff} className="modal-form-staffs">
                 <div className="form-group-staffs">
                   <label className="form-label-staffs">Họ</label>
@@ -451,7 +451,7 @@ const Staffs = () => {
                   )}
                 </div>
                 <div className="form-group-staffs">
-                  <label className="form-label-staffs">SĐT</label>
+                  <label className="form-label-staffs">Số điện thoại</label>
                   <input
                     type="text"
                     name="phone"
@@ -464,7 +464,7 @@ const Staffs = () => {
                   )}
                 </div>
                 <div className="form-group-staffs">
-                  <label className="form-label-staffs">Ngày Sinh</label>
+                  <label className="form-label-staffs">Ngày sinh</label>
                   <input
                     type="date"
                     name="dob"
@@ -562,7 +562,7 @@ const Staffs = () => {
               >
                 ×
               </button>
-              <h2 className="modal-title-staffs">Chỉnh Sửa Nhân Viên</h2>
+              <h2 className="modal-title-staffs">Chỉnh sửa nhân viên</h2>
               <form onSubmit={handleEditSave} className="modal-form-staffs">
                 <div className="form-group-staffs">
                   <label className="form-label-staffs">Họ</label>
@@ -606,7 +606,7 @@ const Staffs = () => {
                   )}
                 </div>
                 <div className="form-group-staffs">
-                  <label className="form-label-staffs">Ngày Sinh</label>
+                  <label className="form-label-staffs">Ngày sinh</label>
                   <input
                     type="date"
                     name="dob"
