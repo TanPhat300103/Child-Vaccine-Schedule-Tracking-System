@@ -74,14 +74,19 @@ const BookingToday = ({ onBack }) => {
   const filteredBookings = bookings.filter((booking) => {
     const term = searchTerm.toLowerCase();
     return (
-      booking.booking.bookingId.toLowerCase().includes(term) ||
-      booking.booking.customer.customerId.toLowerCase().includes(term) ||
-      booking.booking.customer.phoneNumber.toLowerCase().includes(term) ||
-      booking.booking.customer.email.toLowerCase().includes(term) ||
-      `${booking.child.firstName} ${booking.child.lastName}`
+      booking.booking?.bookingId?.toLowerCase()?.includes(term) ||
+      false ||
+      booking.booking?.customer?.customerId?.toLowerCase()?.includes(term) ||
+      false ||
+      booking.booking?.customer?.phoneNumber?.toLowerCase()?.includes(term) ||
+      false ||
+      booking.booking?.customer?.email?.toLowerCase()?.includes(term) ||
+      false ||
+      `${booking.child?.firstName || ""} ${booking.child?.lastName || ""}`
         .toLowerCase()
         .includes(term) ||
-      booking.vaccine.name.toLowerCase().includes(term)
+      booking.vaccine?.name?.toLowerCase()?.includes(term) ||
+      false
     );
   });
 
