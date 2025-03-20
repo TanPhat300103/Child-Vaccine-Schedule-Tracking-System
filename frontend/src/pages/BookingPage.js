@@ -21,8 +21,8 @@ function BookingPage() {
   const [showConfirmPopup, setShowConfirmPopup] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [bookingStatus, setBookingStatus] = useState(null);
-  const [showMessageModal, setShowMessageModal] = useState(false); // State cho modal thông báo
-  const [messageModalContent, setMessageModalContent] = useState(""); // Nội dung thông báo
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [messageModalContent, setMessageModalContent] = useState("");
   const { userInfo } = useAuth();
 
   useEffect(() => {
@@ -34,7 +34,7 @@ function BookingPage() {
             method: "GET",
             headers: {
               "ngrok-skip-browser-warning": "true",
-              "Content-Type": "application/json", // Bỏ qua warning page
+              "Content-Type": "application/json",
             },
             credentials: "include",
           }
@@ -77,7 +77,7 @@ function BookingPage() {
             method: "GET",
             headers: {
               "ngrok-skip-browser-warning": "true",
-              "Content-Type": "application/json", // Bỏ qua warning page
+              "Content-Type": "application/json",
             },
             credentials: "include",
           }
@@ -93,6 +93,7 @@ function BookingPage() {
               name: `Combo ${data.length + index + 1}`,
               description: `Mô tả của combo ${data.length + index + 1}`,
               priceCombo: 300000 + index * 50000,
+              active: true, // Thêm active mặc định là true cho mock data
             })
           ),
         ];
@@ -103,7 +104,6 @@ function BookingPage() {
           }))
         );
 
-        // Tải trước Tất cả combo details
         for (const combo of mockCombos) {
           if (!comboDetailsMap[combo.vaccineComboId]) {
             await fetchComboDetails(combo.vaccineComboId);
@@ -122,7 +122,7 @@ function BookingPage() {
             method: "GET",
             headers: {
               "ngrok-skip-browser-warning": "true",
-              "Content-Type": "application/json", // Bỏ qua warning page
+              "Content-Type": "application/json",
             },
             credentials: "include",
           }
@@ -145,7 +145,6 @@ function BookingPage() {
   }, [userInfo.userId]);
 
   useEffect(() => {
-    // Nhả child khi không còn vaccine/combo nào được chọn
     if (selectedItems.length === 0) {
       setSelectedChild("");
     }
@@ -185,7 +184,7 @@ function BookingPage() {
           method: "GET",
           headers: {
             "ngrok-skip-browser-warning": "true",
-            "Content-Type": "application/json", // Bỏ qua warning page
+            "Content-Type": "application/json",
           },
           credentials: "include",
         }
@@ -234,7 +233,7 @@ function BookingPage() {
             `Vaccine ${item.name} không phù hợp với độ tuổi của trẻ (${childAge} tuổi)!`
           );
           setShowMessageModal(true);
-          e.target.checked = false; // Hủy chọn checkbox
+          e.target.checked = false;
           return;
         }
         const selectedComboVaccineIds = getSelectedComboVaccineIds();
@@ -243,7 +242,7 @@ function BookingPage() {
             "Vaccine này đã có trong combo bạn chọn, không thể chọn riêng lẻ!"
           );
           setShowMessageModal(true);
-          e.target.checked = false; // Hủy chọn checkbox
+          e.target.checked = false;
           return;
         }
       } else if (type === "combo") {
@@ -252,7 +251,7 @@ function BookingPage() {
             `Combo ${item.name} không phù hợp với độ tuổi của trẻ (${childAge} tuổi)!`
           );
           setShowMessageModal(true);
-          e.target.checked = false; // Hủy chọn checkbox
+          e.target.checked = false;
           return;
         }
       }
@@ -367,8 +366,8 @@ function BookingPage() {
     setSelectedVaccine(null);
     setSelectedCombo(null);
     setShowConfirmPopup(false);
-    setShowMessageModal(false); // Đóng modal thông báo
-    setMessageModalContent(""); // Reset nội dung thông báo
+    setShowMessageModal(false);
+    setMessageModalContent("");
     setIsLoading(false);
     setBookingStatus(null);
   };
@@ -455,7 +454,7 @@ function BookingPage() {
           method: "POST",
           headers: {
             "ngrok-skip-browser-warning": "true",
-            "Content-Type": "application/json", // Bỏ qua warning page
+            "Content-Type": "application/json",
           },
           credentials: "include",
           body: JSON.stringify(payload),
@@ -495,11 +494,11 @@ function BookingPage() {
     let matchesAge = true;
     if (minAge !== null) matchesAge = matchesAge && vaccine.ageMin >= minAge;
     if (maxAge !== null) matchesAge = matchesAge && vaccine.ageMax <= maxAge;
-    return matchesName && matchesAge;
+    return matchesName && matchesAge && vaccine.active; // Chỉ hiển thị vaccine có active = true
   });
 
   const filteredCombos = vaccineCombos.filter((combo) =>
-    combo.name.toLowerCase().includes(comboSearch.toLowerCase())
+    combo.name.toLowerCase().includes(comboSearch.toLowerCase()) && combo.active // Chỉ hiển thị combo có active = true
   );
 
   const totalPrice = selectedItems.reduce((sum, item) => {
@@ -941,7 +940,7 @@ function BookingPage() {
                 <span className="modal-label-bookingpage">Mã combo:</span>
                 <span>{selectedCombo.vaccineComboId || "Không có mã"}</span>
               </div>
-              <div className="modal-info-item-bookingpage">
+              <div className="modal-info-item-b Beckingpage">
                 <span className="modal-label-bookingpage">Mô tả:</span>
                 <span>{selectedCombo.description || "Không có mô tả"}</span>
               </div>

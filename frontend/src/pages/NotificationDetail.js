@@ -155,9 +155,6 @@ function NotificationDetail() {
         ) : (
           <>
             <span className="status unread">Chưa đọc</span>
-            <button onClick={handleMarkRead} className="mark-read-button">
-              Đánh dấu đã đọc
-            </button>
           </>
         )}
       </div>

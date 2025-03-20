@@ -23,3 +23,4 @@ public interface BookingDetailRepository extends JpaRepository<BookingDetail, St
 
     List<BookingDetail> getBookingDetailsByScheduledDate (Date date);
 }
+

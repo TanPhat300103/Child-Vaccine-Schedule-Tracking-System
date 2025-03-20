@@ -20,9 +20,7 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
 
   const handleToggleStatus = (e) => {
     e.stopPropagation();
-    if (detail.status) {
-      setIsConfirmModalOpen(true); // Hiển thị modal xác nhận nếu status là true
-    }
+    setIsConfirmModalOpen(true); // Hiển thị modal xác nhận cho cả bật và tắt
   };
 
   const confirmToggleStatus = async () => {
@@ -42,15 +40,17 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
         }
       );
 
-      if (!response.ok) throw new Error("Ngưng lô vắc xin thất bại");
+      if (!response.ok) throw new Error("Thay đổi trạng thái thất bại");
       const data = await response.json();
       console.log("API nhận về:", data);
       onToggleStatus(detail.id, detail.status);
       setIsConfirmModalOpen(false);
-      toast.success("Ngưng lô vắc xin thành công!");
+      toast.success(
+        `Đã ${detail.status ? "ngưng" : "kích hoạt"} lô vắc xin thành công!`
+      );
     } catch (err) {
-      console.error("Lỗi ngưng lô vắc xin:", err);
-      toast.error(err.message || "Đã xảy ra lỗi khi ngưng lô vắc xin!");
+      console.error("Lỗi thay đổi trạng thái:", err);
+      toast.error(err.message || "Đã xảy ra lỗi khi thay đổi trạng thái!");
     }
   };
 
@@ -200,15 +200,17 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
           </p>
         </div>
         <div className="card-buttons-vaccinedetailmanager">
-          {detail.status && (
-            <button
-              onClick={handleToggleStatus}
-              className="status-button-vaccinedetailmanager status-inactive-vaccinedetailmanager"
-            >
-              <FaPowerOff className="icon-vaccinedetailmanager" />
-              Ngưng
-            </button>
-          )}
+          <button
+            onClick={handleToggleStatus}
+            className={`status-button-vaccinedetailmanager ${
+              detail.status
+                ? "status-active-vaccinedetailmanager"
+                : "status-inactive-vaccinedetailmanager"
+            }`}
+          >
+            <FaPowerOff className="icon-vaccinedetailmanager" />
+            {detail.status ? "Ngưng" : "Kích hoạt"}
+          </button>
         </div>
       </div>
 
@@ -355,10 +357,11 @@ const VaccineDetailItem = ({ detail, onDetailUpdated, onToggleStatus }) => {
         <div className="modal-overlay-vaccinedetailmanager">
           <div className="modal-content-vaccinedetailmanager">
             <h2 className="modal-title-vaccinedetailmanager">
-              Xác nhận ngưng lô vắc xin
+              Xác nhận thay đổi trạng thái
             </h2>
             <p className="confirm-text-vaccinedetailmanager">
-              Bạn có chắc chắn muốn ngưng lô vắc xin này không?
+              Bạn có chắc chắn muốn{" "}
+              {detail.status ? "ngưng" : "kích hoạt"} lô vắc xin này không?
             </p>
             <div className="modal-buttons-vaccinedetailmanager">
               <button
@@ -437,7 +440,7 @@ const VaccineDetailManager = () => {
         d.id === detailId ? { ...d, status: !currentStatus } : d
       )
     );
-    fetchVaccineDetails(); // Load lại trang sau khi ngưng
+    fetchVaccineDetails(); // Load lại trang sau khi thay đổi trạng thái
   };
 
   const validateField = (name, value, data) => {

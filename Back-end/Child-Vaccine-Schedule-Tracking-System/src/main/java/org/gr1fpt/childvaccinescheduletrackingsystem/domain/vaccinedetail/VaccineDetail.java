@@ -18,7 +18,7 @@ public class VaccineDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "vaccineId", nullable = false)
     private Vaccine vaccine;
     @NotNull(message = "Entry date cannot be null")

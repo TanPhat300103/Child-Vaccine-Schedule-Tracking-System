@@ -49,12 +49,12 @@ public class SecurityConfig {
                         .permitAll()
 
 
-                        .requestMatchers("/customer/findid", "/booking/create", "/booking/findbycustomer", "/bookingdetail/findbybooking", "/bookingdetail/updatereaction", "/booking/cancel", "/child/create", "/child/findbycustomer", "/child/update", "/customer/update", "/marketing", "/medicalhistory/updatereaction", "/medicalhistory/findbychildid", "/payment/findbybooking", "/payment/update")
+                        .requestMatchers("/customer/findid", "/booking/create", "/booking/findbycustomer", "/bookingdetail/findbybooking", "/bookingdetail/updatereaction", "/booking/cancel", "/child/create", "/child/findbycustomer", "/child/update", "/customer/update", "/marketing", "/medicalhistory/updatereaction", "/medicalhistory/findbychildid", "/payment/findbybooking", "/payment/update","/payment/getbycustomerid","payment/findbyid","marketing/findbycoupon")
                         .hasAnyRole("CUSTOMER", "STAFF", "ADMIN")
 
 
                         .requestMatchers("/staff/create", "/vaccine/**", "/booking/**", "/bookingdetail/**", "/child/**", "/combodetail/**", "/email/**", "/marketing/**", "/medicalhistory/**", "/payment/**", "/vaccinecombo/**", "/vaccinedetail/**","/staff/findid","staff/update")
-                        .hasAnyRole("STAFF", "ADMIN","CUSTOMER")
+                        .hasAnyRole("STAFF", "ADMIN")
 
                         .requestMatchers("/admin/**", "/staff/**")
                         .hasRole("ADMIN")

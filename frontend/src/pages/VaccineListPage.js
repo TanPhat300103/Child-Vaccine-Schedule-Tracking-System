@@ -306,6 +306,9 @@ function getCountryCode(countryName) {
     Netherlands: "NL",
     Switzerland: "CH",
     Turkey: "TR",
+    Belgium: "BE",
+    Cuba:"CU",
+
   };
 
   const normalizedCountryName = countryName.toLowerCase().trim();
