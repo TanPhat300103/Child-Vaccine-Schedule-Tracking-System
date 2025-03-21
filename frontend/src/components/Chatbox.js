@@ -87,8 +87,9 @@ const Chatbox = () => {
               method: "GET",
               headers: {
                 "ngrok-skip-browser-warning": "true",
-                "Content-Type": "application/json", // Bỏ qua warning page
+                "Content-Type": "application/json", // B�� qua warning page
               },
+              credentials: "include",
             }
           );
         }
