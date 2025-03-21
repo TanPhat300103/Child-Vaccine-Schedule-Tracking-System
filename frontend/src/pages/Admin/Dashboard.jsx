@@ -236,25 +236,53 @@ const Dashboard = () => {
 
       const resToday = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/admin/incomebydate?date=${todayStr}`,
-        { credentials: "include" }
+        {
+          method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
+          },
+          credentials: "include",
+        }
       );
       setIncomeToday(await resToday.json());
 
       const resWeek = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/admin/incomebyweek?date=${todayStr}`,
-        { credentials: "include" }
+        {
+          method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
+          },
+          credentials: "include",
+        }
       );
       setIncomeWeek(await resWeek.json());
 
       const resMonth = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/admin/incomebymonth?month=${month}&year=${year}`,
-        { credentials: "include" }
+        {
+          method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
+          },
+          credentials: "include",
+        }
       );
       setIncomeMonth(await resMonth.json());
 
       const resYear = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/admin/incomebyyear?year=${year}`,
-        { credentials: "include" }
+        {
+          method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
+          },
+          credentials: "include",
+        }
       );
       setIncomeYear(await resYear.json());
     } catch (err) {
@@ -271,13 +299,27 @@ const Dashboard = () => {
 
       const resYesterday = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/admin/incomebydate?date=${yesterdayStr}`,
-        { credentials: "include" }
+        {
+          method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
+          },
+          credentials: "include",
+        }
       );
       setIncomeYesterday(await resYesterday.json());
 
       const resLastWeek = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/admin/incomebyweek?date=${lastWeekStr}`,
-        { credentials: "include" }
+        {
+          method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
+          },
+          credentials: "include",
+        }
       );
       setIncomeLastWeek(await resLastWeek.json());
 
@@ -285,7 +327,14 @@ const Dashboard = () => {
         `${process.env.REACT_APP_API_BASE_URL}/admin/incomebymonth?month=${
           lastMonth.getMonth() + 1
         }&year=${lastMonth.getFullYear()}`,
-        { credentials: "include" }
+        {
+          method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
+          },
+          credentials: "include",
+        }
       );
       setIncomeLastMonth(await resLastMonth.json());
 
@@ -293,7 +342,14 @@ const Dashboard = () => {
         `${
           process.env.REACT_APP_API_BASE_URL
         }/admin/incomebyyear?year=${lastYear.getFullYear()}`,
-        { credentials: "include" }
+        {
+          method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
+          },
+          credentials: "include",
+        }
       );
       setIncomeLastYear(await resLastYear.json());
     } catch (err) {
@@ -306,6 +362,11 @@ const Dashboard = () => {
       const res = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/admin/bookingtoday`,
         {
+          method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
+          },
           credentials: "include",
         }
       );
@@ -323,6 +384,11 @@ const Dashboard = () => {
       const resOut = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/admin/vaccineoutofstock`,
         {
+          method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
+          },
           credentials: "include",
         }
       );
@@ -331,6 +397,11 @@ const Dashboard = () => {
       const resExp = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/admin/expiredvaccine`,
         {
+          method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
+          },
           credentials: "include",
         }
       );
@@ -345,6 +416,11 @@ const Dashboard = () => {
       const res = await fetch(
         `${process.env.REACT_APP_API_BASE_URL}/admin/bestvaccine`,
         {
+          method: "GET",
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // Bỏ qua warning page
+          },
           credentials: "include",
         }
       );

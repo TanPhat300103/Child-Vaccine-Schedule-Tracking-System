@@ -357,6 +357,7 @@ function ChildInfoPage() {
           method: "POST",
           headers: {
             "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json",
           },
           credentials: "include",
         }

@@ -26,6 +26,7 @@ function VaccinesPage() {
               "ngrok-skip-browser-warning": "true",
               "Content-Type": "application/json", // Bỏ qua warning page
             },
+            credentials: "include",
           }
         );
         if (!response.ok)
@@ -59,6 +60,7 @@ function VaccinesPage() {
             "ngrok-skip-browser-warning": "true",
             "Content-Type": "application/json", // Bỏ qua warning page
           },
+          credentials: "include",
         }
       );
       if (!response.ok) throw new Error("Không thể tải chi tiết combo vaccine");

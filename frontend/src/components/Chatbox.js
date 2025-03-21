@@ -71,6 +71,8 @@ const Chatbox = () => {
               "Content-Type": "application/json", // Bỏ qua warning page
             },
 
+            credentials: "include",
+
             body: JSON.stringify({
               history: chatHistory,
               prompt: inputMessage,

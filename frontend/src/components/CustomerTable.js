@@ -56,6 +56,7 @@ function CustomerTable() {
           "ngrok-skip-browser-warning": "true",
           "Content-Type": "application/json", // Bỏ qua warning page
         },
+        credentials: "include",
       }
     )
       .then((response) => {
@@ -110,6 +111,8 @@ function CustomerTable() {
         "ngrok-skip-browser-warning": "true",
         "Content-Type": "application/json", // Bỏ qua warning page
       },
+      credentials: "include",
+
       body: JSON.stringify({ ...selectedCustomer, ...formData }),
     })
       .then((response) => {

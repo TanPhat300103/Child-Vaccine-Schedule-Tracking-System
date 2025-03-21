@@ -164,6 +164,7 @@ function VaccinePage() {
             "ngrok-skip-browser-warning": "true",
             "Content-Type": "application/json", // Bỏ qua warning page
           },
+          credentials: "include",
         }
       )
         .then((response) => {
@@ -185,6 +186,7 @@ function VaccinePage() {
           "ngrok-skip-browser-warning": "true",
           "Content-Type": "application/json", // Bỏ qua warning page
         },
+        credentials: "include",
       }
     )
       .then((response) => {
