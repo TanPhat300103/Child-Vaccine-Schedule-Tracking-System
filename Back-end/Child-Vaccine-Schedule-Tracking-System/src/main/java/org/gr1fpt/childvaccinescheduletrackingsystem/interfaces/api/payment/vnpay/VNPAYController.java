@@ -79,8 +79,6 @@ public class VNPAYController  {
         // Lấy paymentId từ vnp_OrderInfo
         String[] parts = vnp_OrderInfo.split(":");
         String paymentId = parts[1];
-        System.out.println(paymentId);
-        System.out.println("trang thai: " + isSuccess);
 
         // Cập nhật trạng thái thanh toán vào database + gửi hoóa đơn vào mail + tạo notification
         if (isSuccess) {
