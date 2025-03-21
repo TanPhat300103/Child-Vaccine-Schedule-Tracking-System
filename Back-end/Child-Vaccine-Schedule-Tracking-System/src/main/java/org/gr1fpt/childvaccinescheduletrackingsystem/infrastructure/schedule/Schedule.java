@@ -1,6 +1,7 @@
 package org.gr1fpt.childvaccinescheduletrackingsystem.infrastructure.schedule;
 
 import jakarta.mail.MessagingException;
+import org.gr1fpt.childvaccinescheduletrackingsystem.application.vaccinedetail.VaccineDetailService;
 import org.gr1fpt.childvaccinescheduletrackingsystem.domain.bookingdetail.BookingDetail;
 import org.gr1fpt.childvaccinescheduletrackingsystem.infrastructure.bookingdetail.BookingDetailRepository;
 import org.gr1fpt.childvaccinescheduletrackingsystem.infrastructure.email.EmailService;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -33,6 +35,9 @@ public class Schedule {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
 
+    @Autowired
+    VaccineDetailService vaccineDetailService;
+
 
     //check quantity neu ve 0 thi set status = 0
     @Scheduled(fixedRate = 60000)
@@ -45,6 +50,7 @@ public class Schedule {
         }
     }
 
+    //reminder booking today
     @Scheduled(cron = "0 00 7 * * ?")
     //0: giây thứ 0
     //00: phút
@@ -61,7 +67,7 @@ public class Schedule {
             }
         }
     }
-
+    //Java doc o trong ham, ham nay dung de send mail khi tre lich va khi huy
     @Scheduled(cron ="0 00 7 * * ?")
     public void sendLaterReminder() throws MessagingException {
         for(BookingDetail detail : bookingDetailRepo.findAll()){
@@ -96,5 +102,16 @@ public class Schedule {
         }
     }
 
+    //schedule khi neu co vaccine detail nao het han thi set status ve 0
+    @Scheduled(cron = "0 00 7 * * ?")
+    @Transactional
+    public void setStatusVaccineDetail(){
+        List<VaccineDetail> details = vaccineDetailRepo.findAll();
+        for(VaccineDetail detail : details){
+            if(detail.getExpiredDate().before(Date.valueOf(LocalDate.now())) && detail.isStatus()){
+                vaccineDetailService.active(detail.getId());
+            }
+        }
+    }
 
 }
