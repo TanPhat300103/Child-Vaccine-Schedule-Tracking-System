@@ -61,6 +61,7 @@ export function AuthProvider({ children }) {
           method: "POST",
           headers: {
             "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json", // B�� qua warning page
           },
           credentials: "include",
         }

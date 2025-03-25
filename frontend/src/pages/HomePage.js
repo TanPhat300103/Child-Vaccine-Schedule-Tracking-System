@@ -255,6 +255,7 @@ const HomePage = () => {
               "ngrok-skip-browser-warning": "true",
               "Content-Type": "application/json", // Bỏ qua warning page
             },
+            credentials: "include",
           }
         );
         if (!response.ok)
@@ -289,10 +290,7 @@ const HomePage = () => {
             "ngrok-skip-browser-warning": "true",
             "Content-Type": "application/json", // Bỏ qua warning page
           },
-          headers: {
-            "ngrok-skip-browser-warning": "true",
-            "Content-Type": "application/json", // Bỏ qua warning page
-          },
+          credentials: "include",
         }
       );
       if (!response.ok) throw new Error("Không thể tải chi tiết combo vaccine");
@@ -351,6 +349,7 @@ const HomePage = () => {
               "ngrok-skip-browser-warning": "true",
               "Content-Type": "application/json", // Bỏ qua warning page
             },
+            credentials: "include",
           }
         );
         if (!response.ok) {

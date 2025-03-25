@@ -74,7 +74,13 @@ function VaccinePage() {
 
   const fetchVaccines = () => {
     setLoading(true);
-    fetch(`${process.env.REACT_APP_API_BASE_URL}/vaccine`)
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/vaccine`, {
+      method: "GET",
+      headers: {
+        "ngrok-skip-browser-warning": "true",
+      },
+      credentials: "include",
+    })
       .then((response) => {
         if (!response.ok) throw new Error("Network response was not ok");
         return response.json();
@@ -164,6 +170,7 @@ function VaccinePage() {
             "ngrok-skip-browser-warning": "true",
             "Content-Type": "application/json", // Bỏ qua warning page
           },
+          credentials: "include",
         }
       )
         .then((response) => {
@@ -185,6 +192,7 @@ function VaccinePage() {
           "ngrok-skip-browser-warning": "true",
           "Content-Type": "application/json", // Bỏ qua warning page
         },
+        credentials: "include",
       }
     )
       .then((response) => {

@@ -30,6 +30,7 @@ const Payments = () => {
       method: "GET",
       headers: {
         "ngrok-skip-browser-warning": "true",
+        "Content-Type": "application/json",
       },
       credentials: "include",
     })
@@ -44,6 +45,7 @@ const Payments = () => {
       method: "GET",
       headers: {
         "ngrok-skip-browser-warning": "true",
+        "Content-Type": "application/json",
       },
       credentials: "include",
     })
@@ -195,6 +197,7 @@ const Payments = () => {
             method: "GET",
             headers: {
               "ngrok-skip-browser-warning": "true",
+              "Content-Type": "application/json",
             },
             credentials: "include",
           })

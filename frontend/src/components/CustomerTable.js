@@ -28,7 +28,13 @@ function CustomerTable() {
   const [sortOrder, setSortOrder] = useState("asc");
 
   const fetchCustomers = () => {
-    fetch(`${process.env.REACT_APP_API_BASE_URL}/customer`)
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/customer`, {
+      method: "GET",
+      headers: {
+        "ngrok-skip-browser-warning": "true",
+      },
+      credentials: "include",
+    })
       .then((response) => {
         if (!response.ok) throw new Error("Network response was not ok");
         return response.json();
@@ -56,6 +62,7 @@ function CustomerTable() {
           "ngrok-skip-browser-warning": "true",
           "Content-Type": "application/json", // Bỏ qua warning page
         },
+        credentials: "include",
       }
     )
       .then((response) => {
@@ -110,6 +117,8 @@ function CustomerTable() {
         "ngrok-skip-browser-warning": "true",
         "Content-Type": "application/json", // Bỏ qua warning page
       },
+      credentials: "include",
+
       body: JSON.stringify({ ...selectedCustomer, ...formData }),
     })
       .then((response) => {
