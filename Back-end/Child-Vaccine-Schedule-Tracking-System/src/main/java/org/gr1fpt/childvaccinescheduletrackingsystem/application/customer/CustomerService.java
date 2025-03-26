@@ -66,7 +66,7 @@ public class CustomerService {
             if(!customer1.getCustomerId().equals(customer.getCustomerId()))
                 throw new CustomException("Email is exist ",HttpStatus.BAD_REQUEST);
         }
-        if(customerRepository.findByPhoneNumber(customer.getPhoneNumber()).isPresent()) {
+        if( customer.getPhoneNumber() != null &&customerRepository.findByPhoneNumber(customer.getPhoneNumber()).isPresent()) {
             Customer customer1 = customerRepository.findByPhoneNumber(customer.getPhoneNumber()).get();
 
             if(!customer1.getCustomerId().equals(customer.getCustomerId()))
