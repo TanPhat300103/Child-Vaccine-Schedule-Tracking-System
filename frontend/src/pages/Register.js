@@ -209,7 +209,7 @@ const Register = () => {
           {/* Right Side - Form */}
           <div className="form-side-register">
             <div className="form-header-register">
-              <h1 className="form-title-register">Đăng Ký Tài Khoản</h1>
+              <h1 className="form-title-register">Đăng ký tài khoản</h1>
               <p className="form-subtitle-register">
                 Điền thông tin để tạo tài khoản quản lý tiêm chủng
               </p>

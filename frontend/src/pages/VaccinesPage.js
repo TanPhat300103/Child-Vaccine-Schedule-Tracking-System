@@ -94,9 +94,8 @@ function VaccinesPage() {
           <h1>Bảng Giá</h1>
           <div className="quote">
             <p>
-              Bác sĩ nói rằng khoảnh khắc cuối cùng của con người sau khi mất đi
-              là thính giác, vì vậy đừng ôm anh mà khóc, hãy nói rằng em yêu
-              anh...
+              Sức khoẻ trẻ em là tương lai đất nước. Hãy tiêm chủng đầy đủ cho
+              trẻ em để bảo vệ sức khoẻ cho trẻ và cộng đồng.
             </p>
           </div>
         </div>

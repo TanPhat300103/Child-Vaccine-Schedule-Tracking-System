@@ -6,7 +6,7 @@ import {
   FiCalendar,
   FiMessageSquare,
   FiMenu,
-  FiX,
+  FiChevronLeft,
   FiLogOut,
   FiAlertTriangle,
 } from "react-icons/fi";
@@ -61,7 +61,7 @@ const AdminPage = () => {
               <h1 className="sidebar-title-adminpage">Quản trị viên</h1>
             </div>
             <button onClick={toggleSidebar} className="toggle-btn-adminpage">
-              <FiX size={24} />
+              <FiChevronLeft size={24} />
             </button>
           </div>
         ) : (

@@ -5,7 +5,7 @@ import {
   FiCalendar,
   FiMessageSquare,
   FiMenu,
-  FiX,
+  FiChevronLeft,
   FiLogOut,
   FiAlertTriangle,
 } from "react-icons/fi";
@@ -101,7 +101,7 @@ const StaffPage = () => {
                   onClick={toggleSidebar}
                   className="sidebar-toggle-btn-staffpage"
                 >
-                  <FiX size={24} />
+                  <FiChevronLeft size={24} />
                 </button>
               </div>
             ) : (

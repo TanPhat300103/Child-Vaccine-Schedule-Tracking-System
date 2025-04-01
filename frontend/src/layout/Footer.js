@@ -13,8 +13,19 @@ import {
   User,
 } from "lucide-react";
 import "../style/Footer.css";
+import { useAuth } from "../components/AuthContext";
 
 const Footer = () => {
+  // Lấy trạng thái đăng nhập từ useAuth
+  const { isLoggedIn } = useAuth(); // Giả sử useAuth trả về object với thuộc tính user, user sẽ là null nếu chưa đăng nhập
+
+  // Định nghĩa các đường dẫn cho mục "DỊCH VỤ" dựa trên trạng thái đăng nhập
+  const serviceLinks = [
+    { label: "Tiêm chủng vắc xin", path: isLoggedIn ? "/vaccines" : "/login" },
+    { label: "Đặt lịch tiêm chủng", path: isLoggedIn ? "/booking" : "/login" },
+    { label: "Tổng quan cá nhân", path: isLoggedIn ? "/login" : "/login" }, // Đường dẫn "/login" giữ nguyên vì đây là trang đăng nhập
+  ];
+
   return (
     <footer
       className="footer"
@@ -27,7 +38,7 @@ const Footer = () => {
           <div className="footer-health-theme">
             <Syringe className="health-icon" style={{ color: "#fff" }} />
             <h2>
-              Trung Tâm Tiêm Chủng <span>Sức Khỏe Toàn Diện</span>
+              VaccineCare <span>Sức Khỏe Toàn Diện</span>
             </h2>
           </div>
 
@@ -46,14 +57,6 @@ const Footer = () => {
                   <span>hanptse184261@fpt.edu.vn</span>
                 </div>
                 <div className="contact-item">
-                  <Mail className="contact-icon" />
-                  <span>khangqhse184031@fpt.edu.vn</span>
-                </div>
-                <div className="contact-item">
-                  <Mail className="contact-icon" />
-                  <span>tantnse184055@fpt.edu.vn</span>
-                </div>
-                <div className="contact-item">
                   <MapPin className="contact-icon" />
                   <span>Biên Hòa, Đồng Nai</span>
                 </div>
@@ -66,18 +69,12 @@ const Footer = () => {
                   DỊCH VỤ <Shield className="title-icon" />
                 </h3>
                 <ul>
-                  <li>
-                    <ArrowRight className="link-icon" />
-                    <a href="/services/vaccine">Tiêm chủng vắc xin</a>
-                  </li>
-                  <li>
-                    <ArrowRight className="link-icon" />
-                    <a href="/services/health-check">Kiểm tra sức khỏe</a>
-                  </li>
-                  <li>
-                    <ArrowRight className="link-icon" />
-                    <a href="/services/consult">Tư vấn y tế</a>
-                  </li>
+                  {serviceLinks.map((link, index) => (
+                    <li key={index}>
+                      <ArrowRight className="link-icon" />
+                      <a href={link.path}>{link.label}</a>
+                    </li>
+                  ))}
                 </ul>
               </div>
 
@@ -88,11 +85,13 @@ const Footer = () => {
                 <ul>
                   <li>
                     <ArrowRight className="link-icon" />
-                    <a href="/faq">Câu hỏi thường gặp</a>
+                    <a href="/handbook/pre-post-notes">Câu hỏi thường gặp</a>
                   </li>
                   <li>
                     <ArrowRight className="link-icon" />
-                    <a href="/schedule">Lịch tiêm chủng</a>
+                    <a href="/handbook/vaccination-process">
+                      Quy trình tiêm chủng
+                    </a>
                   </li>
                   <li>
                     <ArrowRight className="link-icon" />

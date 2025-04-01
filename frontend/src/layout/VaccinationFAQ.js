@@ -252,7 +252,7 @@ const VaccinationFAQ = () => {
             <Search size={20} className="search-icon" />
             <input
               type="text"
-              placeholder="Tìm kiếm câu hỏi..."
+              placeholder="   Tìm kiếm câu hỏi..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -354,9 +354,6 @@ const VaccinationFAQ = () => {
               </div>
               <h3>Lịch tiêm chủng</h3>
               <p>Xem lịch tiêm chủng đầy đủ cho trẻ em từ sơ sinh đến 6 tuổi</p>
-              <Link to="/vaccination-schedule" className="resource-link">
-                Xem lịch <ChevronRight size={16} />
-              </Link>
             </div>
             <div className="resource-card">
               <div className="resource-icon">
@@ -366,9 +363,6 @@ const VaccinationFAQ = () => {
               <p>
                 Tải ứng dụng nhắc lịch tiêm chủng để không bỏ lỡ mũi tiêm nào
               </p>
-              <a href="#" className="resource-link">
-                Tải ngay <ChevronRight size={16} />
-              </a>
             </div>
             <div className="resource-card">
               <div className="resource-icon">
@@ -376,9 +370,6 @@ const VaccinationFAQ = () => {
               </div>
               <h3>Tìm trung tâm tiêm chủng</h3>
               <p>Các trung tâm tiêm chủng uy tín gần địa điểm của bạn</p>
-              <Link to="/vaccination-centers" className="resource-link">
-                Tìm ngay <ChevronRight size={16} />
-              </Link>
             </div>
           </div>
         </div>

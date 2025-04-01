@@ -385,7 +385,7 @@
 
 .password-toggle-btn-staffs {
   position: absolute;
-  top: 50%;
+  top: 80%;
   right: 0.75rem;
   transform: translateY(-50%);
   background: none;

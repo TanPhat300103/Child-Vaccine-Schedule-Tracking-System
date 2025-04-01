@@ -178,6 +178,7 @@
 .footer-social {
   display: flex;
   gap: 0.5rem;
+  margin-right: 50px;
 }
 
 .footer-social a {

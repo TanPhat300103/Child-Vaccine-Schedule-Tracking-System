@@ -536,7 +536,7 @@ const HomePage = () => {
       <section className="homepage-age-vaccine" ref={ageVaccineRef}>
         <div className="homepage-container">
           <div className="homepage-age-vaccine-header">
-            <h1>LỊCH TIÊM CHỦNG CHO TRẺ EM</h1>
+            <h1>COMBO VẮC XIN</h1>
             <p>
               Lựa chọn combo vắc xin phù hợp cho trẻ từ các chuyên gia y tế hàng
               đầu
