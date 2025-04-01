@@ -114,7 +114,7 @@ const Footer = () => {
 
         <div className="footer-bottom">
           <div className="footer-copyright">
-            <p>© 2025 Trung Tâm Tiêm Chủng. Đã đăng ký bản quyền.</p>
+            <p>© 2025 VaccineCare. Đã đăng ký bản quyền.</p>
           </div>
 
           <div className="footer-social">
